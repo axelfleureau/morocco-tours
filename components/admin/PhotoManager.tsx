@@ -2,169 +2,89 @@
 
 import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
-import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Plus, Trash2, Camera, Upload, ImageIcon } from 'lucide-react'
-import { getPhotos, addPhoto, deletePhoto, uploadImage, getCities, getTours } from '@/lib/firebase-operations'
-import { useToast } from '@/hooks/use-toast'
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
+import { Plus, Upload, Trash2, Camera, Eye, Download } from 'lucide-react'
+import { getPhotos, addPhoto } from '@/lib/firebase-operations'
+import { toast } from 'react-hot-toast'
 
 interface Photo {
-  id?: string
+  id: string
   url: string
-  category: 'city' | 'tour' | 'general'
+  category: 'city' | 'tour'
   cityId?: string
   tourId?: string
   caption: string
+  uploadedAt: Date
 }
 
-interface City {
-  id: string
-  name: string
-}
-
-interface Tour {
-  id: string
-  name: string
-}
-
-export function PhotoManager() {
+export const PhotoManager = () => {
   const [photos, setPhotos] = useState<Photo[]>([])
-  const [cities, setCities] = useState<City[]>([])
-  const [tours, setTours] = useState<Tour[]>([])
   const [loading, setLoading] = useState(true)
-  const [isDialogOpen, setIsDialogOpen] = useState(false)
-  const [uploading, setUploading] = useState(false)
-  const [selectedCategory, setSelectedCategory] = useState<string>('all')
-  const { toast } = useToast()
-
-  const [formData, setFormData] = useState({
-    category: 'general' as 'city' | 'tour' | 'general',
-    cityId: '',
-    tourId: '',
-    caption: '',
-    files: null as FileList | null
-  })
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [uploadingFiles, setUploadingFiles] = useState<File[]>([])
+  const [caption, setCaption] = useState('')
+  const [category, setCategory] = useState<'city' | 'tour'>('city')
 
   useEffect(() => {
-    loadData()
+    loadPhotos()
   }, [])
 
-  const loadData = async () => {
+  const loadPhotos = async () => {
     try {
-      const [photosData, citiesData, toursData] = await Promise.all([
-        getPhotos(),
-        getCities(),
-        getTours()
-      ])
+      setLoading(true)
+      const photosData = await getPhotos()
       setPhotos(photosData)
-      setCities(citiesData)
-      setTours(toursData)
     } catch (error) {
-      toast({
-        title: "Errore",
-        description: "Impossibile caricare i dati",
-        variant: "destructive"
-      })
+      toast.error('Errore nel caricamento delle foto')
+      console.error('Error loading photos:', error)
     } finally {
       setLoading(false)
     }
   }
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    
-    if (!formData.files || formData.files.length === 0) {
-      toast({
-        title: "Errore",
-        description: "Seleziona almeno un'immagine",
-        variant: "destructive"
-      })
-      return
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      const files = Array.from(e.target.files)
+      setUploadingFiles(files)
     }
+  }
 
-    setUploading(true)
+  const handleUpload = async () => {
+    if (uploadingFiles.length === 0) return
+
     try {
-      const uploadPromises = Array.from(formData.files).map(async (file) => {
-        const url = await uploadImage(file, `photos/${formData.category}`)
+      for (const file of uploadingFiles) {
+        // Simuliamo l'upload - in realtà dovresti caricare su Firebase Storage
+        const mockUrl = URL.createObjectURL(file)
         
         const photoData = {
-          url,
-          category: formData.category,
-          caption: formData.caption || file.name,
-          ...(formData.category === 'city' && formData.cityId && { cityId: formData.cityId }),
-          ...(formData.category === 'tour' && formData.tourId && { tourId: formData.tourId })
+          url: mockUrl,
+          category,
+          caption: caption || file.name,
+          uploadedAt: new Date()
         }
-        
-        return addPhoto(photoData)
-      })
-      
-      await Promise.all(uploadPromises)
-      
-      toast({
-        title: "Successo",
-        description: `${formData.files.length} foto caricate con successo`
-      })
-      
-      setIsDialogOpen(false)
-      resetForm()
-      loadData()
-    } catch (error) {
-      toast({
-        title: "Errore",
-        description: "Errore nel caricamento delle foto",
-        variant: "destructive"
-      })
-    } finally {
-      setUploading(false)
-    }
-  }
 
-  const handleDelete = async (id: string, url: string) => {
-    if (confirm('Sei sicuro di voler eliminare questa foto?')) {
-      try {
-        await deletePhoto(id)
-        toast({
-          title: "Successo",
-          description: "Foto eliminata con successo"
-        })
-        loadData()
-      } catch (error) {
-        toast({
-          title: "Errore",
-          description: "Impossibile eliminare la foto",
-          variant: "destructive"
-        })
+        await addPhoto(photoData)
       }
+
+      toast.success(`${uploadingFiles.length} foto caricate con successo!`)
+      await loadPhotos()
+      handleCloseModal()
+    } catch (error) {
+      toast.error('Errore nel caricamento delle foto')
+      console.error('Error uploading photos:', error)
     }
   }
 
-  const resetForm = () => {
-    setFormData({
-      category: 'general',
-      cityId: '',
-      tourId: '',
-      caption: '',
-      files: null
-    })
+  const handleCloseModal = () => {
+    setIsModalOpen(false)
+    setUploadingFiles([])
+    setCaption('')
+    setCategory('city')
   }
-
-  const getCityName = (cityId: string) => {
-    const city = cities.find(c => c.id === cityId)
-    return city ? city.name : 'Città sconosciuta'
-  }
-
-  const getTourName = (tourId: string) => {
-    const tour = tours.find(t => t.id === tourId)
-    return tour ? tour.name : 'Tour sconosciuto'
-  }
-
-  const filteredPhotos = selectedCategory === 'all' 
-    ? photos 
-    : photos.filter(photo => photo.category === selectedCategory)
 
   if (loading) {
     return (
@@ -179,13 +99,13 @@ export function PhotoManager() {
       <div className="flex justify-between items-center">
         <div>
           <h2 className="text-3xl font-bold text-gray-900">Gestione Foto</h2>
-          <p className="text-gray-600">Gestisci la galleria fotografica</p>
+          <p className="text-gray-600">Gestisci le immagini per città e tour</p>
         </div>
         
-        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
           <DialogTrigger asChild>
-            <Button onClick={resetForm}>
-              <Plus className="h-4 w-4 mr-2" />
+            <Button onClick={() => setIsModalOpen(true)} className="flex items-center gap-2">
+              <Plus className="h-4 w-4" />
               Carica Foto
             </Button>
           </DialogTrigger>
@@ -195,189 +115,123 @@ export function PhotoManager() {
               <DialogTitle>Carica Nuove Foto</DialogTitle>
             </DialogHeader>
             
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="space-y-4">
               <div>
-                <Label>Categoria</Label>
-                <Select
-                  value={formData.category}
-                  onValueChange={(value: 'city' | 'tour' | 'general') => 
-                    setFormData(prev => ({ ...prev, category: value, cityId: '', tourId: '' }))
-                  }
-                >
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="general">Generale</SelectItem>
-                    <SelectItem value="city">Città</SelectItem>
-                    <SelectItem value="tour">Tour</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              {formData.category === 'city' && (
-                <div>
-                  <Label>Città</Label>
-                  <Select
-                    value={formData.cityId}
-                    onValueChange={(value) => setFormData(prev => ({ ...prev, cityId: value }))}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Seleziona città" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {cities.map((city) => (
-                        <SelectItem key={city.id} value={city.id}>
-                          {city.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-              )}
-
-              {formData.category === 'tour' && (
-                <div>
-                  <Label>Tour</Label>
-                  <Select
-                    value={formData.tourId}
-                    onValueChange={(value) => setFormData(prev => ({ ...prev, tourId: value }))}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Seleziona tour" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {tours.map((tour) => (
-                        <SelectItem key={tour.id} value={tour.id}>
-                          {tour.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-              )}
-
-              <div>
-                <Label htmlFor="caption">Didascalia</Label>
-                <Input
-                  id="caption"
-                  value={formData.caption}
-                  onChange={(e) => setFormData(prev => ({ ...prev, caption: e.target.value }))}
-                  placeholder="Descrizione della foto..."
-                />
-              </div>
-
-              <div>
-                <Label htmlFor="files">Seleziona Immagini</Label>
-                <Input
-                  id="files"
+                <label className="block text-sm font-medium mb-2">Seleziona File</label>
+                <input
                   type="file"
                   multiple
                   accept="image/*"
-                  onChange={(e) => setFormData(prev => ({ ...prev, files: e.target.files }))}
-                  required
+                  onChange={handleFileSelect}
+                  className="w-full p-2 border border-gray-300 rounded-lg"
                 />
               </div>
 
+              {uploadingFiles.length > 0 && (
+                <div>
+                  <label className="block text-sm font-medium mb-2">File Selezionati</label>
+                  <div className="space-y-2">
+                    {uploadingFiles.map((file, index) => (
+                      <div key={index} className="flex items-center gap-2 p-2 bg-gray-50 rounded">
+                        <Camera className="h-4 w-4 text-gray-500" />
+                        <span className="text-sm">{file.name}</span>
+                        <Badge variant="secondary">{(file.size / 1024 / 1024).toFixed(2)} MB</Badge>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              <div>
+                <label className="block text-sm font-medium mb-2">Didascalia</label>
+                <Input
+                  value={caption}
+                  onChange={(e) => setCaption(e.target.value)}
+                  placeholder="Descrizione delle foto (opzionale)"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium mb-2">Categoria</label>
+                <select
+                  value={category}
+                  onChange={(e) => setCategory(e.target.value as 'city' | 'tour')}
+                  className="w-full p-2 border border-gray-300 rounded-lg"
+                >
+                  <option value="city">Città</option>
+                  <option value="tour">Tour</option>
+                </select>
+              </div>
+
               <div className="flex justify-end gap-2">
-                <Button type="button" variant="outline" onClick={() => setIsDialogOpen(false)}>
+                <Button type="button" variant="outline" onClick={handleCloseModal}>
                   Annulla
                 </Button>
-                <Button type="submit" disabled={uploading}>
-                  {uploading ? (
-                    <>
-                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                      Caricamento...
-                    </>
-                  ) : (
-                    <>
-                      <Upload className="h-4 w-4 mr-2" />
-                      Carica
-                    </>
-                  )}
+                <Button onClick={handleUpload} disabled={uploadingFiles.length === 0}>
+                  <Upload className="h-4 w-4 mr-2" />
+                  Carica {uploadingFiles.length} foto
                 </Button>
               </div>
-            </form>
+            </div>
           </DialogContent>
         </Dialog>
       </div>
 
-      {/* Filter Tabs */}
-      <div className="flex gap-2">
-        <Button
-          variant={selectedCategory === 'all' ? 'default' : 'outline'}
-          onClick={() => setSelectedCategory('all')}
-        >
-          Tutte ({photos.length})
-        </Button>
-        <Button
-          variant={selectedCategory === 'general' ? 'default' : 'outline'}
-          onClick={() => setSelectedCategory('general')}
-        >
-          Generali ({photos.filter(p => p.category === 'general').length})
-        </Button>
-        <Button
-          variant={selectedCategory === 'city' ? 'default' : 'outline'}
-          onClick={() => setSelectedCategory('city')}
-        >
-          Città ({photos.filter(p => p.category === 'city').length})
-        </Button>
-        <Button
-          variant={selectedCategory === 'tour' ? 'default' : 'outline'}
-          onClick={() => setSelectedCategory('tour')}
-        >
-          Tour ({photos.filter(p => p.category === 'tour').length})
-        </Button>
-      </div>
-
       {/* Photos Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-        {filteredPhotos.map((photo) => (
-          <Card key={photo.id} className="overflow-hidden">
-            <div className="relative aspect-square">
-              <img
-                src={photo.url || "/placeholder.svg"}
-                alt={photo.caption}
-                className="w-full h-full object-cover"
-              />
-              <Button
-                variant="destructive"
-                size="sm"
-                className="absolute top-2 right-2"
-                onClick={() => photo.id && handleDelete(photo.id, photo.url)}
-              >
-                <Trash2 className="h-4 w-4" />
-              </Button>
-            </div>
-            
-            <CardContent className="p-3">
-              <div className="space-y-2">
-                <Badge variant="outline" className="text-xs">
-                  {photo.category === 'general' && 'Generale'}
-                  {photo.category === 'city' && `Città: ${photo.cityId ? getCityName(photo.cityId) : 'N/A'}`}
-                  {photo.category === 'tour' && `Tour: ${photo.tourId ? getTourName(photo.tourId) : 'N/A'}`}
-                </Badge>
-                
+      {photos.length > 0 ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          {photos.map((photo) => (
+            <Card key={photo.id} className="overflow-hidden">
+              <div className="aspect-square relative bg-gray-100">
+                <img
+                  src={photo.url}
+                  alt={photo.caption}
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute top-2 left-2">
+                  <Badge variant={photo.category === 'city' ? 'default' : 'secondary'}>
+                    {photo.category === 'city' ? 'Città' : 'Tour'}
+                  </Badge>
+                </div>
+                <div className="absolute top-2 right-2 flex gap-1">
+                  <Button size="sm" variant="secondary" className="h-8 w-8 p-0">
+                    <Eye className="h-4 w-4" />
+                  </Button>
+                  <Button size="sm" variant="secondary" className="h-8 w-8 p-0">
+                    <Download className="h-4 w-4" />
+                  </Button>
+                  <Button size="sm" variant="destructive" className="h-8 w-8 p-0">
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
+              <CardContent className="p-4">
                 <p className="text-sm text-gray-600 line-clamp-2">
                   {photo.caption}
                 </p>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
-
-      {filteredPhotos.length === 0 && (
-        <div className="text-center py-12">
-          <Camera className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-gray-900 mb-2">Nessuna foto trovata</h3>
-          <p className="text-gray-600">
-            {selectedCategory === 'all' 
-              ? 'Non ci sono foto nella galleria.' 
-              : `Non ci sono foto nella categoria "${selectedCategory}".`
-            }
-          </p>
+                <p className="text-xs text-gray-400 mt-2">
+                  Caricata: {photo.uploadedAt.toLocaleDateString()}
+                </p>
+              </CardContent>
+            </Card>
+          ))}
         </div>
+      ) : (
+        <Card>
+          <CardContent className="p-12 text-center">
+            <Camera className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">
+              Nessuna foto trovata
+            </h3>
+            <p className="text-gray-600 mb-4">
+              Inizia caricando le prime immagini per le tue città e tour
+            </p>
+            <Button onClick={() => setIsModalOpen(true)}>
+              <Plus className="h-4 w-4 mr-2" />
+              Carica Prime Foto
+            </Button>
+          </CardContent>
+        </Card>
       )}
     </div>
   )

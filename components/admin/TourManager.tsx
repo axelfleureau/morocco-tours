@@ -3,27 +3,30 @@
 import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
+import { Textarea } from '@/components/ui/textarea'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
-import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Plus, Edit, Trash2, Package, Euro, Clock, X } from 'lucide-react'
-import { getTours, addTour, updateTour, deleteTour, getCities, uploadImage } from '@/lib/firebase-operations'
-import { useToast } from '@/hooks/use-toast'
+import { Plus, Edit, Trash2, Package, Eye, EyeOff, MapPin } from 'lucide-react'
+import { getTours, addTour, updateTour, deleteTour, getCities } from '@/lib/firebase-operations'
+import { toast } from 'react-hot-toast'
 
 interface Tour {
-  id?: string
+  id: string
   name: string
   description: string
   price: number
   duration: string
   cities: string[]
-  itinerary: string
   includes: string[]
   excludes: string[]
+  itinerary: string
   images: string[]
+  visible: boolean
+  category: string
+  createdAt: Date
+  updatedAt: Date
 }
 
 interface City {
@@ -31,25 +34,23 @@ interface City {
   name: string
 }
 
-export function TourManager() {
+export const TourManager = () => {
   const [tours, setTours] = useState<Tour[]>([])
   const [cities, setCities] = useState<City[]>([])
   const [loading, setLoading] = useState(true)
+  const [isModalOpen, setIsModalOpen] = useState(false)
   const [editingTour, setEditingTour] = useState<Tour | null>(null)
-  const [isDialogOpen, setIsDialogOpen] = useState(false)
-  const [uploading, setUploading] = useState(false)
-  const { toast } = useToast()
-
-  const [formData, setFormData] = useState<Tour>({
+  const [formData, setFormData] = useState({
     name: '',
     description: '',
-    price: 0,
+    price: '',
     duration: '',
-    cities: [],
+    cities: [] as string[],
+    includes: '',
+    excludes: '',
     itinerary: '',
-    includes: [],
-    excludes: [],
-    images: []
+    category: 'standard',
+    visible: true
   })
 
   useEffect(() => {
@@ -58,6 +59,7 @@ export function TourManager() {
 
   const loadData = async () => {
     try {
+      setLoading(true)
       const [toursData, citiesData] = await Promise.all([
         getTours(),
         getCities()
@@ -65,11 +67,8 @@ export function TourManager() {
       setTours(toursData)
       setCities(citiesData)
     } catch (error) {
-      toast({
-        title: "Errore",
-        description: "Impossibile caricare i dati",
-        variant: "destructive"
-      })
+      toast.error('Errore nel caricamento dei dati')
+      console.error('Error loading data:', error)
     } finally {
       setLoading(false)
     }
@@ -79,147 +78,101 @@ export function TourManager() {
     e.preventDefault()
     
     try {
-      if (editingTour?.id) {
-        await updateTour(editingTour.id, formData)
-        toast({
-          title: "Successo",
-          description: "Tour aggiornato con successo"
-        })
-      } else {
-        await addTour(formData)
-        toast({
-          title: "Successo",
-          description: "Tour aggiunto con successo"
-        })
+      const tourData = {
+        name: formData.name,
+        description: formData.description,
+        price: parseFloat(formData.price),
+        duration: formData.duration,
+        cities: formData.cities,
+        includes: formData.includes.split(',').map(i => i.trim()),
+        excludes: formData.excludes.split(',').map(e => e.trim()),
+        itinerary: formData.itinerary,
+        category: formData.category,
+        images: [],
+        visible: formData.visible,
+        createdAt: editingTour ? editingTour.createdAt : new Date(),
+        updatedAt: new Date()
       }
-      
-      setIsDialogOpen(false)
-      resetForm()
-      loadData()
-    } catch (error) {
-      toast({
-        title: "Errore",
-        description: "Operazione fallita",
-        variant: "destructive"
-      })
-    }
-  }
 
-  const handleDelete = async (id: string) => {
-    if (confirm('Sei sicuro di voler eliminare questo tour?')) {
-      try {
-        await deleteTour(id)
-        toast({
-          title: "Successo",
-          description: "Tour eliminato con successo"
-        })
-        loadData()
-      } catch (error) {
-        toast({
-          title: "Errore",
-          description: "Impossibile eliminare il tour",
-          variant: "destructive"
-        })
+      if (editingTour) {
+        await updateTour(editingTour.id, tourData)
+        toast.success('Tour aggiornato con successo!')
+      } else {
+        await addTour(tourData)
+        toast.success('Tour aggiunto con successo!')
       }
+
+      await loadData()
+      handleCloseModal()
+    } catch (error) {
+      toast.error('Errore nel salvataggio del tour')
+      console.error('Error saving tour:', error)
     }
   }
 
   const handleEdit = (tour: Tour) => {
     setEditingTour(tour)
-    setFormData(tour)
-    setIsDialogOpen(true)
+    setFormData({
+      name: tour.name,
+      description: tour.description,
+      price: tour.price.toString(),
+      duration: tour.duration,
+      cities: tour.cities,
+      includes: tour.includes.join(', '),
+      excludes: tour.excludes.join(', '),
+      itinerary: tour.itinerary,
+      category: tour.category,
+      visible: tour.visible
+    })
+    setIsModalOpen(true)
   }
 
-  const resetForm = () => {
+  const handleDelete = async (tourId: string) => {
+    if (!confirm('Sei sicuro di voler eliminare questo tour?')) return
+    
+    try {
+      await deleteTour(tourId)
+      toast.success('Tour eliminato con successo!')
+      await loadData()
+    } catch (error) {
+      toast.error('Errore nell\'eliminazione del tour')
+      console.error('Error deleting tour:', error)
+    }
+  }
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false)
+    setEditingTour(null)
     setFormData({
       name: '',
       description: '',
-      price: 0,
+      price: '',
       duration: '',
       cities: [],
+      includes: '',
+      excludes: '',
       itinerary: '',
-      includes: [],
-      excludes: [],
-      images: []
+      category: 'standard',
+      visible: true
     })
-    setEditingTour(null)
   }
 
-  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files
-    if (!files) return
-
-    setUploading(true)
+  const toggleVisibility = async (tour: Tour) => {
     try {
-      const uploadPromises = Array.from(files).map(file => 
-        uploadImage(file, `tours/${formData.name}`)
-      )
-      
-      const imageUrls = await Promise.all(uploadPromises)
-      setFormData(prev => ({
-        ...prev,
-        images: [...prev.images, ...imageUrls]
-      }))
-      
-      toast({
-        title: "Successo",
-        description: `${imageUrls.length} immagini caricate`
-      })
+      await updateTour(tour.id, { ...tour, visible: !tour.visible, updatedAt: new Date() })
+      toast.success(`Tour ${!tour.visible ? 'mostrato' : 'nascosto'}`)
+      await loadData()
     } catch (error) {
-      toast({
-        title: "Errore",
-        description: "Errore nel caricamento delle immagini",
-        variant: "destructive"
-      })
-    } finally {
-      setUploading(false)
+      toast.error('Errore nell\'aggiornamento della visibilità')
+      console.error('Error updating visibility:', error)
     }
   }
 
-  const removeImage = (index: number) => {
-    setFormData(prev => ({
-      ...prev,
-      images: prev.images.filter((_, i) => i !== index)
-    }))
-  }
-
-  const addInclude = () => {
-    const include = prompt('Cosa è incluso nel tour?')
-    if (include) {
-      setFormData(prev => ({
-        ...prev,
-        includes: [...prev.includes, include]
-      }))
-    }
-  }
-
-  const removeInclude = (index: number) => {
-    setFormData(prev => ({
-      ...prev,
-      includes: prev.includes.filter((_, i) => i !== index)
-    }))
-  }
-
-  const addExclude = () => {
-    const exclude = prompt('Cosa NON è incluso nel tour?')
-    if (exclude) {
-      setFormData(prev => ({
-        ...prev,
-        excludes: [...prev.excludes, exclude]
-      }))
-    }
-  }
-
-  const removeExclude = (index: number) => {
-    setFormData(prev => ({
-      ...prev,
-      excludes: prev.excludes.filter((_, i) => i !== index)
-    }))
-  }
-
-  const getCityName = (cityId: string) => {
-    const city = cities.find(c => c.id === cityId)
-    return city ? city.name : cityId
+  const getCityNames = (cityIds: string[]) => {
+    return cityIds.map(id => {
+      const city = cities.find(c => c.id === id)
+      return city ? city.name : 'Sconosciuta'
+    }).join(', ')
   }
 
   if (loading) {
@@ -235,13 +188,13 @@ export function TourManager() {
       <div className="flex justify-between items-center">
         <div>
           <h2 className="text-3xl font-bold text-gray-900">Gestione Tour</h2>
-          <p className="text-gray-600">Gestisci i pacchetti turistici</p>
+          <p className="text-gray-600">Gestisci i pacchetti turistici del Marocco</p>
         </div>
         
-        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
           <DialogTrigger asChild>
-            <Button onClick={resetForm}>
-              <Plus className="h-4 w-4 mr-2" />
+            <Button onClick={() => setIsModalOpen(true)} className="flex items-center gap-2">
+              <Plus className="h-4 w-4" />
               Aggiungi Tour
             </Button>
           </DialogTrigger>
@@ -256,173 +209,116 @@ export function TourManager() {
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <Label htmlFor="name">Nome Tour</Label>
+                  <label className="block text-sm font-medium mb-2">Nome Tour</label>
                   <Input
-                    id="name"
                     value={formData.name}
                     onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
+                    placeholder="Es. Desert Safari 3 Days"
                     required
                   />
                 </div>
                 
                 <div>
-                  <Label htmlFor="duration">Durata</Label>
+                  <label className="block text-sm font-medium mb-2">Categoria</label>
+                  <Select value={formData.category} onValueChange={(value) => setFormData(prev => ({ ...prev, category: value }))}>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="budget">Budget</SelectItem>
+                      <SelectItem value="standard">Standard</SelectItem>
+                      <SelectItem value="premium">Premium</SelectItem>
+                      <SelectItem value="luxury">Luxury</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium mb-2">Descrizione</label>
+                <Textarea
+                  value={formData.description}
+                  onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
+                  placeholder="Descrizione dettagliata del tour..."
+                  className="h-20"
+                  required
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium mb-2">Prezzo (€)</label>
                   <Input
-                    id="duration"
+                    type="number"
+                    step="0.01"
+                    value={formData.price}
+                    onChange={(e) => setFormData(prev => ({ ...prev, price: e.target.value }))}
+                    placeholder="299.00"
+                    required
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium mb-2">Durata</label>
+                  <Input
                     value={formData.duration}
                     onChange={(e) => setFormData(prev => ({ ...prev, duration: e.target.value }))}
-                    placeholder="es. 7 giorni / 6 notti"
+                    placeholder="3 giorni / 2 notti"
+                    required
                   />
                 </div>
               </div>
 
               <div>
-                <Label htmlFor="price">Prezzo (€)</Label>
-                <Input
-                  id="price"
-                  type="number"
-                  value={formData.price}
-                  onChange={(e) => setFormData(prev => ({ ...prev, price: parseInt(e.target.value) }))}
-                  required
-                />
-              </div>
-
-              <div>
-                <Label htmlFor="description">Descrizione</Label>
-                <Textarea
-                  id="description"
-                  value={formData.description}
-                  onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
-                  rows={3}
-                />
-              </div>
-
-              <div>
-                <Label htmlFor="itinerary">Itinerario Dettagliato</Label>
-                <Textarea
-                  id="itinerary"
-                  value={formData.itinerary}
-                  onChange={(e) => setFormData(prev => ({ ...prev, itinerary: e.target.value }))}
-                  rows={5}
-                  placeholder="Giorno 1: Arrivo a Marrakech..."
-                />
-              </div>
-
-              <div>
-                <Label>Città Incluse</Label>
-                <Select
-                  onValueChange={(value) => {
-                    if (!formData.cities.includes(value)) {
-                      setFormData(prev => ({
-                        ...prev,
-                        cities: [...prev.cities, value]
-                      }))
-                    }
-                  }}
-                >
+                <label className="block text-sm font-medium mb-2">Città Incluse</label>
+                <Select value={formData.cities[0] || ""} onValueChange={(value) => setFormData(prev => ({ ...prev, cities: value ? [value] : [] }))}>
                   <SelectTrigger>
                     <SelectValue placeholder="Seleziona città" />
                   </SelectTrigger>
                   <SelectContent>
-                    {cities.map((city) => (
+                    {cities.map(city => (
                       <SelectItem key={city.id} value={city.id}>
                         {city.name}
                       </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
-                <div className="flex flex-wrap gap-2 mt-2">
-                  {formData.cities.map((cityId, index) => (
-                    <Badge key={index} variant="secondary" className="flex items-center gap-1">
-                      {getCityName(cityId)}
-                      <X 
-                        className="h-3 w-3 cursor-pointer" 
-                        onClick={() => setFormData(prev => ({
-                          ...prev,
-                          cities: prev.cities.filter((_, i) => i !== index)
-                        }))}
-                      />
-                    </Badge>
-                  ))}
-                </div>
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <Label>Incluso nel Prezzo</Label>
-                  <div className="flex flex-wrap gap-2 mb-2">
-                    {formData.includes.map((include, index) => (
-                      <Badge key={index} variant="secondary" className="flex items-center gap-1">
-                        {include}
-                        <X 
-                          className="h-3 w-3 cursor-pointer" 
-                          onClick={() => removeInclude(index)}
-                        />
-                      </Badge>
-                    ))}
-                  </div>
-                  <Button type="button" variant="outline" onClick={addInclude}>
-                    <Plus className="h-4 w-4 mr-2" />
-                    Aggiungi Inclusione
-                  </Button>
+                  <label className="block text-sm font-medium mb-2">Include (separato da virgola)</label>
+                  <Textarea
+                    value={formData.includes}
+                    onChange={(e) => setFormData(prev => ({ ...prev, includes: e.target.value }))}
+                    placeholder="Transport 4x4, Guide esperta, Pernottamenti"
+                    className="h-20"
+                  />
                 </div>
-
+                
                 <div>
-                  <Label>Non Incluso</Label>
-                  <div className="flex flex-wrap gap-2 mb-2">
-                    {formData.excludes.map((exclude, index) => (
-                      <Badge key={index} variant="destructive" className="flex items-center gap-1">
-                        {exclude}
-                        <X 
-                          className="h-3 w-3 cursor-pointer" 
-                          onClick={() => removeExclude(index)}
-                        />
-                      </Badge>
-                    ))}
-                  </div>
-                  <Button type="button" variant="outline" onClick={addExclude}>
-                    <Plus className="h-4 w-4 mr-2" />
-                    Aggiungi Esclusione
-                  </Button>
+                  <label className="block text-sm font-medium mb-2">Esclude (separato da virgola)</label>
+                  <Textarea
+                    value={formData.excludes}
+                    onChange={(e) => setFormData(prev => ({ ...prev, excludes: e.target.value }))}
+                    placeholder="Voli, Bevande, Mance"
+                    className="h-20"
+                  />
                 </div>
               </div>
 
               <div>
-                <Label>Immagini</Label>
-                <div className="grid grid-cols-4 gap-2 mb-2">
-                  {formData.images.map((image, index) => (
-                    <div key={index} className="relative">
-                      <img 
-                        src={image || "/placeholder.svg"} 
-                        alt={`Tour ${index}`}
-                        className="w-full h-20 object-cover rounded"
-                      />
-                      <Button
-                        type="button"
-                        variant="destructive"
-                        size="sm"
-                        className="absolute top-1 right-1 h-6 w-6 p-0"
-                        onClick={() => removeImage(index)}
-                      >
-                        <X className="h-3 w-3" />
-                      </Button>
-                    </div>
-                  ))}
-                </div>
-                <div className="flex items-center gap-2">
-                  <Input
-                    type="file"
-                    multiple
-                    accept="image/*"
-                    onChange={handleImageUpload}
-                    disabled={uploading}
-                  />
-                  {uploading && <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>}
-                </div>
+                <label className="block text-sm font-medium mb-2">Itinerario</label>
+                <Textarea
+                  value={formData.itinerary}
+                  onChange={(e) => setFormData(prev => ({ ...prev, itinerary: e.target.value }))}
+                  placeholder="Giorno 1: Partenza da Marrakech..."
+                  className="h-32"
+                />
               </div>
 
               <div className="flex justify-end gap-2">
-                <Button type="button" variant="outline" onClick={() => setIsDialogOpen(false)}>
+                <Button type="button" variant="outline" onClick={handleCloseModal}>
                   Annulla
                 </Button>
                 <Button type="submit">
@@ -434,71 +330,111 @@ export function TourManager() {
         </Dialog>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {/* Tours Grid */}
+      <div className="grid gap-6">
         {tours.map((tour) => (
           <Card key={tour.id}>
-            <CardHeader>
+            <CardContent className="p-6">
               <div className="flex justify-between items-start">
-                <div>
-                  <CardTitle className="flex items-center gap-2">
-                    <Package className="h-5 w-5" />
-                    {tour.name}
-                  </CardTitle>
-                  <div className="flex items-center gap-4 mt-2">
-                    <div className="flex items-center gap-1 text-sm text-gray-600">
-                      <Euro className="h-4 w-4" />
-                      {tour.price}
+                <div className="flex-1">
+                  <div className="flex items-center gap-3 mb-2">
+                    <h3 className="text-xl font-semibold">{tour.name}</h3>
+                    <Badge variant={tour.visible ? "default" : "secondary"}>
+                      {tour.visible ? "Visibile" : "Nascosto"}
+                    </Badge>
+                    <Badge variant={
+                      tour.category === 'luxury' ? 'default' :
+                      tour.category === 'premium' ? 'secondary' :
+                      'outline'
+                    }>
+                      {tour.category}
+                    </Badge>
+                  </div>
+                  
+                  <p className="text-gray-600 mb-3">{tour.description}</p>
+                  
+                  <div className="grid grid-cols-2 gap-4 text-sm text-gray-500 mb-3">
+                    <div>
+                      <strong>Prezzo:</strong> €{tour.price}
                     </div>
-                    <div className="flex items-center gap-1 text-sm text-gray-600">
-                      <Clock className="h-4 w-4" />
-                      {tour.duration}
+                    <div>
+                      <strong>Durata:</strong> {tour.duration}
+                    </div>
+                    <div className="col-span-2">
+                      <strong>Città:</strong> {getCityNames(tour.cities)}
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4 text-sm">
+                    <div>
+                      <strong className="text-green-600">Include:</strong>
+                      <ul className="list-disc list-inside text-gray-600">
+                        {tour.includes.slice(0, 3).map((item, index) => (
+                          <li key={index}>{item}</li>
+                        ))}
+                        {tour.includes.length > 3 && <li>...e altro</li>}
+                      </ul>
+                    </div>
+                    <div>
+                      <strong className="text-red-600">Esclude:</strong>
+                      <ul className="list-disc list-inside text-gray-600">
+                        {tour.excludes.slice(0, 3).map((item, index) => (
+                          <li key={index}>{item}</li>
+                        ))}
+                        {tour.excludes.length > 3 && <li>...e altro</li>}
+                      </ul>
                     </div>
                   </div>
                 </div>
-                <div className="flex gap-1">
+                
+                <div className="flex items-center gap-2">
                   <Button
-                    variant="ghost"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => toggleVisibility(tour)}
+                  >
+                    {tour.visible ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  </Button>
+                  
+                  <Button
+                    variant="outline"
                     size="sm"
                     onClick={() => handleEdit(tour)}
                   >
                     <Edit className="h-4 w-4" />
                   </Button>
+                  
                   <Button
-                    variant="ghost"
+                    variant="destructive"
                     size="sm"
-                    onClick={() => tour.id && handleDelete(tour.id)}
+                    onClick={() => handleDelete(tour.id)}
                   >
                     <Trash2 className="h-4 w-4" />
                   </Button>
-                </div>
-              </div>
-            </CardHeader>
-            
-            <CardContent>
-              <p className="text-sm text-gray-600 mb-3">{tour.description}</p>
-              
-              <div className="space-y-2">
-                <div className="flex flex-wrap gap-1">
-                  {tour.cities.slice(0, 3).map((cityId, index) => (
-                    <Badge key={index} variant="outline" className="text-xs">
-                      {getCityName(cityId)}
-                    </Badge>
-                  ))}
-                  {tour.cities.length > 3 && (
-                    <Badge variant="outline" className="text-xs">
-                      +{tour.cities.length - 3}
-                    </Badge>
-                  )}
-                </div>
-                
-                <div className="text-xs text-gray-500">
-                  {tour.includes.length} inclusioni • {tour.images.length} immagini
                 </div>
               </div>
             </CardContent>
           </Card>
         ))}
       </div>
+
+      {tours.length === 0 && (
+        <Card>
+          <CardContent className="p-12 text-center">
+            <Package className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">
+              Nessun tour trovato
+            </h3>
+            <p className="text-gray-600 mb-4">
+              Inizia creando il primo pacchetto turistico
+            </p>
+            <Button onClick={() => setIsModalOpen(true)}>
+              <Plus className="h-4 w-4 mr-2" />
+              Aggiungi Primo Tour
+            </Button>
+          </CardContent>
+        </Card>
+      )}
     </div>
   )
 }

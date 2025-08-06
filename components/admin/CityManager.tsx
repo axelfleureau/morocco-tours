@@ -3,17 +3,16 @@
 import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
+import { Textarea } from '@/components/ui/textarea'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
-import { Label } from '@/components/ui/label'
-import { Plus, Edit, Trash2, MapPin, Upload, X } from 'lucide-react'
-import { getCities, addCity, updateCity, deleteCity, uploadImage } from '@/lib/firebase-operations'
-import { useToast } from '@/hooks/use-toast'
+import { Plus, Edit, Trash2, MapPin, Eye, EyeOff } from 'lucide-react'
+import { getCities, addCity, updateCity, deleteCity } from '@/lib/firebase-operations'
+import { toast } from 'react-hot-toast'
 
 interface City {
-  id?: string
+  id: string
   name: string
   description: string
   lat: number
@@ -21,24 +20,24 @@ interface City {
   attractions: string[]
   bestTime: string
   images: string[]
+  visible: boolean
+  createdAt: Date
+  updatedAt: Date
 }
 
-export function CityManager() {
+export const CityManager = () => {
   const [cities, setCities] = useState<City[]>([])
   const [loading, setLoading] = useState(true)
+  const [isModalOpen, setIsModalOpen] = useState(false)
   const [editingCity, setEditingCity] = useState<City | null>(null)
-  const [isDialogOpen, setIsDialogOpen] = useState(false)
-  const [uploading, setUploading] = useState(false)
-  const { toast } = useToast()
-
-  const [formData, setFormData] = useState<City>({
+  const [formData, setFormData] = useState({
     name: '',
     description: '',
-    lat: 0,
-    lng: 0,
-    attractions: [],
+    lat: '',
+    lng: '',
+    attractions: '',
     bestTime: '',
-    images: []
+    visible: true
   })
 
   useEffect(() => {
@@ -47,14 +46,12 @@ export function CityManager() {
 
   const loadCities = async () => {
     try {
+      setLoading(true)
       const citiesData = await getCities()
       setCities(citiesData)
     } catch (error) {
-      toast({
-        title: "Errore",
-        description: "Impossibile caricare le città",
-        variant: "destructive"
-      })
+      toast.error('Errore nel caricamento delle città')
+      console.error('Error loading cities:', error)
     } finally {
       setLoading(false)
     }
@@ -64,123 +61,85 @@ export function CityManager() {
     e.preventDefault()
     
     try {
-      if (editingCity?.id) {
-        await updateCity(editingCity.id, formData)
-        toast({
-          title: "Successo",
-          description: "Città aggiornata con successo"
-        })
-      } else {
-        await addCity(formData)
-        toast({
-          title: "Successo",
-          description: "Città aggiunta con successo"
-        })
+      const cityData = {
+        name: formData.name,
+        description: formData.description,
+        lat: parseFloat(formData.lat),
+        lng: parseFloat(formData.lng),
+        attractions: formData.attractions.split(',').map(a => a.trim()),
+        bestTime: formData.bestTime,
+        images: [],
+        visible: formData.visible,
+        createdAt: editingCity ? editingCity.createdAt : new Date(),
+        updatedAt: new Date()
       }
-      
-      setIsDialogOpen(false)
-      resetForm()
-      loadCities()
-    } catch (error) {
-      toast({
-        title: "Errore",
-        description: "Operazione fallita",
-        variant: "destructive"
-      })
-    }
-  }
 
-  const handleDelete = async (id: string) => {
-    if (confirm('Sei sicuro di voler eliminare questa città?')) {
-      try {
-        await deleteCity(id)
-        toast({
-          title: "Successo",
-          description: "Città eliminata con successo"
-        })
-        loadCities()
-      } catch (error) {
-        toast({
-          title: "Errore",
-          description: "Impossibile eliminare la città",
-          variant: "destructive"
-        })
+      if (editingCity) {
+        await updateCity(editingCity.id, cityData)
+        toast.success('Città aggiornata con successo!')
+      } else {
+        await addCity(cityData)
+        toast.success('Città aggiunta con successo!')
       }
+
+      await loadCities()
+      handleCloseModal()
+    } catch (error) {
+      toast.error('Errore nel salvataggio della città')
+      console.error('Error saving city:', error)
     }
   }
 
   const handleEdit = (city: City) => {
     setEditingCity(city)
-    setFormData(city)
-    setIsDialogOpen(true)
+    setFormData({
+      name: city.name,
+      description: city.description,
+      lat: city.lat.toString(),
+      lng: city.lng.toString(),
+      attractions: city.attractions.join(', '),
+      bestTime: city.bestTime,
+      visible: city.visible
+    })
+    setIsModalOpen(true)
   }
 
-  const resetForm = () => {
+  const handleDelete = async (cityId: string) => {
+    if (!confirm('Sei sicuro di voler eliminare questa città?')) return
+    
+    try {
+      await deleteCity(cityId)
+      toast.success('Città eliminata con successo!')
+      await loadCities()
+    } catch (error) {
+      toast.error('Errore nell\'eliminazione della città')
+      console.error('Error deleting city:', error)
+    }
+  }
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false)
+    setEditingCity(null)
     setFormData({
       name: '',
       description: '',
-      lat: 0,
-      lng: 0,
-      attractions: [],
+      lat: '',
+      lng: '',
+      attractions: '',
       bestTime: '',
-      images: []
+      visible: true
     })
-    setEditingCity(null)
   }
 
-  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files
-    if (!files) return
-
-    setUploading(true)
+  const toggleVisibility = async (city: City) => {
     try {
-      const uploadPromises = Array.from(files).map(file => 
-        uploadImage(file, `cities/${formData.name}`)
-      )
-      
-      const imageUrls = await Promise.all(uploadPromises)
-      setFormData(prev => ({
-        ...prev,
-        images: [...prev.images, ...imageUrls]
-      }))
-      
-      toast({
-        title: "Successo",
-        description: `${imageUrls.length} immagini caricate`
-      })
+      await updateCity(city.id, { ...city, visible: !city.visible, updatedAt: new Date() })
+      toast.success(`Città ${!city.visible ? 'mostrata' : 'nascosta'}`)
+      await loadCities()
     } catch (error) {
-      toast({
-        title: "Errore",
-        description: "Errore nel caricamento delle immagini",
-        variant: "destructive"
-      })
-    } finally {
-      setUploading(false)
+      toast.error('Errore nell\'aggiornamento della visibilità')
+      console.error('Error updating visibility:', error)
     }
-  }
-
-  const removeImage = (index: number) => {
-    setFormData(prev => ({
-      ...prev,
-      images: prev.images.filter((_, i) => i !== index)
-    }))
-  }
-
-  const addAttraction = () => {
-    const attraction = prompt('Inserisci una nuova attrazione:')
-    if (attraction) {
-      setFormData(prev => ({
-        ...prev,
-        attractions: [...prev.attractions, attraction]
-      }))
-    }
-  }
-
-  const removeAttraction = (index: number) => {
-    setFormData(prev => ({
-      ...prev,
-      attractions: prev.attractions.filter((_, i) => i !== index)
-    }))
   }
 
   if (loading) {
@@ -196,18 +155,18 @@ export function CityManager() {
       <div className="flex justify-between items-center">
         <div>
           <h2 className="text-3xl font-bold text-gray-900">Gestione Città</h2>
-          <p className="text-gray-600">Gestisci le città del Marocco</p>
+          <p className="text-gray-600">Gestisci le città del Marocco nel tuo catalogo</p>
         </div>
         
-        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
           <DialogTrigger asChild>
-            <Button onClick={resetForm}>
-              <Plus className="h-4 w-4 mr-2" />
+            <Button onClick={() => setIsModalOpen(true)} className="flex items-center gap-2">
+              <Plus className="h-4 w-4" />
               Aggiungi Città
             </Button>
           </DialogTrigger>
           
-          <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+          <DialogContent className="max-w-2xl">
             <DialogHeader>
               <DialogTitle>
                 {editingCity ? 'Modifica Città' : 'Aggiungi Nuova Città'}
@@ -217,117 +176,75 @@ export function CityManager() {
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <Label htmlFor="name">Nome Città</Label>
+                  <label className="block text-sm font-medium mb-2">Nome Città</label>
                   <Input
-                    id="name"
                     value={formData.name}
                     onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
+                    placeholder="Es. Marrakech"
                     required
                   />
                 </div>
                 
                 <div>
-                  <Label htmlFor="bestTime">Periodo Migliore</Label>
+                  <label className="block text-sm font-medium mb-2">Periodo Migliore</label>
                   <Input
-                    id="bestTime"
                     value={formData.bestTime}
                     onChange={(e) => setFormData(prev => ({ ...prev, bestTime: e.target.value }))}
-                    placeholder="es. Marzo - Maggio"
+                    placeholder="Es. Aprile - Ottobre"
+                    required
                   />
                 </div>
               </div>
 
               <div>
-                <Label htmlFor="description">Descrizione</Label>
+                <label className="block text-sm font-medium mb-2">Descrizione</label>
                 <Textarea
-                  id="description"
                   value={formData.description}
                   onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
-                  rows={3}
+                  placeholder="Descrizione dettagliata della città..."
+                  className="h-20"
+                  required
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <Label htmlFor="lat">Latitudine</Label>
+                  <label className="block text-sm font-medium mb-2">Latitudine</label>
                   <Input
-                    id="lat"
                     type="number"
                     step="any"
                     value={formData.lat}
-                    onChange={(e) => setFormData(prev => ({ ...prev, lat: parseFloat(e.target.value) }))}
+                    onChange={(e) => setFormData(prev => ({ ...prev, lat: e.target.value }))}
+                    placeholder="31.6295"
                     required
                   />
                 </div>
                 
                 <div>
-                  <Label htmlFor="lng">Longitudine</Label>
+                  <label className="block text-sm font-medium mb-2">Longitudine</label>
                   <Input
-                    id="lng"
                     type="number"
                     step="any"
                     value={formData.lng}
-                    onChange={(e) => setFormData(prev => ({ ...prev, lng: parseFloat(e.target.value) }))}
+                    onChange={(e) => setFormData(prev => ({ ...prev, lng: e.target.value }))}
+                    placeholder="-7.9811"
                     required
                   />
                 </div>
               </div>
 
               <div>
-                <Label>Attrazioni</Label>
-                <div className="flex flex-wrap gap-2 mb-2">
-                  {formData.attractions.map((attraction, index) => (
-                    <Badge key={index} variant="secondary" className="flex items-center gap-1">
-                      {attraction}
-                      <X 
-                        className="h-3 w-3 cursor-pointer" 
-                        onClick={() => removeAttraction(index)}
-                      />
-                    </Badge>
-                  ))}
-                </div>
-                <Button type="button" variant="outline" onClick={addAttraction}>
-                  <Plus className="h-4 w-4 mr-2" />
-                  Aggiungi Attrazione
-                </Button>
-              </div>
-
-              <div>
-                <Label>Immagini</Label>
-                <div className="grid grid-cols-3 gap-2 mb-2">
-                  {formData.images.map((image, index) => (
-                    <div key={index} className="relative">
-                      <img 
-                        src={image || "/placeholder.svg"} 
-                        alt={`City ${index}`}
-                        className="w-full h-20 object-cover rounded"
-                      />
-                      <Button
-                        type="button"
-                        variant="destructive"
-                        size="sm"
-                        className="absolute top-1 right-1 h-6 w-6 p-0"
-                        onClick={() => removeImage(index)}
-                      >
-                        <X className="h-3 w-3" />
-                      </Button>
-                    </div>
-                  ))}
-                </div>
-                <div className="flex items-center gap-2">
-                  <Input
-                    type="file"
-                    multiple
-                    accept="image/*"
-                    onChange={handleImageUpload}
-                    disabled={uploading}
-                  />
-                  {uploading && <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>}
-                </div>
+                <label className="block text-sm font-medium mb-2">Attrazioni (separate da virgola)</label>
+                <Textarea
+                  value={formData.attractions}
+                  onChange={(e) => setFormData(prev => ({ ...prev, attractions: e.target.value }))}
+                  placeholder="Jemaa el-Fnaa, Medina, Giardini Majorelle"
+                  className="h-16"
+                />
               </div>
 
               <div className="flex justify-end gap-2">
-                <Button type="button" variant="outline" onClick={() => setIsDialogOpen(false)}>
+                <Button type="button" variant="outline" onClick={handleCloseModal}>
                   Annulla
                 </Button>
                 <Button type="submit">
@@ -339,66 +256,83 @@ export function CityManager() {
         </Dialog>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {/* Cities Grid */}
+      <div className="grid gap-6">
         {cities.map((city) => (
           <Card key={city.id}>
-            <CardHeader>
+            <CardContent className="p-6">
               <div className="flex justify-between items-start">
-                <div>
-                  <CardTitle className="flex items-center gap-2">
-                    <MapPin className="h-5 w-5" />
-                    {city.name}
-                  </CardTitle>
-                  <p className="text-sm text-gray-600 mt-1">{city.bestTime}</p>
+                <div className="flex-1">
+                  <div className="flex items-center gap-3 mb-2">
+                    <h3 className="text-xl font-semibold">{city.name}</h3>
+                    <Badge variant={city.visible ? "default" : "secondary"}>
+                      {city.visible ? "Visibile" : "Nascosta"}
+                    </Badge>
+                  </div>
+                  
+                  <p className="text-gray-600 mb-3">{city.description}</p>
+                  
+                  <div className="grid grid-cols-2 gap-4 text-sm text-gray-500">
+                    <div>
+                      <strong>Coordinate:</strong> {city.lat}, {city.lng}
+                    </div>
+                    <div>
+                      <strong>Periodo migliore:</strong> {city.bestTime}
+                    </div>
+                    <div className="col-span-2">
+                      <strong>Attrazioni:</strong> {city.attractions.join(', ')}
+                    </div>
+                  </div>
                 </div>
-                <div className="flex gap-1">
+                
+                <div className="flex items-center gap-2">
                   <Button
-                    variant="ghost"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => toggleVisibility(city)}
+                  >
+                    {city.visible ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  </Button>
+                  
+                  <Button
+                    variant="outline"
                     size="sm"
                     onClick={() => handleEdit(city)}
                   >
                     <Edit className="h-4 w-4" />
                   </Button>
+                  
                   <Button
-                    variant="ghost"
+                    variant="destructive"
                     size="sm"
-                    onClick={() => city.id && handleDelete(city.id)}
+                    onClick={() => handleDelete(city.id)}
                   >
                     <Trash2 className="h-4 w-4" />
                   </Button>
-                </div>
-              </div>
-            </CardHeader>
-            
-            <CardContent>
-              <p className="text-sm text-gray-600 mb-3">{city.description}</p>
-              
-              <div className="space-y-2">
-                <div className="text-xs text-gray-500">
-                  Coordinate: {city.lat.toFixed(4)}, {city.lng.toFixed(4)}
-                </div>
-                
-                <div className="flex flex-wrap gap-1">
-                  {city.attractions.slice(0, 3).map((attraction, index) => (
-                    <Badge key={index} variant="outline" className="text-xs">
-                      {attraction}
-                    </Badge>
-                  ))}
-                  {city.attractions.length > 3 && (
-                    <Badge variant="outline" className="text-xs">
-                      +{city.attractions.length - 3}
-                    </Badge>
-                  )}
-                </div>
-                
-                <div className="text-xs text-gray-500">
-                  {city.images.length} immagini
                 </div>
               </div>
             </CardContent>
           </Card>
         ))}
       </div>
+
+      {cities.length === 0 && (
+        <Card>
+          <CardContent className="p-12 text-center">
+            <MapPin className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">
+              Nessuna città trovata
+            </h3>
+            <p className="text-gray-600 mb-4">
+              Inizia aggiungendo la prima città al tuo catalogo
+            </p>
+            <Button onClick={() => setIsModalOpen(true)}>
+              <Plus className="h-4 w-4 mr-2" />
+              Aggiungi Prima Città
+            </Button>
+          </CardContent>
+        </Card>
+      )}
     </div>
   )
 }

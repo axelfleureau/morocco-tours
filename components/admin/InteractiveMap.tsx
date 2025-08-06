@@ -3,8 +3,9 @@
 import { useState, useEffect } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { MapPin, Users, Package, Camera } from 'lucide-react'
-import { getCities, getTours } from '@/lib/firebase-operations'
+import { MapPin, Navigation, Layers } from 'lucide-react'
+import { getCities } from '@/lib/firebase-operations'
+import { toast } from 'react-hot-toast'
 
 interface City {
   id: string
@@ -13,60 +14,38 @@ interface City {
   lat: number
   lng: number
   attractions: string[]
-  bestTime: string
+  visible: boolean
 }
 
-interface Tour {
-  id: string
-  name: string
-  cities: string[]
-  price: number
-  duration: string
-}
-
-export function InteractiveMap() {
+export const InteractiveMap = () => {
   const [cities, setCities] = useState<City[]>([])
-  const [tours, setTours] = useState<Tour[]>([])
-  const [selectedCity, setSelectedCity] = useState<City | null>(null)
   const [loading, setLoading] = useState(true)
+  const [selectedCity, setSelectedCity] = useState<City | null>(null)
 
   useEffect(() => {
-    loadData()
+    loadCities()
   }, [])
 
-  const loadData = async () => {
+  const loadCities = async () => {
     try {
-      const [citiesData, toursData] = await Promise.all([
-        getCities(),
-        getTours()
-      ])
+      setLoading(true)
+      const citiesData = await getCities()
       setCities(citiesData)
-      setTours(toursData)
     } catch (error) {
-      console.error('Error loading data:', error)
+      toast.error('Errore nel caricamento delle città')
+      console.error('Error loading cities:', error)
     } finally {
       setLoading(false)
     }
   }
 
-  const getToursForCity = (cityId: string) => {
-    return tours.filter(tour => tour.cities.includes(cityId))
-  }
-
-  // Morocco bounds
+  // Coordinate del Marocco per centrare la mappa
   const moroccoCenter = { lat: 31.7917, lng: -7.0926 }
   const mapBounds = {
-    north: 35.9224,
-    south: 27.6625,
-    east: -0.9910,
-    west: -13.1681
-  }
-
-  // Convert coordinates to SVG positions
-  const coordToSVG = (lat: number, lng: number) => {
-    const x = ((lng - mapBounds.west) / (mapBounds.east - mapBounds.west)) * 800
-    const y = ((mapBounds.north - lat) / (mapBounds.north - mapBounds.south)) * 600
-    return { x, y }
+    north: 36.0,
+    south: 27.0,
+    east: -1.0,
+    west: -17.0
   }
 
   if (loading) {
@@ -81,216 +60,198 @@ export function InteractiveMap() {
     <div className="space-y-6">
       <div>
         <h2 className="text-3xl font-bold text-gray-900">Mappa Interattiva</h2>
-        <p className="text-gray-600">Visualizza città e tour sulla mappa del Marocco</p>
+        <p className="text-gray-600">Visualizza le città del Marocco sulla mappa</p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Map */}
-        <div className="lg:col-span-2">
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+        {/* Mappa Placeholder */}
+        <div className="lg:col-span-3">
           <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <MapPin className="h-5 w-5" />
-                Mappa del Marocco
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="relative bg-blue-50 rounded-lg overflow-hidden">
-                <svg
-                  viewBox="0 0 800 600"
-                  className="w-full h-96"
-                  style={{ background: 'linear-gradient(to bottom, #e0f2fe 0%, #f3e5ab 100%)' }}
-                >
-                  {/* Morocco outline (simplified) */}
-                  <path
-                    d="M100 200 L200 180 L300 160 L400 150 L500 140 L600 145 L700 150 L750 160 L780 180 L790 220 L785 280 L770 340 L750 400 L720 450 L680 480 L620 500 L550 510 L480 515 L400 520 L320 525 L250 530 L180 520 L120 500 L80 470 L60 430 L50 380 L55 320 L70 260 L100 200 Z"
-                    fill="#fef3c7"
-                    stroke="#d97706"
-                    strokeWidth="2"
-                  />
+            <CardContent className="p-0">
+              <div className="relative h-96 lg:h-[600px] bg-gradient-to-br from-blue-50 to-green-50 rounded-lg overflow-hidden">
+                {/* Sfondo mappa stilizzato */}
+                <div className="absolute inset-0 bg-gradient-to-br from-blue-100 via-green-50 to-yellow-50"></div>
+                
+                {/* Griglia per simulare una mappa */}
+                <div className="absolute inset-0 opacity-10">
+                  <svg width="100%" height="100%">
+                    <defs>
+                      <pattern id="grid" width="50" height="50" patternUnits="userSpaceOnUse">
+                        <path d="M 50 0 L 0 0 0 50" fill="none" stroke="#000" strokeWidth="1"/>
+                      </pattern>
+                    </defs>
+                    <rect width="100%" height="100%" fill="url(#grid)" />
+                  </svg>
+                </div>
+
+                {/* Marker delle città */}
+                {cities.map((city, index) => {
+                  // Calcola la posizione relativa basata sulle coordinate reali
+                  const x = ((city.lng - mapBounds.west) / (mapBounds.east - mapBounds.west)) * 100
+                  const y = ((mapBounds.north - city.lat) / (mapBounds.north - mapBounds.south)) * 100
                   
-                  {/* Cities */}
-                  {cities.map((city) => {
-                    const pos = coordToSVG(city.lat, city.lng)
-                    const cityTours = getToursForCity(city.id!)
-                    
-                    return (
-                      <g key={city.id}>
-                        {/* City marker */}
-                        <circle
-                          cx={pos.x}
-                          cy={pos.y}
-                          r="8"
-                          fill={selectedCity?.id === city.id ? "#dc2626" : "#2563eb"}
-                          stroke="white"
-                          strokeWidth="2"
-                          className="cursor-pointer hover:r-10 transition-all"
-                          onClick={() => setSelectedCity(selectedCity?.id === city.id ? null : city)}
-                        />
+                  return (
+                    <div
+                      key={city.id}
+                      className={`absolute transform -translate-x-1/2 -translate-y-1/2 cursor-pointer transition-all duration-200 hover:scale-110 ${
+                        selectedCity?.id === city.id ? 'scale-125 z-20' : 'z-10'
+                      }`}
+                      style={{
+                        left: `${Math.max(5, Math.min(95, x))}%`,
+                        top: `${Math.max(5, Math.min(95, y))}%`,
+                      }}
+                      onClick={() => setSelectedCity(city)}
+                    >
+                      {/* Marker */}
+                      <div className={`relative ${city.visible ? '' : 'opacity-50'}`}>
+                        <div className={`w-8 h-8 rounded-full border-3 border-white shadow-lg flex items-center justify-center ${
+                          city.visible 
+                            ? 'bg-blue-500 text-white' 
+                            : 'bg-gray-400 text-white'
+                        }`}>
+                          <MapPin className="h-4 w-4" />
+                        </div>
                         
-                        {/* City label */}
-                        <text
-                          x={pos.x}
-                          y={pos.y - 15}
-                          textAnchor="middle"
-                          className="text-xs font-medium fill-gray-800 pointer-events-none"
-                        >
-                          {city.name}
-                        </text>
-                        
-                        {/* Tour count badge */}
-                        {cityTours.length > 0 && (
-                          <circle
-                            cx={pos.x + 12}
-                            cy={pos.y - 8}
-                            r="6"
-                            fill="#dc2626"
-                            className="pointer-events-none"
-                          />
-                        )}
-                        {cityTours.length > 0 && (
-                          <text
-                            x={pos.x + 12}
-                            y={pos.y - 5}
-                            textAnchor="middle"
-                            className="text-xs font-bold fill-white pointer-events-none"
-                          >
-                            {cityTours.length}
-                          </text>
-                        )}
-                      </g>
-                    )
-                  })}
-                </svg>
-              </div>
-              
-              <div className="mt-4 flex items-center gap-4 text-sm text-gray-600">
-                <div className="flex items-center gap-2">
-                  <div className="w-4 h-4 bg-blue-600 rounded-full"></div>
-                  <span>Città</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-4 h-4 bg-red-600 rounded-full"></div>
-                  <span>Selezionata</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-4 h-4 bg-red-600 rounded-full text-white text-xs flex items-center justify-center">
-                    N
+                        {/* Tooltip */}
+                        <div className={`absolute top-full left-1/2 transform -translate-x-1/2 mt-2 ${
+                          selectedCity?.id === city.id ? 'block' : 'hidden group-hover:block'
+                        }`}>
+                          <div className="bg-black text-white text-xs rounded px-2 py-1 whitespace-nowrap">
+                            {city.name}
+                            <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-b-4 border-l-transparent border-r-transparent border-b-black"></div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )
+                })}
+
+                {/* Legenda */}
+                <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm rounded-lg p-3 shadow-lg">
+                  <div className="flex items-center gap-2 text-sm">
+                    <Layers className="h-4 w-4 text-gray-600" />
+                    <span className="font-medium">Legenda</span>
                   </div>
-                  <span>Tour disponibili</span>
+                  <div className="mt-2 space-y-1 text-xs">
+                    <div className="flex items-center gap-2">
+                      <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
+                      <span>Città Visibili</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="w-3 h-3 bg-gray-400 rounded-full"></div>
+                      <span>Città Nascoste</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Contatore città */}
+                <div className="absolute bottom-4 left-4 bg-white/90 backdrop-blur-sm rounded-lg p-3 shadow-lg">
+                  <div className="flex items-center gap-2 text-sm">
+                    <Navigation className="h-4 w-4 text-gray-600" />
+                    <span className="font-medium">{cities.length} città totali</span>
+                  </div>
+                  <div className="text-xs text-gray-600 mt-1">
+                    {cities.filter(c => c.visible).length} visibili
+                  </div>
+                </div>
+
+                {/* Messaggio per mappa reale */}
+                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-blue-100 border border-blue-300 rounded-lg p-4 max-w-sm text-center">
+                  <MapPin className="h-8 w-8 text-blue-600 mx-auto mb-2" />
+                  <p className="text-sm text-blue-800 mb-2">
+                    <strong>Mappa Simulata</strong>
+                  </p>
+                  <p className="text-xs text-blue-700">
+                    Per una mappa reale, integra Google Maps, Mapbox o Leaflet. 
+                    I marker sono posizionati in base alle coordinate GPS delle città.
+                  </p>
                 </div>
               </div>
             </CardContent>
           </Card>
         </div>
 
-        {/* City Details */}
-        <div>
-          {selectedCity ? (
+        {/* Sidebar con dettagli */}
+        <div className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-lg">Città sulla Mappa</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                {cities.map((city) => (
+                  <div
+                    key={city.id}
+                    className={`p-3 border rounded-lg cursor-pointer transition-colors ${
+                      selectedCity?.id === city.id 
+                        ? 'bg-blue-50 border-blue-300' 
+                        : 'bg-gray-50 border-gray-200 hover:bg-gray-100'
+                    }`}
+                    onClick={() => setSelectedCity(city)}
+                  >
+                    <div className="flex items-start justify-between">
+                      <div className="flex-1">
+                        <h4 className="font-medium text-sm">{city.name}</h4>
+                        <p className="text-xs text-gray-600 mt-1">
+                          {city.lat.toFixed(4)}, {city.lng.toFixed(4)}
+                        </p>
+                        <p className="text-xs text-gray-500 mt-1 line-clamp-2">
+                          {city.description}
+                        </p>
+                      </div>
+                      <Badge variant={city.visible ? "default" : "secondary"} className="text-xs">
+                        {city.visible ? "Visibile" : "Nascosta"}
+                      </Badge>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+
+          {selectedCity && (
             <Card>
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <MapPin className="h-5 w-5" />
-                  {selectedCity.name}
-                </CardTitle>
+                <CardTitle className="text-lg">Dettagli Città</CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <p className="text-sm text-gray-600">
-                  {selectedCity.description}
-                </p>
-                
-                <div className="space-y-2">
-                  <h4 className="font-medium">Coordinate</h4>
-                  <p className="text-sm text-gray-600">
-                    {selectedCity.lat.toFixed(4)}, {selectedCity.lng.toFixed(4)}
-                  </p>
-                </div>
-                
-                <div className="space-y-2">
-                  <h4 className="font-medium">Periodo Migliore</h4>
-                  <p className="text-sm text-gray-600">{selectedCity.bestTime}</p>
-                </div>
-                
-                <div className="space-y-2">
-                  <h4 className="font-medium">Attrazioni</h4>
-                  <div className="flex flex-wrap gap-1">
-                    {selectedCity.attractions.map((attraction, index) => (
-                      <Badge key={index} variant="outline" className="text-xs">
-                        {attraction}
-                      </Badge>
-                    ))}
+              <CardContent>
+                <div className="space-y-3">
+                  <div>
+                    <h4 className="font-semibold text-lg">{selectedCity.name}</h4>
+                    <p className="text-sm text-gray-600 mt-1">{selectedCity.description}</p>
                   </div>
-                </div>
-                
-                <div className="space-y-2">
-                  <h4 className="font-medium">Tour Disponibili</h4>
-                  {getToursForCity(selectedCity.id!).map((tour) => (
-                    <div key={tour.id} className="p-2 bg-gray-50 rounded">
-                      <div className="font-medium text-sm">{tour.name}</div>
-                      <div className="text-xs text-gray-600">
-                        €{tour.price} • {tour.duration}
+                  
+                  <div>
+                    <h5 className="font-medium text-sm mb-2">Coordinate GPS</h5>
+                    <p className="text-xs font-mono bg-gray-100 p-2 rounded">
+                      {selectedCity.lat}, {selectedCity.lng}
+                    </p>
+                  </div>
+
+                  {selectedCity.attractions.length > 0 && (
+                    <div>
+                      <h5 className="font-medium text-sm mb-2">Attrazioni</h5>
+                      <div className="space-y-1">
+                        {selectedCity.attractions.map((attraction, index) => (
+                          <div key={index} className="text-xs text-gray-600 flex items-center gap-2">
+                            <div className="w-1.5 h-1.5 bg-blue-500 rounded-full"></div>
+                            {attraction}
+                          </div>
+                        ))}
                       </div>
                     </div>
-                  ))}
-                  {getToursForCity(selectedCity.id!).length === 0 && (
-                    <p className="text-sm text-gray-500">Nessun tour disponibile</p>
                   )}
+
+                  <div className="pt-2 border-t">
+                    <Badge variant={selectedCity.visible ? "default" : "secondary"}>
+                      {selectedCity.visible ? "Città Visibile" : "Città Nascosta"}
+                    </Badge>
+                  </div>
                 </div>
-              </CardContent>
-            </Card>
-          ) : (
-            <Card>
-              <CardContent className="p-6 text-center">
-                <MapPin className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                <h3 className="font-medium text-gray-900 mb-2">Seleziona una città</h3>
-                <p className="text-sm text-gray-600">
-                  Clicca su una città nella mappa per vedere i dettagli
-                </p>
               </CardContent>
             </Card>
           )}
         </div>
-      </div>
-
-      {/* Statistics */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <Card>
-          <CardContent className="p-4 flex items-center gap-3">
-            <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-              <MapPin className="h-5 w-5 text-blue-600" />
-            </div>
-            <div>
-              <div className="text-2xl font-bold">{cities.length}</div>
-              <div className="text-sm text-gray-600">Città Totali</div>
-            </div>
-          </CardContent>
-        </Card>
-        
-        <Card>
-          <CardContent className="p-4 flex items-center gap-3">
-            <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
-              <Package className="h-5 w-5 text-green-600" />
-            </div>
-            <div>
-              <div className="text-2xl font-bold">{tours.length}</div>
-              <div className="text-sm text-gray-600">Tour Totali</div>
-            </div>
-          </CardContent>
-        </Card>
-        
-        <Card>
-          <CardContent className="p-4 flex items-center gap-3">
-            <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
-              <Users className="h-5 w-5 text-purple-600" />
-            </div>
-            <div>
-              <div className="text-2xl font-bold">
-                {cities.reduce((acc, city) => acc + getToursForCity(city.id!).length, 0)}
-              </div>
-              <div className="text-sm text-gray-600">Connessioni Città-Tour</div>
-            </div>
-          </CardContent>
-        </Card>
       </div>
     </div>
   )
