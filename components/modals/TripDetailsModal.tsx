@@ -1,0 +1,236 @@
+"use client"
+
+import { useState } from "react"
+import { X, Clock, Users, MapPin, Star, Check, Calendar, Phone, Mail } from 'lucide-react'
+import Link from "next/link"
+
+interface TripDetailsModalProps {
+  trip: any
+  isOpen: boolean
+  onClose: () => void
+}
+
+export default function TripDetailsModal({ trip, isOpen, onClose }: TripDetailsModalProps) {
+  if (!isOpen || !trip) return null
+
+  return (
+    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+      <div className="bg-white dark:bg-gray-800 rounded-3xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+        <div className="relative">
+          <img
+            src={trip.image || "/placeholder.svg?height=300&width=800"}
+            alt={trip.title}
+            className="w-full h-64 object-cover rounded-t-3xl"
+          />
+          <button
+            onClick={onClose}
+            className="absolute top-4 right-4 w-10 h-10 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white transition-colors"
+          >
+            <X className="w-5 h-5 text-gray-900" />
+          </button>
+          {trip.badge && (
+            <div className="absolute bottom-4 left-4">
+              <span className="bg-orange-500 text-white px-4 py-2 rounded-full font-semibold">
+                {trip.badge}
+              </span>
+            </div>
+          )}
+        </div>
+
+        <div className="p-6 lg:p-8">
+          <div className="flex items-start justify-between mb-6">
+            <div>
+              <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+                {trip.title}
+              </h2>
+              <p className="text-gray-600 dark:text-gray-300 text-lg mb-4">
+                {trip.subtitle || trip.description}
+              </p>
+              <div className="flex items-center space-x-4 text-gray-600 dark:text-gray-400">
+                <div className="flex items-center space-x-1">
+                  <Clock className="w-4 h-4" />
+                  <span>{trip.duration}</span>
+                </div>
+                <div className="flex items-center space-x-1">
+                  <Users className="w-4 h-4" />
+                  <span>{trip.groupSize || trip.maxParticipants || "2-12 persone"}</span>
+                </div>
+                {trip.rating && (
+                  <div className="flex items-center space-x-1">
+                    <Star className="w-4 h-4 text-yellow-400 fill-current" />
+                    <span>{trip.rating} ({trip.reviews} recensioni)</span>
+                  </div>
+                )}
+              </div>
+            </div>
+            <div className="text-right">
+              <div className="text-3xl font-bold text-orange-600">{trip.price}</div>
+              {trip.originalPrice && (
+                <div className="text-lg text-gray-500 line-through">{trip.originalPrice}</div>
+              )}
+              <div className="text-sm text-gray-600 dark:text-gray-400">per persona</div>
+            </div>
+          </div>
+
+          <div className="grid lg:grid-cols-3 gap-8">
+            <div className="lg:col-span-2 space-y-8">
+              {/* Detailed Description */}
+              <div>
+                <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Descrizione Completa</h3>
+                <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
+                  {trip.detailedDescription || trip.description}
+                </p>
+              </div>
+
+              {/* Highlights */}
+              {trip.highlights && (
+                <div>
+                  <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Punti Salienti</h3>
+                  <div className="grid md:grid-cols-2 gap-3">
+                    {trip.highlights.map((highlight: string, index: number) => (
+                      <div key={index} className="flex items-center space-x-2">
+                        <Check className="w-5 h-5 text-green-500 flex-shrink-0" />
+                        <span className="text-gray-600 dark:text-gray-300">{highlight}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Itinerary */}
+              {trip.itinerary && (
+                <div>
+                  <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Itinerario Dettagliato</h3>
+                  <div className="space-y-4">
+                    {trip.itinerary.map((day: any, index: number) => (
+                      <div key={index} className="flex space-x-4 p-4 bg-gray-50 dark:bg-gray-700 rounded-xl">
+                        <div className="flex-shrink-0 w-12 h-12 bg-orange-500 text-white rounded-full flex items-center justify-center font-bold">
+                          {day.day}
+                        </div>
+                        <div>
+                          <h4 className="font-semibold text-gray-900 dark:text-white">{day.title}</h4>
+                          <p className="text-gray-600 dark:text-gray-300 text-sm">{day.description}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* What's Included/Not Included */}
+              {(trip.includes || trip.included) && (
+                <div className="grid md:grid-cols-2 gap-6">
+                  <div className="bg-green-50 dark:bg-green-900/20 p-6 rounded-xl">
+                    <h3 className="text-lg font-bold text-green-800 dark:text-green-300 mb-4">✅ Incluso</h3>
+                    <ul className="space-y-2">
+                      {(trip.includes || trip.included).map((item: string, index: number) => (
+                        <li key={index} className="flex items-start space-x-2 text-sm text-green-700 dark:text-green-400">
+                          <Check className="w-4 h-4 mt-0.5 flex-shrink-0" />
+                          <span>{item}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                  
+                  {(trip.notIncludes || trip.notIncluded) && (
+                    <div className="bg-red-50 dark:bg-red-900/20 p-6 rounded-xl">
+                      <h3 className="text-lg font-bold text-red-800 dark:text-red-300 mb-4">❌ Non Incluso</h3>
+                      <ul className="space-y-2">
+                        {(trip.notIncludes || trip.notIncluded).map((item: string, index: number) => (
+                          <li key={index} className="flex items-start space-x-2 text-sm text-red-700 dark:text-red-400">
+                            <X className="w-4 h-4 mt-0.5 flex-shrink-0" />
+                            <span>{item}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+
+            {/* Sidebar */}
+            <div className="space-y-6">
+              {/* Booking Info */}
+              <div className="bg-blue-50 dark:bg-blue-900/20 p-6 rounded-xl">
+                <h3 className="text-lg font-bold text-blue-800 dark:text-blue-300 mb-4">Informazioni Prenotazione</h3>
+                <div className="space-y-3 text-sm">
+                  {trip.nextDeparture && (
+                    <div>
+                      <span className="font-medium text-blue-700 dark:text-blue-400">Prossima Partenza:</span>
+                      <p className="text-blue-600 dark:text-blue-300">{trip.nextDeparture}</p>
+                    </div>
+                  )}
+                  {trip.spotsLeft && (
+                    <div>
+                      <span className="font-medium text-blue-700 dark:text-blue-400">Posti Disponibili:</span>
+                      <p className="text-blue-600 dark:text-blue-300">{trip.spotsLeft} posti rimasti</p>
+                    </div>
+                  )}
+                  {trip.meetingPoint && (
+                    <div>
+                      <span className="font-medium text-blue-700 dark:text-blue-400">Punto di Ritrovo:</span>
+                      <p className="text-blue-600 dark:text-blue-300">{trip.meetingPoint}</p>
+                    </div>
+                  )}
+                  {trip.cancellationPolicy && (
+                    <div>
+                      <span className="font-medium text-blue-700 dark:text-blue-400">Cancellazione:</span>
+                      <p className="text-blue-600 dark:text-blue-300">{trip.cancellationPolicy}</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Contact Info */}
+              <div className="bg-orange-50 dark:bg-orange-900/20 p-6 rounded-xl">
+                <h3 className="text-lg font-bold text-orange-800 dark:text-orange-300 mb-4">Hai Domande?</h3>
+                <div className="space-y-3">
+                  <a
+                    href="tel:+393292333370"
+                    className="flex items-center space-x-2 text-orange-700 dark:text-orange-400 hover:text-orange-800 dark:hover:text-orange-300"
+                  >
+                    <Phone className="w-4 h-4" />
+                    <span>+39 329 233 3370</span>
+                  </a>
+                  <a
+                    href="mailto:info@moroccodreams.it"
+                    className="flex items-center space-x-2 text-orange-700 dark:text-orange-400 hover:text-orange-800 dark:hover:text-orange-300"
+                  >
+                    <Mail className="w-4 h-4" />
+                    <span>info@moroccodreams.it</span>
+                  </a>
+                  <a
+                    href="https://wa.me/393292333370"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center space-x-2 bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition-colors text-sm"
+                  >
+                    <span>💬</span>
+                    <span>WhatsApp</span>
+                  </a>
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="space-y-3">
+                <Link
+                  href="/contatti"
+                  className="w-full bg-gradient-to-r from-orange-500 to-red-500 text-white py-4 px-6 rounded-xl hover:from-orange-600 hover:to-red-600 transition-all duration-300 font-semibold text-lg text-center block"
+                >
+                  Prenota Ora - {trip.price}
+                </Link>
+                <Link
+                  href="/contatti"
+                  className="w-full border-2 border-orange-500 text-orange-500 py-3 px-6 rounded-xl hover:bg-orange-500 hover:text-white transition-all duration-300 font-semibold text-center block"
+                >
+                  Richiedi Informazioni
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}

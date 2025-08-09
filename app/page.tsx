@@ -1,20 +1,23 @@
 "use client"
 
-import { useState } from "react"
-import { MessageCircle, Users, Heart, Mountain, Camera, Plus, Minus } from "lucide-react"
+import { useState, Suspense } from "react"
+import { Users, Heart, Mountain, Camera } from "lucide-react"
+import Link from "next/link"
 import HeroSection from "@/components/sections/HeroSection"
 import WhyChooseUs from "@/components/sections/WhyChooseUs"
 import PopularTrips from "@/components/sections/PopularTrips"
-import MoroccoMapbox from "@/components/sections/MoroccoMapbox"
+import BlogTeaser from "@/components/sections/blog-teaser"
+import ContactBanner from "@/components/cta/contact-banner"
+import MoroccoMap from "@/components/sections/MoroccoMap"
 
 // Authentic Experiences Component
 const AuthenticExperiences = () => {
   return (
-    <div className="py-16 lg:py-24 bg-white dark:bg-gray-900">
+    <section className="py-16 lg:py-24 bg-background">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12 lg:mb-16">
-          <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-4">Esperienze Autentiche</h2>
-          <p className="text-lg lg:text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+          <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-4">Esperienze Autentiche</h2>
+          <p className="text-lg lg:text-xl text-muted-foreground max-w-2xl mx-auto">
             Immergiti nella cultura marocchina con le nostre esperienze uniche
           </p>
         </div>
@@ -28,6 +31,7 @@ const AuthenticExperiences = () => {
               price: "€120",
               image: "/images/desert-night.png",
               duration: "1 notte",
+              href: "/esperienze/trekking",
             },
             {
               icon: Heart,
@@ -36,6 +40,7 @@ const AuthenticExperiences = () => {
               price: "€45",
               image: "/images/traditional-hammam.png",
               duration: "2 ore",
+              href: "/esperienze/hammam",
             },
             {
               icon: Users,
@@ -44,6 +49,7 @@ const AuthenticExperiences = () => {
               price: "€65",
               image: "/images/cooking-class.png",
               duration: "4 ore",
+              href: "/esperienze/cucina",
             },
             {
               icon: Camera,
@@ -52,19 +58,20 @@ const AuthenticExperiences = () => {
               price: "€85",
               image: "/images/photo-tour.png",
               duration: "6 ore",
+              href: "/esperienze/fotografia",
             },
           ].map((experience, idx) => (
             <div
               key={idx}
-              className="group bg-white dark:bg-gray-800 rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-500 hover:scale-105"
+              className="group bg-card rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-500 hover:scale-105"
             >
               <div className="relative h-40 sm:h-48 overflow-hidden">
                 <img
-                  src={experience.image || "/placeholder.svg?height=200&width=300"}
+                  src={experience.image || "/placeholder.svg?height=200&width=300&query=esperienza%20marocco"}
                   alt={experience.title}
                   className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                 />
-                <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm text-gray-900 px-3 py-1 rounded-full text-sm font-bold">
+                <div className="absolute top-4 right-4 bg-background/90 backdrop-blur-sm text-foreground px-3 py-1 rounded-full text-sm font-bold">
                   {experience.price}
                 </div>
                 <div className="absolute bottom-4 left-4 bg-black/50 backdrop-blur-sm text-white px-3 py-1 rounded-full text-sm">
@@ -76,32 +83,39 @@ const AuthenticExperiences = () => {
                 <div className="w-12 h-12 bg-orange-100 dark:bg-orange-900/30 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
                   <experience.icon className="w-6 h-6 text-orange-600 dark:text-orange-400" />
                 </div>
-                <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">{experience.title}</h3>
-                <p className="text-gray-600 dark:text-gray-300 text-sm mb-4">{experience.description}</p>
-                <button className="w-full bg-gradient-to-r from-orange-500 to-red-500 text-white py-2 px-4 rounded-xl hover:from-orange-600 hover:to-red-600 transition-all duration-300 font-semibold">
-                  Prenota Ora
-                </button>
+                <h3 className="text-lg font-bold text-foreground mb-2">{experience.title}</h3>
+                <p className="text-muted-foreground text-sm mb-4">{experience.description}</p>
+                <div className="flex gap-2">
+                  <Link
+                    href={experience.href}
+                    className="w-1/2 bg-muted text-foreground py-2 px-4 rounded-xl hover:bg-muted/80 transition-all duration-300 font-semibold text-center"
+                  >
+                    Dettagli
+                  </Link>
+                  <Link
+                    href="/contatti"
+                    className="w-1/2 bg-gradient-to-r from-orange-500 to-red-500 text-white py-2 px-4 rounded-xl hover:from-orange-600 hover:to-red-600 transition-all duration-300 font-semibold text-center"
+                  >
+                    Prenota
+                  </Link>
+                </div>
               </div>
             </div>
           ))}
         </div>
       </div>
-    </div>
+    </section>
   )
 }
 
 // Testimonials Component
 const TestimonialsSection = () => {
   return (
-    <div className="py-16 lg:py-24 bg-gradient-to-r from-orange-50 to-red-50 dark:from-gray-800 dark:to-gray-900">
+    <section className="py-16 lg:py-24 bg-gradient-to-r from-orange-50 to-red-50 dark:from-gray-800 dark:to-gray-900">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12 lg:mb-16">
-          <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-4">
-            Cosa Dicono i Nostri Viaggiatori
-          </h2>
-          <p className="text-lg lg:text-xl text-gray-600 dark:text-gray-300">
-            Testimonianze autentiche dai nostri clienti
-          </p>
+          <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-4">Cosa Dicono i Nostri Viaggiatori</h2>
+          <p className="text-lg lg:text-xl text-muted-foreground">Testimonianze autentiche dai nostri clienti</p>
         </div>
 
         <div className="grid md:grid-cols-3 gap-6 lg:gap-8">
@@ -131,19 +145,16 @@ const TestimonialsSection = () => {
               trip: "Tour Gastronomico",
             },
           ].map((testimonial, idx) => (
-            <div
-              key={idx}
-              className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300"
-            >
+            <div key={idx} className="bg-card rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300">
               <div className="flex items-center mb-4">
                 <img
-                  src={testimonial.image || "/placeholder.svg?height=50&width=50"}
+                  src={testimonial.image || "/placeholder.svg?height=50&width=50&query=testimonial%20avatar"}
                   alt={testimonial.name}
                   className="w-12 h-12 rounded-full object-cover mr-4"
                 />
                 <div>
-                  <h4 className="font-bold text-gray-900 dark:text-white">{testimonial.name}</h4>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">{testimonial.location}</p>
+                  <h4 className="font-bold text-foreground">{testimonial.name}</h4>
+                  <p className="text-sm text-muted-foreground">{testimonial.location}</p>
                 </div>
               </div>
 
@@ -155,84 +166,14 @@ const TestimonialsSection = () => {
                 ))}
               </div>
 
-              <p className="text-gray-600 dark:text-gray-300 mb-4 italic">"{testimonial.text}"</p>
+              <p className="text-muted-foreground mb-4 italic">"{testimonial.text}"</p>
 
               <div className="text-sm text-orange-600 dark:text-orange-400 font-semibold">{testimonial.trip}</div>
             </div>
           ))}
         </div>
       </div>
-    </div>
-  )
-}
-
-// Quick Contact Form Component
-const QuickContactForm = () => {
-  return (
-    <div className="py-16 lg:py-24 bg-white dark:bg-gray-900">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-4">
-            Inizia a Pianificare il Tuo Viaggio
-          </h2>
-          <p className="text-lg lg:text-xl text-gray-600 dark:text-gray-300">
-            Contattaci per una consulenza gratuita personalizzata
-          </p>
-        </div>
-
-        <div className="bg-gradient-to-r from-orange-500 to-red-500 rounded-3xl p-6 lg:p-8 text-white">
-          <div className="grid md:grid-cols-2 gap-6 lg:gap-8">
-            <div className="space-y-4">
-              <input
-                type="text"
-                placeholder="Nome e Cognome"
-                className="w-full px-4 py-3 bg-white/20 border border-white/30 rounded-xl text-white placeholder-white/70 focus:ring-2 focus:ring-white/50 focus:border-transparent backdrop-blur-sm"
-              />
-              <input
-                type="email"
-                placeholder="Email"
-                className="w-full px-4 py-3 bg-white/20 border border-white/30 rounded-xl text-white placeholder-white/70 focus:ring-2 focus:ring-white/50 focus:border-transparent backdrop-blur-sm"
-              />
-              <input
-                type="tel"
-                placeholder="Telefono"
-                className="w-full px-4 py-3 bg-white/20 border border-white/30 rounded-xl text-white placeholder-white/70 focus:ring-2 focus:ring-white/50 focus:border-transparent backdrop-blur-sm"
-              />
-            </div>
-            <div className="space-y-4">
-              <textarea
-                placeholder="Raccontaci il tuo sogno di viaggio in Marocco..."
-                rows={4}
-                className="w-full px-4 py-3 bg-white/20 border border-white/30 rounded-xl text-white placeholder-white/70 focus:ring-2 focus:ring-white/50 focus:border-transparent backdrop-blur-sm resize-none"
-              />
-              <select className="w-full px-4 py-3 bg-white/20 border border-white/30 rounded-xl text-white focus:ring-2 focus:ring-white/50 focus:border-transparent backdrop-blur-sm">
-                <option value="">Tipo di viaggio preferito</option>
-                <option value="culturale">Culturale</option>
-                <option value="avventura">Avventura</option>
-                <option value="relax">Relax & Benessere</option>
-                <option value="gastronomico">Gastronomico</option>
-                <option value="famiglia">Famiglia</option>
-              </select>
-            </div>
-          </div>
-
-          <div className="flex flex-col sm:flex-row gap-4 justify-center mt-8">
-            <button className="bg-white text-orange-600 px-6 lg:px-8 py-3 rounded-xl hover:bg-gray-100 transition-all duration-300 font-semibold">
-              Richiedi Preventivo Gratuito
-            </button>
-            <a
-              href="https://wa.me/393123456789?text=Ciao! Vorrei informazioni sui vostri viaggi in Marocco."
-              target="_blank"
-              rel="noopener noreferrer"
-              className="border-2 border-white text-white px-6 lg:px-8 py-3 rounded-xl hover:bg-white hover:text-orange-600 transition-all duration-300 font-semibold inline-flex items-center justify-center"
-            >
-              <MessageCircle className="w-5 h-5 mr-2" />
-              WhatsApp
-            </a>
-          </div>
-        </div>
-      </div>
-    </div>
+    </section>
   )
 }
 
@@ -269,35 +210,32 @@ const FAQSection = () => {
     {
       question: "Cosa include il prezzo del viaggio?",
       answer:
-        "I nostri prezzi includono alloggi, trasporti privati, guide locali, alcune attività e assistenza 24/7. Voli internazionali, pasti non specificati e spese personali sono esclusi.",
+        "I nostre prezzi includono alloggi, trasporti privati, guide locali, alcune attività e assistenza 24/7. Voli internazionali, pasti non specificati e spese personali sono esclusi.",
     },
   ]
 
   return (
-    <div className="py-16 lg:py-24 bg-white dark:bg-gray-900">
+    <section className="py-16 lg:py-24 bg-background">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12 lg:mb-16">
-          <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-4">Domande Frequenti</h2>
-          <p className="text-lg lg:text-xl text-gray-600 dark:text-gray-300">
+          <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-4">Domande Frequenti</h2>
+          <p className="text-lg lg:text-xl text-muted-foreground">
             Tutto quello che devi sapere per il tuo viaggio in Marocco
           </p>
         </div>
 
         <div className="space-y-4">
           {faqs.map((faq, idx) => (
-            <div
-              key={idx}
-              className="bg-gray-50 dark:bg-gray-800 rounded-2xl overflow-hidden transition-all duration-300"
-            >
+            <div key={idx} className="bg-card rounded-2xl overflow-hidden transition-all duration-300 shadow-lg">
               <button
                 onClick={() => setOpenFAQ(openFAQ === idx ? null : idx)}
-                className="w-full px-6 py-4 text-left flex items-center justify-between hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200"
+                className="w-full px-6 py-4 text-left flex items-center justify-between hover:bg-muted/50 transition-colors duration-200"
               >
-                <span className="font-semibold text-gray-900 dark:text-white pr-4">{faq.question}</span>
+                <span className="font-semibold text-foreground pr-4">{faq.question}</span>
                 {openFAQ === idx ? (
-                  <Minus className="w-5 h-5 text-orange-500 flex-shrink-0" />
+                  <span className="text-orange-500 text-xl">−</span>
                 ) : (
-                  <Plus className="w-5 h-5 text-orange-500 flex-shrink-0" />
+                  <span className="text-orange-500 text-xl">+</span>
                 )}
               </button>
               <div
@@ -305,27 +243,44 @@ const FAQSection = () => {
                   openFAQ === idx ? "max-h-96 pb-4" : "max-h-0"
                 }`}
               >
-                <p className="text-gray-600 dark:text-gray-300 leading-relaxed">{faq.answer}</p>
+                <p className="text-muted-foreground leading-relaxed">{faq.answer}</p>
               </div>
             </div>
           ))}
         </div>
       </div>
-    </div>
+    </section>
   )
 }
 
-export default function HomePage() {
+export default function Home() {
   return (
-    <div className="relative overflow-hidden">
+    <main className="min-h-screen">
       <HeroSection />
       <WhyChooseUs />
       <PopularTrips />
+      <Suspense
+        fallback={
+          <section className="py-16 lg:py-24 bg-background">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <div className="text-center">
+                <div className="w-16 h-16 border-4 border-orange-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+                <p className="text-lg font-medium text-foreground">Caricamento mappa del Marocco...</p>
+              </div>
+            </div>
+          </section>
+        }
+      >
+        <MoroccoMap />
+      </Suspense>
       <AuthenticExperiences />
       <TestimonialsSection />
-      <QuickContactForm />
-      <MoroccoMapbox />
       <FAQSection />
-    </div>
+      <BlogTeaser />
+      <ContactBanner
+        title="Pronto per la tua avventura in Marocco?"
+        subtitle="Contattaci per pianificare il viaggio dei tuoi sogni"
+      />
+    </main>
   )
 }

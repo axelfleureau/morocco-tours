@@ -1,9 +1,7 @@
 "use client"
 
 import { useRef, useEffect, useState } from "react"
-import { X, MapPin, Star, ArrowRight } from 'lucide-react'
-import { collection, getDocs } from 'firebase/firestore'
-import { db } from '@/lib/firebase'
+import { X, Star, ArrowRight } from "lucide-react"
 
 // Declare global types for Mapbox and GSAP
 declare global {
@@ -22,7 +20,6 @@ interface City {
   highlights: string[]
   tours: string[]
   icon: string
-  visible: boolean
 }
 
 interface MoroccoMapboxProps {
@@ -33,167 +30,127 @@ const defaultCities: City[] = [
   {
     id: "marrakech",
     name: "Marrakech",
-    description: "La Perla Rossa del Marocco",
+    description: "La Perla Rossa del Marocco, famosa per la piazza Jemaa el-Fnaa e i suoi souks colorati.",
     coordinates: [-7.9811, 31.6295],
     image: "/images/marrakech-medina.png",
     icon: "/images/marrakech-landmark-icon.png",
     highlights: ["Jemaa el-Fnaa", "Souks", "Giardini Majorelle", "Palazzo Bahia"],
     tours: ["Tour Città Imperiali", "Marocco Completo", "Weekend a Marrakech"],
-    visible: true,
   },
   {
     id: "casablanca",
     name: "Casablanca",
-    description: "La capitale economica del Marocco",
+    description: "La capitale economica del Marocco, moderna e cosmopolita.",
     coordinates: [-7.5898, 33.5731],
     image: "/images/casablanca-hassan.png",
     icon: "/images/casablanca-landmark-icon.png",
     highlights: ["Moschea Hassan II", "Corniche", "Quartiere Habous", "Centro Moderno"],
     tours: ["Marocco Moderno", "Tour Economico", "Città Costiere"],
-    visible: true,
   },
   {
     id: "fes",
     name: "Fes",
-    description: "La capitale spirituale del Marocco",
+    description: "La capitale spirituale del Marocco, con la medina più grande del mondo.",
     coordinates: [-5.0078, 34.0181],
     image: "/images/fes-architecture.png",
     icon: "/images/fes-landmark-icon.png",
     highlights: ["Medina UNESCO", "Università Al Quaraouiyine", "Concerie Chouara", "Palazzo Reale"],
     tours: ["Tour Città Imperiali", "Cultura e Tradizioni", "Marocco del Nord"],
-    visible: true,
   },
   {
     id: "rabat",
     name: "Rabat",
-    description: "La capitale moderna del Marocco",
+    description: "La capitale moderna del Marocco, patrimonio UNESCO.",
     coordinates: [-6.8498, 33.9716],
     image: "/images/imperial-cities-tour.png",
     icon: "/images/rabat-landmark-icon.png",
     highlights: ["Torre Hassan", "Kasbah Oudayas", "Mausoleo Mohammed V", "Chellah"],
     tours: ["Tour Città Imperiali", "Marocco Moderno", "Capitali del Mondo"],
-    visible: true,
   },
   {
     id: "chefchaouen",
     name: "Chefchaouen",
-    description: "La perla blu del Rif",
+    description: "La perla blu del Rif, città dalle case azzurre.",
     coordinates: [-5.2636, 35.1688],
     image: "/images/chefchaouen-blue.png",
     icon: "/images/chefchaouen-landmark-icon.png",
     highlights: ["Medina blu", "Monti del Rif", "Artigianato", "Cascate Akchour"],
     tours: ["Marocco del Nord", "Città Colorate", "Trekking Rif"],
-    visible: true,
   },
   {
     id: "essaouira",
     name: "Essaouira",
-    description: "La città del vento",
+    description: "La città del vento, perla della costa atlantica.",
     coordinates: [-9.7595, 31.5085],
     image: "/images/essaouira-coast.png",
     icon: "/images/essaouira-landmark-icon.png",
     highlights: ["Medina UNESCO", "Porto", "Spiagge", "Argan"],
     tours: ["Costa Atlantica", "Surf e Relax", "Marocco Completo"],
-    visible: true,
   },
   {
     id: "agadir",
     name: "Agadir",
-    description: "Moderna città balneare",
+    description: "Moderna città balneare con spiagge dorate e resort di lusso.",
     coordinates: [-9.5981, 30.4278],
     image: "/images/agadir-beach.png",
     icon: "/images/agadir-landmark-icon.png",
     highlights: ["Spiagge", "Souk El Had", "Kasbah", "Marina"],
     tours: ["Costa Atlantica", "Relax Beach", "Sud del Marocco"],
-    visible: true,
   },
   {
     id: "meknes",
     name: "Meknes",
-    description: "La Versailles del Marocco",
-    coordinates: [-5.5407, 33.8730],
+    description: "La Versailles del Marocco, con i suoi grandiosi monumenti imperiali.",
+    coordinates: [-5.5407, 33.873],
     image: "/images/imperial-cities.png",
     icon: "/images/meknes-landmark-icon.png",
     highlights: ["Bab Mansour", "Mausoleo Moulay Ismail", "Heri es-Souani", "Volubilis"],
     tours: ["Tour Città Imperiali", "Storia Antica", "Patrimoni UNESCO"],
-    visible: true,
   },
   {
     id: "ouarzazate",
     name: "Ouarzazate",
-    description: "La porta del deserto",
-    coordinates: [-6.9370, 30.9335],
+    description: "La porta del deserto, Hollywood del Marocco.",
+    coordinates: [-6.937, 30.9335],
     image: "/images/south-treasures.png",
     icon: "/images/ouarzazate-landmark-icon.png",
     highlights: ["Kasbah Taourirt", "Studios cinematografici", "Ait Benhaddou", "Valle del Draa"],
     tours: ["Tour del Deserto", "Sud del Marocco", "Cinema e Storia"],
-    visible: true,
   },
   {
     id: "merzouga",
     name: "Merzouga",
-    description: "Porta del Sahara",
+    description: "Porta del Sahara, dune dorate di Erg Chebbi.",
     coordinates: [-4.0134, 31.0802],
     image: "/images/sahara-adventure.png",
     icon: "/images/merzouga-landmark-icon.png",
     highlights: ["Dune Erg Chebbi", "Notti stellate", "Cammelli", "Nomadi"],
     tours: ["Tour del Deserto", "Sahara Adventure", "Marocco Completo"],
-    visible: true,
   },
   {
     id: "tangier",
     name: "Tangier",
-    description: "Porta d'ingresso al Marocco",
-    coordinates: [-5.8340, 35.7595],
+    description: "Porta d'ingresso al Marocco, crocevia tra Europa e Africa.",
+    coordinates: [-5.834, 35.7595],
     image: "/images/tangier-strait.png",
     icon: "/images/tangier-landmark-icon.png",
     highlights: ["Stretto di Gibilterra", "Medina", "Kasbah", "Grotte di Ercole"],
     tours: ["Marocco del Nord", "Porta d'Africa", "Storia Antica"],
-    visible: true,
   },
 ]
 
-export default function MoroccoMapbox({ cities: propCities }: MoroccoMapboxProps) {
+export default function MoroccoMapbox({ cities = defaultCities }: MoroccoMapboxProps) {
   const mapContainerRef = useRef<HTMLDivElement>(null)
   const mapRef = useRef<any>(null)
   const markersRef = useRef<any[]>([])
   const [selectedCity, setSelectedCity] = useState<City | null>(null)
   const [isLoading, setIsLoading] = useState(true)
-  const [cities, setCities] = useState<City[]>(defaultCities)
-
-  // Load cities from Firebase
-  useEffect(() => {
-    const loadCities = async () => {
-      try {
-        const citiesSnapshot = await getDocs(collection(db, 'cities'))
-        const firebaseCities: City[] = []
-        
-        citiesSnapshot.forEach((doc) => {
-          const data = doc.data()
-          if (data.visible) {
-            firebaseCities.push({
-              id: doc.id,
-              ...data
-            } as City)
-          }
-        })
-        
-        if (firebaseCities.length > 0) {
-          setCities(firebaseCities)
-        }
-      } catch (error) {
-        console.error('Error loading cities from Firebase:', error)
-        // Use default cities as fallback
-      }
-    }
-
-    loadCities()
-  }, [])
 
   useEffect(() => {
     // Inject Google Fonts
     const fontLink = document.createElement("link")
-    fontLink.href = "https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&family=Inter:wght@400;500;600&display=swap"
+    fontLink.href =
+      "https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&family=Inter:wght@400;500;600&display=swap"
     fontLink.rel = "stylesheet"
     document.head.appendChild(fontLink)
 
@@ -252,7 +209,7 @@ export default function MoroccoMapbox({ cities: propCities }: MoroccoMapboxProps
       }
 
       .mapboxgl-canvas {
-        transition: none !important;
+        transition: transform 0.05s linear;
       }
 
       /* Mapbox Styles */
@@ -281,44 +238,43 @@ export default function MoroccoMapbox({ cities: propCities }: MoroccoMapboxProps
         transform-origin: center !important;
       }
 
-      /* Custom Marker Styles - FIXED POSITIONING */
+      /* Custom Marker Styles */
       .custom-marker {
-        width: 50px !important;
-        height: 50px !important;
-        background: linear-gradient(135deg, #f97316 0%, #dc2626 100%) !important;
-        border: 3px solid #ffffff !important;
-        border-radius: 50% !important;
-        cursor: pointer !important;
-        transition: all 0.3s ease !important;
-        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2) !important;
-        position: absolute !important;
-        z-index: 1 !important;
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-        padding: 4px !important;
-        transform-origin: center center !important;
+        width: 50px;
+        height: 50px;
+        background: linear-gradient(135deg, #f97316 0%, #dc2626 100%);
+        border: 3px solid #ffffff;
+        border-radius: 50%;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+        position: relative;
+        z-index: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 4px;
       }
 
       .custom-marker img {
-        width: 32px !important;
-        height: 32px !important;
-        border-radius: 50% !important;
-        object-fit: cover !important;
-        border: 2px solid rgba(255,255,255,0.8) !important;
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 2px solid rgba(255,255,255,0.8);
       }
 
       .custom-marker:hover {
-        transform: scale(1.1) !important;
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3) !important;
-        z-index: 10 !important;
+        transform: scale(1.1);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        z-index: 10;
       }
 
       .custom-marker.clicked {
-        transform: scale(1.2) !important;
-        box-shadow: 0 10px 30px rgba(249, 115, 22, 0.4) !important;
-        border-color: #fbbf24 !important;
-        z-index: 2 !important;
+        transform: scale(1.2);
+        box-shadow: 0 10px 30px rgba(249, 115, 22, 0.4);
+        border-color: #fbbf24;
+        z-index: 2;
       }
 
       .custom-marker:not(.clicked)::after {
@@ -343,11 +299,10 @@ export default function MoroccoMapbox({ cities: propCities }: MoroccoMapboxProps
         display: none !important;
       }
 
-      /* Cities List Scrollbar - VERTICAL ONLY */
+      /* Cities List Scrollbar */
       .cities-list-container {
-        max-height: 500px;
+        max-height: 600px;
         overflow-y: auto;
-        overflow-x: hidden;
         position: relative;
         scrollbar-width: thin;
         scrollbar-color: #f97316 #f3f4f6;
@@ -378,14 +333,14 @@ export default function MoroccoMapbox({ cities: propCities }: MoroccoMapboxProps
         bottom: 0;
         left: 0;
         right: 0;
-        height: 30px;
-        background: linear-gradient(to bottom, transparent, rgba(249, 250, 251, 0.95));
+        height: 40px;
+        background: linear-gradient(to bottom, transparent, rgba(249, 250, 251, 0.9));
         pointer-events: none;
         z-index: 1;
       }
 
       .dark .cities-list-container::after {
-        background: linear-gradient(to bottom, transparent, rgba(17, 24, 39, 0.95));
+        background: linear-gradient(to bottom, transparent, rgba(17, 24, 39, 0.9));
       }
 
       /* Popup Modern Styles */
@@ -531,12 +486,7 @@ export default function MoroccoMapbox({ cities: propCities }: MoroccoMapboxProps
       }
 
       .mapboxgl-canvas-container {
-        transition: none !important;
-      }
-
-      /* Disable all map transitions that affect markers */
-      .mapboxgl-map {
-        transition: none !important;
+        transition: transform 0.5s ease;
       }
     `
     document.head.appendChild(customStyles)
@@ -560,10 +510,6 @@ export default function MoroccoMapbox({ cities: propCities }: MoroccoMapboxProps
         center: [-6.2, 32.2],
         zoom: 5.5,
         attributionControl: false,
-        // Disable map animations that affect marker positioning
-        pitchWithRotate: false,
-        dragRotate: false,
-        touchZoomRotate: false,
       })
 
       map.addControl(new window.mapboxgl.NavigationControl(), "top-right")
@@ -586,9 +532,9 @@ export default function MoroccoMapbox({ cities: propCities }: MoroccoMapboxProps
           // Create marker element with city-specific icon
           const markerElement = document.createElement("div")
           markerElement.className = "custom-marker"
-          markerElement.setAttribute('aria-label', city.name)
-          markerElement.setAttribute('role', 'button')
-          markerElement.setAttribute('tabindex', '0')
+          markerElement.setAttribute("aria-label", city.name)
+          markerElement.setAttribute("role", "button")
+          markerElement.setAttribute("tabindex", "0")
           markerElement.innerHTML = `
             <img 
               src="${city.icon}"
@@ -602,7 +548,7 @@ export default function MoroccoMapbox({ cities: propCities }: MoroccoMapboxProps
             closeButton: false,
             closeOnClick: false,
             offset: [0, -10],
-            className: 'hover-popup'
+            className: "hover-popup",
           }).setHTML(`
             <div class="bg-white dark:bg-gray-900 p-4 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 min-w-[200px]">
               <h4 class="font-bold text-gray-900 dark:text-white mb-1">${city.name}</h4>
@@ -611,7 +557,7 @@ export default function MoroccoMapbox({ cities: propCities }: MoroccoMapboxProps
             </div>
           `)
 
-          // Create marker with FIXED positioning
+          // Create marker with fixed positioning
           const marker = new window.mapboxgl.Marker({
             element: markerElement,
             anchor: "center",
@@ -644,7 +590,7 @@ export default function MoroccoMapbox({ cities: propCities }: MoroccoMapboxProps
               hoverTimeout = setTimeout(() => {
                 if (hoverPopup && currentHoverMarker === markerElement) {
                   const popupElement = hoverPopup.getElement()
-                  const isMouseOverPopup = popupElement && popupElement.matches(':hover')
+                  const isMouseOverPopup = popupElement && popupElement.matches(":hover")
                   if (!isMouseOverPopup) {
                     popup.remove()
                     hoverPopup = null
@@ -661,7 +607,7 @@ export default function MoroccoMapbox({ cities: propCities }: MoroccoMapboxProps
               hoverPopup.remove()
               hoverPopup = null
             }
-            
+
             setSelectedCity(city)
 
             // Update marker styles
@@ -673,12 +619,11 @@ export default function MoroccoMapbox({ cities: propCities }: MoroccoMapboxProps
             }
             activeMarker = markerElement
 
-            // Fly to city with smooth animation
+            // Fly to city
             map.flyTo({
               center: city.coordinates,
               zoom: 8,
               duration: 1500,
-              essential: true
             })
           })
 
@@ -695,14 +640,14 @@ export default function MoroccoMapbox({ cities: propCities }: MoroccoMapboxProps
         if (cities.length > 0) {
           map.fitBounds(bounds, {
             padding: 50,
-            maxZoom: 6
+            maxZoom: 6,
           })
         }
 
         // Handle map click to close popups
         map.on("click", (e) => {
           const target = e.originalEvent.target as Element
-          if (!target.closest('.mapboxgl-popup') && !target.closest('.custom-marker')) {
+          if (!target.closest(".mapboxgl-popup") && !target.closest(".custom-marker")) {
             if (openPopup) {
               openPopup.remove()
               openPopup = null
@@ -712,7 +657,7 @@ export default function MoroccoMapbox({ cities: propCities }: MoroccoMapboxProps
               hoverPopup = null
             }
             if (activeMarker) {
-              activeMarker.classList.remove('clicked')
+              activeMarker.classList.remove("clicked")
               activeMarker = null
             }
             setSelectedCity(null)
@@ -736,13 +681,12 @@ export default function MoroccoMapbox({ cities: propCities }: MoroccoMapboxProps
     if (mapRef.current) {
       // Update marker styles
       document.querySelectorAll(".custom-marker").forEach((m) => m.classList.remove("active"))
-      
+
       // Fly to city
       mapRef.current.flyTo({
         center: city.coordinates,
         zoom: 8,
         duration: 1500,
-        essential: true
       })
     }
   }
@@ -760,11 +704,11 @@ export default function MoroccoMapbox({ cities: propCities }: MoroccoMapboxProps
         </div>
 
         <div className="grid lg:grid-cols-4 gap-6 lg:gap-8">
-          {/* Cities List - VERTICAL SCROLLBAR ONLY */}
+          {/* Cities List - Mobile First with Scrollbar */}
           <div className="lg:col-span-1 lg:order-1">
             <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-3 lg:mb-4">Destinazioni</h3>
             <div className="cities-list-container">
-              <div className="space-y-2 pr-2">
+              <div className="space-y-2">
                 {cities.map((city) => (
                   <button
                     key={city.id}
@@ -789,7 +733,7 @@ export default function MoroccoMapbox({ cities: propCities }: MoroccoMapboxProps
                           }
                         `}
                       >
-                        <img 
+                        <img
                           src={city.icon || "/placeholder.svg"}
                           alt={city.name}
                           className="w-full h-full object-cover rounded-full"
@@ -806,7 +750,7 @@ export default function MoroccoMapbox({ cities: propCities }: MoroccoMapboxProps
                         </h4>
                         <p
                           className={`
-                            text-xs line-clamp-1
+                            text-xs line-clamp-1 hidden lg:block
                             ${selectedCity?.id === city.id ? "text-white/80" : "text-gray-500 dark:text-gray-400"}
                           `}
                         >
@@ -829,7 +773,7 @@ export default function MoroccoMapbox({ cities: propCities }: MoroccoMapboxProps
                     <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500"></div>
                   </div>
                 )}
-                <div ref={mapContainerRef} className="w-full h-64 sm:h-80 lg:h-[500px]" />
+                <div ref={mapContainerRef} className="w-full h-64 sm:h-80 lg:h-[600px]" />
               </div>
             </div>
           </div>

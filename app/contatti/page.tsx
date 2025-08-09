@@ -1,4 +1,4 @@
-import { Phone, Mail, MapPin, MessageCircle, Clock, Globe } from "lucide-react"
+import { Phone, Mail, MessageCircle, Clock, Globe } from 'lucide-react'
 
 export default function ContactsPage() {
   return (
@@ -20,7 +20,7 @@ export default function ContactsPage() {
           <div className="grid lg:grid-cols-2 gap-16">
             {/* Contact Info */}
             <div>
-              <h2 className="text-4xl font-bold text-gray-900 dark:text-white mb-8">Informazioni di Contatto</h2>
+              <h2 className="text-4xl font-bold text-gray-900 dark:text-white mb-8">Come Contattarci</h2>
               <p className="text-lg text-gray-600 dark:text-gray-300 mb-12">
                 Il nostro team è sempre disponibile per rispondere alle tue domande e aiutarti a creare l'esperienza di
                 viaggio perfetta.
@@ -30,10 +30,10 @@ export default function ContactsPage() {
                 {[
                   {
                     icon: Phone,
-                    title: "+39 123 456 7890",
+                    title: "+39 329 233 3370",
                     subtitle: "Chiamaci dal Lunedì al Venerdì",
                     description: "9:00 - 18:00 (ora italiana)",
-                    action: "tel:+393123456789",
+                    action: "tel:+393292333370",
                   },
                   {
                     icon: Mail,
@@ -44,17 +44,10 @@ export default function ContactsPage() {
                   },
                   {
                     icon: MessageCircle,
-                    title: "WhatsApp +39 123 456 7890",
+                    title: "WhatsApp +39 329 233 3370",
                     subtitle: "Assistenza 24/7",
                     description: "Risposta immediata per urgenze",
-                    action: "https://wa.me/393123456789",
-                  },
-                  {
-                    icon: MapPin,
-                    title: "Via Roma 123, Milano",
-                    subtitle: "Vieni a trovarci in ufficio",
-                    description: "Su appuntamento dal Lunedì al Venerdì",
-                    action: "https://maps.google.com",
+                    action: "https://wa.me/393292333370",
                   },
                 ].map((contact, idx) => (
                   <a
@@ -144,7 +137,7 @@ export default function ContactsPage() {
                   <input
                     type="tel"
                     className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
-                    placeholder="+39 123 456 7890"
+                    placeholder="+39 329 233 3370"
                   />
                 </div>
 
@@ -201,7 +194,7 @@ export default function ContactsPage() {
                 </p>
                 <div className="flex justify-center mt-4">
                   <a
-                    href="https://wa.me/393123456789?text=Ciao! Vorrei informazioni sui vostri viaggi in Marocco."
+                    href="https://wa.me/393292333370?text=Ciao! Vorrei informazioni sui vostri viaggi in Marocco."
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center space-x-2 bg-green-500 text-white px-6 py-3 rounded-xl hover:bg-green-600 transition-colors duration-300 font-semibold"
@@ -216,33 +209,8 @@ export default function ContactsPage() {
         </div>
       </div>
 
-      {/* Map Section */}
-      <div className="py-20 bg-gray-50 dark:bg-gray-800">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">Dove Siamo</h2>
-            <p className="text-xl text-gray-600 dark:text-gray-300">
-              Vieni a trovarci nel nostro ufficio nel centro di Milano
-            </p>
-          </div>
-
-          <div className="bg-white dark:bg-gray-900 rounded-3xl overflow-hidden shadow-xl">
-            <div className="h-96 bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
-              <div className="text-center">
-                <MapPin className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-                <p className="text-gray-600 dark:text-gray-300">
-                  Mappa interattiva dell'ufficio
-                  <br />
-                  Via Roma 123, Milano
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
       {/* FAQ Section */}
-      <div className="py-20 bg-white dark:bg-gray-900">
+      <div className="py-20 bg-gray-50 dark:bg-gray-800">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">Domande Frequenti</h2>
@@ -266,7 +234,7 @@ export default function ContactsPage() {
               {
                 question: "Posso modificare o cancellare la prenotazione?",
                 answer:
-                  "Sì, offriamo condizioni flessibili. Le modifiche sono possibili fino a 15 giorni prima della partenza. Per le cancellazioni, si applicano le nostre condizioni generali disponibili sul sito.",
+                  "Sì, offriamo condizioni flessibili. Le modifiche sono possibili fino a 15 giorni prima della partenza. Per le cancellazioni, si applicano le nostre condizioni generali disponibili nei Termini di Servizio.",
               },
               {
                 question: "Che tipo di assistenza fornite durante il viaggio?",
@@ -274,7 +242,7 @@ export default function ContactsPage() {
                   "Forniamo assistenza 24/7 tramite WhatsApp, guide locali esperte che parlano italiano, e un referente in Italia sempre disponibile per qualsiasi necessità.",
               },
             ].map((faq, idx) => (
-              <div key={idx} className="bg-gray-50 dark:bg-gray-800 rounded-2xl p-6">
+              <div key={idx} className="bg-white dark:bg-gray-900 rounded-2xl p-6 shadow-lg">
                 <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-3">{faq.question}</h3>
                 <p className="text-gray-600 dark:text-gray-300 leading-relaxed">{faq.answer}</p>
               </div>

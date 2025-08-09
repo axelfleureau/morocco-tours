@@ -21,7 +21,7 @@ export default function HeroSection() {
   }, [stats.length])
 
   return (
-    <div className="relative min-h-screen flex items-center justify-center overflow-hidden">
+    <div className="relative min-h-screen flex items-center justify-center overflow-hidden bg-background">
       {/* Video Background */}
       <div className="absolute inset-0 z-0">
         <video autoPlay muted loop playsInline className="w-full h-full object-cover" poster="/images/hero-sahara.png">

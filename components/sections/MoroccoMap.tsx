@@ -1,210 +1,391 @@
 "use client"
 
-import { useRef, useEffect } from "react"
+import { useRef, useEffect, useState } from "react"
+import { Star, Heart, ArrowRight } from "lucide-react"
+import { useTheme } from "next-themes"
+import Link from "next/link"
 
-// Declare global types for external libraries
-declare global {
-  interface Window {
-    mapboxgl: any
-  }
+interface City {
+  id: string
+  name: string
+  coordinates: [number, number]
+  description: string
+  image: string
+  category: "imperial" | "coastal" | "mountain" | "modern"
+  rating: number
+  tours: number
+  highlights: string[]
+  pageUrl: string
+}
+
+const MOROCCO_CITIES: City[] = [
+  {
+    id: "marrakech",
+    name: "Marrakech",
+    coordinates: [-7.9811, 31.6295],
+    description: "La Perla Rossa del Marocco, famosa per la piazza Jemaa el-Fnaa e i suoi souks colorati.",
+    image: "/images/marrakech-medina.png",
+    category: "imperial",
+    rating: 4.8,
+    tours: 12,
+    highlights: ["Jemaa el-Fnaa", "Souks", "Giardini Majorelle", "Palazzo Bahia"],
+    pageUrl: "/viaggi/citta-imperiali",
+  },
+  {
+    id: "casablanca",
+    name: "Casablanca",
+    coordinates: [-7.5898, 33.5731],
+    description: "La capitale economica del Marocco, moderna e cosmopolita.",
+    image: "/images/casablanca-hassan.png",
+    category: "modern",
+    rating: 4.5,
+    tours: 8,
+    highlights: ["Moschea Hassan II", "Corniche", "Quartiere Habous", "Centro Moderno"],
+    pageUrl: "/viaggi/citta-imperiali",
+  },
+  {
+    id: "fes",
+    name: "Fès",
+    coordinates: [-5.0078, 34.0181],
+    description: "La capitale spirituale del Marocco, con la medina più grande del mondo.",
+    image: "/images/fes-architecture.png",
+    category: "imperial",
+    rating: 4.9,
+    tours: 15,
+    highlights: ["Medina UNESCO", "Università Al Quaraouiyine", "Concerie Chouara", "Palazzo Reale"],
+    pageUrl: "/viaggi/citta-imperiali",
+  },
+  {
+    id: "rabat",
+    name: "Rabat",
+    coordinates: [-6.8498, 33.9716],
+    description: "La capitale moderna del Marocco, patrimonio UNESCO.",
+    image: "/images/imperial-cities-tour.png",
+    category: "imperial",
+    rating: 4.6,
+    tours: 10,
+    highlights: ["Torre Hassan", "Kasbah Oudayas", "Mausoleo Mohammed V", "Chellah"],
+    pageUrl: "/viaggi/citta-imperiali",
+  },
+  {
+    id: "chefchaouen",
+    name: "Chefchaouen",
+    coordinates: [-5.2636, 35.1688],
+    description: "La perla blu del Rif, città dalle case azzurre.",
+    image: "/images/chefchaouen-blue.png",
+    category: "mountain",
+    rating: 4.9,
+    tours: 6,
+    highlights: ["Medina blu", "Monti del Rif", "Artigianato", "Cascate Akchour"],
+    pageUrl: "/viaggi/montagne-atlas",
+  },
+  {
+    id: "essaouira",
+    name: "Essaouira",
+    coordinates: [-9.7595, 31.5085],
+    description: "La città del vento, perla della costa atlantica.",
+    image: "/images/essaouira-coast.png",
+    category: "coastal",
+    rating: 4.7,
+    tours: 9,
+    highlights: ["Medina UNESCO", "Porto", "Spiagge", "Argan"],
+    pageUrl: "/viaggi/costa-atlantica",
+  },
+]
+
+const categoryConfig = {
+  imperial: {
+    color: "from-amber-500 to-orange-600",
+    icon: "👑",
+    label: "Imperiale",
+  },
+  coastal: {
+    color: "from-blue-500 to-cyan-600",
+    icon: "🌊",
+    label: "Costiera",
+  },
+  mountain: {
+    color: "from-green-500 to-emerald-600",
+    icon: "⛰️",
+    label: "Montagna",
+  },
+  modern: {
+    color: "from-gray-500 to-slate-600",
+    icon: "🏙️",
+    label: "Moderna",
+  },
 }
 
 export default function MoroccoMap() {
   const mapContainerRef = useRef<HTMLDivElement>(null)
   const mapRef = useRef<any>(null)
+  const markersRef = useRef<any[]>([])
+  const popupsRef = useRef<any[]>([])
+  const [selectedCity, setSelectedCity] = useState<City | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
+  const [favorites, setFavorites] = useState<string[]>([])
+  const [mounted, setMounted] = useState(false)
 
-  const imperialCities = [
-    {
-      name: "Marrakech",
-      description: "La Perla Rossa del Marocco, famosa per la piazza Jemaa el-Fnaa e i suoi souks colorati.",
-      coordinates: [-7.9811, 31.6295],
-      image: "/images/marrakech-medina.png",
-    },
-    {
-      name: "Fes",
-      description: "La capitale spirituale del Marocco, con la medina più grande del mondo.",
-      coordinates: [-5.0003, 34.0181],
-      image: "/images/fes-architecture.png",
-    },
-    {
-      name: "Meknes",
-      description: "La Versailles del Marocco, con i suoi grandiosi monumenti imperiali.",
-      coordinates: [-5.5471, 33.8935],
-      image: "/images/imperial-cities.png",
-    },
-    {
-      name: "Rabat",
-      description: "La capitale moderna del Marocco, patrimonio UNESCO.",
-      coordinates: [-6.8498, 34.0209],
-      image: "/images/imperial-cities-tour.png",
-    },
-  ]
+  const { resolvedTheme } = useTheme()
+  const isDark = resolvedTheme === "dark"
 
   useEffect(() => {
-    // Inject CSS
+    setMounted(true)
+  }, [])
+
+  const toggleFavorite = (cityId: string) => {
+    setFavorites((prev) => (prev.includes(cityId) ? prev.filter((id) => id !== cityId) : [...prev, cityId]))
+  }
+
+  const handleCitySelect = (city: City) => {
+    setSelectedCity(city)
+
+    if (mapRef.current) {
+      // Centra la mappa sulla città selezionata
+      mapRef.current.flyTo({
+        center: city.coordinates,
+        zoom: 8,
+        duration: 1500,
+        padding: { top: 100, bottom: 100, left: 50, right: 50 },
+      })
+
+      // Chiudi tutti i popup esistenti
+      popupsRef.current.forEach((popup) => popup.remove())
+      popupsRef.current = []
+
+      // Trova il marker corrispondente e mostra il popup
+      setTimeout(() => {
+        const cityIndex = MOROCCO_CITIES.findIndex((c) => c.id === city.id)
+        if (cityIndex !== -1 && markersRef.current[cityIndex]) {
+          const marker = markersRef.current[cityIndex]
+          const popup = createPopup(city, isDark)
+          popup.setLngLat(city.coordinates).addTo(mapRef.current)
+          popupsRef.current.push(popup)
+
+          // Aggiorna stili marker
+          document.querySelectorAll(".morocco-marker").forEach((m) => m.classList.remove("selected"))
+          marker.getElement().classList.add("selected")
+        }
+      }, 1600) // Aspetta che l'animazione flyTo finisca
+    }
+  }
+
+  const createPopup = (city: City, isDark: boolean) => {
+    return new (window as any).mapboxgl.Popup({
+      closeButton: true,
+      closeOnClick: false,
+      offset: [0, -20],
+      anchor: "bottom",
+      maxWidth: "380px",
+    }).setHTML(`
+      <div class="p-0 ${isDark ? "bg-gray-900 text-white" : "bg-white text-gray-900"} rounded-xl overflow-hidden">
+        <div class="relative h-32 overflow-hidden">
+          <img src="${city.image || "/placeholder.svg"}" alt="${city.name}" class="w-full h-full object-cover" />
+          <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+          <div class="absolute bottom-3 left-3 text-white">
+            <h3 class="font-bold text-lg">${city.name}</h3>
+            <div class="flex items-center gap-2">
+              <div class="flex items-center gap-1">
+                <svg class="w-4 h-4 text-yellow-400 fill-current" viewBox="0 0 20 20">
+                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                </svg>
+                <span class="text-sm font-medium">${city.rating}</span>
+              </div>
+              <span class="text-xs opacity-80">${city.tours} tour</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="p-4">
+          <p class="text-sm ${isDark ? "text-gray-300" : "text-gray-600"} mb-3 line-clamp-2">${city.description}</p>
+          
+          <div class="mb-3">
+            <p class="text-xs font-medium ${isDark ? "text-gray-400" : "text-gray-500"} mb-2">Highlights:</p>
+            <div class="flex flex-wrap gap-1">
+              ${city.highlights
+                .slice(0, 3)
+                .map(
+                  (highlight) => `
+                <span class="px-2 py-1 text-xs rounded-full ${isDark ? "bg-gray-800 text-gray-300" : "bg-gray-100 text-gray-600"}">${highlight}</span>
+              `,
+                )
+                .join("")}
+            </div>
+          </div>
+          
+          <div class="flex gap-2">
+            <button onclick="window.location.href='${city.pageUrl}'" class="flex-1 bg-gradient-to-r from-orange-500 to-red-600 text-white px-3 py-2 rounded-lg text-sm font-medium hover:from-orange-600 hover:to-red-700 transition-all flex items-center justify-center gap-1">
+              Scopri
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path>
+              </svg>
+            </button>
+            <button onclick="event.stopPropagation(); toggleCityFavorite('${city.id}')" class="px-3 py-2 border ${
+              isDark
+                ? "border-gray-600 text-gray-300 hover:bg-gray-800"
+                : "border-gray-300 text-gray-700 hover:bg-gray-50"
+            } rounded-lg text-sm transition-all">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    `)
+  }
+
+  useEffect(() => {
+    if (!mounted) return
+
+    // Load Mapbox CSS
     const mapboxCSS = document.createElement("link")
-    mapboxCSS.href = "https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css"
     mapboxCSS.rel = "stylesheet"
-    mapboxCSS.crossOrigin = "anonymous"
+    mapboxCSS.href = "https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css"
     document.head.appendChild(mapboxCSS)
 
-    // Custom styles for Morocco Dreams theme
+    // Load Mapbox JS
+    const mapboxJS = document.createElement("script")
+    mapboxJS.src = "https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"
+    mapboxJS.onload = initializeMap
+    document.head.appendChild(mapboxJS)
+
+    // Add custom styles
     const customStyles = document.createElement("style")
     customStyles.textContent = `
+      .mapboxgl-popup {
+        z-index: 50;
+      }
       .mapboxgl-popup-content {
         padding: 0 !important;
-        border-radius: 20px !important;
-        background: transparent !important;
-        max-width: none !important;
-        box-shadow: none !important;
-      }
-      .mapboxgl-popup-tip {
-        display: none !important;
+        border-radius: 1rem !important;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important;
+        border: none !important;
+        max-width: 380px !important;
       }
       .mapboxgl-popup-close-button {
+        color: ${isDark ? "#9ca3af" : "#6b7280"} !important;
+        font-size: 20px !important;
+        padding: 8px !important;
+        right: 8px !important;
+        top: 8px !important;
+      }
+      .mapboxgl-popup-close-button:hover {
+        background-color: ${isDark ? "rgba(55, 65, 81, 0.8)" : "rgba(0, 0, 0, 0.1)"} !important;
+        border-radius: 50% !important;
+      }
+      .mapboxgl-popup-tip {
+        border-top-color: ${isDark ? "rgb(17 24 39)" : "white"} !important;
+      }
+      .mapboxgl-ctrl-attrib {
         display: none !important;
       }
-      .morocco-popup {
-        background: white !important;
-        border-radius: 20px !important;
-        box-shadow: 0 25px 60px rgba(0, 0, 0, 0.15) !important;
-        overflow: hidden !important;
-        max-width: 350px !important;
-        min-width: 320px !important;
-        border: 1px solid rgba(0, 0, 0, 0.05) !important;
-      }
       .morocco-marker {
-        width: 50px !important;
-        height: 50px !important;
-        border-radius: 50% !important;
-        background: linear-gradient(135deg, #f97316 0%, #dc2626 100%) !important;
-        border: 3px solid #ffffff !important;
-        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2) !important;
-        cursor: pointer !important;
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-        transition: all 0.3s ease !important;
-        color: white !important;
-        font-weight: bold !important;
-        font-size: 11px !important;
-        position: relative !important;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        cursor: pointer;
       }
       .morocco-marker:hover {
-        transform: scale(1.1) !important;
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3) !important;
-        z-index: 10 !important;
+        transform: scale(1.2) translateY(-4px);
+        z-index: 10;
       }
-      .morocco-marker::after {
-        content: '';
-        position: absolute;
-        top: 100%;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 0;
-        height: 0;
-        border-left: 8px solid transparent;
-        border-right: 8px solid transparent;
-        border-top: 8px solid #f97316;
-        filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+      .morocco-marker.selected {
+        transform: scale(1.3) translateY(-6px);
+        z-index: 20;
       }
     `
     document.head.appendChild(customStyles)
 
-    // Load Mapbox JS
-    const mapboxScript = document.createElement("script")
-    mapboxScript.src = "https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"
-    mapboxScript.crossOrigin = "anonymous"
-    mapboxScript.onload = initializeMap
-    document.head.appendChild(mapboxScript)
-
     function initializeMap() {
-      if (!window.mapboxgl || !mapContainerRef.current) return
-
-      window.mapboxgl.accessToken =
+      if (!(window as any).mapboxgl || !mapContainerRef.current) return
+      ;(window as any).mapboxgl.accessToken =
         "pk.eyJ1IjoiZWRpc2JhbGkwMyIsImEiOiJjbTFvcnFvbjcxNTNnMmtxdnA0cjJkZGx0In0.gk1glAL0jkmWK1_Tyf4Fow"
 
-      const map = new window.mapboxgl.Map({
+      const map = new (window as any).mapboxgl.Map({
         container: mapContainerRef.current,
-        style: "mapbox://styles/mapbox/satellite-streets-v12",
+        style: isDark ? "mapbox://styles/mapbox/dark-v11" : "mapbox://styles/mapbox/satellite-streets-v12",
         center: [-6.2, 32.2],
         zoom: 5.5,
         attributionControl: false,
       })
 
-      map.addControl(new window.mapboxgl.NavigationControl(), "top-right")
+      map.addControl(new (window as any).mapboxgl.NavigationControl(), "top-right")
 
       map.on("load", () => {
-        imperialCities.forEach((city) => {
-          // Create marker element
-          const markerElement = document.createElement("div")
-          markerElement.className = "morocco-marker"
-          markerElement.innerHTML = city.name.substring(0, 3).toUpperCase()
-
-          // Create popup content
-          const popupContent = document.createElement("div")
-          popupContent.className = "morocco-popup"
-          popupContent.innerHTML = `
-            <div style="position: relative; height: 180px; overflow: hidden;">
-              <img src="${city.image}" alt="${city.name}" style="width: 100%; height: 100%; object-fit: cover;">
-              <button style="position: absolute; top: 12px; right: 12px; background: rgba(0, 0, 0, 0.5); border: none; border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: white; font-size: 18px; line-height: 1;" onclick="this.closest('.mapboxgl-popup').remove()">
-                ×
-              </button>
-            </div>
-            <div style="padding: 20px;">
-              <h3 style="font-size: 18px; font-weight: 700; margin: 0 0 12px 0; color: #1e293b;">${city.name}</h3>
-              <p style="font-size: 14px; line-height: 1.6; color: #64748b; margin-bottom: 20px;">${city.description}</p>
-              <div style="display: flex; gap: 10px;">
-                <button style="flex: 1; padding: 12px 16px; border-radius: 12px; border: none; background: linear-gradient(135deg, #f97316 0%, #dc2626 100%); color: white; font-weight: 600; cursor: pointer; font-size: 14px;">
-                  Scopri ${city.name}
-                </button>
-                <button style="flex: 1; padding: 12px 16px; border-radius: 12px; border: 2px solid #e2e8f0; background: #f8fafc; color: #475569; font-weight: 600; cursor: pointer; font-size: 14px;">
-                  Prenota Tour
-                </button>
-              </div>
-            </div>
-          `
-
-          // Create popup
-          const popup = new window.mapboxgl.Popup({
-            closeButton: false,
-            closeOnClick: false,
-            offset: [0, -15],
-            anchor: "bottom",
-            maxWidth: "none",
-          }).setDOMContent(popupContent)
-
-          // Create marker with popup - Fixed positioning
-          const marker = new window.mapboxgl.Marker({
-            element: markerElement,
-            anchor: "bottom",
-          })
-            .setLngLat(city.coordinates)
-            .addTo(map)
-
-          // Add hover events to show/hide popup
-          markerElement.addEventListener("mouseenter", () => {
-            popup.addTo(map)
-            marker.setPopup(popup)
-          })
-
-          markerElement.addEventListener("mouseleave", () => {
-            popup.remove()
-          })
-
-          // Add click event to toggle popup
-          markerElement.addEventListener("click", () => {
-            if (popup.isOpen()) {
-              popup.remove()
-            } else {
-              popup.addTo(map)
-              marker.setPopup(popup)
-            }
-          })
-        })
+        setIsLoading(false)
+        createMarkers(map)
       })
 
       mapRef.current = map
+    }
+
+    function createMarkers(map: any) {
+      // Clear existing markers and popups
+      markersRef.current.forEach((marker) => marker.remove())
+      popupsRef.current.forEach((popup) => popup.remove())
+      markersRef.current = []
+      popupsRef.current = []
+
+      MOROCCO_CITIES.forEach((city, index) => {
+        // Create marker element
+        const markerEl = document.createElement("div")
+        markerEl.className = "morocco-marker"
+        markerEl.innerHTML = `
+          <div class="w-12 h-12 rounded-full bg-gradient-to-br ${
+            categoryConfig[city.category].color
+          } border-4 border-white shadow-lg flex items-center justify-center text-white text-lg font-bold relative">
+            ${categoryConfig[city.category].icon}
+            <div class="absolute -top-1 -right-1 w-6 h-6 bg-orange-500 rounded-full flex items-center justify-center text-white text-xs font-bold">
+              ${city.tours}
+            </div>
+          </div>
+        `
+
+        // Create marker
+        const marker = new (window as any).mapboxgl.Marker({
+          element: markerEl,
+          anchor: "bottom",
+        })
+          .setLngLat(city.coordinates)
+          .addTo(map)
+
+        markersRef.current.push(marker)
+
+        // Add click event to marker
+        markerEl.addEventListener("click", () => {
+          handleCitySelect(city)
+        })
+
+        // Add hover events for temporary popup
+        let hoverPopup: any = null
+        markerEl.addEventListener("mouseenter", () => {
+          if (!selectedCity || selectedCity.id !== city.id) {
+            hoverPopup = createPopup(city, isDark)
+            hoverPopup.setLngLat(city.coordinates).addTo(map)
+          }
+        })
+
+        markerEl.addEventListener("mouseleave", () => {
+          if (hoverPopup && (!selectedCity || selectedCity.id !== city.id)) {
+            setTimeout(() => {
+              if (hoverPopup && !hoverPopup.getElement()?.matches(":hover")) {
+                hoverPopup.remove()
+                hoverPopup = null
+              }
+            }, 300)
+          }
+        })
+      })
+
+      // Fit bounds to show all cities
+      if (MOROCCO_CITIES.length > 0) {
+        const bounds = new (window as any).mapboxgl.LngLatBounds()
+        MOROCCO_CITIES.forEach((city) => bounds.extend(city.coordinates))
+        map.fitBounds(bounds, { padding: 100, maxZoom: 8 })
+      }
+    }
+    // Global function for popup buttons
+    ;(window as any).toggleCityFavorite = (cityId: string) => {
+      toggleFavorite(cityId)
     }
 
     return () => {
@@ -212,22 +393,207 @@ export default function MoroccoMap() {
         mapRef.current.remove()
       }
     }
-  }, [])
+  }, [isDark, mounted])
+
+  // Update map style when theme changes
+  useEffect(() => {
+    if (mapRef.current && mounted) {
+      const newStyle = isDark ? "mapbox://styles/mapbox/dark-v11" : "mapbox://styles/mapbox/satellite-streets-v12"
+      mapRef.current.setStyle(newStyle)
+    }
+  }, [isDark, mounted])
+
+  if (!mounted) {
+    return (
+      <section className="py-16 lg:py-24 bg-background">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center">
+            <div className="w-16 h-16 border-4 border-orange-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+            <p className="text-lg font-medium text-foreground">Caricamento mappa del Marocco...</p>
+          </div>
+        </div>
+      </section>
+    )
+  }
 
   return (
-    <div className="py-20 bg-gray-50 dark:bg-gray-800">
+    <section className="py-16 lg:py-24 bg-background">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16">
-          <h2 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">Esplora le Città Imperiali</h2>
-          <p className="text-xl text-gray-600 dark:text-gray-300">
-            Passa il mouse sui marker per scoprire le meraviglie di ogni città
+        {/* Header */}
+        <div className="text-center mb-12 lg:mb-16">
+          <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-4">Esplora le Città del Marocco</h2>
+          <p className="text-lg lg:text-xl text-muted-foreground max-w-2xl mx-auto">
+            Scopri le meraviglie del Regno del Marocco attraverso le sue città più affascinanti
           </p>
         </div>
 
-        <div className="bg-white dark:bg-gray-900 rounded-3xl overflow-hidden shadow-xl">
-          <div ref={mapContainerRef} className="w-full h-96" />
+        {/* Main Content */}
+        <div className="grid lg:grid-cols-4 gap-8">
+          {/* Sidebar */}
+          <div className="lg:col-span-1">
+            {/* Cities List */}
+            <div className="bg-card rounded-2xl p-6 shadow-lg">
+              <h3 className="text-xl font-bold text-foreground mb-4">Città ({MOROCCO_CITIES.length})</h3>
+              <div className="space-y-3 max-h-96 overflow-y-auto">
+                {MOROCCO_CITIES.map((city) => (
+                  <button
+                    key={city.id}
+                    onClick={() => handleCitySelect(city)}
+                    className={`w-full p-4 rounded-xl text-left transition-all ${
+                      selectedCity?.id === city.id
+                        ? "bg-gradient-to-r from-orange-500 to-red-600 text-white shadow-lg"
+                        : "bg-muted hover:bg-muted/80"
+                    }`}
+                  >
+                    <div className="flex items-start gap-3">
+                      <div
+                        className={`w-12 h-12 rounded-xl bg-gradient-to-br ${
+                          categoryConfig[city.category].color
+                        } flex items-center justify-center text-white font-bold text-lg shadow-lg`}
+                      >
+                        {categoryConfig[city.category].icon}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 mb-1">
+                          <h4
+                            className={`font-semibold text-sm truncate ${
+                              selectedCity?.id === city.id ? "text-white" : "text-foreground"
+                            }`}
+                          >
+                            {city.name}
+                          </h4>
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              toggleFavorite(city.id)
+                            }}
+                            className="p-0.5"
+                          >
+                            <Heart
+                              className={`w-3 h-3 ${
+                                favorites.includes(city.id)
+                                  ? "fill-red-500 text-red-500"
+                                  : selectedCity?.id === city.id
+                                    ? "text-white/70"
+                                    : "text-muted-foreground"
+                              }`}
+                            />
+                          </button>
+                        </div>
+                        <p
+                          className={`text-xs line-clamp-2 mb-2 ${
+                            selectedCity?.id === city.id ? "text-white/80" : "text-muted-foreground"
+                          }`}
+                        >
+                          {city.description}
+                        </p>
+                        <div className="flex items-center justify-between text-xs">
+                          <div className="flex items-center gap-1">
+                            <Star className="w-3 h-3 text-yellow-400 fill-current" />
+                            <span className={selectedCity?.id === city.id ? "text-white/80" : "text-muted-foreground"}>
+                              {city.rating}
+                            </span>
+                          </div>
+                          <span className={selectedCity?.id === city.id ? "text-white/80" : "text-muted-foreground"}>
+                            {city.tours} tour
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Map */}
+          <div className="lg:col-span-3">
+            <div className="bg-card rounded-2xl overflow-hidden shadow-lg relative">
+              {isLoading && (
+                <div className="absolute inset-0 bg-muted/50 backdrop-blur-sm flex items-center justify-center z-50">
+                  <div className="text-center">
+                    <div className="w-16 h-16 border-4 border-orange-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+                    <p className="text-lg font-medium text-foreground">Caricamento mappa...</p>
+                  </div>
+                </div>
+              )}
+              <div ref={mapContainerRef} className="w-full h-[600px]" />
+            </div>
+          </div>
         </div>
+
+        {/* Mobile Selected City Details */}
+        {selectedCity && (
+          <div className="lg:hidden mt-8 bg-card rounded-2xl shadow-lg p-6">
+            <div className="flex items-start justify-between mb-4">
+              <div className="flex-1">
+                <h3 className="text-xl font-bold text-foreground mb-1">{selectedCity.name}</h3>
+                <p className="text-muted-foreground text-sm">{selectedCity.description}</p>
+              </div>
+              <button
+                onClick={() => setSelectedCity(null)}
+                className="p-2 hover:bg-muted rounded-full transition-colors"
+              >
+                <svg className="w-5 h-5 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+
+            <div className="mb-4">
+              <img
+                src={selectedCity.image || "/placeholder.svg"}
+                alt={selectedCity.name}
+                className="w-full h-48 object-cover rounded-lg"
+              />
+            </div>
+
+            <div className="grid grid-cols-3 gap-3 mb-4">
+              <div className="text-center p-3 bg-muted rounded-lg">
+                <div className="font-bold text-orange-500">{selectedCity.rating}</div>
+                <div className="text-xs text-muted-foreground">Rating</div>
+              </div>
+              <div className="text-center p-3 bg-muted rounded-lg">
+                <div className="font-bold text-orange-500">{selectedCity.tours}</div>
+                <div className="text-xs text-muted-foreground">Tour</div>
+              </div>
+              <div className="text-center p-3 bg-muted rounded-lg">
+                <div className="font-bold text-orange-500">{categoryConfig[selectedCity.category].icon}</div>
+                <div className="text-xs text-muted-foreground">{categoryConfig[selectedCity.category].label}</div>
+              </div>
+            </div>
+
+            <div className="space-y-3">
+              <div>
+                <h4 className="font-semibold text-foreground mb-2">Highlights</h4>
+                <div className="flex flex-wrap gap-2">
+                  {selectedCity.highlights.map((highlight, index) => (
+                    <span key={index} className="px-2 py-1 bg-muted text-muted-foreground text-xs rounded-lg">
+                      {highlight}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              <div className="flex gap-3 pt-4">
+                <Link
+                  href={selectedCity.pageUrl}
+                  className="flex-1 bg-gradient-to-r from-orange-500 to-red-600 text-white py-3 px-4 rounded-xl font-semibold hover:from-orange-600 hover:to-red-700 transition-all flex items-center justify-center gap-2"
+                >
+                  Scopri {selectedCity.name}
+                  <ArrowRight className="w-4 h-4" />
+                </Link>
+                <button
+                  onClick={() => toggleFavorite(selectedCity.id)}
+                  className="px-4 py-3 border-2 border-orange-500 text-orange-500 rounded-xl font-semibold hover:bg-orange-50 dark:hover:bg-orange-900/20 transition-all"
+                >
+                  <Heart className={`w-5 h-5 ${favorites.includes(selectedCity.id) ? "fill-current" : ""}`} />
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
-    </div>
+    </section>
   )
 }
