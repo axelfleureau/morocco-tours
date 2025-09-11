@@ -84,9 +84,10 @@ export default function Navbar({ onSearchOpen }: NavbarProps) {
         { name: "Hammam & Spa", href: "/esperienze/hammam", description: "Benessere tradizionale marocchino" },
         { name: "Cucina Marocchina", href: "/esperienze/cucina", description: "Corsi di cucina autentica" },
         { name: "Trekking Atlante", href: "/esperienze/trekking", description: "Escursioni in montagna" },
-        { name: "Surf Essaouira", href: "/esperienze/surf", description: "Onde perfette sulla costa" },
+        { name: "Surf Taghazout", href: "/esperienze/surf", description: "Onde perfette sulla costa" },
         { name: "Fotografia", href: "/esperienze/fotografia", description: "Tour fotografici guidati" },
         { name: "Artigianato", href: "/esperienze/artigianato", description: "Laboratori con maestri artigiani" },
+        { name: "Quad e Cammelli", href: "/esperienze/quad-cammelli", description: "Avventure nel deserto" },
       ],
     },
     {

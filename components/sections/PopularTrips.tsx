@@ -2,10 +2,12 @@
 
 import { useState } from "react"
 import Link from "next/link"
-import { Clock, Users, Star, ArrowRight } from "lucide-react"
+import { Clock, Users, Star, ArrowRight, Filter } from "lucide-react"
 
 export default function PopularTrips() {
   const [activeTrip, setActiveTrip] = useState(0)
+  const [selectedCategory, setSelectedCategory] = useState("Tutti")
+  const [selectedStyle, setSelectedStyle] = useState("Tutti")
 
   const trips = [
     {
@@ -21,6 +23,8 @@ export default function PopularTrips() {
       highlights: ["Medine UNESCO", "Palazzi reali", "Souks autentici", "Guide esperte"],
       description:
         "Scopri le quattro città imperiali del Marocco in un viaggio indimenticabile attraverso storia, cultura e tradizioni millenarie.",
+      category: "Culturale",
+      style: "Gruppo",
     },
     {
       id: 2,
@@ -35,6 +39,8 @@ export default function PopularTrips() {
       highlights: ["Notte nel deserto", "Cammelli", "Alba sulle dune", "Campo berbero"],
       description:
         "Vivi l'esperienza magica del Sahara con notti sotto le stelle e tramonti mozzafiato sulle dune dorate.",
+      category: "Avventura",
+      style: "Piccoli Gruppi",
     },
     {
       id: 3,
@@ -49,8 +55,16 @@ export default function PopularTrips() {
       highlights: ["Tutto il Marocco", "Città + Deserto", "Costa atlantica", "Montagne Atlas"],
       description:
         "Il tour più completo per scoprire ogni angolo del Marocco: dalle città imperiali al deserto, dalla costa alle montagne.",
+      category: "Completo",
+      style: "Su Misura",
     },
   ]
+
+  const filteredTrips = trips.filter((trip) => {
+    const categoryMatch = selectedCategory === "Tutti" || trip.category === selectedCategory
+    const styleMatch = selectedStyle === "Tutti" || trip.style === selectedStyle
+    return categoryMatch && styleMatch
+  })
 
   return (
     <div className="py-16 lg:py-24 bg-muted/30">
@@ -62,8 +76,45 @@ export default function PopularTrips() {
           </p>
         </div>
 
+        <div className="mb-8 bg-card rounded-2xl p-6 shadow-lg">
+          <div className="flex items-center mb-4">
+            <Filter className="w-5 h-5 text-orange-500 mr-2" />
+            <h3 className="text-lg font-semibold text-foreground">Filtra i Viaggi</h3>
+          </div>
+          <div className="grid md:grid-cols-2 gap-6">
+            <div>
+              <label className="block text-sm font-medium text-foreground mb-2">Categoria</label>
+              <select
+                value={selectedCategory}
+                onChange={(e) => setSelectedCategory(e.target.value)}
+                className="w-full px-4 py-3 bg-background border border-border rounded-xl text-foreground focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200"
+              >
+                <option value="Tutti">Tutte le Categorie</option>
+                <option value="Culturale">Culturale</option>
+                <option value="Avventura">Avventura</option>
+                <option value="Completo">Completo</option>
+                <option value="Relax">Relax</option>
+              </select>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-foreground mb-2">Stile di Viaggio</label>
+              <select
+                value={selectedStyle}
+                onChange={(e) => setSelectedStyle(e.target.value)}
+                className="w-full px-4 py-3 bg-background border border-border rounded-xl text-foreground focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200"
+              >
+                <option value="Tutti">Tutti gli Stili</option>
+                <option value="Gruppo">Gruppo</option>
+                <option value="Piccoli Gruppi">Piccoli Gruppi</option>
+                <option value="Su Misura">Su Misura</option>
+                <option value="Famiglia">Famiglia</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
         <div className="grid lg:grid-cols-3 gap-8">
-          {trips.map((trip, idx) => (
+          {filteredTrips.map((trip, idx) => (
             <div
               key={trip.id}
               className={`group cursor-pointer transition-all duration-500 ${
@@ -72,7 +123,6 @@ export default function PopularTrips() {
               onMouseEnter={() => setActiveTrip(idx)}
             >
               <div className="bg-card rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500">
-                {/* Image */}
                 <div className="relative h-64 lg:h-80 overflow-hidden">
                   <img
                     src={trip.image || "/placeholder.svg?height=400&width=600"}
@@ -80,34 +130,25 @@ export default function PopularTrips() {
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-
-                  {/* Price Badge */}
-                  <div className="absolute top-4 right-4 bg-background/95 backdrop-blur-sm rounded-full px-4 py-2">
+                  <div className="absolute top-4 right-4 bg-white rounded-full px-4 py-2 shadow-lg">
                     <div className="flex items-center space-x-2">
-                      <span className="font-bold text-lg text-foreground">{trip.price}</span>
+                      <span className="font-bold text-lg text-gray-900">{trip.price}</span>
                       {trip.originalPrice && (
-                        <span className="text-sm line-through text-muted-foreground">{trip.originalPrice}</span>
+                        <span className="text-sm line-through text-gray-500">{trip.originalPrice}</span>
                       )}
                     </div>
                   </div>
-
-                  {/* Rating */}
-                  <div className="absolute bottom-4 right-4 flex items-center space-x-1 bg-black/30 backdrop-blur-sm px-3 py-1 rounded-full">
+                  <div className="absolute bottom-4 right-4 flex items-center space-x-1 bg-black/70 backdrop-blur-sm px-3 py-2 rounded-full">
                     <Star className="w-4 h-4 text-yellow-400 fill-current" />
                     <span className="text-white text-sm font-semibold">{trip.rating}</span>
                     <span className="text-white/70 text-sm">({trip.reviews})</span>
                   </div>
-
-                  {/* Title Overlay */}
                   <div className="absolute bottom-6 left-6 text-white">
                     <h3 className="text-2xl lg:text-3xl font-bold mb-2">{trip.title}</h3>
                     <p className="text-gray-200 text-sm lg:text-base">{trip.subtitle}</p>
                   </div>
                 </div>
-
-                {/* Content */}
                 <div className="p-6 lg:p-8">
-                  {/* Info Grid */}
                   <div className="grid grid-cols-2 gap-4 mb-6">
                     <div className="flex items-center space-x-2 text-sm text-muted-foreground">
                       <Clock className="w-4 h-4 text-orange-500" />
@@ -118,26 +159,20 @@ export default function PopularTrips() {
                       <span>Max 12 persone</span>
                     </div>
                   </div>
-
-                  {/* Description */}
                   <p className="text-muted-foreground mb-6 leading-relaxed">{trip.description}</p>
-
-                  {/* Highlights */}
                   <div className="mb-6">
                     <h4 className="font-semibold text-foreground mb-3">Highlights:</h4>
                     <div className="flex flex-wrap gap-2">
                       {trip.highlights.map((highlight, hidx) => (
                         <span
                           key={hidx}
-                          className="bg-orange-100 dark:bg-orange-900/30 text-orange-800 dark:text-orange-300 px-3 py-1 rounded-full text-xs font-medium"
+                          className="bg-amber-400 text-gray-900 px-3 py-1 rounded-full text-xs font-medium shadow-sm border border-amber-500/20 dark:bg-amber-600 dark:text-gray-100"
                         >
                           {highlight}
                         </span>
                       ))}
                     </div>
                   </div>
-
-                  {/* Actions */}
                   <div className="flex space-x-3">
                     <Link
                       href={`/viaggi/gruppo/${trip.id}`}
@@ -158,7 +193,6 @@ export default function PopularTrips() {
           ))}
         </div>
 
-        {/* View All Button */}
         <div className="text-center mt-12">
           <Link
             href="/viaggi/gruppo"

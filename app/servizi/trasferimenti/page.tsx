@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -91,8 +92,7 @@ export default function TrasferimentiPage() {
   const [selectedTransfer, setSelectedTransfer] = useState(transferTypes[0])
 
   return (
-    <div className="min-h-screen bg-white dark:bg-gray-900">
-      {/* Hero Section */}
+    <div className="min-h-screen bg-[var(--bg-primary)]">
       <section className="relative py-20 overflow-hidden bg-gradient-to-b from-orange-50 to-white dark:from-gray-800 dark:to-gray-900">
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
@@ -101,14 +101,14 @@ export default function TrasferimentiPage() {
                 <Car className="h-12 w-12 text-orange-600 dark:text-orange-400" />
               </div>
             </div>
-            <h1 className="text-4xl md:text-6xl font-bold text-gray-900 dark:text-white mb-6">
+            <h1 className="text-4xl md:text-6xl font-bold text-[var(--text-primary)] mb-6">
               Trasferimenti <span className="text-orange-600 dark:text-orange-400">Premium</span>
             </h1>
-            <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto mb-8">
+            <p className="text-xl text-[var(--text-secondary)] max-w-3xl mx-auto mb-8">
               Viaggia in comfort e sicurezza con i nostri servizi di trasferimento professionale. Dall'aeroporto al tuo
               hotel, ovunque tu voglia andare in Marocco.
             </p>
-            <div className="flex flex-wrap justify-center gap-4 text-sm text-gray-600 dark:text-gray-400">
+            <div className="flex flex-wrap justify-center gap-4 text-sm text-[var(--text-secondary)]">
               <div className="flex items-center gap-2">
                 <CheckCircle className="h-5 w-5 text-green-500" />
                 <span>Disponibile 24/7</span>
@@ -126,14 +126,13 @@ export default function TrasferimentiPage() {
         </div>
       </section>
 
-      {/* Transfer Types */}
-      <section className="py-20">
+      <section className="py-20 bg-[var(--bg-secondary)]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+            <h2 className="text-3xl md:text-4xl font-bold text-[var(--text-primary)] mb-4">
               Scegli il Tuo Trasferimento
             </h2>
-            <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+            <p className="text-lg text-[var(--text-secondary)] max-w-2xl mx-auto">
               Offriamo diverse categorie di veicoli per soddisfare ogni esigenza e budget
             </p>
           </div>
@@ -142,7 +141,7 @@ export default function TrasferimentiPage() {
             {transferTypes.map((transfer) => (
               <Card
                 key={transfer.id}
-                className={`cursor-pointer transition-all duration-300 hover:shadow-xl ${
+                className={`cursor-pointer transition-all duration-300 hover:shadow-xl bg-[var(--card-bg)] border-[var(--card-border)] ${
                   selectedTransfer.id === transfer.id ? "ring-2 ring-orange-500 shadow-lg" : "hover:shadow-lg"
                 }`}
                 onClick={() => setSelectedTransfer(transfer)}
@@ -151,20 +150,20 @@ export default function TrasferimentiPage() {
                   <div className="w-16 h-16 mx-auto mb-4 bg-orange-100 dark:bg-orange-900/30 rounded-full flex items-center justify-center">
                     <Car className="h-8 w-8 text-orange-600 dark:text-orange-400" />
                   </div>
-                  <CardTitle className="text-xl">{transfer.name}</CardTitle>
-                  <CardDescription>{transfer.description}</CardDescription>
+                  <CardTitle className="text-xl text-[var(--text-primary)]">{transfer.name}</CardTitle>
+                  <CardDescription className="text-[var(--text-secondary)]">{transfer.description}</CardDescription>
                 </CardHeader>
                 <CardContent className="text-center">
                   <div className="text-3xl font-bold text-orange-600 dark:text-orange-400 mb-2">€{transfer.price}</div>
-                  <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">da aeroporto a città</p>
+                  <p className="text-sm text-[var(--text-secondary)] mb-4">da aeroporto a città</p>
                   <div className="space-y-2 text-sm">
                     <div className="flex items-center justify-center gap-2">
-                      <Users className="h-4 w-4 text-gray-400" />
-                      <span>{transfer.capacity}</span>
+                      <Users className="h-4 w-4 text-[var(--text-secondary)]" />
+                      <span className="text-[var(--text-secondary)]">{transfer.capacity}</span>
                     </div>
                     <div className="flex items-center justify-center gap-2">
-                      <Shield className="h-4 w-4 text-gray-400" />
-                      <span>{transfer.luggage}</span>
+                      <Shield className="h-4 w-4 text-[var(--text-secondary)]" />
+                      <span className="text-[var(--text-secondary)]">{transfer.luggage}</span>
                     </div>
                   </div>
                 </CardContent>
@@ -172,10 +171,9 @@ export default function TrasferimentiPage() {
             ))}
           </div>
 
-          {/* Selected Transfer Details */}
-          <Card className="mb-12">
+          <Card className="mb-12 bg-[var(--card-bg)] border-[var(--card-border)]">
             <CardHeader>
-              <CardTitle className="text-2xl flex items-center gap-3">
+              <CardTitle className="text-2xl flex items-center gap-3 text-[var(--text-primary)]">
                 <Car className="h-6 w-6 text-orange-600" />
                 {selectedTransfer.name} - Dettagli
               </CardTitle>
@@ -183,22 +181,22 @@ export default function TrasferimentiPage() {
             <CardContent>
               <div className="grid md:grid-cols-2 gap-8">
                 <div>
-                  <h4 className="font-semibold mb-4">Veicoli Disponibili:</h4>
+                  <h4 className="font-semibold mb-4 text-[var(--text-primary)]">Veicoli Disponibili:</h4>
                   <ul className="space-y-2 mb-6">
                     {selectedTransfer.vehicles.map((vehicle, index) => (
                       <li key={index} className="flex items-center gap-2">
                         <CheckCircle className="h-4 w-4 text-green-500" />
-                        <span>{vehicle}</span>
+                        <span className="text-[var(--text-secondary)]">{vehicle}</span>
                       </li>
                     ))}
                   </ul>
 
-                  <h4 className="font-semibold mb-4">Servizi Inclusi:</h4>
+                  <h4 className="font-semibold mb-4 text-[var(--text-primary)]">Servizi Inclusi:</h4>
                   <ul className="space-y-2">
                     {selectedTransfer.features.map((feature, index) => (
                       <li key={index} className="flex items-center gap-2">
                         <CheckCircle className="h-4 w-4 text-green-500" />
-                        <span>{feature}</span>
+                        <span className="text-[var(--text-secondary)]">{feature}</span>
                       </li>
                     ))}
                   </ul>
@@ -206,8 +204,8 @@ export default function TrasferimentiPage() {
 
                 <div className="space-y-6">
                   <div className="bg-orange-50 dark:bg-orange-900/20 p-6 rounded-lg">
-                    <h4 className="font-semibold mb-4">Informazioni Importanti:</h4>
-                    <ul className="space-y-2 text-sm">
+                    <h4 className="font-semibold mb-4 text-[var(--text-primary)]">Informazioni Importanti:</h4>
+                    <ul className="space-y-2 text-sm text-[var(--text-secondary)]">
                       <li>• Prenotazione confermata entro 2 ore</li>
                       <li>• Autista ti aspetta con cartello nominativo</li>
                       <li>• Assistenza bagagli inclusa</li>
@@ -229,25 +227,27 @@ export default function TrasferimentiPage() {
         </div>
       </section>
 
-      {/* Popular Routes */}
-      <section className="py-20 bg-gray-50 dark:bg-gray-800">
+      <section className="py-20 bg-[var(--bg-primary)]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">Rotte Popolari</h2>
-            <p className="text-lg text-gray-600 dark:text-gray-300">Le destinazioni più richieste dai nostri clienti</p>
+            <h2 className="text-3xl md:text-4xl font-bold text-[var(--text-primary)] mb-4">Rotte Popolari</h2>
+            <p className="text-lg text-[var(--text-secondary)]">Le destinazioni più richieste dai nostri clienti</p>
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {routes.map((route, index) => (
-              <Card key={index} className="hover:shadow-lg transition-shadow">
+              <Card
+                key={index}
+                className="hover:shadow-lg transition-shadow bg-[var(--card-bg)] border-[var(--card-border)]"
+              >
                 <CardContent className="p-6">
                   <div className="flex items-start justify-between mb-4">
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-2">
                         <MapPin className="h-4 w-4 text-orange-600" />
-                        <span className="font-medium">{route.from}</span>
+                        <span className="font-medium text-[var(--text-primary)]">{route.from}</span>
                       </div>
-                      <div className="flex items-center gap-2 text-gray-600 dark:text-gray-400">
+                      <div className="flex items-center gap-2 text-[var(--text-secondary)]">
                         <ArrowRight className="h-4 w-4" />
                         <span>{route.to}</span>
                       </div>
@@ -260,13 +260,16 @@ export default function TrasferimentiPage() {
                     </Badge>
                   </div>
 
-                  <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400 mb-4">
+                  <div className="flex items-center gap-2 text-sm text-[var(--text-secondary)] mb-4">
                     <Clock className="h-4 w-4" />
                     <span>Durata: {route.duration}</span>
                   </div>
 
                   <Link href="/contatti">
-                    <Button variant="outline" className="w-full bg-transparent">
+                    <Button
+                      variant="outline"
+                      className="w-full bg-transparent border-[var(--card-border)] text-[var(--text-primary)] hover:bg-[var(--bg-secondary)]"
+                    >
                       Prenota Trasferimento
                     </Button>
                   </Link>
@@ -277,19 +280,21 @@ export default function TrasferimentiPage() {
         </div>
       </section>
 
-      {/* Testimonials */}
-      <section className="py-20">
+      <section className="py-20 bg-[var(--bg-secondary)]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+            <h2 className="text-3xl md:text-4xl font-bold text-[var(--text-primary)] mb-4">
               Cosa Dicono i Nostri Clienti
             </h2>
-            <p className="text-lg text-gray-600 dark:text-gray-300">Recensioni autentiche dai nostri viaggiatori</p>
+            <p className="text-lg text-[var(--text-secondary)]">Recensioni autentiche dai nostri viaggiatori</p>
           </div>
 
           <div className="grid md:grid-cols-3 gap-8">
             {testimonials.map((testimonial, index) => (
-              <Card key={index} className="hover:shadow-lg transition-shadow">
+              <Card
+                key={index}
+                className="hover:shadow-lg transition-shadow bg-[var(--card-bg)] border-[var(--card-border)]"
+              >
                 <CardContent className="p-6">
                   <div className="flex items-center gap-1 mb-4">
                     {[...Array(testimonial.rating)].map((_, i) => (
@@ -297,11 +302,11 @@ export default function TrasferimentiPage() {
                     ))}
                   </div>
 
-                  <p className="text-gray-600 dark:text-gray-300 mb-4 italic">"{testimonial.comment}"</p>
+                  <p className="text-[var(--text-secondary)] mb-4 italic">"{testimonial.comment}"</p>
 
-                  <div className="border-t pt-4">
-                    <p className="font-medium text-gray-900 dark:text-white">{testimonial.name}</p>
-                    <p className="text-sm text-gray-500 dark:text-gray-400">
+                  <div className="border-t border-[var(--card-border)] pt-4">
+                    <p className="font-medium text-[var(--text-primary)]">{testimonial.name}</p>
+                    <p className="text-sm text-[var(--text-secondary)]">
                       {testimonial.location} • {testimonial.date}
                     </p>
                   </div>
@@ -312,7 +317,6 @@ export default function TrasferimentiPage() {
         </div>
       </section>
 
-      {/* CTA Section */}
       <section className="py-20 bg-gradient-to-r from-orange-600 to-amber-600">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">Prenota il Tuo Trasferimento Ora</h2>

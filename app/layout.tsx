@@ -11,7 +11,7 @@ export const metadata: Metadata = {
   description:
     "Scopri il Marocco autentico con Morocco Dreams. Viaggi su misura, tour del deserto, città imperiali e esperienze uniche nel regno delle mille e una notte.",
   keywords: "Marocco, viaggi, tour, deserto, Marrakech, Fes, Casablanca, Sahara, viaggi su misura",
-    generator: 'v0.dev'
+    generator: 'v0.app'
 }
 
 export default function RootLayout({

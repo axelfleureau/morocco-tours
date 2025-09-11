@@ -1,27 +1,23 @@
 import ContactBanner from "@/components/cta/contact-banner"
-import { Waves, Wind, Sun, Compass, Users, Clock, Shield, Star } from 'lucide-react'
+import { Waves, Wind, Sun, Compass, Users, Clock, Shield, Star } from "lucide-react"
 import Link from "next/link"
 
-export default function SurfEssaouiraPage() {
+export default function SurfTaghazoutPage() {
   return (
     <div className="min-h-screen bg-white dark:bg-gray-950">
       <ContactBanner
-        title="Surf a Essaouira"
+        title="Surf a Taghazout"
         subtitle="Lezioni e coaching per tutti i livelli. Prenota ora la tua esperienza sulla costa atlantica."
       />
 
       {/* Hero Image */}
       <header className="relative">
         <div className="h-[320px] sm:h-[420px] lg:h-[520px] relative overflow-hidden">
-          <img
-            src="/images/essaouira-coast.png"
-            alt="Surf a Essaouira"
-            className="w-full h-full object-cover"
-          />
+          <img src="/images/essaouira-coast.png" alt="Surf a Taghazout" className="w-full h-full object-cover" />
           <div className="absolute inset-0 bg-black/30" />
           <div className="absolute bottom-8 left-8 text-white">
-            <h1 className="text-3xl lg:text-4xl font-bold mb-2">Surf a Essaouira</h1>
-            <p className="text-lg opacity-90">Onde perfette e vibe boho-chic</p>
+            <h1 className="text-3xl lg:text-4xl font-bold mb-2">Surf a Taghazout</h1>
+            <p className="text-lg opacity-90">Surf camp e lezioni a Taghazout</p>
           </div>
         </div>
       </header>
@@ -34,41 +30,44 @@ export default function SurfEssaouiraPage() {
             <div className="lg:col-span-2">
               <div className="prose prose-lg max-w-none">
                 <h2 className="text-2xl lg:text-3xl font-bold mb-4 text-gray-900 dark:text-white">
-                  Essaouira: il paradiso del surf marocchino
+                  Taghazout: il paradiso del surf marocchino
                 </h2>
                 <p className="text-gray-600 dark:text-gray-300 text-lg mb-8">
-                  Essaouira è considerata la capitale del surf del Marocco, grazie alle sue onde costanti, 
-                  ai venti alisei e all'atmosfera rilassata che caratterizza questa città patrimonio UNESCO. 
-                  Le nostre scuole partner offrono lezioni per tutti i livelli, dal principiante assoluto 
-                  al surfista esperto che vuole perfezionare la tecnica. Gli spot variano dalle onde dolci 
-                  per principianti alle reef break più impegnative.
+                  Taghazout è considerata la capitale del surf del Marocco, grazie alle sue onde costanti, ai venti
+                  alisei e all'atmosfera rilassata che caratterizza questo villaggio di pescatori. Le nostre scuole
+                  partner offrono lezioni per tutti i livelli, dal principiante assoluto al surfista esperto che vuole
+                  perfezionare la tecnica. Gli spot variano dalle onde dolci per principianti alle reef break più
+                  impegnative.
                 </p>
 
                 {/* Features Grid */}
                 <div className="grid sm:grid-cols-2 gap-6 mb-10">
                   {[
-                    { 
-                      icon: Waves, 
-                      title: "Spot leggendari", 
-                      text: "Essaouira Bay, Sidi Kaouki, Moulay Bouzerktoun e spot segreti accessibili solo con le guide" 
+                    {
+                      icon: Waves,
+                      title: "Spot leggendari",
+                      text: "Anchor Point, Killer Point, La Source e spot segreti accessibili solo con le guide",
                     },
-                    { 
-                      icon: Wind, 
-                      title: "Venti costanti", 
-                      text: "Aprile-Settembre con alisei perfetti per surf e windsurf, condizioni ideali tutto l'anno" 
+                    {
+                      icon: Wind,
+                      title: "Venti costanti",
+                      text: "Aprile-Settembre con alisei perfetti per surf e windsurf, condizioni ideali tutto l'anno",
                     },
-                    { 
-                      icon: Sun, 
-                      title: "Stagione onde", 
-                      text: "Ottobre-Marzo per swell atlantici più consistenti, Aprile-Settembre per principianti" 
+                    {
+                      icon: Sun,
+                      title: "Stagione onde",
+                      text: "Ottobre-Marzo per swell atlantici più consistenti, Aprile-Settembre per principianti",
                     },
-                    { 
-                      icon: Compass, 
-                      title: "Tutti i livelli", 
-                      text: "Dalle prime onde in schiuma bianca al perfezionamento su reef break impegnative" 
+                    {
+                      icon: Compass,
+                      title: "Tutti i livelli",
+                      text: "Dalle prime onde in schiuma bianca al perfezionamento su reef break impegnative",
                     },
                   ].map((feature, i) => (
-                    <div key={i} className="p-6 rounded-2xl bg-gray-50 dark:bg-gray-900 border border-gray-200/60 dark:border-gray-800">
+                    <div
+                      key={i}
+                      className="p-6 rounded-2xl bg-gray-50 dark:bg-gray-900 border border-gray-200/60 dark:border-gray-800"
+                    >
                       <feature.icon className="w-8 h-8 text-blue-600 dark:text-blue-400 mb-4" />
                       <h3 className="font-bold text-lg mb-2 text-gray-900 dark:text-white">{feature.title}</h3>
                       <p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">{feature.text}</p>
@@ -83,32 +82,38 @@ export default function SurfEssaouiraPage() {
                   </h3>
                   <div className="space-y-4">
                     <div className="flex gap-4">
-                      <div className="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center font-bold text-sm">1</div>
+                      <div className="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center font-bold text-sm">
+                        1
+                      </div>
                       <div>
                         <h4 className="font-semibold text-gray-900 dark:text-white">Arrivo e prime onde</h4>
                         <p className="text-gray-600 dark:text-gray-300 text-sm">
-                          Check-in, briefing sicurezza, prima lezione in spiaggia con tavole soft, 
-                          teoria delle onde e posizionamento.
+                          Check-in, briefing sicurezza, prima lezione in spiaggia con tavole soft, teoria delle onde e
+                          posizionamento.
                         </p>
                       </div>
                     </div>
                     <div className="flex gap-4">
-                      <div className="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center font-bold text-sm">2-3</div>
+                      <div className="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center font-bold text-sm">
+                        2-3
+                      </div>
                       <div>
                         <h4 className="font-semibold text-gray-900 dark:text-white">Tecnica e progressione</h4>
                         <p className="text-gray-600 dark:text-gray-300 text-sm">
-                          Lezioni mattutine (2h), analisi video, pomeriggi liberi per praticare, 
-                          introduzione al lineup e alle priorità.
+                          Lezioni mattutine (2h), analisi video, pomeriggi liberi per praticare, introduzione al lineup
+                          e alle priorità.
                         </p>
                       </div>
                     </div>
                     <div className="flex gap-4">
-                      <div className="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center font-bold text-sm">4-5</div>
+                      <div className="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center font-bold text-sm">
+                        4-5
+                      </div>
                       <div>
                         <h4 className="font-semibold text-gray-900 dark:text-white">Spot avanzati e cultura</h4>
                         <p className="text-gray-600 dark:text-gray-300 text-sm">
-                          Esplorazione spot diversi, sessioni autonome supervisionate, 
-                          visita della medina e workshop di artigianato locale.
+                          Esplorazione spot diversi, sessioni autonome supervisionate, visita della medina e workshop di
+                          artigianato locale.
                         </p>
                       </div>
                     </div>
@@ -127,7 +132,7 @@ export default function SurfEssaouiraPage() {
                       "Alloggio in surf house/riad",
                       "Colazione e cena",
                       "Assicurazione e assistenza medica",
-                      "Certificato di partecipazione"
+                      "Certificato di partecipazione",
                     ].map((item, idx) => (
                       <div key={idx} className="flex items-center gap-3">
                         <div className="w-2 h-2 bg-green-500 rounded-full" />
@@ -169,15 +174,13 @@ export default function SurfEssaouiraPage() {
                     <div>
                       <h4 className="font-semibold mb-2 text-gray-900 dark:text-white">Ottobre - Marzo</h4>
                       <p className="text-gray-600 dark:text-gray-300">
-                        Swell atlantici più consistenti, onde 1-3m, acqua 18-20°C, 
-                        ideale per intermedi/avanzati
+                        Swell atlantici più consistenti, onde 1-3m, acqua 18-20°C, ideale per intermedi/avanzati
                       </p>
                     </div>
                     <div>
                       <h4 className="font-semibold mb-2 text-gray-900 dark:text-white">Aprile - Settembre</h4>
                       <p className="text-gray-600 dark:text-gray-300">
-                        Onde più piccole e costanti, acqua 20-22°C, venti per windsurf, 
-                        perfetto per principianti
+                        Onde più piccole e costanti, acqua 20-22°C, venti per windsurf, perfetto per principianti
                       </p>
                     </div>
                   </div>
@@ -195,7 +198,7 @@ export default function SurfEssaouiraPage() {
                     <div className="text-3xl font-extrabold text-blue-600 dark:text-blue-400 mb-1">da €220</div>
                     <p className="text-sm text-gray-600 dark:text-gray-300">5 giorni surf camp completo</p>
                   </div>
-                  
+
                   <div className="space-y-3 mb-6">
                     <div className="flex items-center gap-2 text-sm">
                       <Users className="w-4 h-4 text-gray-500" />
@@ -217,7 +220,7 @@ export default function SurfEssaouiraPage() {
                   >
                     Prenota / Richiedi Info
                   </Link>
-                  
+
                   <p className="text-xs text-gray-600 dark:text-gray-400 mt-3 text-center">
                     Lezioni singole da €35. Noleggio attrezzatura disponibile.
                   </p>

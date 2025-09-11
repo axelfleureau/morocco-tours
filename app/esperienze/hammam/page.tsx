@@ -1,8 +1,7 @@
 "use client"
 
-import { Droplets, Heart, Sparkles, Clock, Users, Star, Thermometer, Leaf } from 'lucide-react'
+import { Droplets, Heart, Sparkles, Clock, Star, Thermometer, Leaf } from "lucide-react"
 import Link from "next/link"
-import { useState } from 'react'
 
 export default function HammamPage() {
   const hammamTypes = [
@@ -14,7 +13,13 @@ export default function HammamPage() {
       image: "/images/traditional-hammam.png",
       duration: "2-3 ore",
       price: "€45",
-      includes: ["Bagno turco", "Scrub con sapone nero", "Massaggio con guanto", "Maschera all'argilla", "Tè alla menta"],
+      includes: [
+        "Bagno turco",
+        "Scrub con sapone nero",
+        "Massaggio con guanto",
+        "Maschera all'argilla",
+        "Tè alla menta",
+      ],
       benefits: ["Purificazione profonda", "Esfoliazione naturale", "Rilassamento totale", "Pelle morbida"],
       rating: 4.9,
       reviews: 234,
@@ -149,14 +154,14 @@ export default function HammamPage() {
   ]
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-[var(--bg-primary)]">
       {/* Hero Section */}
       <div className="relative py-24 lg:py-32 bg-gradient-to-r from-pink-500 to-purple-600 overflow-hidden">
         <div className="absolute inset-0">
-          <img 
-            src="/images/traditional-hammam.png" 
-            alt="Hammam Tradizionale" 
-            className="w-full h-full object-cover opacity-30" 
+          <img
+            src="/images/traditional-hammam.png"
+            alt="Hammam Tradizionale"
+            className="w-full h-full object-cover opacity-30"
           />
           <div className="absolute inset-0 bg-black/40" />
         </div>
@@ -187,13 +192,11 @@ export default function HammamPage() {
       </div>
 
       {/* Hammam Types */}
-      <div className="py-16 lg:py-24 bg-white dark:bg-gray-900">
+      <div className="py-16 lg:py-24 bg-[var(--bg-secondary)]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12 lg:mb-16">
-            <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-4">
-              Tipi di Hammam
-            </h2>
-            <p className="text-lg lg:text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+            <h2 className="text-3xl lg:text-4xl font-bold text-[var(--text-primary)] mb-4">Tipi di Hammam</h2>
+            <p className="text-lg lg:text-xl text-[var(--text-secondary)] max-w-2xl mx-auto">
               Scegli l'esperienza perfetta per le tue esigenze di benessere
             </p>
           </div>
@@ -202,7 +205,7 @@ export default function HammamPage() {
             {hammamTypes.map((hammam, idx) => (
               <div
                 key={hammam.id}
-                className="group bg-white dark:bg-gray-800 rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 hover:scale-105"
+                className="group bg-[var(--card-bg)] border border-[var(--card-border)] rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 hover:scale-105"
               >
                 <div className="relative h-64 lg:h-80 overflow-hidden">
                   <img
@@ -211,7 +214,7 @@ export default function HammamPage() {
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                  
+
                   {/* Price Badge */}
                   <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-4 py-2 rounded-full">
                     <span className="font-bold text-lg text-gray-900">{hammam.price}</span>
@@ -235,17 +238,17 @@ export default function HammamPage() {
 
                 <div className="p-6 lg:p-8">
                   {/* Duration */}
-                  <div className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-400 mb-6">
+                  <div className="flex items-center space-x-2 text-sm text-[var(--text-secondary)] mb-6">
                     <Clock className="w-4 h-4 text-pink-500" />
                     <span>{hammam.duration}</span>
                   </div>
 
                   {/* Includes */}
                   <div className="mb-6">
-                    <h4 className="font-semibold text-gray-900 dark:text-white mb-3">Include:</h4>
+                    <h4 className="font-semibold text-[var(--text-primary)] mb-3">Include:</h4>
                     <div className="space-y-2">
                       {hammam.includes.map((item, iidx) => (
-                        <div key={iidx} className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-300">
+                        <div key={iidx} className="flex items-center space-x-2 text-sm text-[var(--text-secondary)]">
                           <div className="w-2 h-2 bg-pink-500 rounded-full" />
                           <span>{item}</span>
                         </div>
@@ -255,7 +258,7 @@ export default function HammamPage() {
 
                   {/* Benefits */}
                   <div className="mb-6">
-                    <h4 className="font-semibold text-gray-900 dark:text-white mb-3">Benefici:</h4>
+                    <h4 className="font-semibold text-[var(--text-primary)] mb-3">Benefici:</h4>
                     <div className="flex flex-wrap gap-2">
                       {hammam.benefits.map((benefit, bidx) => (
                         <span
@@ -285,13 +288,11 @@ export default function HammamPage() {
       </div>
 
       {/* Ritual Steps */}
-      <div className="py-16 lg:py-24 bg-gray-50 dark:bg-gray-800">
+      <div className="py-16 lg:py-24 bg-[var(--bg-primary)]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12 lg:mb-16">
-            <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-4">
-              Il Rituale del Hammam
-            </h2>
-            <p className="text-lg lg:text-xl text-gray-600 dark:text-gray-300">
+            <h2 className="text-3xl lg:text-4xl font-bold text-[var(--text-primary)] mb-4">Il Rituale del Hammam</h2>
+            <p className="text-lg lg:text-xl text-[var(--text-secondary)]">
               Un viaggio di purificazione in 6 passi tradizionali
             </p>
           </div>
@@ -300,7 +301,7 @@ export default function HammamPage() {
             {ritualSteps.map((step, idx) => (
               <div
                 key={step.step}
-                className="bg-white dark:bg-gray-900 rounded-2xl p-6 text-center hover:shadow-lg transition-all duration-300 hover:scale-105"
+                className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl p-6 text-center hover:shadow-lg transition-all duration-300 hover:scale-105"
               >
                 <div className="relative mb-6">
                   <div className="w-16 h-16 bg-pink-100 dark:bg-pink-900/30 rounded-full flex items-center justify-center mx-auto">
@@ -310,8 +311,8 @@ export default function HammamPage() {
                     {step.step}
                   </div>
                 </div>
-                <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-3">{step.title}</h3>
-                <p className="text-gray-600 dark:text-gray-300 text-sm mb-4">{step.description}</p>
+                <h3 className="text-lg font-bold text-[var(--text-primary)] mb-3">{step.title}</h3>
+                <p className="text-[var(--text-secondary)] text-sm mb-4">{step.description}</p>
                 <div className="flex items-center justify-center space-x-2 text-sm text-pink-600 dark:text-pink-400">
                   <Clock className="w-4 h-4" />
                   <span>{step.duration}</span>
@@ -323,25 +324,23 @@ export default function HammamPage() {
       </div>
 
       {/* Locations */}
-      <div className="py-16 lg:py-24 bg-white dark:bg-gray-900">
+      <div className="py-16 lg:py-24 bg-[var(--bg-secondary)]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12 lg:mb-16">
-            <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-4">
-              Dove Vivere l'Esperienza
-            </h2>
-            <p className="text-lg lg:text-xl text-gray-600 dark:text-gray-300">
+            <h2 className="text-3xl lg:text-4xl font-bold text-[var(--text-primary)] mb-4">Dove Vivere l'Esperienza</h2>
+            <p className="text-lg lg:text-xl text-[var(--text-secondary)]">
               I migliori hammam nelle città imperiali del Marocco
             </p>
           </div>
 
           {locations.map((location, idx) => (
             <div key={location.id} className="mb-12 lg:mb-16">
-              <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-8 text-center">{location.name}</h3>
+              <h3 className="text-2xl font-bold text-[var(--text-primary)] mb-8 text-center">{location.name}</h3>
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {location.venues.map((venue, vidx) => (
                   <div
                     key={vidx}
-                    className="bg-white dark:bg-gray-800 rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
+                    className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
                   >
                     <div className="relative h-48 overflow-hidden">
                       <img
@@ -359,7 +358,7 @@ export default function HammamPage() {
 
                     <div className="p-6">
                       <div className="flex items-center justify-between mb-3">
-                        <h4 className="text-lg font-bold text-gray-900 dark:text-white">{venue.name}</h4>
+                        <h4 className="text-lg font-bold text-[var(--text-primary)]">{venue.name}</h4>
                         <div className="flex items-center space-x-1">
                           <Star className="w-4 h-4 text-yellow-400 fill-current" />
                           <span className="text-sm font-semibold">{venue.rating}</span>
@@ -385,10 +384,8 @@ export default function HammamPage() {
       <div className="py-16 lg:py-24 bg-gradient-to-r from-pink-50 to-purple-50 dark:from-gray-800 dark:to-gray-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12 lg:mb-16">
-            <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-4">
-              Benefici del Hammam
-            </h2>
-            <p className="text-lg lg:text-xl text-gray-600 dark:text-gray-300">
+            <h2 className="text-3xl lg:text-4xl font-bold text-[var(--text-primary)] mb-4">Benefici del Hammam</h2>
+            <p className="text-lg lg:text-xl text-[var(--text-secondary)]">
               Più di un semplice bagno: un rituale di benessere completo
             </p>
           </div>
@@ -418,13 +415,13 @@ export default function HammamPage() {
             ].map((benefit, idx) => (
               <div
                 key={idx}
-                className="bg-white dark:bg-gray-800 rounded-2xl p-6 text-center hover:shadow-lg transition-all duration-300"
+                className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl p-6 text-center hover:shadow-lg transition-all duration-300"
               >
                 <div className="w-16 h-16 bg-pink-100 dark:bg-pink-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
                   <benefit.icon className="w-8 h-8 text-pink-600 dark:text-pink-400" />
                 </div>
-                <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-3">{benefit.title}</h3>
-                <p className="text-gray-600 dark:text-gray-300 text-sm">{benefit.description}</p>
+                <h3 className="text-lg font-bold text-[var(--text-primary)] mb-3">{benefit.title}</h3>
+                <p className="text-[var(--text-secondary)] text-sm">{benefit.description}</p>
               </div>
             ))}
           </div>

@@ -1,6 +1,6 @@
 import Link from "next/link"
 import ContactBanner from "@/components/cta/contact-banner"
-import { Mountain, Waves, Camera, Hammer } from 'lucide-react'
+import { Mountain, Waves, Camera, Hammer } from "lucide-react"
 
 const experiences = [
   {
@@ -10,16 +10,16 @@ const experiences = [
     excerpt: "Attraversa villaggi berberi e valli mozzafiato nel cuore dell'Alto Atlante con guide locali esperte.",
     image: "/images/atlas-mountains.png",
     price: "da €180",
-    duration: "3-7 giorni"
+    duration: "3-7 giorni",
   },
   {
     slug: "surf",
-    title: "Surf Essaouira",
+    title: "Surf Taghazout", // Updated from "Surf Essaouira" to "Surf Taghazout"
     icon: Waves,
-    excerpt: "Onde consistenti e atmosfera boho-chic: impara o perfeziona il surf sulla costa atlantica.",
+    excerpt: "Surf camp e lezioni a Taghazout: onde consistenti e atmosfera rilassata sulla costa atlantica.", // Updated description to reflect Taghazout location
     image: "/images/essaouira-coast.png",
     price: "da €220",
-    duration: "4-7 giorni"
+    duration: "4-7 giorni",
   },
   {
     slug: "fotografia",
@@ -28,7 +28,7 @@ const experiences = [
     excerpt: "Dalla luce del deserto ai colori delle medine: workshop fotografici per cogliere l'essenza del Marocco.",
     image: "/images/photo-tour.png",
     price: "da €150",
-    duration: "Mezza/intera giornata"
+    duration: "Mezza/intera giornata",
   },
   {
     slug: "artigianato",
@@ -37,16 +37,16 @@ const experiences = [
     excerpt: "Laboratori con maestri artigiani: ceramica, tessitura, pelle e zellige per vivere la tradizione.",
     image: "/images/moroccan-souk.png",
     price: "da €45",
-    duration: "2-8 ore"
+    duration: "2-8 ore",
   },
 ]
 
 export default function EsperienzeIndexPage() {
   return (
     <div className="min-h-screen bg-white dark:bg-gray-950">
-      <ContactBanner 
-        title="Vuoi prenotare un'esperienza?" 
-        subtitle="Contattaci subito: progettiamo tutto su misura per te." 
+      <ContactBanner
+        title="Vuoi prenotare un'esperienza?"
+        subtitle="Contattaci subito: progettiamo tutto su misura per te."
       />
 
       {/* Hero Section */}
@@ -57,8 +57,8 @@ export default function EsperienzeIndexPage() {
               Esperienze Autentiche in Marocco
             </h1>
             <p className="text-lg lg:text-xl text-gray-600 dark:text-gray-300">
-              Scegli tra attività uniche per vivere il Marocco come un locale. Ogni esperienza è guidata da esperti locali 
-              e progettata per offrirti momenti indimenticabili.
+              Scegli tra attività uniche per vivere il Marocco come un locale. Ogni esperienza è guidata da esperti
+              locali e progettata per offrirti momenti indimenticabili.
             </p>
           </header>
 
@@ -81,7 +81,7 @@ export default function EsperienzeIndexPage() {
                     <span className="text-sm text-white">{exp.duration}</span>
                   </div>
                 </div>
-                
+
                 <div className="p-6 lg:p-8">
                   <div className="flex items-center gap-3 mb-4">
                     <div className="w-12 h-12 bg-orange-100 dark:bg-orange-900/30 rounded-full flex items-center justify-center">
@@ -89,9 +89,9 @@ export default function EsperienzeIndexPage() {
                     </div>
                     <h2 className="text-2xl font-bold text-gray-900 dark:text-white">{exp.title}</h2>
                   </div>
-                  
+
                   <p className="text-gray-600 dark:text-gray-300 mb-6 leading-relaxed">{exp.excerpt}</p>
-                  
+
                   <div className="flex gap-3">
                     <Link
                       href={`/esperienze/${exp.slug}`}
@@ -130,18 +130,18 @@ export default function EsperienzeIndexPage() {
               {
                 title: "Guide Locali Esperte",
                 description: "Accompagnatori certificati che conoscono ogni segreto del territorio",
-                icon: "👨‍🏫"
+                icon: "👨‍🏫",
               },
               {
                 title: "Piccoli Gruppi",
                 description: "Massimo 8 persone per garantire un'esperienza personalizzata",
-                icon: "👥"
+                icon: "👥",
               },
               {
                 title: "Assistenza 24/7",
                 description: "Supporto continuo durante tutta l'esperienza via WhatsApp",
-                icon: "📞"
-              }
+                icon: "📞",
+              },
             ].map((feature, idx) => (
               <div key={idx} className="text-center p-6 bg-white dark:bg-gray-800 rounded-2xl shadow-lg">
                 <div className="text-4xl mb-4">{feature.icon}</div>
@@ -160,7 +160,8 @@ export default function EsperienzeIndexPage() {
             Pronto per la Tua Prossima Avventura?
           </h2>
           <p className="text-lg lg:text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-2xl mx-auto">
-            Contattaci per personalizzare la tua esperienza o per ricevere consigli sui migliori periodi per ogni attività.
+            Contattaci per personalizzare la tua esperienza o per ricevere consigli sui migliori periodi per ogni
+            attività.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link

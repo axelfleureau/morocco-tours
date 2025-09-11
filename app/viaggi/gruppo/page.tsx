@@ -1,6 +1,6 @@
 "use client"
 
-import { Calendar, Users, MapPin, Star, X, Check } from 'lucide-react'
+import { Calendar, Users, MapPin, Star, X, Check } from "lucide-react"
 import { useState } from "react"
 import Link from "next/link"
 
@@ -38,14 +38,26 @@ export default function GroupTripsPage() {
           title: "Marrakech - Città Rossa",
           description: "Visita completa: Palazzo Bahia, Giardini Majorelle, Piazza Jemaa el-Fnaa",
         },
-        { day: 3, title: "Marrakech - Fes", description: "Partenza per Fes attraverso il Medio Atlante, sosta a Ifrane" },
+        {
+          day: 3,
+          title: "Marrakech - Fes",
+          description: "Partenza per Fes attraverso il Medio Atlante, sosta a Ifrane",
+        },
         {
           day: 4,
           title: "Fes - Capitale Spirituale",
           description: "Tour completo della medina: Università Al Quaraouiyine, concerie, souks",
         },
-        { day: 5, title: "Fes - Meknes", description: "Visita di Meknes: Bab Mansour, Mausoleo Moulay Ismail, scuderie reali" },
-        { day: 6, title: "Meknes - Rabat", description: "Trasferimento a Rabat, visita Torre Hassan e Kasbah degli Oudayas" },
+        {
+          day: 5,
+          title: "Fes - Meknes",
+          description: "Visita di Meknes: Bab Mansour, Mausoleo Moulay Ismail, scuderie reali",
+        },
+        {
+          day: 6,
+          title: "Meknes - Rabat",
+          description: "Trasferimento a Rabat, visita Torre Hassan e Kasbah degli Oudayas",
+        },
         { day: 7, title: "Rabat - Casablanca", description: "Visita di Casablanca: Moschea Hassan II, Corniche" },
         { day: 8, title: "Partenza", description: "Trasferimento in aeroporto e volo di ritorno" },
       ],
@@ -233,7 +245,7 @@ export default function GroupTripsPage() {
       <div className="py-8 bg-gray-50 dark:bg-gray-800 border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-wrap gap-4 items-center justify-between">
-            <div className="flex flex-wrap gap-4">
+            <div className="grid md:grid-cols-2 gap-4 flex-1">
               <select className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
                 <option>Tutte le durate</option>
                 <option>3-5 giorni</option>
@@ -246,11 +258,10 @@ export default function GroupTripsPage() {
                 <option>€800-€1200</option>
                 <option>€1200+</option>
               </select>
-              <select className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
+              <select className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white md:col-span-2">
                 <option>Tutte le difficoltà</option>
-                <option>Facile</option>
-                <option>Moderato</option>
-                <option>Impegnativo</option>
+                <option>Avventuroso</option>
+                <option>Rilassante</option>
               </select>
             </div>
             <div className="text-sm text-gray-600 dark:text-gray-400">{trips.length} viaggi disponibili</div>
@@ -406,9 +417,7 @@ export default function GroupTripsPage() {
             <div className="p-6 lg:p-8">
               <div className="flex items-start justify-between mb-6">
                 <div>
-                  <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-                    {selectedTrip.title}
-                  </h2>
+                  <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">{selectedTrip.title}</h2>
                   <div className="flex items-center space-x-4 text-gray-600 dark:text-gray-400">
                     <div className="flex items-center space-x-1">
                       <Calendar className="w-4 h-4" />
@@ -420,7 +429,9 @@ export default function GroupTripsPage() {
                     </div>
                     <div className="flex items-center space-x-1">
                       <Star className="w-4 h-4 text-yellow-400 fill-current" />
-                      <span>{selectedTrip.rating} ({selectedTrip.reviews} recensioni)</span>
+                      <span>
+                        {selectedTrip.rating} ({selectedTrip.reviews} recensioni)
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -463,7 +474,10 @@ export default function GroupTripsPage() {
                     <h3 className="text-lg font-bold text-green-800 dark:text-green-300 mb-4">Incluso nel Prezzo</h3>
                     <ul className="space-y-2">
                       {selectedTrip.included?.map((item, index) => (
-                        <li key={index} className="flex items-start space-x-2 text-sm text-green-700 dark:text-green-400">
+                        <li
+                          key={index}
+                          className="flex items-start space-x-2 text-sm text-green-700 dark:text-green-400"
+                        >
                           <Check className="w-4 h-4 mt-0.5 flex-shrink-0" />
                           <span>{item}</span>
                         </li>

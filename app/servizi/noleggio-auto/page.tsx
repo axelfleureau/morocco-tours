@@ -25,7 +25,7 @@ const carCategories = [
     id: "economy",
     name: "Economica",
     description: "Perfetta per la città e viaggi brevi",
-    pricePerDay: 18,
+    pricePerDay: 30,
     cars: [
       {
         model: "Dacia Sandero 2023",
@@ -46,34 +46,6 @@ const carCategories = [
         ac: true,
         consumption: "4.8L/100km",
         image: "/images/cars/renault-clio.png",
-      },
-    ],
-  },
-  {
-    id: "compact",
-    name: "Compatta",
-    description: "Comfort e efficienza per viaggi medi",
-    pricePerDay: 25,
-    cars: [
-      {
-        model: "Volkswagen Golf 2023",
-        transmission: "Manuale",
-        fuel: "Benzina",
-        seats: 5,
-        doors: 5,
-        ac: true,
-        consumption: "5.5L/100km",
-        image: "/images/cars/vw-golf.png",
-      },
-      {
-        model: "Peugeot 308 2022",
-        transmission: "Automatica",
-        fuel: "Diesel",
-        seats: 5,
-        doors: 5,
-        ac: true,
-        consumption: "4.2L/100km",
-        image: "/images/cars/peugeot-308.png",
       },
     ],
   },
@@ -216,7 +188,7 @@ export default function NoleggioAutoPage() {
             </h1>
             <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto mb-8">
               Esplora il Marocco in totale libertà con la nostra flotta moderna e affidabile. Veicoli per ogni esigenza,
-              dai €18 al giorno.
+              dai €30 al giorno.
             </p>
             <div className="flex flex-wrap justify-center gap-4 text-sm text-gray-600 dark:text-gray-400">
               <div className="flex items-center gap-2">
@@ -248,7 +220,7 @@ export default function NoleggioAutoPage() {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
             {carCategories.map((category) => (
               <Card
                 key={category.id}
