@@ -1,8 +1,7 @@
 "use client"
 
-import { ChefHat, Utensils, Clock, Users, Star, Flame, Leaf, Heart } from 'lucide-react'
+import { ChefHat, Utensils, Clock, Users, Star, Flame, Leaf, Heart } from "lucide-react"
 import Link from "next/link"
-import { useState } from 'react'
 
 export default function CucinaPage() {
   const cookingClasses = [
@@ -134,14 +133,14 @@ export default function CucinaPage() {
   ]
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-background">
       {/* Hero Section */}
       <div className="relative py-24 lg:py-32 bg-gradient-to-r from-orange-500 to-red-600 overflow-hidden">
         <div className="absolute inset-0">
-          <img 
-            src="/images/cooking-class.png" 
-            alt="Cucina Marocchina" 
-            className="w-full h-full object-cover opacity-30" 
+          <img
+            src="/images/cooking-class.png"
+            alt="Cucina Marocchina"
+            className="w-full h-full object-cover opacity-30"
           />
           <div className="absolute inset-0 bg-black/40" />
         </div>
@@ -172,13 +171,11 @@ export default function CucinaPage() {
       </div>
 
       {/* Cooking Classes */}
-      <div className="py-16 lg:py-24 bg-white dark:bg-gray-900">
+      <div className="py-16 lg:py-24 bg-background">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12 lg:mb-16">
-            <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-4">
-              Corsi di Cucina
-            </h2>
-            <p className="text-lg lg:text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+            <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-4">Corsi di Cucina</h2>
+            <p className="text-lg lg:text-xl text-muted-foreground max-w-2xl mx-auto">
               Scegli il corso perfetto per il tuo livello e i tuoi interessi culinari
             </p>
           </div>
@@ -187,7 +184,7 @@ export default function CucinaPage() {
             {cookingClasses.map((course, idx) => (
               <div
                 key={course.id}
-                className="group bg-white dark:bg-gray-800 rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 hover:scale-105"
+                className="group bg-card rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 hover:scale-105 border border-border"
               >
                 <div className="relative h-64 lg:h-80 overflow-hidden">
                   <img
@@ -196,10 +193,10 @@ export default function CucinaPage() {
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                  
+
                   {/* Price Badge */}
-                  <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-4 py-2 rounded-full">
-                    <span className="font-bold text-lg text-gray-900">{course.price}</span>
+                  <div className="absolute top-4 right-4 bg-background/90 backdrop-blur-sm px-4 py-2 rounded-full border border-border">
+                    <span className="font-bold text-lg text-foreground">{course.price}</span>
                   </div>
 
                   {/* Level Badge */}
@@ -225,11 +222,11 @@ export default function CucinaPage() {
                 <div className="p-6 lg:p-8">
                   {/* Info Grid */}
                   <div className="grid grid-cols-2 gap-4 mb-6">
-                    <div className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-400">
+                    <div className="flex items-center space-x-2 text-sm text-muted-foreground">
                       <Clock className="w-4 h-4 text-orange-500" />
                       <span>{course.duration}</span>
                     </div>
-                    <div className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-400">
+                    <div className="flex items-center space-x-2 text-sm text-muted-foreground">
                       <Users className="w-4 h-4 text-orange-500" />
                       <span>Max {course.maxParticipants}</span>
                     </div>
@@ -237,10 +234,10 @@ export default function CucinaPage() {
 
                   {/* Dishes */}
                   <div className="mb-6">
-                    <h4 className="font-semibold text-gray-900 dark:text-white mb-3">Imparerai a cucinare:</h4>
+                    <h4 className="font-semibold text-card-foreground mb-3">Imparerai a cucinare:</h4>
                     <div className="space-y-2">
                       {course.dishes.map((dish, didx) => (
-                        <div key={didx} className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-300">
+                        <div key={didx} className="flex items-center space-x-2 text-sm text-muted-foreground">
                           <ChefHat className="w-4 h-4 text-orange-500" />
                           <span>{dish}</span>
                         </div>
@@ -265,13 +262,11 @@ export default function CucinaPage() {
       </div>
 
       {/* Signature Dishes */}
-      <div className="py-16 lg:py-24 bg-gray-50 dark:bg-gray-800">
+      <div className="py-16 lg:py-24 bg-muted/50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12 lg:mb-16">
-            <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-4">
-              Piatti Iconici
-            </h2>
-            <p className="text-lg lg:text-xl text-gray-600 dark:text-gray-300">
+            <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-4">Piatti Iconici</h2>
+            <p className="text-lg lg:text-xl text-muted-foreground">
               I capolavori della cucina marocchina che imparerai a preparare
             </p>
           </div>
@@ -280,7 +275,7 @@ export default function CucinaPage() {
             {dishes.map((dish, idx) => (
               <div
                 key={idx}
-                className="bg-white dark:bg-gray-900 rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
+                className="bg-card rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 border border-border"
               >
                 <div className="relative h-48 overflow-hidden">
                   <img
@@ -300,16 +295,16 @@ export default function CucinaPage() {
                 </div>
 
                 <div className="p-6">
-                  <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">{dish.name}</h3>
-                  <p className="text-gray-600 dark:text-gray-300 text-sm mb-4">{dish.description}</p>
+                  <h3 className="text-lg font-bold text-card-foreground mb-2">{dish.name}</h3>
+                  <p className="text-muted-foreground text-sm mb-4">{dish.description}</p>
 
-                  <div className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-400 mb-4">
+                  <div className="flex items-center space-x-2 text-sm text-muted-foreground mb-4">
                     <Clock className="w-4 h-4 text-orange-500" />
                     <span>{dish.cookingTime}</span>
                   </div>
 
                   <div className="mb-4">
-                    <h4 className="font-semibold text-gray-900 dark:text-white mb-2 text-sm">Ingredienti principali:</h4>
+                    <h4 className="font-semibold text-card-foreground mb-2 text-sm">Ingredienti principali:</h4>
                     <div className="flex flex-wrap gap-1">
                       {dish.ingredients.map((ingredient, iidx) => (
                         <span
@@ -329,13 +324,11 @@ export default function CucinaPage() {
       </div>
 
       {/* Spices Section */}
-      <div className="py-16 lg:py-24 bg-white dark:bg-gray-900">
+      <div className="py-16 lg:py-24 bg-background">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12 lg:mb-16">
-            <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-4">
-              Le Spezie del Marocco
-            </h2>
-            <p className="text-lg lg:text-xl text-gray-600 dark:text-gray-300">
+            <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-4">Le Spezie del Marocco</h2>
+            <p className="text-lg lg:text-xl text-muted-foreground">
               Scopri i segreti delle spezie che rendono unica la cucina marocchina
             </p>
           </div>
@@ -344,15 +337,15 @@ export default function CucinaPage() {
             {spices.map((spice, idx) => (
               <div
                 key={idx}
-                className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
+                className="bg-card rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 border border-border"
               >
                 <div className="flex items-center space-x-4">
                   <div className={`w-12 h-12 ${spice.color} rounded-full flex items-center justify-center`}>
                     <Leaf className="w-6 h-6 text-white" />
                   </div>
                   <div>
-                    <h3 className="text-lg font-bold text-gray-900 dark:text-white">{spice.name}</h3>
-                    <p className="text-gray-600 dark:text-gray-300 text-sm">{spice.description}</p>
+                    <h3 className="text-lg font-bold text-card-foreground">{spice.name}</h3>
+                    <p className="text-muted-foreground text-sm">{spice.description}</p>
                   </div>
                 </div>
               </div>
@@ -362,25 +355,23 @@ export default function CucinaPage() {
       </div>
 
       {/* Locations */}
-      <div className="py-16 lg:py-24 bg-gray-50 dark:bg-gray-800">
+      <div className="py-16 lg:py-24 bg-muted/50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12 lg:mb-16">
-            <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-4">
-              Dove Cucinare
-            </h2>
-            <p className="text-lg lg:text-xl text-gray-600 dark:text-gray-300">
+            <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-4">Dove Cucinare</h2>
+            <p className="text-lg lg:text-xl text-muted-foreground">
               Le migliori scuole di cucina nelle città imperiali
             </p>
           </div>
 
           {locations.map((location, idx) => (
             <div key={location.id} className="mb-12 lg:mb-16">
-              <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-8 text-center">{location.name}</h3>
+              <h3 className="text-2xl font-bold text-foreground mb-8 text-center">{location.name}</h3>
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {location.venues.map((venue, vidx) => (
                   <div
                     key={vidx}
-                    className="bg-white dark:bg-gray-900 rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
+                    className="bg-card rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 border border-border"
                   >
                     <div className="relative h-48 overflow-hidden">
                       <img
@@ -388,8 +379,8 @@ export default function CucinaPage() {
                         alt={venue.name}
                         className="w-full h-full object-cover"
                       />
-                      <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full">
-                        <span className="font-bold text-gray-900">{venue.price}</span>
+                      <div className="absolute top-4 right-4 bg-background/90 backdrop-blur-sm px-3 py-1 rounded-full border border-border">
+                        <span className="font-bold text-foreground">{venue.price}</span>
                       </div>
                       <div className="absolute bottom-4 left-4 bg-black/50 backdrop-blur-sm px-3 py-1 rounded-full">
                         <span className="text-white text-sm">{venue.type}</span>
@@ -398,16 +389,14 @@ export default function CucinaPage() {
 
                     <div className="p-6">
                       <div className="flex items-center justify-between mb-3">
-                        <h4 className="text-lg font-bold text-gray-900 dark:text-white">{venue.name}</h4>
+                        <h4 className="text-lg font-bold text-card-foreground">{venue.name}</h4>
                         <div className="flex items-center space-x-1">
                           <Star className="w-4 h-4 text-yellow-400 fill-current" />
                           <span className="text-sm font-semibold">{venue.rating}</span>
                         </div>
                       </div>
 
-                      <p className="text-gray-600 dark:text-gray-300 text-sm mb-4">
-                        Specialità: {venue.specialty}
-                      </p>
+                      <p className="text-muted-foreground text-sm mb-4">Specialità: {venue.specialty}</p>
 
                       <Link
                         href="/contatti"
@@ -425,13 +414,11 @@ export default function CucinaPage() {
       </div>
 
       {/* What You'll Learn */}
-      <div className="py-16 lg:py-24 bg-white dark:bg-gray-900">
+      <div className="py-16 lg:py-24 bg-background">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12 lg:mb-16">
-            <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-4">
-              Cosa Imparerai
-            </h2>
-            <p className="text-lg lg:text-xl text-gray-600 dark:text-gray-300">
+            <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-4">Cosa Imparerai</h2>
+            <p className="text-lg lg:text-xl text-muted-foreground">
               Molto più di semplici ricette: una vera immersione culturale
             </p>
           </div>
@@ -461,13 +448,13 @@ export default function CucinaPage() {
             ].map((skill, idx) => (
               <div
                 key={idx}
-                className="bg-gray-50 dark:bg-gray-800 rounded-2xl p-6 text-center hover:shadow-lg transition-all duration-300"
+                className="bg-muted/50 rounded-2xl p-6 text-center hover:shadow-lg transition-all duration-300 border border-border"
               >
                 <div className="w-16 h-16 bg-orange-100 dark:bg-orange-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
                   <skill.icon className="w-8 h-8 text-orange-600 dark:text-orange-400" />
                 </div>
-                <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-3">{skill.title}</h3>
-                <p className="text-gray-600 dark:text-gray-300 text-sm">{skill.description}</p>
+                <h3 className="text-lg font-bold text-foreground mb-3">{skill.title}</h3>
+                <p className="text-muted-foreground text-sm">{skill.description}</p>
               </div>
             ))}
           </div>

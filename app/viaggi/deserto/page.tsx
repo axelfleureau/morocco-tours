@@ -5,7 +5,7 @@ import { Star, Clock, Users, CheckCircle } from "lucide-react"
 import Link from "next/link"
 
 export default function DesertToursPage() {
-  const [selectedTour, setSelectedTour] = useState<number | null>(null)
+  const [selectedTour, setSelectedTour] = useState<number | null>(null);
 
   const desertTours = [
     {
@@ -202,7 +202,7 @@ export default function DesertToursPage() {
       bestFor: "Coppie in luna di miele, viaggi di lusso, occasioni speciali",
       season: "Tutto l'anno (clima controllato)",
     },
-  ]
+  ];
 
   const packingList = [
     "Scarpe comode chiuse (no sandali)",
@@ -215,7 +215,7 @@ export default function DesertToursPage() {
     "Borraccia",
     "Macchina fotografica",
     "Powerbank per dispositivi",
-  ]
+  ];
 
   const weatherInfo = [
     {
@@ -238,15 +238,20 @@ export default function DesertToursPage() {
       description: "Giornate miti (20-25°C), notti fredde (0-5°C), possibili gelate",
       icon: "❄️",
     },
-  ]
+  ];
+
+  // ...il resto della tua funzione rimane identico, puoi riprendere dal return(...)
+
+
+  // ... desertTours, packingList, weatherInfo come da te
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-background transition-colors duration-300">
       {/* Hero Section */}
-      <div className="relative py-32 bg-gradient-to-r from-orange-600 via-red-500 to-orange-500 overflow-hidden">
+      <div className="relative py-32 bg-gradient-to-r from-orange-600 via-red-500 to-orange-500 dark:from-orange-900 dark:via-red-900 dark:to-orange-900 overflow-hidden">
         <div className="absolute inset-0">
           <img src="/images/sahara-sunset.png" alt="Sahara Desert" className="w-full h-full object-cover opacity-30" />
-          <div className="absolute inset-0 bg-black/40" />
+          <div className="absolute inset-0 bg-black/40 dark:bg-black/60" />
         </div>
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-white">
@@ -259,15 +264,14 @@ export default function DesertToursPage() {
           <p className="text-xl md:text-2xl max-w-3xl mx-auto mb-8">
             Emozioni nel Sahara: dalle dune dorate alle notti stellate
           </p>
-
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <div className="bg-white/20 backdrop-blur-sm px-6 py-3 rounded-full">
+            <div className="bg-white/20 dark:bg-white/5 backdrop-blur-sm px-6 py-3 rounded-full">
               <span className="font-semibold">Partenze Giornaliere</span>
             </div>
-            <div className="bg-white/20 backdrop-blur-sm px-6 py-3 rounded-full">
+            <div className="bg-white/20 dark:bg-white/5 backdrop-blur-sm px-6 py-3 rounded-full">
               <span className="font-semibold">Guide Berbere Esperte</span>
             </div>
-            <div className="bg-white/20 backdrop-blur-sm px-6 py-3 rounded-full">
+            <div className="bg-white/20 dark:bg-white/5 backdrop-blur-sm px-6 py-3 rounded-full">
               <span className="font-semibold">Campi Autentici</span>
             </div>
           </div>
@@ -275,15 +279,14 @@ export default function DesertToursPage() {
       </div>
 
       {/* What to Expect Section */}
-      <div className="py-20 bg-white dark:bg-gray-900">
+      <div className="py-20 bg-background transition-colors duration-300">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">Cosa Aspettarsi</h2>
-            <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+            <h2 className="text-4xl font-bold text-foreground mb-4">Cosa Aspettarsi</h2>
+            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
               Un viaggio attraverso le tappe tipiche di un'avventura nel Sahara
             </p>
           </div>
-
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             {[
               {
@@ -308,11 +311,11 @@ export default function DesertToursPage() {
               },
             ].map((step, idx) => (
               <div key={idx} className="text-center group hover:scale-105 transition-transform duration-300">
-                <div className="w-20 h-20 bg-gradient-to-r from-orange-500 to-red-500 rounded-full flex items-center justify-center text-3xl mb-6 mx-auto group-hover:shadow-xl transition-shadow duration-300">
+                <div className="w-20 h-20 bg-gradient-to-r from-orange-500 to-red-500 dark:from-orange-900 dark:to-red-900 rounded-full flex items-center justify-center text-3xl mb-6 mx-auto group-hover:shadow-xl transition-shadow duration-300">
                   {step.icon}
                 </div>
-                <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">{step.title}</h3>
-                <p className="text-gray-600 dark:text-gray-300 leading-relaxed">{step.description}</p>
+                <h3 className="text-xl font-bold text-foreground mb-4">{step.title}</h3>
+                <p className="text-muted-foreground leading-relaxed">{step.description}</p>
               </div>
             ))}
           </div>
@@ -320,20 +323,19 @@ export default function DesertToursPage() {
       </div>
 
       {/* Tours Grid */}
-      <div className="py-20 bg-gray-50 dark:bg-gray-800">
+      <div className="py-20 bg-muted transition-colors duration-300">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">I Nostri Tour del Deserto</h2>
-            <p className="text-xl text-gray-600 dark:text-gray-300">
+            <h2 className="text-4xl font-bold text-foreground mb-4">I Nostri Tour del Deserto</h2>
+            <p className="text-xl text-muted-foreground">
               Scegli l'avventura perfetta per te, da 2 a 4 giorni di pura magia
             </p>
           </div>
-
           <div className="grid lg:grid-cols-2 gap-8">
             {desertTours.map((tour) => (
               <div
                 key={tour.id}
-                className="bg-white dark:bg-gray-900 rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 hover:scale-105 border border-gray-100 dark:border-gray-700"
+                className="bg-card rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 hover:scale-105 border border-border"
               >
                 {/* Image */}
                 <div className="relative h-64 overflow-hidden">
@@ -343,24 +345,22 @@ export default function DesertToursPage() {
                     className="w-full h-full object-cover"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-
                   {/* Price Badge */}
-                  <div className="absolute top-4 right-4 bg-white/95 backdrop-blur-sm rounded-full px-4 py-2">
+                  <div className="absolute top-4 right-4 bg-white/95 dark:bg-card/80 backdrop-blur-sm rounded-full px-4 py-2">
                     <div className="flex items-center space-x-2">
-                      <span className="font-bold text-lg text-gray-900">{tour.price}</span>
+                      <span className="font-bold text-lg text-foreground">{tour.price}</span>
                       {tour.originalPrice && (
-                        <span className="text-sm line-through text-gray-500">{tour.originalPrice}</span>
+                        <span className="text-sm line-through text-muted-foreground">{tour.originalPrice}</span>
                       )}
                     </div>
                   </div>
-
                   {/* Difficulty */}
                   <div className="absolute bottom-4 left-4 flex items-center space-x-2">
                     <div className="flex items-center space-x-1">
                       {[...Array(5)].map((_, i) => (
                         <div
                           key={i}
-                          className={`w-2 h-2 rounded-full ${i < tour.difficulty ? "bg-orange-400" : "bg-white/50"}`}
+                          className={`w-2 h-2 rounded-full ${i < tour.difficulty ? "bg-orange-400" : "bg-white/50 dark:bg-card/50"}`}
                         />
                       ))}
                     </div>
@@ -368,7 +368,6 @@ export default function DesertToursPage() {
                       Difficoltà
                     </span>
                   </div>
-
                   {/* Rating */}
                   <div className="absolute bottom-4 right-4 flex items-center space-x-1 bg-black/30 backdrop-blur-sm px-3 py-1 rounded-full">
                     <Star className="w-4 h-4 text-yellow-400 fill-current" />
@@ -376,15 +375,13 @@ export default function DesertToursPage() {
                     <span className="text-white/70 text-sm">({tour.reviews})</span>
                   </div>
                 </div>
-
                 {/* Content */}
                 <div className="p-6 space-y-6">
                   {/* Header */}
                   <div>
-                    <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">{tour.title}</h3>
+                    <h3 className="text-2xl font-bold text-foreground mb-2">{tour.title}</h3>
                     <p className="text-orange-600 dark:text-orange-400 font-medium mb-3">{tour.subtitle}</p>
-
-                    <div className="flex items-center justify-between text-sm text-gray-600 dark:text-gray-400">
+                    <div className="flex items-center justify-between text-sm text-muted-foreground">
                       <div className="flex items-center space-x-4">
                         <div className="flex items-center space-x-1">
                           <Clock className="w-4 h-4" />
@@ -397,15 +394,14 @@ export default function DesertToursPage() {
                       </div>
                     </div>
                   </div>
-
                   {/* Highlights */}
                   <div>
-                    <h4 className="font-semibold text-gray-900 dark:text-white mb-3">Highlights principali:</h4>
+                    <h4 className="font-semibold text-foreground mb-3">Highlights principali:</h4>
                     <div className="space-y-2">
                       {tour.highlights.slice(0, 3).map((highlight, idx) => (
                         <div key={idx} className="flex items-center space-x-2">
                           <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
-                          <span className="text-sm text-gray-600 dark:text-gray-300">{highlight}</span>
+                          <span className="text-sm text-muted-foreground">{highlight}</span>
                         </div>
                       ))}
                       {tour.highlights.length > 3 && (
@@ -415,18 +411,17 @@ export default function DesertToursPage() {
                       )}
                     </div>
                   </div>
-
                   {/* Best For */}
-                  <div className="bg-orange-50 dark:bg-orange-900/20 rounded-xl p-4">
-                    <h4 className="font-semibold text-orange-800 dark:text-orange-300 mb-2">Perfetto per:</h4>
-                    <p className="text-sm text-orange-700 dark:text-orange-300">{tour.bestFor}</p>
-                  </div>
+                  <div className="rounded-xl p-4 bg-gradient-to-r from-orange-500 to-red-500 text-white dark:bg-orange-900/20 dark:text-orange-200 transition-colors">
+  <h4 className="font-semibold mb-2 text-white dark:text-orange-300">Perfetto per:</h4>
+  <p className="text-sm text-white dark:text-orange-300">{tour.bestFor}</p>
+</div>
 
                   {/* Actions */}
                   <div className="flex space-x-3">
                     <button
                       onClick={() => setSelectedTour(selectedTour === tour.id ? null : tour.id)}
-                      className="flex-1 bg-gradient-to-r from-orange-500 to-red-500 text-white py-3 px-4 rounded-xl hover:from-orange-600 hover:to-red-600 transition-all duration-300 font-semibold text-center"
+                      className="flex-1 bg-gradient-to-r from-orange-500 to-red-500 dark:from-orange-900 dark:to-red-900 text-white py-3 px-4 rounded-xl hover:from-orange-600 hover:to-red-600 transition-all duration-300 font-semibold text-center"
                     >
                       {selectedTour === tour.id ? "Nascondi Dettagli" : "Vedi Dettagli"}
                     </button>
@@ -437,13 +432,12 @@ export default function DesertToursPage() {
                       Prenota
                     </Link>
                   </div>
-
                   {/* Expanded Details */}
                   {selectedTour === tour.id && (
-                    <div className="mt-6 pt-6 border-t border-gray-200 dark:border-gray-600 space-y-6">
+                    <div className="mt-6 pt-6 border-t border-border space-y-6">
                       {/* Itinerary */}
                       <div>
-                        <h4 className="font-bold text-gray-900 dark:text-white mb-4">Itinerario dettagliato:</h4>
+                        <h4 className="font-bold text-foreground mb-4">Itinerario dettagliato:</h4>
                         <div className="space-y-4">
                           {tour.itinerary.map((day, idx) => (
                             <div key={idx} className="flex space-x-4">
@@ -451,21 +445,20 @@ export default function DesertToursPage() {
                                 {day.day}
                               </div>
                               <div>
-                                <h5 className="font-semibold text-gray-900 dark:text-white">{day.title}</h5>
-                                <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">{day.description}</p>
+                                <h5 className="font-semibold text-foreground">{day.title}</h5>
+                                <p className="text-sm text-muted-foreground mt-1">{day.description}</p>
                               </div>
                             </div>
                           ))}
                         </div>
                       </div>
-
                       {/* Includes/Excludes */}
                       <div className="grid md:grid-cols-2 gap-6">
                         <div>
                           <h4 className="font-bold text-green-600 mb-3">✅ Cosa include:</h4>
                           <ul className="space-y-1">
                             {tour.includes.map((item, idx) => (
-                              <li key={idx} className="text-sm text-gray-600 dark:text-gray-300">
+                              <li key={idx} className="text-sm text-muted-foreground">
                                 • {item}
                               </li>
                             ))}
@@ -475,14 +468,13 @@ export default function DesertToursPage() {
                           <h4 className="font-bold text-red-600 mb-3">❌ Cosa non include:</h4>
                           <ul className="space-y-1">
                             {tour.notIncludes.map((item, idx) => (
-                              <li key={idx} className="text-sm text-gray-600 dark:text-gray-300">
+                              <li key={idx} className="text-sm text-muted-foreground">
                                 • {item}
                               </li>
                             ))}
                           </ul>
                         </div>
                       </div>
-
                       {/* Season Info */}
                       <div className="bg-blue-50 dark:bg-blue-900/20 rounded-xl p-4">
                         <h4 className="font-semibold text-blue-800 dark:text-blue-300 mb-2">Stagione consigliata:</h4>
@@ -498,66 +490,61 @@ export default function DesertToursPage() {
       </div>
 
       {/* Weather & Seasons */}
-      <div className="py-20 bg-white dark:bg-gray-900">
+      <div className="py-20 bg-background transition-colors duration-300">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">Meteo e Stagioni</h2>
-            <p className="text-xl text-gray-600 dark:text-gray-300">
+            <h2 className="text-4xl font-bold text-foreground mb-4">Meteo e Stagioni</h2>
+            <p className="text-xl text-muted-foreground">
               Scegli il periodo migliore per la tua avventura nel deserto
             </p>
           </div>
-
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             {weatherInfo.map((season, idx) => (
               <div
                 key={idx}
-                className="bg-gray-50 dark:bg-gray-800 rounded-2xl p-6 text-center hover:shadow-lg transition-shadow duration-300"
+                className="bg-muted rounded-2xl p-6 text-center hover:shadow-lg transition-shadow duration-300"
               >
                 <div className="text-4xl mb-4">{season.icon}</div>
-                <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-3">{season.season}</h3>
-                <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">{season.description}</p>
+                <h3 className="text-lg font-bold text-foreground mb-3">{season.season}</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">{season.description}</p>
               </div>
             ))}
           </div>
         </div>
       </div>
-
-      {/* Packing List */}
-      <div className="py-20 bg-gradient-to-r from-orange-50 to-red-50 dark:from-gray-800 dark:to-gray-900">
+            {/* Packing List */}
+      <div className="py-20 bg-gradient-to-r from-orange-50 to-red-50 dark:from-background dark:to-muted">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">Cosa Portare</h2>
-            <p className="text-xl text-gray-600 dark:text-gray-300">Lista essenziale per il tuo viaggio nel Sahara</p>
+            <h2 className="text-4xl font-bold text-foreground mb-4">Cosa Portare</h2>
+            <p className="text-xl text-muted-foreground">Lista essenziale per il tuo viaggio nel Sahara</p>
           </div>
-
-          <div className="bg-white dark:bg-gray-800 rounded-3xl p-8 shadow-xl">
+          <div className="bg-card rounded-3xl p-8 shadow-xl transition-colors">
             <div className="grid md:grid-cols-2 gap-6">
               {packingList.map((item, idx) => (
                 <div key={idx} className="flex items-center space-x-3">
                   <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0" />
-                  <span className="text-gray-700 dark:text-gray-300">{item}</span>
+                  <span className="text-foreground">{item}</span>
                 </div>
               ))}
             </div>
-
-            <div className="mt-8 p-4 bg-orange-100 dark:bg-orange-900/30 rounded-xl">
-              <p className="text-sm text-orange-800 dark:text-orange-300">
-                <strong>Nota importante:</strong> Le temperature nel deserto variano molto tra giorno e notte. Porta
-                sempre abbigliamento a strati e una giacca calda per la sera!
-              </p>
-            </div>
+            <div className="mt-8 p-4 rounded-xl bg-gradient-to-r from-orange-500 to-red-500 text-white dark:bg-orange-900/30 dark:text-orange-200 transition-colors">
+  <p className="text-sm text-white dark:text-orange-200">
+    <strong>Nota importante:</strong> Le temperature nel deserto variano molto tra giorno e notte. Porta
+    sempre abbigliamento a strati e una giacca calda per la sera!
+  </p>
+</div>
           </div>
         </div>
       </div>
 
       {/* Gallery Preview */}
-      <div className="py-20 bg-white dark:bg-gray-900">
+      <div className="py-20 bg-background">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">Life in the Desert</h2>
-            <p className="text-xl text-gray-600 dark:text-gray-300">Scorci di vita e momenti magici nel Sahara</p>
+            <h2 className="text-4xl font-bold text-foreground mb-4">Life in the Desert</h2>
+            <p className="text-xl text-muted-foreground">Scorci di vita e momenti magici nel Sahara</p>
           </div>
-
           <div className="grid md:grid-cols-3 gap-6">
             {[
               { image: "/images/desert-stars.png", title: "Notti stellate", description: "Cielo impareggiabile" },
@@ -574,7 +561,7 @@ export default function DesertToursPage() {
                   className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
-                <div className="absolute bottom-4 left-4 text-white">
+                <div className="absolute bottom-4 left-4 text-white drop-shadow">
                   <h3 className="font-bold text-lg">{item.title}</h3>
                   <p className="text-sm text-gray-200">{item.description}</p>
                 </div>
@@ -585,7 +572,7 @@ export default function DesertToursPage() {
       </div>
 
       {/* CTA Section */}
-      <div className="py-20 bg-gradient-to-r from-orange-500 to-red-500">
+      <div className="py-20 bg-gradient-to-r from-orange-500 to-red-500 dark:from-orange-900 dark:to-red-900">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-white">
           <h2 className="text-4xl font-bold mb-6">Pronto per l'Avventura?</h2>
           <p className="text-xl mb-8 max-w-2xl mx-auto">
@@ -594,7 +581,7 @@ export default function DesertToursPage() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
               href="/viaggi/gruppo"
-              className="bg-white text-orange-600 px-8 py-4 rounded-xl hover:bg-gray-100 transition-all duration-300 font-semibold text-lg"
+              className="bg-white dark:bg-card text-orange-600 dark:text-orange-300 px-8 py-4 rounded-xl hover:bg-gray-100 dark:hover:bg-background transition-all duration-300 font-semibold text-lg"
             >
               Vedi Tutti i Tour
             </Link>

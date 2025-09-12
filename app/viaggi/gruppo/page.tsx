@@ -222,7 +222,7 @@ export default function GroupTripsPage() {
       {/* Hero Section */}
       <div className="relative py-32 bg-gradient-to-r from-orange-500 to-red-500">
         <div className="absolute inset-0 bg-black/20" />
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-white">
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-primary-foreground">
           <h1 className="text-5xl md:text-6xl font-bold mb-6">Viaggi di Gruppo</h1>
           <p className="text-xl md:text-2xl max-w-3xl mx-auto mb-8">
             Unisciti ai nostri gruppi per vivere il Marocco in compagnia di altri viaggiatori
@@ -242,41 +242,41 @@ export default function GroupTripsPage() {
       </div>
 
       {/* Filters */}
-      <div className="py-8 bg-gray-50 dark:bg-gray-800 border-b">
+      <div className="py-8 bg-muted border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-wrap gap-4 items-center justify-between">
             <div className="grid md:grid-cols-2 gap-4 flex-1">
-              <select className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
+              <select className="px-4 py-2 border border-border rounded-lg bg-card text-card-foreground">
                 <option>Tutte le durate</option>
                 <option>3-5 giorni</option>
                 <option>6-8 giorni</option>
                 <option>9+ giorni</option>
               </select>
-              <select className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
+              <select className="px-4 py-2 border border-border rounded-lg bg-card text-card-foreground">
                 <option>Tutti i prezzi</option>
                 <option>€500-€800</option>
                 <option>€800-€1200</option>
                 <option>€1200+</option>
               </select>
-              <select className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white md:col-span-2">
+              <select className="px-4 py-2 border border-border rounded-lg bg-card text-card-foreground md:col-span-2">
                 <option>Tutte le difficoltà</option>
                 <option>Avventuroso</option>
                 <option>Rilassante</option>
               </select>
             </div>
-            <div className="text-sm text-gray-600 dark:text-gray-400">{trips.length} viaggi disponibili</div>
+            <div className="text-sm text-muted-foreground">{trips.length} viaggi disponibili</div>
           </div>
         </div>
       </div>
 
       {/* Trips Grid */}
-      <div className="py-20 bg-white dark:bg-gray-900">
+      <div className="py-20 bg-background">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {trips.map((trip) => (
               <div
                 key={trip.id}
-                className="group bg-white dark:bg-gray-800 rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 hover:scale-105"
+                className="group bg-card rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 hover:scale-105"
               >
                 <div className="relative h-64 overflow-hidden">
                   <img
@@ -285,7 +285,7 @@ export default function GroupTripsPage() {
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                   />
                   <div className="absolute top-4 left-4">
-                    <span className="bg-orange-500 text-white px-3 py-1 rounded-full text-sm font-semibold">
+                    <span className="bg-orange-500 text-primary-foreground px-3 py-1 rounded-full text-sm font-semibold">
                       {trip.badge}
                     </span>
                   </div>
@@ -302,30 +302,41 @@ export default function GroupTripsPage() {
                         className={`w-2 h-2 rounded-full ${i < trip.difficulty ? "bg-orange-400" : "bg-white/50"}`}
                       />
                     ))}
-                    <span className="text-white text-xs ml-2">Difficoltà</span>
+                    <span className="text-primary-foreground text-xs ml-2">Difficoltà</span>
                   </div>
                 </div>
 
                 <div className="p-6">
                   <div className="flex items-center justify-between mb-3">
-                    <h3 className="text-xl font-bold text-gray-900 dark:text-white">{trip.title}</h3>
+                    <h3 className="text-xl font-bold text-foreground">{trip.title}</h3>
                     <div className="flex items-center space-x-1">
                       <Star className="w-4 h-4 text-yellow-400 fill-current" />
-                      <span className="text-sm font-semibold text-gray-900 dark:text-white">{trip.rating}</span>
+                      <span className="text-sm font-semibold text-foreground">{trip.rating}</span>
                       <span className="text-sm text-gray-500 dark:text-gray-400">({trip.reviews})</span>
                     </div>
                   </div>
 
-                  <p className="text-gray-600 dark:text-gray-300 text-sm mb-4 line-clamp-2">{trip.description}</p>
+                  <p className="text-muted-foreground text-sm mb-4 line-clamp-2">{trip.description}</p>
 
                   <div className="flex flex-wrap gap-2 mb-4">
                     {trip.highlights.map((highlight, hidx) => (
                       <span
-                        key={hidx}
-                        className="bg-orange-100 dark:bg-orange-900/30 text-orange-800 dark:text-orange-300 px-2 py-1 rounded-full text-xs font-medium"
-                      >
-                        {highlight}
-                      </span>
+  key={hidx}
+  className="
+    inline-block
+    px-3 py-1
+    rounded-full
+    text-xs font-semibold
+    bg-gradient-to-r from-orange-500 to-red-500 text-white
+    dark:bg-orange-900/40 dark:text-orange-200
+    shadow-sm
+    transition-colors
+  "
+>
+  {highlight}
+</span>
+
+
                     ))}
                   </div>
 
@@ -349,13 +360,13 @@ export default function GroupTripsPage() {
                   <div className="flex space-x-3">
                     <Link
                       href="/contatti"
-                      className="flex-1 bg-gradient-to-r from-orange-500 to-red-500 text-white py-3 px-4 rounded-xl hover:from-orange-600 hover:to-red-600 transition-all duration-300 font-semibold text-center"
+                      className="flex-1 bg-gradient-to-r from-orange-500 to-red-500 text-primary-foreground py-3 px-4 rounded-xl hover:from-orange-600 hover:to-red-600 transition-all duration-300 font-semibold text-center"
                     >
                       Richiedi Info
                     </Link>
                     <button
                       onClick={() => openDetails(trip)}
-                      className="px-4 py-3 border-2 border-orange-500 text-orange-500 rounded-xl hover:bg-orange-500 hover:text-white transition-all duration-300"
+                      className="px-4 py-3 border-2 border-orange-500 text-orange-500 rounded-xl hover:bg-orange-500 hover:text-primary-foreground transition-all duration-300"
                     >
                       Dettagli
                     </button>
@@ -369,7 +380,7 @@ export default function GroupTripsPage() {
 
       {/* CTA Section */}
       <div className="py-20 bg-gradient-to-r from-orange-500 to-red-500">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-white">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-primary-foreground">
           <h2 className="text-4xl font-bold mb-6">Non Trovi il Viaggio Perfetto?</h2>
           <p className="text-xl mb-8 max-w-2xl mx-auto">
             Creiamo viaggi su misura per le tue esigenze specifiche. Contattaci per un preventivo personalizzato.
@@ -383,7 +394,7 @@ export default function GroupTripsPage() {
             </Link>
             <Link
               href="/contatti"
-              className="border-2 border-white text-white px-8 py-4 rounded-xl hover:bg-white hover:text-orange-600 transition-all duration-300 font-semibold text-lg"
+              className="border-2 border-white text-primary-foreground px-8 py-4 rounded-xl hover:bg-white hover:text-orange-600 transition-all duration-300 font-semibold text-lg"
             >
               Contattaci
             </Link>
@@ -394,7 +405,7 @@ export default function GroupTripsPage() {
       {/* Trip Details Modal */}
       {showDetails && selectedTrip && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-white dark:bg-gray-800 rounded-3xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+          <div className="bg-card rounded-3xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
             <div className="relative">
               <img
                 src={selectedTrip.image || "/placeholder.svg"}
@@ -408,7 +419,7 @@ export default function GroupTripsPage() {
                 <X className="w-5 h-5 text-gray-900" />
               </button>
               <div className="absolute bottom-4 left-4">
-                <span className="bg-orange-500 text-white px-4 py-2 rounded-full font-semibold">
+                <span className="bg-orange-500 text-primary-foreground px-4 py-2 rounded-full font-semibold">
                   {selectedTrip.badge}
                 </span>
               </div>
@@ -417,7 +428,7 @@ export default function GroupTripsPage() {
             <div className="p-6 lg:p-8">
               <div className="flex items-start justify-between mb-6">
                 <div>
-                  <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">{selectedTrip.title}</h2>
+                  <h2 className="text-3xl font-bold text-foreground mb-2">{selectedTrip.title}</h2>
                   <div className="flex items-center space-x-4 text-gray-600 dark:text-gray-400">
                     <div className="flex items-center space-x-1">
                       <Calendar className="w-4 h-4" />
@@ -445,23 +456,23 @@ export default function GroupTripsPage() {
               <div className="grid lg:grid-cols-3 gap-8">
                 <div className="lg:col-span-2 space-y-8">
                   <div>
-                    <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Descrizione</h3>
-                    <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
+                    <h3 className="text-xl font-bold text-foreground mb-4">Descrizione</h3>
+                    <p className="text-muted-foreground leading-relaxed">
                       {selectedTrip.detailedDescription}
                     </p>
                   </div>
 
                   <div>
-                    <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Itinerario Dettagliato</h3>
+                    <h3 className="text-xl font-bold text-foreground mb-4">Itinerario Dettagliato</h3>
                     <div className="space-y-4">
                       {selectedTrip.itinerary?.map((day, index) => (
                         <div key={index} className="flex space-x-4 p-4 bg-gray-50 dark:bg-gray-700 rounded-xl">
-                          <div className="flex-shrink-0 w-12 h-12 bg-orange-500 text-white rounded-full flex items-center justify-center font-bold">
+                          <div className="flex-shrink-0 w-12 h-12 bg-orange-500 text-primary-foreground rounded-full flex items-center justify-center font-bold">
                             {day.day}
                           </div>
                           <div>
-                            <h4 className="font-semibold text-gray-900 dark:text-white">{day.title}</h4>
-                            <p className="text-gray-600 dark:text-gray-300 text-sm">{day.description}</p>
+                            <h4 className="font-semibold text-foreground">{day.title}</h4>
+                            <p className="text-muted-foreground text-sm">{day.description}</p>
                           </div>
                         </div>
                       ))}
@@ -522,7 +533,7 @@ export default function GroupTripsPage() {
                   <div className="space-y-3">
                     <Link
                       href="/contatti"
-                      className="block w-full bg-gradient-to-r from-orange-500 to-red-500 text-white py-4 px-6 rounded-xl hover:from-orange-600 hover:to-red-600 transition-all duration-300 font-semibold text-lg text-center"
+                      className="block w-full bg-gradient-to-r from-orange-500 to-red-500 text-primary-foreground py-4 px-6 rounded-xl hover:from-orange-600 hover:to-red-600 transition-all duration-300 font-semibold text-lg text-center"
                     >
                       Richiedi Informazioni - {selectedTrip.price}
                     </Link>

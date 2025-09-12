@@ -4,7 +4,7 @@ import Link from "next/link"
 
 export default function SurfTaghazoutPage() {
   return (
-    <div className="min-h-screen bg-white dark:bg-gray-950">
+    <div className="min-h-screen bg-background">
       <ContactBanner
         title="Surf a Taghazout"
         subtitle="Lezioni e coaching per tutti i livelli. Prenota ora la tua esperienza sulla costa atlantica."
@@ -29,10 +29,10 @@ export default function SurfTaghazoutPage() {
             {/* Content */}
             <div className="lg:col-span-2">
               <div className="prose prose-lg max-w-none">
-                <h2 className="text-2xl lg:text-3xl font-bold mb-4 text-gray-900 dark:text-white">
+                <h2 className="text-2xl lg:text-3xl font-bold mb-4 text-foreground">
                   Taghazout: il paradiso del surf marocchino
                 </h2>
-                <p className="text-gray-600 dark:text-gray-300 text-lg mb-8">
+                <p className="text-muted-foreground text-lg mb-8">
                   Taghazout è considerata la capitale del surf del Marocco, grazie alle sue onde costanti, ai venti
                   alisei e all'atmosfera rilassata che caratterizza questo villaggio di pescatori. Le nostre scuole
                   partner offrono lezioni per tutti i livelli, dal principiante assoluto al surfista esperto che vuole
@@ -64,30 +64,25 @@ export default function SurfTaghazoutPage() {
                       text: "Dalle prime onde in schiuma bianca al perfezionamento su reef break impegnative",
                     },
                   ].map((feature, i) => (
-                    <div
-                      key={i}
-                      className="p-6 rounded-2xl bg-gray-50 dark:bg-gray-900 border border-gray-200/60 dark:border-gray-800"
-                    >
+                    <div key={i} className="p-6 rounded-2xl bg-card border border-border">
                       <feature.icon className="w-8 h-8 text-blue-600 dark:text-blue-400 mb-4" />
-                      <h3 className="font-bold text-lg mb-2 text-gray-900 dark:text-white">{feature.title}</h3>
-                      <p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">{feature.text}</p>
+                      <h3 className="font-bold text-lg mb-2 text-card-foreground">{feature.title}</h3>
+                      <p className="text-muted-foreground text-sm leading-relaxed">{feature.text}</p>
                     </div>
                   ))}
                 </div>
 
                 {/* Sample Program */}
-                <div className="bg-gradient-to-r from-blue-50 to-cyan-50 dark:from-gray-800 dark:to-gray-900 rounded-2xl p-6 lg:p-8 mb-10">
-                  <h3 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white">
-                    Programma surf camp 5 giorni
-                  </h3>
+                <div className="bg-muted/50 rounded-2xl p-6 lg:p-8 mb-10 border border-border">
+                  <h3 className="text-2xl font-bold mb-4 text-foreground">Programma surf camp 5 giorni</h3>
                   <div className="space-y-4">
                     <div className="flex gap-4">
                       <div className="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center font-bold text-sm">
                         1
                       </div>
                       <div>
-                        <h4 className="font-semibold text-gray-900 dark:text-white">Arrivo e prime onde</h4>
-                        <p className="text-gray-600 dark:text-gray-300 text-sm">
+                        <h4 className="font-semibold text-foreground">Arrivo e prime onde</h4>
+                        <p className="text-muted-foreground text-sm">
                           Check-in, briefing sicurezza, prima lezione in spiaggia con tavole soft, teoria delle onde e
                           posizionamento.
                         </p>
@@ -98,8 +93,8 @@ export default function SurfTaghazoutPage() {
                         2-3
                       </div>
                       <div>
-                        <h4 className="font-semibold text-gray-900 dark:text-white">Tecnica e progressione</h4>
-                        <p className="text-gray-600 dark:text-gray-300 text-sm">
+                        <h4 className="font-semibold text-foreground">Tecnica e progressione</h4>
+                        <p className="text-muted-foreground text-sm">
                           Lezioni mattutine (2h), analisi video, pomeriggi liberi per praticare, introduzione al lineup
                           e alle priorità.
                         </p>
@@ -110,8 +105,8 @@ export default function SurfTaghazoutPage() {
                         4-5
                       </div>
                       <div>
-                        <h4 className="font-semibold text-gray-900 dark:text-white">Spot avanzati e cultura</h4>
-                        <p className="text-gray-600 dark:text-gray-300 text-sm">
+                        <h4 className="font-semibold text-foreground">Spot avanzati e cultura</h4>
+                        <p className="text-muted-foreground text-sm">
                           Esplorazione spot diversi, sessioni autonome supervisionate, visita della medina e workshop di
                           artigianato locale.
                         </p>
@@ -122,7 +117,7 @@ export default function SurfTaghazoutPage() {
 
                 {/* What's Included */}
                 <div className="mb-10">
-                  <h3 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white">Cosa è incluso</h3>
+                  <h3 className="text-2xl font-bold mb-4 text-foreground">Cosa è incluso</h3>
                   <div className="grid sm:grid-cols-2 gap-4">
                     {[
                       "Istruttore ISA certificato",
@@ -136,7 +131,7 @@ export default function SurfTaghazoutPage() {
                     ].map((item, idx) => (
                       <div key={idx} className="flex items-center gap-3">
                         <div className="w-2 h-2 bg-green-500 rounded-full" />
-                        <span className="text-gray-700 dark:text-gray-300">{item}</span>
+                        <span className="text-muted-foreground">{item}</span>
                       </div>
                     ))}
                   </div>
@@ -144,7 +139,7 @@ export default function SurfTaghazoutPage() {
 
                 {/* Levels */}
                 <div className="mb-10">
-                  <h3 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white">Livelli e progressione</h3>
+                  <h3 className="text-2xl font-bold mb-4 text-foreground">Livelli e progressione</h3>
                   <div className="space-y-4">
                     <div className="p-4 bg-green-50 dark:bg-green-900/20 rounded-xl border-l-4 border-green-500">
                       <h4 className="font-semibold text-green-800 dark:text-green-300">Principiante</h4>
@@ -168,18 +163,18 @@ export default function SurfTaghazoutPage() {
                 </div>
 
                 {/* Best Time */}
-                <div className="bg-yellow-50 dark:bg-yellow-900/20 rounded-2xl p-6">
-                  <h3 className="text-xl font-bold mb-3 text-gray-900 dark:text-white">Quando andare</h3>
+                <div className="bg-yellow-50 dark:bg-yellow-900/20 rounded-2xl p-6 border border-border">
+                  <h3 className="text-xl font-bold mb-3 text-foreground">Quando andare</h3>
                   <div className="grid sm:grid-cols-2 gap-4 text-sm">
                     <div>
-                      <h4 className="font-semibold mb-2 text-gray-900 dark:text-white">Ottobre - Marzo</h4>
-                      <p className="text-gray-600 dark:text-gray-300">
+                      <h4 className="font-semibold mb-2 text-foreground">Ottobre - Marzo</h4>
+                      <p className="text-muted-foreground">
                         Swell atlantici più consistenti, onde 1-3m, acqua 18-20°C, ideale per intermedi/avanzati
                       </p>
                     </div>
                     <div>
-                      <h4 className="font-semibold mb-2 text-gray-900 dark:text-white">Aprile - Settembre</h4>
-                      <p className="text-gray-600 dark:text-gray-300">
+                      <h4 className="font-semibold mb-2 text-foreground">Aprile - Settembre</h4>
+                      <p className="text-muted-foreground">
                         Onde più piccole e costanti, acqua 20-22°C, venti per windsurf, perfetto per principianti
                       </p>
                     </div>
@@ -192,25 +187,25 @@ export default function SurfTaghazoutPage() {
             <aside className="lg:col-span-1">
               <div className="sticky top-24 space-y-6">
                 {/* Pricing Card */}
-                <div className="p-6 rounded-2xl bg-gradient-to-b from-blue-50 to-cyan-50 dark:from-gray-900 dark:to-gray-900/40 border border-blue-200/60 dark:border-gray-800">
+                <div className="p-6 rounded-2xl bg-muted/50 border border-border">
                   <div className="text-center mb-4">
-                    <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">Prezzo indicativo</h3>
+                    <h3 className="text-xl font-bold text-foreground mb-2">Prezzo indicativo</h3>
                     <div className="text-3xl font-extrabold text-blue-600 dark:text-blue-400 mb-1">da €220</div>
-                    <p className="text-sm text-gray-600 dark:text-gray-300">5 giorni surf camp completo</p>
+                    <p className="text-sm text-muted-foreground">5 giorni surf camp completo</p>
                   </div>
 
                   <div className="space-y-3 mb-6">
                     <div className="flex items-center gap-2 text-sm">
-                      <Users className="w-4 h-4 text-gray-500" />
-                      <span className="text-gray-600 dark:text-gray-300">Gruppo: 4-8 persone</span>
+                      <Users className="w-4 h-4 text-muted-foreground" />
+                      <span className="text-muted-foreground">Gruppo: 4-8 persone</span>
                     </div>
                     <div className="flex items-center gap-2 text-sm">
-                      <Clock className="w-4 h-4 text-gray-500" />
-                      <span className="text-gray-600 dark:text-gray-300">2h lezione al giorno</span>
+                      <Clock className="w-4 h-4 text-muted-foreground" />
+                      <span className="text-muted-foreground">2h lezione al giorno</span>
                     </div>
                     <div className="flex items-center gap-2 text-sm">
-                      <Shield className="w-4 h-4 text-gray-500" />
-                      <span className="text-gray-600 dark:text-gray-300">Istruttori certificati ISA</span>
+                      <Shield className="w-4 h-4 text-muted-foreground" />
+                      <span className="text-muted-foreground">Istruttori certificati ISA</span>
                     </div>
                   </div>
 
@@ -221,58 +216,58 @@ export default function SurfTaghazoutPage() {
                     Prenota / Richiedi Info
                   </Link>
 
-                  <p className="text-xs text-gray-600 dark:text-gray-400 mt-3 text-center">
+                  <p className="text-xs text-muted-foreground mt-3 text-center">
                     Lezioni singole da €35. Noleggio attrezzatura disponibile.
                   </p>
                 </div>
 
                 {/* Weather Info */}
-                <div className="p-6 rounded-2xl bg-white dark:bg-gray-900 border border-gray-200/60 dark:border-gray-800">
-                  <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">Condizioni attuali</h3>
+                <div className="p-6 rounded-2xl bg-card border border-border">
+                  <h3 className="text-lg font-bold text-card-foreground mb-4">Condizioni attuali</h3>
                   <div className="space-y-3 text-sm">
                     <div className="flex justify-between">
-                      <span className="text-gray-600 dark:text-gray-300">Altezza onde:</span>
+                      <span className="text-muted-foreground">Altezza onde:</span>
                       <span className="font-semibold text-blue-600">1.2 - 1.8m</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-gray-600 dark:text-gray-300">Vento:</span>
+                      <span className="text-muted-foreground">Vento:</span>
                       <span className="font-semibold text-green-600">15-20 knots NW</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-gray-600 dark:text-gray-300">Temp. acqua:</span>
+                      <span className="text-muted-foreground">Temp. acqua:</span>
                       <span className="font-semibold text-blue-600">19°C</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-gray-600 dark:text-gray-300">Condizioni:</span>
+                      <span className="text-muted-foreground">Condizioni:</span>
                       <span className="font-semibold text-green-600">Ottime</span>
                     </div>
                   </div>
-                  <p className="text-xs text-gray-500 mt-3">Aggiornato oggi alle 14:00</p>
+                  <p className="text-xs text-muted-foreground/70 mt-3">Aggiornato oggi alle 14:00</p>
                 </div>
 
                 {/* Reviews */}
-                <div className="p-6 rounded-2xl bg-white dark:bg-gray-900 border border-gray-200/60 dark:border-gray-800">
-                  <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">Recensioni</h3>
+                <div className="p-6 rounded-2xl bg-card border border-border">
+                  <h3 className="text-lg font-bold text-card-foreground mb-4">Recensioni</h3>
                   <div className="flex items-center gap-2 mb-4">
                     <div className="flex">
                       {[...Array(5)].map((_, i) => (
                         <Star key={i} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
                       ))}
                     </div>
-                    <span className="text-sm text-gray-600 dark:text-gray-300">4.8/5 (94 recensioni)</span>
+                    <span className="text-sm text-muted-foreground">4.8/5 (94 recensioni)</span>
                   </div>
                   <div className="space-y-3">
                     <div className="text-sm">
-                      <p className="text-gray-600 dark:text-gray-300 italic">
+                      <p className="text-muted-foreground italic">
                         "Istruttori fantastici, ho imparato a surfare in 3 giorni!"
                       </p>
-                      <p className="text-gray-500 text-xs mt-1">- Luca, Torino</p>
+                      <p className="text-muted-foreground/70 text-xs mt-1">- Luca, Torino</p>
                     </div>
                     <div className="text-sm">
-                      <p className="text-gray-600 dark:text-gray-300 italic">
+                      <p className="text-muted-foreground italic">
                         "Spot incredibili e atmosfera rilassata. Tornerò sicuramente!"
                       </p>
-                      <p className="text-gray-500 text-xs mt-1">- Emma, Firenze</p>
+                      <p className="text-muted-foreground/70 text-xs mt-1">- Emma, Firenze</p>
                     </div>
                   </div>
                 </div>

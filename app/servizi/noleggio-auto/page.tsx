@@ -173,9 +173,12 @@ export default function NoleggioAutoPage() {
   const [selectedCar, setSelectedCar] = useState(carCategories[0].cars[0])
 
   return (
-    <div className="min-h-screen bg-white dark:bg-gray-900">
+    <div className="min-h-screen bg-background">
       {/* Hero Section */}
-      <section className="relative py-20 overflow-hidden bg-gradient-to-b from-green-50 to-white dark:from-gray-800 dark:to-gray-900">
+      <section className="relative py-20 overflow-hidden
+  bg-gradient-to-r from-green-50 via-green-100 to-green-200
+  dark:bg-gradient-to-r dark:from-green-700 dark:via-green-900 dark:to-green-950">
+
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <div className="flex justify-center mb-6">
@@ -183,14 +186,14 @@ export default function NoleggioAutoPage() {
                 <Car className="h-12 w-12 text-green-600 dark:text-green-400" />
               </div>
             </div>
-            <h1 className="text-4xl md:text-6xl font-bold text-gray-900 dark:text-white mb-6">
+            <h1 className="text-4xl md:text-6xl font-bold text-foreground mb-6">
               Noleggio Auto <span className="text-green-600 dark:text-green-400">Premium</span>
             </h1>
-            <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto mb-8">
+            <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-8">
               Esplora il Marocco in totale libertà con la nostra flotta moderna e affidabile. Veicoli per ogni esigenza,
               dai €30 al giorno.
             </p>
-            <div className="flex flex-wrap justify-center gap-4 text-sm text-gray-600 dark:text-gray-400">
+            <div className="flex flex-wrap justify-center gap-4 text-sm text-muted-foreground">
               <div className="flex items-center gap-2">
                 <CheckCircle className="h-5 w-5 text-green-500" />
                 <span>Flotta 2020-2024</span>
@@ -212,10 +215,8 @@ export default function NoleggioAutoPage() {
       <section className="py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
-              Scegli la Tua Categoria
-            </h2>
-            <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">Scegli la Tua Categoria</h2>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
               Veicoli moderni e ben mantenuti per ogni tipo di viaggio
             </p>
           </div>
@@ -246,7 +247,7 @@ export default function NoleggioAutoPage() {
                   <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">al giorno</p>
                   <Badge
                     variant="secondary"
-                    className="bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300"
+                    className="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-gradient-to-r from-orange-500 to-red-500 text-white dark:bg-orange-900/40 dark:text-orange-200 shadow-sm transition-colors"
                   >
                     {category.cars.length} modelli disponibili
                   </Badge>
@@ -258,7 +259,7 @@ export default function NoleggioAutoPage() {
           {/* Selected Category Cars */}
           <Card className="mb-12">
             <CardHeader>
-              <CardTitle className="text-2xl flex items-center gap-3">
+              <CardTitle className="text-2xl flex items-center gap-3 text-card-foreground">
                 <Car className="h-6 w-6 text-green-600" />
                 Categoria {selectedCategory.name} - Veicoli Disponibili
               </CardTitle>
@@ -271,33 +272,36 @@ export default function NoleggioAutoPage() {
                     className={`p-6 rounded-lg border-2 cursor-pointer transition-all ${
                       selectedCar.model === car.model
                         ? "border-green-500 bg-green-50 dark:bg-green-900/20"
-                        : "border-gray-200 dark:border-gray-700 hover:border-green-300"
+                        : "border-border hover:border-green-300"
                     }`}
                     onClick={() => setSelectedCar(car)}
                   >
                     <div className="flex items-center justify-between mb-4">
-                      <h3 className="text-lg font-semibold">{car.model}</h3>
-                      <Badge variant="outline" className="border-green-200">
+                      <h3 className="text-lg font-semibold text-card-foreground">{car.model}</h3>
+                      <Badge
+                        variant="outline"
+                        className="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-gradient-to-r from-orange-500 to-red-500 text-white dark:bg-orange-900/40 dark:text-orange-200 shadow-sm transition-colors"
+                      >
                         {car.transmission}
                       </Badge>
                     </div>
 
                     <div className="grid grid-cols-2 gap-4 text-sm mb-4">
                       <div className="flex items-center gap-2">
-                        <Users className="h-4 w-4 text-gray-400" />
-                        <span>{car.seats} posti</span>
+                        <Users className="h-4 w-4 text-muted-foreground" />
+                        <span className="text-muted-foreground">{car.seats} posti</span>
                       </div>
                       <div className="flex items-center gap-2">
-                        <Settings className="h-4 w-4 text-gray-400" />
-                        <span>{car.doors} porte</span>
+                        <Settings className="h-4 w-4 text-muted-foreground" />
+                        <span className="text-muted-foreground">{car.doors} porte</span>
                       </div>
                       <div className="flex items-center gap-2">
-                        <Fuel className="h-4 w-4 text-gray-400" />
-                        <span>{car.fuel}</span>
+                        <Fuel className="h-4 w-4 text-muted-foreground" />
+                        <span className="text-muted-foreground">{car.fuel}</span>
                       </div>
                       <div className="flex items-center gap-2">
-                        <Zap className="h-4 w-4 text-gray-400" />
-                        <span>{car.consumption}</span>
+                        <Zap className="h-4 w-4 text-muted-foreground" />
+                        <span className="text-muted-foreground">{car.consumption}</span>
                       </div>
                     </div>
 
@@ -311,11 +315,11 @@ export default function NoleggioAutoPage() {
                 ))}
               </div>
 
-              <div className="mt-8 p-6 bg-gray-50 dark:bg-gray-800 rounded-lg">
+              <div className="mt-8 p-6 bg-muted rounded-lg">
                 <div className="flex items-center justify-between mb-4">
                   <div>
-                    <h4 className="font-semibold text-lg">{selectedCar.model}</h4>
-                    <p className="text-gray-600 dark:text-gray-400">
+                    <h4 className="font-semibold text-lg text-card-foreground">{selectedCar.model}</h4>
+                    <p className="text-muted-foreground">
                       {selectedCar.transmission} • {selectedCar.fuel} • {selectedCar.seats} posti
                     </p>
                   </div>
@@ -340,11 +344,11 @@ export default function NoleggioAutoPage() {
       </section>
 
       {/* Services Included/Not Included */}
-      <section className="py-20 bg-gray-50 dark:bg-gray-800">
+      <section className="py-20 bg-muted/50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">Cosa è Incluso</h2>
-            <p className="text-lg text-gray-600 dark:text-gray-300">Servizi compresi nel prezzo e servizi aggiuntivi</p>
+            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">Cosa è Incluso</h2>
+            <p className="text-lg text-muted-foreground">Servizi compresi nel prezzo e servizi aggiuntivi</p>
           </div>
 
           <div className="grid md:grid-cols-2 gap-8">
@@ -360,7 +364,7 @@ export default function NoleggioAutoPage() {
                   {includedServices.map((service, index) => (
                     <li key={index} className="flex items-center gap-3">
                       <CheckCircle className="h-5 w-5 text-green-500 flex-shrink-0" />
-                      <span>{service}</span>
+                      <span className="text-card-foreground">{service}</span>
                     </li>
                   ))}
                 </ul>
@@ -379,7 +383,7 @@ export default function NoleggioAutoPage() {
                   {notIncluded.map((service, index) => (
                     <li key={index} className="flex items-center gap-3">
                       <X className="h-5 w-5 text-red-500 flex-shrink-0" />
-                      <span>{service}</span>
+                      <span className="text-card-foreground">{service}</span>
                     </li>
                   ))}
                 </ul>
@@ -393,8 +397,8 @@ export default function NoleggioAutoPage() {
       <section className="py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">Punti di Ritiro</h2>
-            <p className="text-lg text-gray-600 dark:text-gray-300">Ritira la tua auto in aeroporto o in città</p>
+            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">Punti di Ritiro</h2>
+            <p className="text-lg text-muted-foreground">Ritira la tua auto in aeroporto o in città</p>
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -404,15 +408,18 @@ export default function NoleggioAutoPage() {
                   <div className="flex items-start gap-3 mb-4">
                     <MapPin className="h-5 w-5 text-green-600 mt-1" />
                     <div>
-                      <h3 className="font-semibold text-lg">{location.city}</h3>
-                      <p className="text-gray-600 dark:text-gray-400">{location.airport}</p>
+                      <h3 className="font-semibold text-lg text-card-foreground">{location.city}</h3>
+                      <p className="text-muted-foreground">{location.airport}</p>
                     </div>
                   </div>
 
-                  <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">{location.address}</p>
+                  <p className="text-sm text-muted-foreground mb-4">{location.address}</p>
 
                   <Link href="/contatti">
-                    <Button variant="outline" className="w-full bg-transparent">
+                    <Button
+                      variant="outline"
+                      className="w-full bg-transparent border-border text-foreground hover:bg-muted"
+                    >
                       Seleziona Punto di Ritiro
                     </Button>
                   </Link>
@@ -424,15 +431,11 @@ export default function NoleggioAutoPage() {
       </section>
 
       {/* Testimonials */}
-      <section className="py-20 bg-gray-50 dark:bg-gray-800">
+      <section className="py-20 bg-muted/50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
-              Recensioni dei Clienti
-            </h2>
-            <p className="text-lg text-gray-600 dark:text-gray-300">
-              Esperienze reali con il nostro servizio di noleggio
-            </p>
+            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">Recensioni dei Clienti</h2>
+            <p className="text-lg text-muted-foreground">Esperienze reali con il nostro servizio di noleggio</p>
           </div>
 
           <div className="grid md:grid-cols-3 gap-8">
@@ -445,13 +448,13 @@ export default function NoleggioAutoPage() {
                     ))}
                   </div>
 
-                  <p className="text-gray-600 dark:text-gray-300 mb-4 italic">"{testimonial.comment}"</p>
+                  <p className="text-muted-foreground mb-4 italic">"{testimonial.comment}"</p>
 
-                  <div className="border-t pt-4">
-                    <p className="font-medium text-gray-900 dark:text-white">{testimonial.name}</p>
-                    <p className="text-sm text-gray-500 dark:text-gray-400">{testimonial.location}</p>
+                  <div className="border-t border-border pt-4">
+                    <p className="font-medium text-card-foreground">{testimonial.name}</p>
+                    <p className="text-sm text-muted-foreground">{testimonial.location}</p>
                     <p className="text-sm text-green-600 dark:text-green-400">Auto: {testimonial.car}</p>
-                    <p className="text-xs text-gray-400 mt-1">{testimonial.date}</p>
+                    <p className="text-xs text-muted-foreground mt-1">{testimonial.date}</p>
                   </div>
                 </CardContent>
               </Card>

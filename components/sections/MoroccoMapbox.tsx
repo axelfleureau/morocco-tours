@@ -607,21 +607,17 @@ export default function MoroccoMapbox({ cities = defaultCities }: MoroccoMapboxP
                 clearTimeout(hoverTimeout)
                 hoverTimeout = null
               }
-              hoverTimeout = setTimeout(() => {
-                if (hoverPopup && currentHoverMarker === markerElement) {
-                  const popupElement = hoverPopup.getElement()
-                  const isMouseOverPopup = popupElement && popupElement.matches(":hover")
-                  if (!isMouseOverPopup) {
-                    popup.remove()
-                    hoverPopup = null
-                    currentHoverMarker = null
-                  }
-                }
-              }, 100)
+              if (hoverPopup) {
+                hoverPopup.remove()
+                hoverPopup = null
+              }
+              if (currentHoverMarker) {
+                currentHoverMarker.classList.remove("clicked")
+                currentHoverMarker = null
+              }
             })
           }
 
-          // Add click event
           markerElement.addEventListener("click", () => {
             if (hoverPopup) {
               hoverPopup.remove()
@@ -630,7 +626,7 @@ export default function MoroccoMapbox({ cities = defaultCities }: MoroccoMapboxP
 
             setSelectedCity(city)
 
-            // Update marker styles
+            // Aggiorna marker styles
             document.querySelectorAll(".custom-marker").forEach((m) => m.classList.remove("clicked"))
             markerElement.classList.add("clicked")
 
@@ -639,11 +635,32 @@ export default function MoroccoMapbox({ cities = defaultCities }: MoroccoMapboxP
             }
             activeMarker = markerElement
 
-            // Fly to city
+            // Chiudi eventuale popup già aperto
+            if (openPopup) openPopup.remove()
+
+            // Fly to city e DOPO apri popup centrato
             map.flyTo({
               center: city.coordinates,
               zoom: 8,
               duration: 1500,
+            })
+
+            map.once("moveend", () => {
+              openPopup = new window.mapboxgl.Popup({
+                offset: [0, -15],
+                closeButton: true,
+                closeOnClick: false,
+                className: "modern-popup",
+              })
+                .setLngLat(city.coordinates)
+                .setHTML(`
+                  <div class="bg-white p-4 rounded-xl shadow-lg min-w-[200px]">
+                    <h4 class="font-bold text-gray-900 mb-1">${city.name}</h4>
+                    <p class="text-sm text-gray-600 mb-2">${city.description}</p>
+                    <div class="text-xs text-orange-500 font-medium">Clicca per esplorare</div>
+                  </div>
+                `)
+                .addTo(map)
             })
           })
 

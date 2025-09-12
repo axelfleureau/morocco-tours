@@ -1,4 +1,4 @@
-import { Phone, Mail, MessageCircle, Clock, Globe } from 'lucide-react'
+import { Phone, Mail, MessageCircle, Clock, Globe } from "lucide-react"
 
 export default function ContactsPage() {
   return (
@@ -15,13 +15,13 @@ export default function ContactsPage() {
       </div>
 
       {/* Contact Information */}
-      <div className="py-20 bg-white dark:bg-gray-900">
+      <div className="py-20 bg-card">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-16">
             {/* Contact Info */}
             <div>
-              <h2 className="text-4xl font-bold text-gray-900 dark:text-white mb-8">Come Contattarci</h2>
-              <p className="text-lg text-gray-600 dark:text-gray-300 mb-12">
+              <h2 className="text-4xl font-bold text-card-foreground mb-8">Come Contattarci</h2>
+              <p className="text-lg text-muted-foreground mb-12">
                 Il nostro team è sempre disponibile per rispondere alle tue domande e aiutarti a creare l'esperienza di
                 viaggio perfetta.
               </p>
@@ -55,27 +55,27 @@ export default function ContactsPage() {
                     href={contact.action}
                     target={contact.action.startsWith("http") ? "_blank" : undefined}
                     rel={contact.action.startsWith("http") ? "noopener noreferrer" : undefined}
-                    className="flex items-start space-x-6 p-6 bg-gray-50 dark:bg-gray-800 rounded-2xl hover:shadow-lg transition-all duration-300 hover:scale-105 group"
+                    className="flex items-start space-x-6 p-6 bg-card rounded-2xl hover:shadow-lg transition-all duration-300 hover:scale-105 group"
                   >
-                    <div className="w-16 h-16 bg-orange-100 dark:bg-orange-900/30 rounded-full flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
-                      <contact.icon className="w-8 h-8 text-orange-600 dark:text-orange-400" />
+                    <div className="w-16 h-16 bg-gradient-to-r from-orange-500 to-red-500 dark:bg-orange-900/40 rounded-full flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
+                      <contact.icon className="w-8 h-8 text-white dark:text-orange-400 transition-colors" />
                     </div>
                     <div>
-                      <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">{contact.title}</h3>
+                      <h3 className="text-xl font-bold text-card-foreground mb-2">{contact.title}</h3>
                       <p className="text-orange-600 dark:text-orange-400 font-semibold mb-1">{contact.subtitle}</p>
-                      <p className="text-gray-600 dark:text-gray-300 text-sm">{contact.description}</p>
+                      <p className="text-muted-foreground text-sm">{contact.description}</p>
                     </div>
                   </a>
                 ))}
               </div>
 
               {/* Office Hours */}
-              <div className="mt-12 p-6 bg-gradient-to-r from-orange-50 to-red-50 dark:from-gray-800 dark:to-gray-700 rounded-2xl">
-                <div className="flex items-center space-x-3 mb-4">
-                  <Clock className="w-6 h-6 text-orange-600" />
-                  <h3 className="text-xl font-bold text-gray-900 dark:text-white">Orari di Apertura</h3>
+              <div className="mt-12 p-6 bg-muted rounded-2xl">
+                <div className="flex items-center space-x-3 mb-4">  
+                <Clock className="w-6 h-6 text-orange-600" />
+                <h3 className="text-xl font-bold text-foreground">Orari di Apertura</h3>
                 </div>
-                <div className="space-y-2 text-gray-600 dark:text-gray-300">
+                <div className="space-y-2 text-muted-foreground">
                   <div className="flex justify-between">
                     <span>Lunedì - Venerdì:</span>
                     <span className="font-semibold">9:00 - 18:00</span>
@@ -97,55 +97,55 @@ export default function ContactsPage() {
             </div>
 
             {/* Contact Form */}
-            <div className="bg-white dark:bg-gray-800 rounded-3xl p-8 shadow-xl">
-              <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">Invia un Messaggio</h3>
-              <p className="text-gray-600 dark:text-gray-300 mb-8">
+            <div className="bg-card rounded-3xl p-8 shadow-xl">
+              <h3 className="text-2xl font-bold text-card-foreground mb-6">Invia un Messaggio</h3>
+              <p className="text-muted-foreground mb-8">
                 Compila il form e ti ricontatteremo entro 24 ore con tutte le informazioni di cui hai bisogno.
               </p>
 
               <form className="space-y-6">
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Nome</label>
+                    <label className="block text-sm font-medium text-foreground mb-2">Nome</label>
                     <input
                       type="text"
-                      className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+                      className="w-full px-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent bg-background text-foreground"
                       placeholder="Il tuo nome"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Cognome</label>
+                    <label className="block text-sm font-medium text-foreground mb-2">Cognome</label>
                     <input
                       type="text"
-                      className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+                      className="w-full px-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent bg-background text-foreground"
                       placeholder="Il tuo cognome"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Email</label>
+                  <label className="block text-sm font-medium text-foreground mb-2">Email</label>
                   <input
                     type="email"
-                    className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+                    className="w-full px-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent bg-background text-foreground"
                     placeholder="la-tua-email@esempio.com"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Telefono</label>
+                  <label className="block text-sm font-medium text-foreground mb-2">Telefono</label>
                   <input
                     type="tel"
-                    className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+                    className="w-full px-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent bg-background text-foreground"
                     placeholder="+39 329 233 3370"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  <label className="block text-sm font-medium text-foreground mb-2">
                     Tipo di viaggio
                   </label>
-                  <select className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent dark:bg-gray-700 dark:text-white">
+                  <select className="px-4 py-2 border border-border rounded-lg bg-card text-card-foreground w-full focus:ring-2 focus:ring-orange-500 focus:border-transparent">
                     <option value="">Seleziona il tipo di viaggio</option>
                     <option value="gruppo">Viaggio di Gruppo</option>
                     <option value="misura">Viaggio su Misura</option>
@@ -157,10 +157,10 @@ export default function ContactsPage() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Messaggio</label>
+                  <label className="block text-sm font-medium text-foreground mb-2">Messaggio</label>
                   <textarea
                     rows={5}
-                    className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent dark:bg-gray-700 dark:text-white resize-none"
+                    className="w-full px-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent bg-background text-foreground resize-none"
                     placeholder="Raccontaci il tuo sogno di viaggio in Marocco..."
                   />
                 </div>
@@ -171,7 +171,7 @@ export default function ContactsPage() {
                     id="privacy"
                     className="mt-1 w-4 h-4 text-orange-600 border-gray-300 rounded focus:ring-orange-500"
                   />
-                  <label htmlFor="privacy" className="text-sm text-gray-600 dark:text-gray-300">
+                  <label htmlFor="privacy" className="text-sm text-muted-foreground">
                     Accetto la{" "}
                     <a href="/privacy" className="text-orange-600 hover:text-orange-700 underline">
                       Privacy Policy
@@ -189,7 +189,7 @@ export default function ContactsPage() {
               </form>
 
               <div className="mt-8 pt-8 border-t border-gray-200 dark:border-gray-600">
-                <p className="text-sm text-gray-600 dark:text-gray-300 text-center">
+                <p className="text-sm text-muted-foreground text-center">
                   Preferisci parlare direttamente con noi?
                 </p>
                 <div className="flex justify-center mt-4">
@@ -210,11 +210,11 @@ export default function ContactsPage() {
       </div>
 
       {/* FAQ Section */}
-      <div className="py-20 bg-gray-50 dark:bg-gray-800">
+      <div className="py-12 bg-muted">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">Domande Frequenti</h2>
-            <p className="text-xl text-gray-600 dark:text-gray-300">
+            <h2 className="text-4xl font-bold text-card-foreground mb-4">Domande Frequenti</h2>
+            <p className="text-xl text-muted-foreground">
               Le risposte alle domande più comuni sui nostri servizi
             </p>
           </div>
@@ -242,9 +242,9 @@ export default function ContactsPage() {
                   "Forniamo assistenza 24/7 tramite WhatsApp, guide locali esperte che parlano italiano, e un referente in Italia sempre disponibile per qualsiasi necessità.",
               },
             ].map((faq, idx) => (
-              <div key={idx} className="bg-white dark:bg-gray-900 rounded-2xl p-6 shadow-lg">
-                <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-3">{faq.question}</h3>
-                <p className="text-gray-600 dark:text-gray-300 leading-relaxed">{faq.answer}</p>
+              <div key={idx} className="bg-card rounded-2xl p-6 shadow-lg">
+                <h3 className="text-lg font-bold text-card-foreground mb-3">{faq.question}</h3>
+                <p className="text-muted-foreground leading-relaxed">{faq.answer}</p>
               </div>
             ))}
           </div>

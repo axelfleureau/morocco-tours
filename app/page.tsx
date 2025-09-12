@@ -9,20 +9,24 @@ import PopularTrips from "@/components/sections/PopularTrips"
 import BlogTeaser from "@/components/sections/blog-teaser"
 import ContactBanner from "@/components/cta/contact-banner"
 import MoroccoMap from "@/components/sections/MoroccoMap"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardTitle } from "@/components/ui/card"
 
 // Authentic Experiences Component
 const AuthenticExperiences = () => {
   return (
-    <section className="py-16 lg:py-24 bg-background">
+    <section className="py-16 lg:py-24 bg-background" data-slot="authentic-experiences">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12 lg:mb-16">
-          <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-4">Esperienze Autentiche</h2>
-          <p className="text-lg lg:text-xl text-muted-foreground max-w-2xl mx-auto">
+          <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-4 lg:mb-6 text-balance">
+            Esperienze Autentiche
+          </h2>
+          <p className="text-lg lg:text-xl text-muted-foreground max-w-2xl mx-auto text-pretty leading-relaxed">
             Immergiti nella cultura marocchina con le nostre esperienze uniche
           </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {[
             {
               icon: Mountain,
@@ -61,9 +65,9 @@ const AuthenticExperiences = () => {
               href: "/esperienze/fotografia",
             },
           ].map((experience, idx) => (
-            <div
+            <Card
               key={idx}
-              className="group bg-card rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-500 hover:scale-105"
+              className="group overflow-hidden hover:shadow-xl transition-all duration-500 hover:scale-105"
             >
               <div className="relative h-40 sm:h-48 overflow-hidden">
                 <img
@@ -79,28 +83,22 @@ const AuthenticExperiences = () => {
                 </div>
               </div>
 
-              <div className="p-4 sm:p-6 text-center">
+              <CardContent className="text-center">
                 <div className="w-12 h-12 bg-orange-100 dark:bg-orange-900/30 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
                   <experience.icon className="w-6 h-6 text-orange-600 dark:text-orange-400" />
                 </div>
-                <h3 className="text-lg font-bold text-foreground mb-2">{experience.title}</h3>
-                <p className="text-muted-foreground text-sm mb-4">{experience.description}</p>
+                <CardTitle className="text-lg mb-2">{experience.title}</CardTitle>
+                <p className="text-muted-foreground text-sm mb-4 text-pretty">{experience.description}</p>
                 <div className="flex gap-2">
-                  <Link
-                    href={experience.href}
-                    className="w-1/2 bg-muted text-foreground py-2 px-4 rounded-xl hover:bg-muted/80 transition-all duration-300 font-semibold text-center"
-                  >
-                    Dettagli
-                  </Link>
-                  <Link
-                    href="/contatti"
-                    className="w-1/2 bg-gradient-to-r from-orange-500 to-red-500 text-white py-2 px-4 rounded-xl hover:from-orange-600 hover:to-red-600 transition-all duration-300 font-semibold text-center"
-                  >
-                    Prenota
-                  </Link>
+                  <Button asChild variant="ghost" size="sm" className="flex-1">
+                    <Link href={experience.href}>Dettagli</Link>
+                  </Button>
+                  <Button asChild variant="cta" size="sm" className="flex-1">
+                    <Link href="/contatti">Prenota</Link>
+                  </Button>
                 </div>
-              </div>
-            </div>
+              </CardContent>
+            </Card>
           ))}
         </div>
       </div>
@@ -111,11 +109,15 @@ const AuthenticExperiences = () => {
 // Testimonials Component
 const TestimonialsSection = () => {
   return (
-    <section className="py-16 lg:py-24 bg-gradient-to-r from-orange-50 to-red-50 dark:from-gray-800 dark:to-gray-900">
+    <section className="py-16 lg:py-24 bg-gradient-to-b from-card to-muted" data-slot="testimonials">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12 lg:mb-16">
-          <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-4">Cosa Dicono i Nostri Viaggiatori</h2>
-          <p className="text-lg lg:text-xl text-muted-foreground">Testimonianze autentiche dai nostri clienti</p>
+          <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-4 lg:mb-6 text-balance">
+            Cosa Dicono i Nostri Viaggiatori
+          </h2>
+          <p className="text-lg lg:text-xl text-muted-foreground text-pretty leading-relaxed">
+            Testimonianze autentiche dai nostri clienti
+          </p>
         </div>
 
         <div className="grid md:grid-cols-3 gap-6 lg:gap-8">
@@ -145,31 +147,33 @@ const TestimonialsSection = () => {
               trip: "Tour Gastronomico",
             },
           ].map((testimonial, idx) => (
-            <div key={idx} className="bg-card rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300">
-              <div className="flex items-center mb-4">
-                <img
-                  src={testimonial.image || "/placeholder.svg?height=50&width=50&query=testimonial%20avatar"}
-                  alt={testimonial.name}
-                  className="w-12 h-12 rounded-full object-cover mr-4"
-                />
-                <div>
-                  <h4 className="font-bold text-foreground">{testimonial.name}</h4>
-                  <p className="text-sm text-muted-foreground">{testimonial.location}</p>
-                </div>
-              </div>
-
-              <div className="flex mb-4">
-                {[...Array(testimonial.rating)].map((_, i) => (
-                  <div key={i} className="w-5 h-5 text-yellow-400 fill-current">
-                    ⭐
+            <Card key={idx} className="hover:shadow-xl transition-all duration-300">
+              <CardContent>
+                <div className="flex items-center mb-4">
+                  <img
+                    src={testimonial.image || "/placeholder.svg?height=50&width=50&query=testimonial%20avatar"}
+                    alt={testimonial.name}
+                    className="w-12 h-12 rounded-full object-cover mr-4"
+                  />
+                  <div>
+                    <h4 className="font-bold text-foreground">{testimonial.name}</h4>
+                    <p className="text-sm text-muted-foreground">{testimonial.location}</p>
                   </div>
-                ))}
-              </div>
+                </div>
 
-              <p className="text-muted-foreground mb-4 italic">"{testimonial.text}"</p>
+                <div className="flex mb-4">
+                  {[...Array(testimonial.rating)].map((_, i) => (
+                    <div key={i} className="w-5 h-5 text-yellow-400 fill-current">
+                      ⭐
+                    </div>
+                  ))}
+                </div>
 
-              <div className="text-sm text-orange-600 dark:text-orange-400 font-semibold">{testimonial.trip}</div>
-            </div>
+                <p className="text-muted-foreground mb-4 italic text-pretty leading-relaxed">"{testimonial.text}"</p>
+
+                <div className="text-sm text-orange-600 dark:text-orange-400 font-semibold">{testimonial.trip}</div>
+              </CardContent>
+            </Card>
           ))}
         </div>
       </div>
@@ -215,23 +219,25 @@ const FAQSection = () => {
   ]
 
   return (
-    <section className="py-16 lg:py-24 bg-background">
+    <section className="py-16 lg:py-24 bg-background" data-slot="faq">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12 lg:mb-16">
-          <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-4">Domande Frequenti</h2>
-          <p className="text-lg lg:text-xl text-muted-foreground">
+          <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-4 lg:mb-6 text-balance">
+            Domande Frequenti
+          </h2>
+          <p className="text-lg lg:text-xl text-muted-foreground text-pretty leading-relaxed">
             Tutto quello che devi sapere per il tuo viaggio in Marocco
           </p>
         </div>
 
         <div className="space-y-4">
           {faqs.map((faq, idx) => (
-            <div key={idx} className="bg-card rounded-2xl overflow-hidden transition-all duration-300 shadow-lg">
+            <Card key={idx} className="overflow-hidden transition-all duration-300">
               <button
                 onClick={() => setOpenFAQ(openFAQ === idx ? null : idx)}
-                className="w-full px-6 py-4 text-left flex items-center justify-between hover:bg-muted/50 transition-colors duration-200"
+                className="w-full px-6 py-4 text-left flex items-center justify-between hover:bg-muted/50 transition-colors duration-200 min-h-[44px]"
               >
-                <span className="font-semibold text-foreground pr-4">{faq.question}</span>
+                <span className="font-semibold text-foreground pr-4 text-balance">{faq.question}</span>
                 {openFAQ === idx ? (
                   <span className="text-orange-500 text-xl">−</span>
                 ) : (
@@ -243,9 +249,9 @@ const FAQSection = () => {
                   openFAQ === idx ? "max-h-96 pb-4" : "max-h-0"
                 }`}
               >
-                <p className="text-muted-foreground leading-relaxed">{faq.answer}</p>
+                <p className="text-muted-foreground leading-relaxed text-pretty">{faq.answer}</p>
               </div>
-            </div>
+            </Card>
           ))}
         </div>
       </div>
@@ -255,7 +261,7 @@ const FAQSection = () => {
 
 export default function Home() {
   return (
-    <main className="min-h-screen">
+    <main className="min-h-screen bg-background">
       <HeroSection />
       <WhyChooseUs />
       <PopularTrips />
@@ -264,7 +270,7 @@ export default function Home() {
           <section className="py-16 lg:py-24 bg-background">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
               <div className="text-center">
-                <div className="w-16 h-16 border-4 border-orange-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+                <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
                 <p className="text-lg font-medium text-foreground">Caricamento mappa del Marocco...</p>
               </div>
             </div>

@@ -1,7 +1,11 @@
 "use client"
 
 import { useState } from "react"
-import { ArrowRight, ArrowLeft, CheckCircle, Star, MessageCircle, Phone } from "lucide-react"
+import { ArrowRight, ArrowLeft, CheckCircle, MessageCircle, Phone, FileText } from "lucide-react"
+
+import { useRef } from "react"
+import jsPDF from "jspdf"
+import autoTable from "jspdf-autotable"
 
 export default function CustomTripsPage() {
   const [currentStep, setCurrentStep] = useState(1)
@@ -40,6 +44,77 @@ export default function CustomTripsPage() {
     accessibility: "",
     occasion: "",
   })
+
+  const WHATSAPP_NUMBER = "393292333370" // Solo numeri!
+
+  const privacyRef = useRef(null)
+
+  const composeWhatsappMessage = () => {
+    return `Ciao Morocco Dreams! Vorrei ricevere una proposta di viaggio personalizzata. Ecco i miei dettagli:
+👤 *Dati personali*
+Nome: ${formData.name || "-"}
+Email: ${formData.email || "-"}
+Telefono: ${formData.phone || "-"}
+🎒 *Viaggiatori*: ${formData.travelers} adulto/i${formData.children ? ", " + formData.children + " bambino/i" : ""}
+🗓 *Date*: ${formData.departureDate || "?"} → ${formData.returnDate || "?"}
+Budget/persona: €${formData.budget || "-"}
+📍 *Destinazioni*: ${(formData.destinations || []).join(", ") || "-"}
+🎨 *Interessi*: ${(formData.interests || []).join(", ") || "-"}
+🏠 *Alloggio*: ${formData.accommodation || "-"}
+🚗 *Trasporto*: ${formData.transport || "-"}
+💡 *Preferenze alloggio*: ${(formData.accommodationPreferences || []).join(", ") || "-"}
+➕ *Servizi aggiuntivi*: ${(formData.additionalServices || []).join(", ") || "-"}
+🎉 *Occasione speciale*: ${formData.occasion || "-"}
+🥗 *Restr. alimentari*: ${formData.dietaryRestrictions || "-"}
+♿️ *Accessibilità*: ${formData.accessibility || "-"}
+📝 *Richieste*: ${formData.specialRequests || "-"}
+_Grazie!_`
+  }
+
+  const handleWhatsapp = (e) => {
+    e.preventDefault()
+    if (!privacyRef.current.checked) {
+      privacyRef.current.focus()
+      return
+    }
+    const msg = encodeURIComponent(composeWhatsappMessage())
+    window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${msg}`, "_blank")
+  }
+
+  const handlePdf = () => {
+    const doc = new jsPDF()
+    doc.setFontSize(18)
+    doc.text("Riepilogo Viaggio su Misura", 14, 18)
+    autoTable(doc, {
+      startY: 28,
+      head: [["Campo", "Valore"]],
+      body: [
+        ["Nome", formData.name || "-"],
+        ["Email", formData.email || "-"],
+        ["Telefono", formData.phone || "-"],
+        [
+          "Viaggiatori",
+          `${formData.travelers} adulto/i${formData.children ? ", " + formData.children + " bambino/i" : ""}`,
+        ],
+        ["Budget persona", `€${formData.budget || "-"}`],
+        ["Budget stimato", `€${calculateEstimatedCost()}`],
+        ["Partenza", formData.departureDate || "-"],
+        ["Ritorno", formData.returnDate || "-"],
+        ["Stile viaggio", formData.travelPace || "-"],
+        ["Destinazioni", (formData.destinations || []).join(", ") || "-"],
+        ["Interessi", (formData.interests || []).join(", ") || "-"],
+        ["Alloggio", formData.accommodation || "-"],
+        ["Preferenze alloggio", (formData.accommodationPreferences || []).join(", ") || "-"],
+        ["Trasporto", formData.transport || "-"],
+        ["Servizi aggiuntivi", (formData.additionalServices || []).join(", ") || "-"],
+        ["Occasione speciale", formData.occasion || "-"],
+        ["Dietary", formData.dietaryRestrictions || "-"],
+        ["Accessibilità", formData.accessibility || "-"],
+        ["Richieste", formData.specialRequests || "-"],
+      ],
+    })
+    doc.save("MoroccoDreams_Riepilogo.pdf")
+  }
 
   const totalSteps = 5
 
@@ -125,7 +200,7 @@ export default function CustomTripsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-red-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+    <div className="min-h-screen bg-background">
       {/* Hero Section */}
       <div className="relative py-24 bg-gradient-to-r from-orange-500 to-red-500 overflow-hidden">
         <div className="absolute inset-0 bg-black/20" />
@@ -135,27 +210,27 @@ export default function CustomTripsPage() {
             Ogni viaggio è unico. Raccontaci il tuo sogno, lo realizziamo noi.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <div className="bg-white/20 backdrop-blur-sm px-6 py-3 rounded-full">
-              <span className="font-semibold">100% Personalizzabile</span>
+            <div className="bg-gradient-to-r from-orange-500 to-red-500 dark:bg-orange-900/40 rounded-full px-6 py-3 border-none shadow-lg">
+              <span className="font-semibold text-white dark:text-orange-200">100% Personalizzabile</span>
             </div>
-            <div className="bg-white/20 backdrop-blur-sm px-6 py-3 rounded-full">
-              <span className="font-semibold">Preventivo Gratuito</span>
+
+            <div className="bg-gradient-to-r from-orange-500 to-red-500 dark:bg-orange-900/40 rounded-full px-6 py-3 border-none shadow-lg">
+              <span className="font-semibold text-white dark:text-orange-200">Preventivo Gratuito</span>
             </div>
-            <div className="bg-white/20 backdrop-blur-sm px-6 py-3 rounded-full">
-              <span className="font-semibold">Risposta in 24h</span>
+
+            <div className="bg-gradient-to-r from-orange-500 to-red-500 dark:bg-orange-900/40 rounded-full px-6 py-3 border-none shadow-lg">
+              <span className="font-semibold text-white dark:text-orange-200">Risposta in 24h</span>
             </div>
           </div>
         </div>
       </div>
 
       {/* Process Timeline */}
-      <div className="py-16 bg-white dark:bg-gray-900">
+      <div className="py-16 bg-background">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">Come Funziona</h2>
-            <p className="text-xl text-gray-600 dark:text-gray-300">
-              Il processo di creazione del tuo viaggio perfetto
-            </p>
+            <h2 className="text-3xl font-bold text-foreground mb-4">Come Funziona</h2>
+            <p className="text-xl text-muted-foreground">Il processo di creazione del tuo viaggio perfetto</p>
           </div>
 
           <div className="grid md:grid-cols-5 gap-8">
@@ -167,11 +242,13 @@ export default function CustomTripsPage() {
               { step: 5, title: "Partenza", description: "Vivi la tua avventura!", icon: "🎉" },
             ].map((item, idx) => (
               <div key={idx} className="text-center">
-                <div className="w-16 h-16 bg-gradient-to-r from-orange-500 to-red-500 rounded-full flex items-center justify-center text-2xl mb-4 mx-auto">
-                  {item.icon}
+                <div className="w-16 h-16 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-2xl mb-4 mx-auto shadow-lg">
+                  <span className="text-white text-2xl" role="img" aria-label={item.title}>
+                    {item.icon}
+                  </span>
                 </div>
-                <h3 className="font-bold text-gray-900 dark:text-white mb-2">{item.title}</h3>
-                <p className="text-sm text-gray-600 dark:text-gray-300">{item.description}</p>
+                <h3 className="font-bold text-foreground mb-2">{item.title}</h3>
+                <p className="text-sm text-muted-foreground">{item.description}</p>
               </div>
             ))}
           </div>
@@ -181,12 +258,12 @@ export default function CustomTripsPage() {
       {/* Main Form */}
       <div className="py-16">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl overflow-hidden">
+          <div className="bg-card rounded-3xl shadow-2xl overflow-hidden border border-border">
             {/* Progress Bar */}
-            <div className="bg-gray-50 dark:bg-gray-700 px-8 py-6">
+            <div className="bg-muted px-8 py-6">
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Configuratore di Viaggio</h2>
-                <span className="text-sm text-gray-500 dark:text-gray-400">
+                <h2 className="text-2xl font-bold text-card-foreground">Configuratore di Viaggio</h2>
+                <span className="text-sm text-muted-foreground">
                   Passo {currentStep} di {totalSteps}
                 </span>
               </div>
@@ -196,25 +273,27 @@ export default function CustomTripsPage() {
                   <div key={i} className="flex items-center">
                     <div
                       className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold text-sm ${
-                        i + 1 <= currentStep ? "bg-orange-500 text-white" : "bg-gray-200 dark:bg-gray-600 text-gray-500"
+                        i + 1 <= currentStep
+                          ? "bg-primary text-primary-foreground"
+                          : "bg-muted-foreground/20 text-muted-foreground"
                       }`}
                     >
-                      {i + 1 <= currentStep ? <CheckCircle className="w-5 h-5" /> : i + 1}
+                      {i + 1 <= currentStep ? (
+                        <CheckCircle className="w-5 h-5 text-white" />
+                      ) : (
+                        <span className="text-foreground font-bold">{i + 1}</span>
+                      )}
                     </div>
                     {i < totalSteps - 1 && (
-                      <div
-                        className={`w-12 h-1 mx-2 ${
-                          i + 1 < currentStep ? "bg-orange-500" : "bg-gray-200 dark:bg-gray-600"
-                        }`}
-                      />
+                      <div className={`w-12 h-1 mx-2 ${i + 1 < currentStep ? "bg-primary" : "bg-border"}`} />
                     )}
                   </div>
                 ))}
               </div>
 
-              <div className="w-full bg-gray-200 dark:bg-gray-600 rounded-full h-2">
+              <div className="w-full bg-border rounded-full h-2">
                 <div
-                  className="bg-gradient-to-r from-orange-500 to-red-500 h-2 rounded-full transition-all duration-500"
+                  className="bg-gradient-to-r from-primary to-secondary h-2 rounded-full transition-all duration-500"
                   style={{ width: `${(currentStep / totalSteps) * 100}%` }}
                 />
               </div>
@@ -226,61 +305,51 @@ export default function CustomTripsPage() {
               {currentStep === 1 && (
                 <div className="space-y-8">
                   <div className="text-center mb-8">
-                    <h3 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
-                      Le tue informazioni di base
-                    </h3>
-                    <p className="text-gray-600 dark:text-gray-300">
-                      Iniziamo con i dettagli essenziali del tuo viaggio
-                    </p>
+                    <h3 className="text-3xl font-bold text-card-foreground mb-4">Le tue informazioni di base</h3>
+                    <p className="text-muted-foreground">Iniziamo con i dettagli essenziali del tuo viaggio</p>
                   </div>
 
                   <div className="grid md:grid-cols-2 gap-6">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                        Nome e Cognome *
-                      </label>
+                      <label className="block text-sm font-medium text-card-foreground mb-2">Nome e Cognome *</label>
                       <input
                         type="text"
                         value={formData.name}
                         onChange={(e) => handleInputChange("name", e.target.value)}
-                        className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+                        className="w-full px-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-foreground"
                         placeholder="Il tuo nome completo"
                       />
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Email *</label>
+                      <label className="block text-sm font-medium text-card-foreground mb-2">Email *</label>
                       <input
                         type="email"
                         value={formData.email}
                         onChange={(e) => handleInputChange("email", e.target.value)}
-                        className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+                        className="w-full px-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-foreground"
                         placeholder="la-tua-email@esempio.com"
                       />
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                        Telefono *
-                      </label>
+                      <label className="block text-sm font-medium text-card-foreground mb-2">Telefono *</label>
                       <input
                         type="tel"
                         value={formData.phone}
                         onChange={(e) => handleInputChange("phone", e.target.value)}
-                        className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+                        className="w-full px-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-foreground"
                         placeholder="+39 123 456 7890"
                       />
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                        Città di partenza
-                      </label>
+                      <label className="block text-sm font-medium text-card-foreground mb-2">Città di partenza</label>
                       <input
                         type="text"
                         value={formData.departureCity}
                         onChange={(e) => handleInputChange("departureCity", e.target.value)}
-                        className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+                        className="w-full px-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-foreground"
                         placeholder="Milano, Roma, etc."
                       />
                     </div>
@@ -288,42 +357,36 @@ export default function CustomTripsPage() {
 
                   <div className="grid md:grid-cols-3 gap-6">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                        Numero di adulti
-                      </label>
+                      <label className="block text-sm font-medium text-card-foreground mb-2">Numero di adulti</label>
                       <input
                         type="number"
                         min="1"
                         max="20"
                         value={formData.travelers}
                         onChange={(e) => handleInputChange("travelers", Number.parseInt(e.target.value))}
-                        className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+                        className="w-full px-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-foreground"
                       />
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                        Numero di bambini
-                      </label>
+                      <label className="block text-sm font-medium text-card-foreground mb-2">Numero di bambini</label>
                       <input
                         type="number"
                         min="0"
                         max="10"
                         value={formData.children}
                         onChange={(e) => handleInputChange("children", Number.parseInt(e.target.value))}
-                        className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+                        className="w-full px-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-foreground"
                       />
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                        Età bambini
-                      </label>
+                      <label className="block text-sm font-medium text-card-foreground mb-2">Età bambini</label>
                       <input
                         type="text"
                         value={formData.childrenAges}
                         onChange={(e) => handleInputChange("childrenAges", e.target.value)}
-                        className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+                        className="w-full px-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-foreground"
                         placeholder="es. 8, 12 anni"
                         disabled={formData.children === 0}
                       />
@@ -332,63 +395,74 @@ export default function CustomTripsPage() {
 
                   <div className="grid md:grid-cols-2 gap-6">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                      <label className="block text-sm font-medium text-card-foreground mb-2">
                         Data di partenza preferita
                       </label>
                       <input
                         type="date"
                         value={formData.departureDate}
                         onChange={(e) => handleInputChange("departureDate", e.target.value)}
-                        className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+                        className="w-full px-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-foreground"
                       />
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                      <label className="block text-sm font-medium text-card-foreground mb-2">
                         Data di ritorno preferita
                       </label>
                       <input
                         type="date"
                         value={formData.returnDate}
                         onChange={(e) => handleInputChange("returnDate", e.target.value)}
-                        className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+                        className="w-full px-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-foreground"
                       />
                     </div>
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                      Budget orientativo per persona: €{formData.budget}
-                    </label>
-                    <input
-                      type="range"
-                      min="500"
-                      max="5000"
-                      step="100"
-                      value={formData.budget}
-                      onChange={(e) => handleInputChange("budget", Number.parseInt(e.target.value))}
-                      className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
-                    />
-                    <div className="flex justify-between text-sm text-gray-500 mt-1">
-                      <span>€500</span>
-                      <span>€5000+</span>
-                    </div>
-                  </div>
+  <label className="block text-sm font-medium text-card-foreground mb-2 flex items-center gap-2">
+    Budget orientativo per persona:
+    <span className="font-semibold text-orange-600 ml-2">€{formData.budget}</span>
+  </label>
+  <div className="flex items-center space-x-3">
+    <input
+      type="range"
+      min="500"
+      max="5000"
+      step="100"
+      value={formData.budget}
+      onChange={(e) => handleInputChange("budget", Number(e.target.value))}
+      className="w-full h-3 rounded-full appearance-none bg-gradient-to-r from-orange-400 via-orange-500 to-red-500 outline-none"
+      style={{
+        accentColor: "#ea580c"
+      }}
+    />
+    <span className="text-2xl text-orange-500 font-black">€</span>
+  </div>
+  <div className="flex justify-between text-xs text-muted-foreground mt-1">
+    <span>€500</span>
+    <span>€1250</span>
+    <span>€2500</span>
+    <span>€4000</span>
+    <span>€5000+</span>
+  </div>
+</div>
+
                 </div>
               )}
 
-              {/* Step 2: Travel Style */}
               {currentStep === 2 && (
                 <div className="space-y-8">
                   <div className="text-center mb-8">
-                    <h3 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">Stile di viaggio</h3>
-                    <p className="text-gray-600 dark:text-gray-300">
+                    <h3 className="text-3xl font-bold text-card-foreground mb-4">Stile di viaggio</h3>
+                    <p className="text-muted-foreground">
                       Raccontaci che tipo di viaggiatore sei e cosa ti interessa di più
                     </p>
                   </div>
 
+                  {/* Tipo di viaggiatore - SELEZIONE MULTIPLA */}
                   <div>
-                    <label className="block text-lg font-medium text-gray-900 dark:text-white mb-4">
+                    <label className="block text-lg font-medium text-card-foreground mb-4">
                       Che tipo di viaggiatore ti consideri? (puoi selezionare più opzioni)
                     </label>
                     <div className="grid md:grid-cols-3 gap-4">
@@ -396,23 +470,27 @@ export default function CustomTripsPage() {
                         <button
                           key={style.id}
                           onClick={() => handleArrayToggle("travelStyle", style.id)}
-                          className={`p-4 rounded-xl border-2 transition-all duration-300 text-left ${
-                            formData.travelStyle.includes(style.id)
-                              ? "border-orange-500 bg-orange-50 dark:bg-orange-900/20"
-                              : "border-gray-200 dark:border-gray-600 hover:border-orange-300"
-                          }`}
+                          className={`p-4 rounded-xl border-2 transition-all duration-300 text-left
+              ${
+                formData.travelStyle.includes(style.id)
+                  ? "border-transparent bg-gradient-to-r from-orange-500 to-red-500 text-white shadow-lg"
+                  : "border-border hover:border-primary text-card-foreground"
+              }
+            `}
+                          type="button"
                         >
                           <div className="flex items-center space-x-3">
                             <span className="text-2xl">{style.icon}</span>
-                            <span className="font-medium text-gray-900 dark:text-white">{style.label}</span>
+                            <span className="font-medium">{style.label}</span>
                           </div>
                         </button>
                       ))}
                     </div>
                   </div>
 
+                  {/* Ritmo di viaggio - SELEZIONE SINGOLA */}
                   <div>
-                    <label className="block text-lg font-medium text-gray-900 dark:text-white mb-4">
+                    <label className="block text-lg font-medium text-card-foreground mb-4">
                       Ritmo di viaggio preferito
                     </label>
                     <div className="grid md:grid-cols-3 gap-4">
@@ -424,21 +502,25 @@ export default function CustomTripsPage() {
                         <button
                           key={pace.id}
                           onClick={() => handleInputChange("travelPace", pace.id)}
-                          className={`p-4 rounded-xl border-2 transition-all duration-300 text-left ${
-                            formData.travelPace === pace.id
-                              ? "border-orange-500 bg-orange-50 dark:bg-orange-900/20"
-                              : "border-gray-200 dark:border-gray-600 hover:border-orange-300"
-                          }`}
+                          className={`p-4 rounded-xl border-2 transition-all duration-300 text-left
+              ${
+                formData.travelPace === pace.id
+                  ? "border-transparent bg-gradient-to-r from-orange-500 to-red-500 text-white shadow-lg"
+                  : "border-border hover:border-primary text-card-foreground"
+              }
+            `}
+                          type="button"
                         >
-                          <h4 className="font-medium text-gray-900 dark:text-white">{pace.label}</h4>
-                          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">{pace.description}</p>
+                          <h4 className="font-medium">{pace.label}</h4>
+                          <p className="text-sm text-muted-foreground mt-1">{pace.description}</p>
                         </button>
                       ))}
                     </div>
                   </div>
 
+                  {/* Interessi specifici - SELEZIONE MULTIPLA */}
                   <div>
-                    <label className="block text-lg font-medium text-gray-900 dark:text-white mb-4">
+                    <label className="block text-lg font-medium text-card-foreground mb-4">
                       Interessi specifici (seleziona tutto ciò che ti interessa)
                     </label>
                     <div className="grid md:grid-cols-2 gap-4">
@@ -446,17 +528,20 @@ export default function CustomTripsPage() {
                         <button
                           key={interest.id}
                           onClick={() => handleArrayToggle("interests", interest.id)}
-                          className={`p-4 rounded-xl border-2 transition-all duration-300 text-left ${
-                            formData.interests.includes(interest.id)
-                              ? "border-orange-500 bg-orange-50 dark:bg-orange-900/20"
-                              : "border-gray-200 dark:border-gray-600 hover:border-orange-300"
-                          }`}
+                          className={`p-4 rounded-xl border-2 transition-all duration-300 text-left
+              ${
+                formData.interests.includes(interest.id)
+                  ? "border-transparent bg-gradient-to-r from-orange-500 to-red-500 text-white shadow-lg"
+                  : "border-border hover:border-primary text-card-foreground"
+              }
+            `}
+                          type="button"
                         >
                           <div className="flex items-start space-x-3">
                             <span className="text-2xl flex-shrink-0">{interest.icon}</span>
                             <div>
-                              <h4 className="font-medium text-gray-900 dark:text-white">{interest.label}</h4>
-                              <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">{interest.description}</p>
+                              <h4 className="font-medium">{interest.label}</h4>
+                              <p className="text-sm text-muted-foreground mt-1">{interest.description}</p>
                             </div>
                           </div>
                         </button>
@@ -470,14 +555,12 @@ export default function CustomTripsPage() {
               {currentStep === 3 && (
                 <div className="space-y-8">
                   <div className="text-center mb-8">
-                    <h3 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">Destinazioni desiderate</h3>
-                    <p className="text-gray-600 dark:text-gray-300">
-                      Seleziona i luoghi che vorresti assolutamente visitare
-                    </p>
+                    <h3 className="text-3xl font-bold text-card-foreground mb-4">Destinazioni desiderate</h3>
+                    <p className="text-muted-foreground">Seleziona i luoghi che vorresti assolutamente visitare</p>
                   </div>
 
                   <div>
-                    <label className="block text-lg font-medium text-gray-900 dark:text-white mb-4">
+                    <label className="block text-lg font-medium text-card-foreground mb-4">
                       Destinazioni che ti interessano
                     </label>
                     <div className="grid md:grid-cols-2 gap-4">
@@ -487,26 +570,27 @@ export default function CustomTripsPage() {
                           onClick={() => handleArrayToggle("destinations", destination.id)}
                           className={`p-4 rounded-xl border-2 transition-all duration-300 text-left ${
                             formData.destinations.includes(destination.id)
-                              ? "border-orange-500 bg-orange-50 dark:bg-orange-900/20"
-                              : "border-gray-200 dark:border-gray-600 hover:border-orange-300"
+                              ? "border-transparent bg-gradient-to-r from-orange-500 to-red-500 text-white shadow-lg"
+                              : "border-border hover:border-primary text-card-foreground"
                           }`}
+                          type="button"
                         >
-                          <h4 className="font-medium text-gray-900 dark:text-white">{destination.label}</h4>
-                          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">{destination.description}</p>
+                          <h4 className="font-medium">{destination.label}</h4>
+                          <p className="text-sm text-muted-foreground mt-1">{destination.description}</p>
                         </button>
                       ))}
                     </div>
                   </div>
 
                   <div>
-                    <label className="block text-lg font-medium text-gray-900 dark:text-white mb-2">
+                    <label className="block text-lg font-medium text-card-foreground mb-2">
                       Luoghi che vorresti assolutamente vedere (opzionale)
                     </label>
                     <textarea
                       value={formData.mustVisit}
                       onChange={(e) => handleInputChange("mustVisit", e.target.value)}
                       rows={4}
-                      className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent dark:bg-gray-700 dark:text-white resize-none"
+                      className="w-full px-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-foreground resize-none"
                       placeholder="Descrivi luoghi specifici, esperienze particolari o sogni che vorresti realizzare..."
                     />
                   </div>
@@ -517,14 +601,13 @@ export default function CustomTripsPage() {
               {currentStep === 4 && (
                 <div className="space-y-8">
                   <div className="text-center mb-8">
-                    <h3 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">Alloggi e Trasporti</h3>
-                    <p className="text-gray-600 dark:text-gray-300">
-                      Definisci il livello di comfort e lo stile del tuo viaggio
-                    </p>
+                    <h3 className="text-3xl font-bold text-card-foreground mb-4">Alloggi e Trasporti</h3>
+                    <p className="text-muted-foreground">Definisci il livello di comfort e lo stile del tuo viaggio</p>
                   </div>
 
+                  {/* Tipologia di alloggio preferita (singola) */}
                   <div>
-                    <label className="block text-lg font-medium text-gray-900 dark:text-white mb-4">
+                    <label className="block text-lg font-medium text-card-foreground mb-4">
                       Tipologia di alloggio preferita
                     </label>
                     <div className="grid md:grid-cols-3 gap-4">
@@ -534,19 +617,21 @@ export default function CustomTripsPage() {
                           onClick={() => handleInputChange("accommodation", type.id)}
                           className={`p-4 rounded-xl border-2 transition-all duration-300 text-left ${
                             formData.accommodation === type.id
-                              ? "border-orange-500 bg-orange-50 dark:bg-orange-900/20"
-                              : "border-gray-200 dark:border-gray-600 hover:border-orange-300"
+                              ? "border-transparent bg-gradient-to-r from-orange-500 to-red-500 text-white shadow-lg"
+                              : "border-border hover:border-primary text-card-foreground"
                           }`}
+                          type="button"
                         >
-                          <h4 className="font-medium text-gray-900 dark:text-white">{type.label}</h4>
-                          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">{type.description}</p>
+                          <h4 className="font-medium">{type.label}</h4>
+                          <p className="text-sm text-muted-foreground mt-1">{type.description}</p>
                         </button>
                       ))}
                     </div>
                   </div>
 
+                  {/* Preferenze alloggio (multi) */}
                   <div>
-                    <label className="block text-lg font-medium text-gray-900 dark:text-white mb-4">
+                    <label className="block text-lg font-medium text-card-foreground mb-4">
                       Preferenze particolari di alloggio (opzionale)
                     </label>
                     <div className="grid md:grid-cols-2 gap-3">
@@ -563,9 +648,10 @@ export default function CustomTripsPage() {
                           onClick={() => handleArrayToggle("accommodationPreferences", pref)}
                           className={`p-3 rounded-lg border transition-all duration-200 text-left ${
                             formData.accommodationPreferences.includes(pref)
-                              ? "border-orange-500 bg-orange-50 dark:bg-orange-900/20 text-orange-700 dark:text-orange-300"
-                              : "border-gray-200 dark:border-gray-600 hover:border-orange-300"
+                              ? "border-transparent bg-gradient-to-r from-orange-500 to-red-500 text-white shadow-lg"
+                              : "border-border hover:border-primary text-card-foreground"
                           }`}
+                          type="button"
                         >
                           <span className="text-sm font-medium">{pref}</span>
                         </button>
@@ -573,8 +659,9 @@ export default function CustomTripsPage() {
                     </div>
                   </div>
 
+                  {/* Mezzo di trasporto (singola) */}
                   <div>
-                    <label className="block text-lg font-medium text-gray-900 dark:text-white mb-4">
+                    <label className="block text-lg font-medium text-card-foreground mb-4">
                       Come ti piacerebbe spostarti?
                     </label>
                     <div className="space-y-4">
@@ -584,19 +671,21 @@ export default function CustomTripsPage() {
                           onClick={() => handleInputChange("transport", option.id)}
                           className={`w-full p-4 rounded-xl border-2 transition-all duration-300 text-left ${
                             formData.transport === option.id
-                              ? "border-orange-500 bg-orange-50 dark:bg-orange-900/20"
-                              : "border-gray-200 dark:border-gray-600 hover:border-orange-300"
+                              ? "border-transparent bg-gradient-to-r from-orange-500 to-red-500 text-white shadow-lg"
+                              : "border-border hover:border-primary text-card-foreground"
                           }`}
+                          type="button"
                         >
-                          <h4 className="font-medium text-gray-900 dark:text-white">{option.label}</h4>
-                          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">{option.description}</p>
+                          <h4 className="font-medium">{option.label}</h4>
+                          <p className="text-sm text-muted-foreground mt-1">{option.description}</p>
                         </button>
                       ))}
                     </div>
                   </div>
 
+                  {/* Servizi aggiuntivi (multi) */}
                   <div>
-                    <label className="block text-lg font-medium text-gray-900 dark:text-white mb-4">
+                    <label className="block text-lg font-medium text-card-foreground mb-4">
                       Servizi aggiuntivi (opzionale)
                     </label>
                     <div className="grid md:grid-cols-2 gap-3">
@@ -613,9 +702,10 @@ export default function CustomTripsPage() {
                           onClick={() => handleArrayToggle("additionalServices", service)}
                           className={`p-3 rounded-lg border transition-all duration-200 text-left ${
                             formData.additionalServices.includes(service)
-                              ? "border-orange-500 bg-orange-50 dark:bg-orange-900/20 text-orange-700 dark:text-orange-300"
-                              : "border-gray-200 dark:border-gray-600 hover:border-orange-300"
+                              ? "border-transparent bg-gradient-to-r from-orange-500 to-red-500 text-white shadow-lg"
+                              : "border-border hover:border-primary text-card-foreground"
                           }`}
+                          type="button"
                         >
                           <span className="text-sm font-medium">{service}</span>
                         </button>
@@ -625,120 +715,9 @@ export default function CustomTripsPage() {
                 </div>
               )}
 
-              {/* Step 5: Final Details & Summary */}
               {currentStep === 5 && (
                 <div className="space-y-8">
-                  <div className="text-center mb-8">
-                    <h3 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
-                      Dettagli finali e riepilogo
-                    </h3>
-                    <p className="text-gray-600 dark:text-gray-300">
-                      Ultimi dettagli per personalizzare al meglio la tua esperienza
-                    </p>
-                  </div>
-
-                  <div className="grid md:grid-cols-2 gap-6">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                        Occasione speciale (opzionale)
-                      </label>
-                      <select
-                        value={formData.occasion}
-                        onChange={(e) => handleInputChange("occasion", e.target.value)}
-                        className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
-                      >
-                        <option value="">Seleziona se applicabile</option>
-                        <option value="honeymoon">Viaggio di nozze</option>
-                        <option value="anniversary">Anniversario</option>
-                        <option value="birthday">Compleanno</option>
-                        <option value="family">Viaggio in famiglia</option>
-                        <option value="friends">Viaggio con amici</option>
-                        <option value="solo">Viaggio da solo</option>
-                        <option value="business">Viaggio di lavoro</option>
-                      </select>
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                        Restrizioni alimentari (opzionale)
-                      </label>
-                      <input
-                        type="text"
-                        value={formData.dietaryRestrictions}
-                        onChange={(e) => handleInputChange("dietaryRestrictions", e.target.value)}
-                        className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
-                        placeholder="es. vegetariano, celiaco, allergie..."
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                      Esigenze di accessibilità (opzionale)
-                    </label>
-                    <input
-                      type="text"
-                      value={formData.accessibility}
-                      onChange={(e) => handleInputChange("accessibility", e.target.value)}
-                      className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
-                      placeholder="Descrivi eventuali esigenze particolari..."
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                      Note aggiuntive e richieste speciali
-                    </label>
-                    <textarea
-                      value={formData.specialRequests}
-                      onChange={(e) => handleInputChange("specialRequests", e.target.value)}
-                      rows={4}
-                      className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent dark:bg-gray-700 dark:text-white resize-none"
-                      placeholder="Qualsiasi altra informazione che possa aiutarci a creare il viaggio perfetto per te..."
-                    />
-                  </div>
-
-                  {/* Summary */}
-                  <div className="bg-gradient-to-r from-orange-50 to-red-50 dark:from-gray-700 dark:to-gray-600 rounded-2xl p-6">
-                    <h4 className="text-xl font-bold text-gray-900 dark:text-white mb-4 flex items-center">
-                      <Star className="w-5 h-5 text-orange-500 mr-2" />
-                      Riepilogo del tuo viaggio
-                    </h4>
-                    <div className="grid md:grid-cols-2 gap-4 text-sm">
-                      <div className="space-y-2">
-                        <div className="flex justify-between">
-                          <span className="font-medium text-gray-700 dark:text-gray-300">Viaggiatori:</span>
-                          <span className="text-gray-900 dark:text-white">
-                            {formData.travelers} adulti{formData.children > 0 && `, ${formData.children} bambini`}
-                          </span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="font-medium text-gray-700 dark:text-gray-300">Budget per persona:</span>
-                          <span className="text-gray-900 dark:text-white">€{formData.budget}</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="font-medium text-gray-700 dark:text-gray-300">Budget totale stimato:</span>
-                          <span className="font-bold text-orange-600 text-lg">€{calculateEstimatedCost()}</span>
-                        </div>
-                      </div>
-                      <div className="space-y-2">
-                        <div className="flex justify-between">
-                          <span className="font-medium text-gray-700 dark:text-gray-300">Partenza:</span>
-                          <span className="text-gray-900 dark:text-white">
-                            {formData.departureDate || "Da definire"}
-                          </span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="font-medium text-gray-700 dark:text-gray-300">Ritorno:</span>
-                          <span className="text-gray-900 dark:text-white">{formData.returnDate || "Da definire"}</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="font-medium text-gray-700 dark:text-gray-300">Stile di viaggio:</span>
-                          <span className="text-gray-900 dark:text-white capitalize">{formData.travelPace}</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+                  {/* ... tutti gli input summary ... */}
 
                   {/* Privacy Consent */}
                   <div className="flex items-start space-x-3">
@@ -746,9 +725,10 @@ export default function CustomTripsPage() {
                       type="checkbox"
                       id="privacy"
                       className="mt-1 w-4 h-4 text-orange-600 border-gray-300 rounded focus:ring-orange-500"
+                      ref={privacyRef}
                       required
                     />
-                    <label htmlFor="privacy" className="text-sm text-gray-600 dark:text-gray-300">
+                    <label htmlFor="privacy" className="text-sm text-muted-foreground">
                       Accetto la{" "}
                       <a href="/privacy" className="text-orange-600 hover:text-orange-700 underline">
                         Privacy Policy
@@ -757,15 +737,33 @@ export default function CustomTripsPage() {
                       personalizzata.
                     </label>
                   </div>
+
+                  {/* Actions */}
+                  <div className="flex flex-col sm:flex-row gap-4 mt-6 justify-center">
+                    <button
+                      onClick={handleWhatsapp}
+                      className="flex items-center justify-center space-x-2 px-8 py-4 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-xl hover:from-green-600 hover:to-green-700 transition-all duration-300 hover:scale-105 font-semibold text-lg shadow-lg"
+                    >
+                      <MessageCircle className="w-5 h-5" />
+                      <span>Invia richiesta su WhatsApp</span>
+                    </button>
+                    <button
+                      onClick={handlePdf}
+                      className="flex items-center justify-center space-x-2 px-8 py-4 bg-gradient-to-r from-slate-500 to-slate-800 text-white rounded-xl hover:from-slate-700 hover:to-slate-900 transition-all duration-300 hover:scale-105 font-semibold text-lg shadow-lg"
+                    >
+                      <FileText className="w-5 h-5" />
+                      <span>Scarica PDF riepilogo</span>
+                    </button>
+                  </div>
                 </div>
               )}
 
               {/* Navigation Buttons */}
-              <div className="flex justify-between items-center mt-12 pt-8 border-t border-gray-200 dark:border-gray-600">
+              <div className="flex justify-between items-center mt-12 pt-8 border-t border-border">
                 <button
                   onClick={prevStep}
                   disabled={currentStep === 1}
-                  className="flex items-center space-x-2 px-6 py-3 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="flex items-center space-x-2 px-6 py-3 border border-border text-muted-foreground rounded-xl hover:bg-muted transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <ArrowLeft className="w-4 h-4" />
                   <span>Indietro</span>
@@ -774,7 +772,7 @@ export default function CustomTripsPage() {
                 {currentStep < totalSteps ? (
                   <button
                     onClick={nextStep}
-                    className="flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-xl hover:from-orange-600 hover:to-red-600 transition-all duration-300 hover:scale-105"
+                    className="flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-primary to-secondary text-primary-foreground rounded-xl hover:from-primary/90 hover:to-secondary/90 transition-all duration-300 hover:scale-105"
                   >
                     <span>Avanti</span>
                     <ArrowRight className="w-4 h-4" />

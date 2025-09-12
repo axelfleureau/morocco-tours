@@ -108,9 +108,9 @@ const advantages = [
 
 export default function ServiziPage() {
   return (
-    <div className="min-h-screen bg-white dark:bg-gray-900">
+    <div className="min-h-screen bg-background">
       {/* Hero Section */}
-      <section className="relative py-20 overflow-hidden bg-gradient-to-b from-gray-50 to-white dark:from-gray-800 dark:to-gray-900">
+      <section className="relative py-20 overflow-hidden bg-gradient-to-b from-muted/50 to-background">
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <div className="flex justify-center mb-6">
@@ -118,14 +118,14 @@ export default function ServiziPage() {
                 <Users className="h-12 w-12 text-orange-600 dark:text-orange-400" />
               </div>
             </div>
-            <h1 className="text-4xl md:text-6xl font-bold text-gray-900 dark:text-white mb-6">
+            <h1 className="text-4xl md:text-6xl font-bold text-foreground mb-6">
               I Nostri <span className="text-orange-600 dark:text-orange-400">Servizi</span>
             </h1>
-            <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto mb-8">
+            <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-8">
               Servizi professionali per rendere il tuo viaggio in Marocco indimenticabile. Dalla pianificazione al
               ritorno a casa, ci occupiamo di ogni dettaglio.
             </p>
-            <div className="flex flex-wrap justify-center gap-4 text-sm text-gray-600 dark:text-gray-400">
+            <div className="flex flex-wrap justify-center gap-4 text-sm text-muted-foreground">
               <div className="flex items-center gap-2">
                 <CheckCircle className="h-5 w-5 text-green-500" />
                 <span>Servizi certificati</span>
@@ -147,10 +147,8 @@ export default function ServiziPage() {
       <section className="py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
-              Scegli il Servizio Perfetto
-            </h2>
-            <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">Scegli il Servizio Perfetto</h2>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
               Ogni servizio è progettato per offrirti la massima comodità e sicurezza durante il tuo viaggio
             </p>
           </div>
@@ -211,12 +209,12 @@ export default function ServiziPage() {
                       {service.features.map((feature, index) => (
                         <div key={index} className="flex items-center gap-2 text-sm">
                           <CheckCircle className="h-4 w-4 text-green-500 flex-shrink-0" />
-                          <span className="text-gray-600 dark:text-gray-400">{feature}</span>
+                          <span className="text-muted-foreground">{feature}</span>
                         </div>
                       ))}
                     </div>
 
-                    <div className="pt-4 border-t border-gray-200 dark:border-gray-700">
+                    <div className="pt-4 border-t border-border">
                       <Link href={service.href}>
                         <Button
                           className={`w-full group-hover:scale-105 transition-transform duration-200 ${
@@ -243,13 +241,11 @@ export default function ServiziPage() {
       </section>
 
       {/* Advantages */}
-      <section className="py-20 bg-gray-50 dark:bg-gray-800">
+      <section className="py-20 bg-muted/50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
-              Perché Scegliere Morocco Dreams
-            </h2>
-            <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">Perché Scegliere Morocco Dreams</h2>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
               La nostra esperienza e dedizione fanno la differenza
             </p>
           </div>
@@ -260,8 +256,8 @@ export default function ServiziPage() {
                 <div className="w-16 h-16 mx-auto mb-4 bg-orange-100 dark:bg-orange-900/30 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-200">
                   <advantage.icon className="h-8 w-8 text-orange-600 dark:text-orange-400" />
                 </div>
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">{advantage.title}</h3>
-                <p className="text-gray-600 dark:text-gray-400 text-sm">{advantage.description}</p>
+                <h3 className="text-lg font-semibold text-foreground mb-2">{advantage.title}</h3>
+                <p className="text-muted-foreground text-sm">{advantage.description}</p>
               </div>
             ))}
           </div>
@@ -272,10 +268,8 @@ export default function ServiziPage() {
       <section className="py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
-              Cosa Dicono i Nostri Clienti
-            </h2>
-            <p className="text-lg text-gray-600 dark:text-gray-300">Recensioni autentiche sui nostri servizi</p>
+            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">Cosa Dicono i Nostri Clienti</h2>
+            <p className="text-lg text-muted-foreground">Recensioni autentiche sui nostri servizi</p>
           </div>
 
           <div className="grid md:grid-cols-3 gap-8">
@@ -288,13 +282,13 @@ export default function ServiziPage() {
                     ))}
                   </div>
 
-                  <p className="text-gray-600 dark:text-gray-300 mb-4 italic">"{testimonial.comment}"</p>
+                  <p className="text-muted-foreground mb-4 italic">"{testimonial.comment}"</p>
 
                   <div className="border-t pt-4">
-                    <p className="font-medium text-gray-900 dark:text-white">{testimonial.name}</p>
-                    <p className="text-sm text-gray-500 dark:text-gray-400">{testimonial.location}</p>
+                    <p className="font-medium text-foreground">{testimonial.name}</p>
+                    <p className="text-sm text-muted-foreground">{testimonial.location}</p>
                     <p className="text-sm text-orange-600 dark:text-orange-400">Servizio: {testimonial.service}</p>
-                    <p className="text-xs text-gray-400 mt-1">{testimonial.date}</p>
+                    <p className="text-xs text-muted-foreground mt-1">{testimonial.date}</p>
                   </div>
                 </CardContent>
               </Card>

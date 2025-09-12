@@ -28,6 +28,11 @@
   --border: oklch(0.6 0.15 45);
   --input: var(--bg-primary);
   --ring: oklch(0.65 0.18 35);
+
+  /* Added chip/badge tokens for consistent tag styling */
+  --chip: oklch(0.9 0.05 45); /* Light sand background for chips */
+  --chip-foreground: oklch(0.3 0.1 45); /* Dark text for contrast */
+
   --chart-1: oklch(0.6 0.15 45);
   --chart-2: oklch(0.65 0.18 35);
   --chart-3: oklch(0.3 0 0);
@@ -71,6 +76,11 @@
   --border: oklch(0.3 0.05 45);
   --input: var(--bg-secondary);
   --ring: oklch(0.75 0.18 35);
+
+  /* Dark mode chip tokens with proper contrast */
+  --chip: oklch(0.3 0.05 45); /* Dark background for chips */
+  --chip-foreground: oklch(0.9 0.05 45); /* Light text for contrast */
+
   --chart-1: oklch(0.7 0.15 45);
   --chart-2: oklch(0.75 0.18 35);
   --chart-3: oklch(0.8 0 0);
@@ -107,6 +117,11 @@
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
+
+  /* Added chip color mappings for Tailwind */
+  --color-chip: var(--chip);
+  --color-chip-foreground: var(--chip-foreground);
+
   --color-chart-1: var(--chart-1);
   --color-chart-2: var(--chart-2);
   --color-chart-3: var(--chart-3);
@@ -132,5 +147,33 @@
   }
   body {
     @apply bg-background text-foreground;
+  }
+
+  /* Added base styles for improved accessibility and consistency */
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply text-balance;
+  }
+
+  p {
+    @apply text-pretty leading-relaxed;
+  }
+
+  /* Focus styles for better accessibility */
+  button:focus-visible,
+  a:focus-visible,
+  [role="button"]:focus-visible {
+    @apply outline-none ring-2 ring-primary ring-offset-2 ring-offset-background;
+  }
+
+  /* Ensure minimum touch targets */
+  button,
+  a,
+  [role="button"] {
+    @apply min-h-[44px];
   }
 }

@@ -64,6 +64,7 @@ export default function CittaImperialiPage() {
       includes: ["Tutte e 4 le città", "Guide locali", "Trasporti privati", "Hotel 4*"],
       rating: 4.9,
       reviews: 127,
+      bestFor: "Chi vuole vedere tutte le città iconiche con zero pensieri"
     },
     {
       id: 2,
@@ -75,6 +76,7 @@ export default function CittaImperialiPage() {
       includes: ["2 città principali", "Treno veloce", "Riad tradizionali", "Esperienze autentiche"],
       rating: 4.8,
       reviews: 89,
+      bestFor: "Un assaggio imperiale, ritmo veloce, ideale per viaggi brevi"
     },
     {
       id: 3,
@@ -86,22 +88,22 @@ export default function CittaImperialiPage() {
       includes: ["4 città + Sahara", "Notte nel deserto", "Cammelli", "Esperienza completa"],
       rating: 4.9,
       reviews: 156,
+      bestFor: "Tutto ciò che offre il Marocco: cultura, storia e avventura nel Sahara"
     },
   ]
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-background transition-colors">
       {/* Hero Section */}
-      <div className="relative py-24 lg:py-32 bg-gradient-to-r from-orange-500 to-red-500 overflow-hidden">
+      <div className="relative py-24 lg:py-32 bg-gradient-to-r from-orange-500 to-red-500 dark:from-orange-900 dark:to-red-900 overflow-hidden">
         <div className="absolute inset-0">
           <img 
             src="/images/imperial-cities-tour.png" 
             alt="Città Imperiali" 
             className="w-full h-full object-cover opacity-30" 
           />
-          <div className="absolute inset-0 bg-black/40" />
+          <div className="absolute inset-0 bg-black/40 dark:bg-black/60" />
         </div>
-
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-white">
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
             Città Imperiali
@@ -112,15 +114,14 @@ export default function CittaImperialiPage() {
           <p className="text-lg md:text-xl lg:text-2xl max-w-3xl mx-auto mb-8">
             Scopri Marrakech, Fes, Meknes e Rabat: quattro gioielli che raccontano la storia millenaria del regno
           </p>
-
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <div className="bg-white/20 backdrop-blur-sm px-6 py-3 rounded-full">
+            <div className="bg-white/20 dark:bg-white/10 backdrop-blur-sm px-6 py-3 rounded-full">
               <span className="font-semibold">4 Città UNESCO</span>
             </div>
-            <div className="bg-white/20 backdrop-blur-sm px-6 py-3 rounded-full">
+            <div className="bg-white/20 dark:bg-white/10 backdrop-blur-sm px-6 py-3 rounded-full">
               <span className="font-semibold">Storia Millenaria</span>
             </div>
-            <div className="bg-white/20 backdrop-blur-sm px-6 py-3 rounded-full">
+            <div className="bg-white/20 dark:bg-white/10 backdrop-blur-sm px-6 py-3 rounded-full">
               <span className="font-semibold">Cultura Autentica</span>
             </div>
           </div>
@@ -128,22 +129,21 @@ export default function CittaImperialiPage() {
       </div>
 
       {/* Cities Grid */}
-      <div className="py-16 lg:py-24 bg-white dark:bg-gray-900">
+      <div className="py-16 lg:py-24 bg-background transition-colors">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12 lg:mb-16">
-            <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+            <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-4">
               Le Quattro Città Imperiali
             </h2>
-            <p className="text-lg lg:text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+            <p className="text-lg lg:text-xl text-muted-foreground max-w-2xl mx-auto">
               Ogni città ha la sua personalità unica e tesori da scoprire
             </p>
           </div>
-
           <div className="grid md:grid-cols-2 gap-8 lg:gap-12">
-            {cities.map((city, idx) => (
+            {cities.map((city) => (
               <div
                 key={city.id}
-                className="group bg-white dark:bg-gray-800 rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 hover:scale-105"
+                className="group bg-card rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 hover:scale-105"
               >
                 <div className="relative h-64 lg:h-80 overflow-hidden">
                   <img
@@ -154,10 +154,10 @@ export default function CittaImperialiPage() {
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
                   
                   {/* City Badge */}
-                  <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm px-4 py-2 rounded-full">
+                  <div className="absolute top-4 left-4 bg-white/90 dark:bg-card/90 backdrop-blur-sm px-4 py-2 rounded-full">
                     <div className="flex items-center space-x-2">
                       <MapPin className="w-4 h-4 text-orange-500" />
-                      <span className="font-semibold text-gray-900">{city.name}</span>
+                      <span className="font-semibold text-foreground">{city.name}</span>
                     </div>
                   </div>
 
@@ -171,40 +171,38 @@ export default function CittaImperialiPage() {
                   </div>
 
                   {/* Title Overlay */}
-                  <div className="absolute bottom-6 left-6 text-white">
+                  <div className="absolute bottom-6 left-6 text-white drop-shadow">
                     <h3 className="text-2xl lg:text-3xl font-bold mb-2">{city.title}</h3>
                     <p className="text-gray-200 text-sm lg:text-base">{city.description}</p>
                   </div>
                 </div>
-
                 <div className="p-6 lg:p-8">
                   {/* Info Grid */}
                   <div className="grid grid-cols-2 gap-4 mb-6">
-                    <div className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-400">
+                    <div className="flex items-center space-x-2 text-sm text-muted-foreground">
                       <Clock className="w-4 h-4 text-orange-500" />
                       <span>{city.duration}</span>
                     </div>
-                    <div className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-400">
+                    <div className="flex items-center space-x-2 text-sm text-muted-foreground">
                       <Camera className="w-4 h-4 text-orange-500" />
                       <span>{city.bestTime}</span>
                     </div>
                   </div>
-
                   {/* Highlights */}
                   <div className="mb-6">
-                    <h4 className="font-semibold text-gray-900 dark:text-white mb-3">Cosa vedere:</h4>
+                    <h4 className="font-semibold text-foreground mb-3">Cosa vedere:</h4>
                     <div className="flex flex-wrap gap-2">
                       {city.highlights.map((highlight, hidx) => (
-                        <span
-                          key={hidx}
-                          className="bg-orange-100 dark:bg-orange-900/30 text-orange-800 dark:text-orange-300 px-3 py-1 rounded-full text-xs font-medium"
-                        >
-                          {highlight}
-                        </span>
-                      ))}
+  <span
+    key={hidx}
+    className="bg-gradient-to-r from-orange-500 to-red-500 text-white dark:bg-orange-900/30 dark:text-orange-200 px-3 py-1 rounded-full text-xs font-semibold transition-colors"
+  >
+    {highlight}
+  </span>
+))}
+
                     </div>
                   </div>
-
                   {/* Actions */}
                   <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-3">
                     <Link
@@ -228,22 +226,21 @@ export default function CittaImperialiPage() {
       </div>
 
       {/* Tours Section */}
-      <div className="py-16 lg:py-24 bg-gray-50 dark:bg-gray-800">
+      <div className="py-16 lg:py-24 bg-muted transition-colors">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12 lg:mb-16">
-            <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+            <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-4">
               Tour delle Città Imperiali
             </h2>
-            <p className="text-lg lg:text-xl text-gray-600 dark:text-gray-300">
+            <p className="text-lg lg:text-xl text-muted-foreground">
               Scegli il tour perfetto per scoprire le meraviglie imperiali
             </p>
           </div>
-
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {tours.map((tour) => (
               <div
                 key={tour.id}
-                className="bg-white dark:bg-gray-900 rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 hover:scale-105"
+                className="bg-card rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 hover:scale-105"
               >
                 <div className="relative h-48 overflow-hidden">
                   <img
@@ -251,42 +248,43 @@ export default function CittaImperialiPage() {
                     alt={tour.title}
                     className="w-full h-full object-cover"
                   />
-                  <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-4 py-2 rounded-full">
+                  <div className="absolute top-4 right-4 bg-white/95 dark:bg-card/90 backdrop-blur-sm px-4 py-2 rounded-full">
                     <div className="flex items-center space-x-2">
-                      <span className="font-bold text-lg text-gray-900">{tour.price}</span>
+                      <span className="font-bold text-lg text-foreground">{tour.price}</span>
                       {tour.originalPrice && (
-                        <span className="text-sm line-through text-gray-500">{tour.originalPrice}</span>
+                        <span className="text-sm line-through text-muted-foreground">{tour.originalPrice}</span>
                       )}
                     </div>
                   </div>
                 </div>
-
                 <div className="p-6">
                   <div className="flex items-center justify-between mb-3">
-                    <h3 className="text-xl font-bold text-gray-900 dark:text-white">{tour.title}</h3>
+                    <h3 className="text-xl font-bold text-foreground">{tour.title}</h3>
                     <div className="flex items-center space-x-1">
                       <Star className="w-4 h-4 text-yellow-400 fill-current" />
-                      <span className="text-sm font-semibold">{tour.rating}</span>
+                      <span className="text-sm font-semibold text-foreground">{tour.rating}</span>
                     </div>
                   </div>
-
-                  <div className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-400 mb-4">
+                  <div className="flex items-center space-x-2 text-sm text-muted-foreground mb-4">
                     <Clock className="w-4 h-4" />
                     <span>{tour.duration}</span>
                   </div>
-
                   <div className="space-y-2 mb-6">
                     {tour.includes.map((item, idx) => (
-                      <div key={idx} className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-300">
+                      <div key={idx} className="flex items-center space-x-2 text-sm text-muted-foreground">
                         <div className="w-2 h-2 bg-orange-500 rounded-full" />
                         <span>{item}</span>
                       </div>
                     ))}
                   </div>
-
+                  {/* Box evidenza "Perfetto per" visibile e responsive */}
+                  <div className="mb-4 rounded-xl p-4 bg-gradient-to-r from-orange-500 to-red-500 text-white dark:bg-orange-900/20 dark:text-orange-200">
+                    <h4 className="font-semibold mb-2 text-white dark:text-orange-200">Perfetto per:</h4>
+                    <p className="text-sm text-white dark:text-orange-200">{tour.bestFor}</p>
+                  </div>
                   <Link
                     href={`/viaggi/gruppo/${tour.id}`}
-                    className="w-full bg-gradient-to-r from-orange-500 to-red-500 text-white py-3 px-4 rounded-xl hover:from-orange-600 hover:to-red-600 transition-all duration-300 font-semibold text-center block"
+                    className="w-full bg-gradient-to-r from-orange-500 to-red-500 dark:from-orange-900 dark:to-red-900 text-white py-3 px-4 rounded-xl hover:from-orange-600 hover:to-red-600 transition-all duration-300 font-semibold text-center block"
                   >
                     Prenota Tour
                   </Link>
@@ -298,7 +296,7 @@ export default function CittaImperialiPage() {
       </div>
 
       {/* CTA Section */}
-      <div className="py-16 lg:py-24 bg-gradient-to-r from-orange-500 to-red-500">
+      <div className="py-16 lg:py-24 bg-gradient-to-r from-orange-500 to-red-500 dark:from-orange-900 dark:to-red-900">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-white">
           <h2 className="text-3xl lg:text-4xl font-bold mb-6">Pronto per l'Avventura Imperiale?</h2>
           <p className="text-lg lg:text-xl mb-8 max-w-2xl mx-auto">

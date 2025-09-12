@@ -262,12 +262,19 @@ export default function GuidePrivateClientPage() {
 
                     <div className="flex flex-wrap gap-1 justify-center">
                       {guide.languages.slice(0, 3).map((lang, index) => (
-                        <Badge key={index} variant="secondary" className="text-xs">
+                        <Badge
+                          key={index}
+                          variant="secondary"
+                          className="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-gradient-to-r from-orange-500 to-red-500 text-white dark:bg-orange-900/40 dark:text-orange-200 shadow-sm transition-colors"
+                        >
                           {lang}
                         </Badge>
                       ))}
                       {guide.languages.length > 3 && (
-                        <Badge variant="secondary" className="text-xs">
+                        <Badge
+                          variant="secondary"
+                          className="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-gradient-to-r from-orange-500 to-red-500 text-white dark:bg-orange-900/40 dark:text-orange-200 shadow-sm transition-colors"
+                        >
                           +{guide.languages.length - 3}
                         </Badge>
                       )}
@@ -309,7 +316,11 @@ export default function GuidePrivateClientPage() {
                     </h4>
                     <div className="flex flex-wrap gap-2 mb-6">
                       {selectedGuide.languages.map((lang, index) => (
-                        <Badge key={index} variant="outline" className="border-blue-200">
+                        <Badge
+                          key={index}
+                          variant="outline"
+                          className="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-gradient-to-r from-orange-500 to-red-500 text-white dark:bg-orange-900/40 dark:text-orange-200 shadow-sm transition-colors"
+                        >
                           {lang}
                         </Badge>
                       ))}

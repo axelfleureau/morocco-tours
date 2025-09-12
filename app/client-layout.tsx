@@ -16,17 +16,47 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
     setMounted(true)
   }, [])
 
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape" && isSearchOpen) {
+        setIsSearchOpen(false)
+      }
+      if ((event.metaKey || event.ctrlKey) && event.key === "k") {
+        event.preventDefault()
+        setIsSearchOpen(true)
+      }
+    }
+
+    document.addEventListener("keydown", handleKeyDown)
+    return () => document.removeEventListener("keydown", handleKeyDown)
+  }, [isSearchOpen])
+
   if (!mounted) {
     return null
   }
 
   return (
-    <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
+    <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
       <div className="min-h-screen bg-background text-foreground transition-colors duration-300">
-        <Navbar onSearchOpen={() => setIsSearchOpen(true)} />
-        <SearchBar isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
-        <main className="pt-16 lg:pt-20">{children}</main>
-        <Footer />
+        <header role="banner">
+          <Navbar onSearchOpen={() => setIsSearchOpen(true)} />
+        </header>
+
+        <SearchBar
+          isOpen={isSearchOpen}
+          onClose={() => setIsSearchOpen(false)}
+          aria-label="Cerca destinazioni e esperienze"
+        />
+
+        <main id="main-content" role="main" className="pt-14 lg:pt-17" tabIndex={-1}>
+          {children}
+        </main>
+
+        <footer role="contentinfo">
+          <Footer />
+        </footer>
+
+        <div id="announcements" aria-live="polite" aria-atomic="true" className="sr-only" />
       </div>
     </ThemeProvider>
   )

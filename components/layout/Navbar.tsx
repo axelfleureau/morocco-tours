@@ -1,10 +1,9 @@
 "use client"
 
 import { useState, useEffect, useRef } from "react"
-import { Menu, Search, Sun, Moon, ChevronDown, MapPin, Users, Mail, X, Camera } from "lucide-react"
+import { Menu, Search, Sun, Moon, ChevronDown, MapPin, Users, X, Camera } from "lucide-react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { useTheme } from "next-themes"
 import Image from "next/image"
 
 interface NavbarProps {
@@ -13,18 +12,23 @@ interface NavbarProps {
 
 export default function Navbar({ onSearchOpen }: NavbarProps) {
   const [isOpen, setIsOpen] = useState(false)
-  const [scrolled, setScrolled] = useState(false)
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null)
   const [isMobile, setIsMobile] = useState(false)
   const [isTablet, setIsTablet] = useState(false)
   const [mounted, setMounted] = useState(false)
+  const [theme, setThemeState] = useState<"light" | "dark">("light")
   const navRef = useRef(null)
   const pathname = usePathname()
-  const { theme, setTheme } = useTheme()
 
-  // Device detection
+  const [lastScrollY, setLastScrollY] = useState(0)
+  const [isHidden, setIsHidden] = useState(false)
+
   useEffect(() => {
     setMounted(true)
+    // Check system theme preference
+    const isDark = window.matchMedia("(prefers-color-scheme: dark)").matches
+    setThemeState(isDark ? "dark" : "light")
+
     const checkDevice = () => {
       setIsMobile(window.innerWidth < 768)
       setIsTablet(window.innerWidth >= 768 && window.innerWidth < 1024)
@@ -33,15 +37,6 @@ export default function Navbar({ onSearchOpen }: NavbarProps) {
     checkDevice()
     window.addEventListener("resize", checkDevice)
     return () => window.removeEventListener("resize", checkDevice)
-  }, [])
-
-  // Scroll detection
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 20)
-    }
-    window.addEventListener("scroll", handleScroll)
-    return () => window.removeEventListener("scroll", handleScroll)
   }, [])
 
   // Close dropdown when clicking outside
@@ -60,6 +55,28 @@ export default function Navbar({ onSearchOpen }: NavbarProps) {
     setIsOpen(false)
     setActiveDropdown(null)
   }, [pathname])
+
+  useEffect(() => {
+    if (!mounted) return
+    let ticking = false
+    const handleScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          const currentScrollY = window.scrollY
+          if (currentScrollY > lastScrollY && currentScrollY > 60) {
+            setIsHidden(true)
+          } else {
+            setIsHidden(false)
+          }
+          setLastScrollY(currentScrollY)
+          ticking = false
+        })
+        ticking = true
+      }
+    }
+    window.addEventListener("scroll", handleScroll)
+    return () => window.removeEventListener("scroll", handleScroll)
+  }, [lastScrollY, mounted])
 
   const navItems = [
     { name: "Chi Siamo", href: "/about", icon: Users },
@@ -100,9 +117,10 @@ export default function Navbar({ onSearchOpen }: NavbarProps) {
         { name: "Noleggio Auto", href: "/servizi/noleggio-auto", description: "Veicoli per ogni esigenza" },
         { name: "Assicurazioni", href: "/servizi/assicurazioni", description: "Protezione completa" },
       ],
-    },
+    } /*
     { name: "Blog", href: "/blog", icon: Camera },
     { name: "Contatti", href: "/contatti", icon: Mail },
+    */,
   ]
 
   const isActiveRoute = (href: string) => {
@@ -111,7 +129,9 @@ export default function Navbar({ onSearchOpen }: NavbarProps) {
   }
 
   const toggleTheme = () => {
-    setTheme(theme === "dark" ? "light" : "dark")
+    const newTheme = theme === "dark" ? "light" : "dark"
+    setThemeState(newTheme)
+    document.documentElement.classList.toggle("dark", newTheme === "dark")
   }
 
   // Get appropriate logo based on device and theme
@@ -134,9 +154,9 @@ export default function Navbar({ onSearchOpen }: NavbarProps) {
   }
 
   const getLogoSize = () => {
-    if (isMobile) return { width: 160, height: 70 }
-    if (isTablet) return { width: 200, height: 90 }
-    return { width: 280, height: 100 }
+    if (isMobile) return { width: 96, height: 42 }
+    if (isTablet) return { width: 120, height: 54 }
+    return { width: 168, height: 60 }
   }
 
   if (!mounted) {
@@ -146,13 +166,13 @@ export default function Navbar({ onSearchOpen }: NavbarProps) {
   return (
     <nav
       ref={navRef}
-      className={`
-        fixed top-0 left-0 w-full z-50 transition-all duration-300
-        ${scrolled || isOpen ? "bg-background/95 backdrop-blur-md shadow-lg border-b border-border" : "bg-transparent"}
-      `}
+      className={`fixed top-0 left-0 w-full z-50 transition-all duration-300
+  bg-background/80 backdrop-blur-lg shadow-lg border-b border-border
+  ${isHidden ? "pointer-events-none select-none opacity-0 -translate-y-full" : "opacity-100 translate-y-0"}
+`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16 lg:h-20">
+        <div className="flex items-center justify-between h-14 lg:h-17">
           {/* Logo */}
           <Link href="/" className="flex items-center group">
             <div className="relative transition-transform duration-300 group-hover:scale-105">
@@ -161,7 +181,7 @@ export default function Navbar({ onSearchOpen }: NavbarProps) {
                 alt="Morocco Dreams - Viaggi in Marocco"
                 width={getLogoSize().width}
                 height={getLogoSize().height}
-                className="h-auto w-auto max-h-12 sm:max-h-16 lg:max-h-20 object-contain"
+                className="h-auto w-auto max-h-10 sm:max-h-11 lg:max-h-13 object-contain"
                 priority
               />
             </div>
@@ -179,7 +199,7 @@ export default function Navbar({ onSearchOpen }: NavbarProps) {
                   >
                     <button
                       className={`
-                        flex items-center space-x-2 px-4 py-2.5 rounded-full text-sm font-medium
+                        flex items-center space-x-2 px-4 py-3 rounded-full text-sm font-medium min-h-[44px]
                         transition-all duration-200 hover:bg-muted
                         ${
                           isActiveRoute(item.href) || activeDropdown === item.name
@@ -199,37 +219,85 @@ export default function Navbar({ onSearchOpen }: NavbarProps) {
                     {/* Dropdown Menu */}
                     <div
                       className={`
-                        absolute top-full left-0 mt-2 w-80 bg-card rounded-2xl shadow-xl
-                        border border-border overflow-hidden
-                        transition-all duration-200 origin-top-left
-                        ${
-                          activeDropdown === item.name
-                            ? "opacity-100 scale-100 translate-y-0 visible"
-                            : "opacity-0 scale-95 -translate-y-2 invisible"
-                        }
-                      `}
+    absolute top-full left-0 mt-2 w-80 
+    rounded-2xl shadow-xl overflow-hidden
+    transition-all duration-200 origin-top-left
+    ${activeDropdown === item.name ? "opacity-100 scale-100 translate-y-0 visible" : "opacity-0 scale-95 -translate-y-2 invisible"}
+  `}
+                      style={{
+                        backgroundColor: "#ffffff !important",
+                        border: "1px solid #e5e7eb !important",
+                        borderRadius: "16px !important",
+                        boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.25) !important",
+                        overflow: "hidden !important",
+                        backdropFilter: "none !important",
+                        WebkitBackdropFilter: "none !important",
+                      }}
                     >
-                      <div className="p-2">
+                      <div
+                        style={{
+                          backgroundColor: "#ffffff !important",
+                          padding: "8px !important",
+                        }}
+                      >
                         {item.dropdown.map((subItem) => (
                           <Link
                             key={subItem.href}
                             href={subItem.href}
-                            className={`
-                              flex flex-col space-y-1 px-4 py-3 rounded-xl text-sm font-medium 
-                              transition-all duration-200 group
-                              ${
-                                isActiveRoute(subItem.href)
-                                  ? "bg-orange-50 dark:bg-orange-900/20 text-orange-600 dark:text-orange-400"
-                                  : "text-card-foreground hover:bg-muted hover:text-orange-600 dark:hover:text-orange-400"
-                              }
-                            `}
+                            style={{
+                              display: "block !important",
+                              padding: "16px !important",
+                              borderRadius: "12px !important",
+                              fontSize: "14px !important",
+                              fontWeight: "500 !important",
+                              minHeight: "48px !important",
+                              transition: "all 0.2s ease !important",
+                              backgroundColor: "transparent !important",
+                              textDecoration: "none !important",
+                            }}
+                            onMouseEnter={(e) => {
+                              e.currentTarget.style.setProperty(
+                                "background",
+                                "linear-gradient(to right, #f97316, #dc2626)",
+                                "important",
+                              )
+                              const spans = e.currentTarget.querySelectorAll("span")
+                              spans.forEach((span) => {
+                                span.style.setProperty("color", "#ffffff", "important")
+                              })
+                            }}
+                            onMouseLeave={(e) => {
+                              e.currentTarget.style.setProperty("background", "transparent", "important")
+                              const spans = e.currentTarget.querySelectorAll("span")
+                              spans.forEach((span, index) => {
+                                if (index === 0) {
+                                  span.style.setProperty("color", "#000000", "important")
+                                } else {
+                                  span.style.setProperty("color", "#374151", "important")
+                                }
+                              })
+                            }}
                           >
-                            <span className="group-hover:translate-x-1 transition-transform duration-200">
-                              {subItem.name}
-                            </span>
-                            <span className="text-xs text-muted-foreground group-hover:text-orange-500 dark:group-hover:text-orange-400">
-                              {subItem.description}
-                            </span>
+                            <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
+                              <span
+                                style={{
+                                  color: "#000000 !important",
+                                  fontWeight: "500 !important",
+                                  transition: "all 0.2s ease !important",
+                                }}
+                              >
+                                {subItem.name}
+                              </span>
+                              <span
+                                style={{
+                                  color: "#374151 !important",
+                                  fontSize: "12px !important",
+                                  transition: "all 0.2s ease !important",
+                                }}
+                              >
+                                {subItem.description}
+                              </span>
+                            </div>
                           </Link>
                         ))}
                       </div>
@@ -239,7 +307,7 @@ export default function Navbar({ onSearchOpen }: NavbarProps) {
                   <Link
                     href={item.href}
                     className={`
-                      flex items-center space-x-2 px-4 py-2.5 rounded-full text-sm font-medium 
+                      flex items-center space-x-2 px-4 py-3 rounded-full text-sm font-medium min-h-[44px]
                       transition-all duration-200 hover:bg-muted
                       ${
                         isActiveRoute(item.href)
@@ -260,7 +328,7 @@ export default function Navbar({ onSearchOpen }: NavbarProps) {
             {/* Search Button */}
             <button
               onClick={onSearchOpen}
-              className="hidden sm:flex items-center space-x-2 px-4 py-2.5 bg-muted hover:bg-muted/80 rounded-full text-sm font-medium text-foreground transition-all duration-200 group"
+              className="hidden sm:flex items-center space-x-2 px-4 py-3 bg-muted hover:bg-muted/80 rounded-full text-sm font-medium text-foreground transition-all duration-200 group min-h-[44px]"
             >
               <Search className="w-4 h-4 group-hover:scale-110 transition-transform duration-200" />
               <span className="hidden md:inline">Cerca</span>
@@ -269,7 +337,7 @@ export default function Navbar({ onSearchOpen }: NavbarProps) {
             {/* Theme Toggle */}
             <button
               onClick={toggleTheme}
-              className="p-2.5 rounded-full hover:bg-muted transition-all duration-200 group"
+              className="p-3 rounded-full hover:bg-muted transition-all duration-200 group min-w-[44px] min-h-[44px] flex items-center justify-center"
             >
               {theme === "dark" ? (
                 <Sun className="w-5 h-5 text-orange-500 group-hover:rotate-12 transition-transform duration-200" />
@@ -278,10 +346,16 @@ export default function Navbar({ onSearchOpen }: NavbarProps) {
               )}
             </button>
 
-            {/* CTA Button */}
             <Link
               href="/contatti"
-              className="hidden sm:inline-flex items-center px-6 py-2.5 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-full hover:from-orange-600 hover:to-red-600 transition-all duration-300 hover:scale-105 hover:shadow-lg font-semibold text-sm"
+              className="
+                hidden sm:inline-flex items-center px-6 py-3 rounded-full font-semibold text-sm min-h-[44px]
+                transition-all duration-300 hover:scale-105 hover:shadow-lg
+              "
+              style={{
+                background: "linear-gradient(to right, #f97316, #dc2626) !important",
+                color: "#ffffff !important",
+              }}
             >
               Pianifica Viaggio
             </Link>
@@ -289,7 +363,7 @@ export default function Navbar({ onSearchOpen }: NavbarProps) {
             {/* Mobile Menu Button */}
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className="lg:hidden p-2.5 rounded-full hover:bg-muted transition-all duration-200"
+              className="lg:hidden p-3 rounded-full hover:bg-muted transition-all duration-200 min-w-[44px] min-h-[44px] flex items-center justify-center"
             >
               {isOpen ? <X className="w-5 h-5 text-foreground" /> : <Menu className="w-5 h-5 text-foreground" />}
             </button>
@@ -309,7 +383,16 @@ export default function Navbar({ onSearchOpen }: NavbarProps) {
           {/* Mobile CTA */}
           <Link
             href="/contatti"
-            className="flex items-center justify-center px-6 py-3 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-full hover:from-orange-600 hover:to-red-600 transition-all duration-300 font-semibold"
+            className="
+              flex items-center justify-center px-6 py-4
+              rounded-full
+              font-semibold min-h-[48px]
+              transition-all duration-300
+            "
+            style={{
+              background: "linear-gradient(to right, #f97316, #dc2626)",
+              color: "#ffffff",
+            }}
           >
             Pianifica il Tuo Viaggio
           </Link>
@@ -320,7 +403,7 @@ export default function Navbar({ onSearchOpen }: NavbarProps) {
               onSearchOpen()
               setIsOpen(false)
             }}
-            className="w-full flex items-center space-x-3 px-4 py-3 bg-muted rounded-xl text-left"
+            className="w-full flex items-center space-x-3 px-4 py-4 bg-muted rounded-xl text-left min-h-[48px]"
           >
             <Search className="w-5 h-5 text-muted-foreground" />
             <span className="text-foreground">Cerca destinazioni...</span>
@@ -334,7 +417,7 @@ export default function Navbar({ onSearchOpen }: NavbarProps) {
                   <button
                     onClick={() => setActiveDropdown(activeDropdown === item.name ? null : item.name)}
                     className={`
-                      w-full flex items-center justify-between px-4 py-3 text-left font-medium rounded-xl transition-colors duration-200
+                      w-full flex items-center justify-between px-4 py-4 text-left font-medium rounded-xl transition-colors duration-200 min-h-[48px]
                       ${
                         isActiveRoute(item.href)
                           ? "bg-orange-50 dark:bg-orange-900/20 text-orange-600 dark:text-orange-400"
@@ -364,16 +447,38 @@ export default function Navbar({ onSearchOpen }: NavbarProps) {
                           key={subItem.href}
                           href={subItem.href}
                           className={`
-                            block px-4 py-3 text-sm rounded-lg transition-all duration-200
-                            ${
-                              isActiveRoute(subItem.href)
-                                ? "bg-orange-50 dark:bg-orange-900/20 text-orange-600 dark:text-orange-400"
-                                : "text-muted-foreground hover:text-orange-600 dark:hover:text-orange-400 hover:bg-muted"
-                            }
+                            block px-4 py-4 text-sm rounded-lg transition-all duration-200 min-h-[48px]
+                            ${isActiveRoute(subItem.href) ? "bg-orange-50 dark:bg-orange-900/20" : "hover:bg-muted"}
                           `}
                         >
-                          <div className="font-medium">{subItem.name}</div>
-                          <div className="text-xs text-muted-foreground mt-1">{subItem.description}</div>
+                          <div
+                            className="font-medium"
+                            style={{
+                              color: isActiveRoute(subItem.href)
+                                ? theme === "dark"
+                                  ? "#fb923c"
+                                  : "#ea580c"
+                                : theme === "dark"
+                                  ? "#ffffff"
+                                  : "#111827",
+                            }}
+                          >
+                            {subItem.name}
+                          </div>
+                          <div
+                            className="text-xs mt-1"
+                            style={{
+                              color: isActiveRoute(subItem.href)
+                                ? theme === "dark"
+                                  ? "#fb923c"
+                                  : "#ea580c"
+                                : theme === "dark"
+                                  ? "#e5e7eb"
+                                  : "#374151",
+                            }}
+                          >
+                            {subItem.description}
+                          </div>
                         </Link>
                       ))}
                     </div>
@@ -383,7 +488,7 @@ export default function Navbar({ onSearchOpen }: NavbarProps) {
                 <Link
                   href={item.href}
                   className={`
-                    flex items-center space-x-3 px-4 py-3 font-medium rounded-xl transition-colors duration-200
+                    flex items-center space-x-3 px-4 py-4 font-medium rounded-xl transition-colors duration-200 min-h-[48px]
                     ${
                       isActiveRoute(item.href)
                         ? "bg-orange-50 dark:bg-orange-900/20 text-orange-600 dark:text-orange-400"
@@ -402,7 +507,7 @@ export default function Navbar({ onSearchOpen }: NavbarProps) {
           <div className="pt-4 border-t border-border space-y-3">
             <button
               onClick={toggleTheme}
-              className="w-full flex items-center space-x-3 px-4 py-3 text-foreground hover:bg-muted rounded-xl transition-colors duration-200"
+              className="w-full flex items-center space-x-3 px-4 py-4 text-foreground hover:bg-muted rounded-xl transition-colors duration-200 min-h-[48px]"
             >
               {theme === "dark" ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
               <span>Cambia Tema</span>
