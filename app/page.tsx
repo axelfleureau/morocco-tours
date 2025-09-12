@@ -67,15 +67,24 @@ const AuthenticExperiences = () => {
           ].map((experience, idx) => (
             <Card
               key={idx}
-              className="group overflow-hidden hover:shadow-xl transition-all duration-500 hover:scale-105"
+              className="group overflow-hidden hover:shadow-xl transition-all duration-500 hover:scale-105 active:scale-95 touch-manipulation cursor-pointer"
+              onTouchStart={(e) => {
+                e.currentTarget.style.transform = "scale(0.98)"
+              }}
+              onTouchEnd={(e) => {
+                e.currentTarget.style.transform = ""
+              }}
             >
               <div className="relative h-40 sm:h-48 overflow-hidden">
                 <img
-                  src={experience.image || "/placeholder.svg?height=200&width=300&query=esperienza%20marocco"}
+                  src={
+                    experience.image ||
+                    `/placeholder.svg?height=200&width=300&query=${encodeURIComponent("esperienza marocco " + experience.title)}`
+                  }
                   alt={experience.title}
                   className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                 />
-                <div className="absolute top-4 right-4 bg-background/90 backdrop-blur-sm text-foreground px-3 py-1 rounded-full text-sm font-bold">
+                <div className="absolute top-4 right-4 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm text-gray-900 dark:text-gray-100 px-3 py-1 rounded-full text-sm font-bold">
                   {experience.price}
                 </div>
                 <div className="absolute bottom-4 left-4 bg-black/50 backdrop-blur-sm text-white px-3 py-1 rounded-full text-sm">
@@ -83,17 +92,27 @@ const AuthenticExperiences = () => {
                 </div>
               </div>
 
-              <CardContent className="text-center">
+              <CardContent className="text-center bg-white dark:bg-gray-900 p-6">
                 <div className="w-12 h-12 bg-orange-100 dark:bg-orange-900/30 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
                   <experience.icon className="w-6 h-6 text-orange-600 dark:text-orange-400" />
                 </div>
-                <CardTitle className="text-lg mb-2">{experience.title}</CardTitle>
-                <p className="text-muted-foreground text-sm mb-4 text-pretty">{experience.description}</p>
+                <CardTitle className="text-lg mb-2 text-gray-900 dark:text-gray-100">{experience.title}</CardTitle>
+                <p className="text-gray-600 dark:text-gray-400 text-sm mb-4 text-pretty">{experience.description}</p>
                 <div className="flex gap-2">
-                  <Button asChild variant="ghost" size="sm" className="flex-1">
+                  <Button
+                    asChild
+                    variant="ghost"
+                    size="sm"
+                    className="flex-1 hover:scale-105 active:scale-95 touch-manipulation"
+                  >
                     <Link href={experience.href}>Dettagli</Link>
                   </Button>
-                  <Button asChild variant="cta" size="sm" className="flex-1">
+                  <Button
+                    asChild
+                    variant="cta"
+                    size="sm"
+                    className="flex-1 hover:scale-105 active:scale-95 touch-manipulation"
+                  >
                     <Link href="/contatti">Prenota</Link>
                   </Button>
                 </div>
@@ -147,17 +166,23 @@ const TestimonialsSection = () => {
               trip: "Tour Gastronomico",
             },
           ].map((testimonial, idx) => (
-            <Card key={idx} className="hover:shadow-xl transition-all duration-300">
-              <CardContent>
+            <Card
+              key={idx}
+              className="hover:shadow-xl transition-all duration-300 hover:scale-105 active:scale-95 touch-manipulation bg-white dark:bg-gray-900"
+            >
+              <CardContent className="p-6">
                 <div className="flex items-center mb-4">
                   <img
-                    src={testimonial.image || "/placeholder.svg?height=50&width=50&query=testimonial%20avatar"}
+                    src={
+                      testimonial.image ||
+                      `/placeholder.svg?height=50&width=50&query=${encodeURIComponent("testimonial avatar " + testimonial.name)}`
+                    }
                     alt={testimonial.name}
                     className="w-12 h-12 rounded-full object-cover mr-4"
                   />
                   <div>
-                    <h4 className="font-bold text-foreground">{testimonial.name}</h4>
-                    <p className="text-sm text-muted-foreground">{testimonial.location}</p>
+                    <h4 className="font-bold text-gray-900 dark:text-gray-100">{testimonial.name}</h4>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">{testimonial.location}</p>
                   </div>
                 </div>
 
@@ -169,7 +194,9 @@ const TestimonialsSection = () => {
                   ))}
                 </div>
 
-                <p className="text-muted-foreground mb-4 italic text-pretty leading-relaxed">"{testimonial.text}"</p>
+                <p className="text-gray-600 dark:text-gray-400 mb-4 italic text-pretty leading-relaxed">
+                  "{testimonial.text}"
+                </p>
 
                 <div className="text-sm text-orange-600 dark:text-orange-400 font-semibold">{testimonial.trip}</div>
               </CardContent>
@@ -232,12 +259,15 @@ const FAQSection = () => {
 
         <div className="space-y-4">
           {faqs.map((faq, idx) => (
-            <Card key={idx} className="overflow-hidden transition-all duration-300">
+            <Card
+              key={idx}
+              className="overflow-hidden transition-all duration-300 hover:shadow-lg hover:scale-105 active:scale-95 touch-manipulation bg-white dark:bg-gray-900"
+            >
               <button
                 onClick={() => setOpenFAQ(openFAQ === idx ? null : idx)}
-                className="w-full px-6 py-4 text-left flex items-center justify-between hover:bg-muted/50 transition-colors duration-200 min-h-[44px]"
+                className="w-full px-6 py-4 text-left flex items-center justify-between hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors duration-200 min-h-[44px] touch-manipulation"
               >
-                <span className="font-semibold text-foreground pr-4 text-balance">{faq.question}</span>
+                <span className="font-semibold text-gray-900 dark:text-gray-100 pr-4 text-balance">{faq.question}</span>
                 {openFAQ === idx ? (
                   <span className="text-orange-500 text-xl">−</span>
                 ) : (
@@ -249,7 +279,7 @@ const FAQSection = () => {
                   openFAQ === idx ? "max-h-96 pb-4" : "max-h-0"
                 }`}
               >
-                <p className="text-muted-foreground leading-relaxed text-pretty">{faq.answer}</p>
+                <p className="text-gray-600 dark:text-gray-400 leading-relaxed text-pretty">{faq.answer}</p>
               </div>
             </Card>
           ))}

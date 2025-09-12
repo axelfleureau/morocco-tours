@@ -220,81 +220,24 @@ export default function Navbar({ onSearchOpen }: NavbarProps) {
                     <div
                       className={`
     absolute top-full left-0 mt-2 w-80 
+    bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700
     rounded-2xl shadow-xl overflow-hidden
     transition-all duration-200 origin-top-left
     ${activeDropdown === item.name ? "opacity-100 scale-100 translate-y-0 visible" : "opacity-0 scale-95 -translate-y-2 invisible"}
   `}
-                      style={{
-                        backgroundColor: "#ffffff !important",
-                        border: "1px solid #e5e7eb !important",
-                        borderRadius: "16px !important",
-                        boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.25) !important",
-                        overflow: "hidden !important",
-                        backdropFilter: "none !important",
-                        WebkitBackdropFilter: "none !important",
-                      }}
                     >
-                      <div
-                        style={{
-                          backgroundColor: "#ffffff !important",
-                          padding: "8px !important",
-                        }}
-                      >
+                      <div className="p-2">
                         {item.dropdown.map((subItem) => (
                           <Link
                             key={subItem.href}
                             href={subItem.href}
-                            style={{
-                              display: "block !important",
-                              padding: "16px !important",
-                              borderRadius: "12px !important",
-                              fontSize: "14px !important",
-                              fontWeight: "500 !important",
-                              minHeight: "48px !important",
-                              transition: "all 0.2s ease !important",
-                              backgroundColor: "transparent !important",
-                              textDecoration: "none !important",
-                            }}
-                            onMouseEnter={(e) => {
-                              e.currentTarget.style.setProperty(
-                                "background",
-                                "linear-gradient(to right, #f97316, #dc2626)",
-                                "important",
-                              )
-                              const spans = e.currentTarget.querySelectorAll("span")
-                              spans.forEach((span) => {
-                                span.style.setProperty("color", "#ffffff", "important")
-                              })
-                            }}
-                            onMouseLeave={(e) => {
-                              e.currentTarget.style.setProperty("background", "transparent", "important")
-                              const spans = e.currentTarget.querySelectorAll("span")
-                              spans.forEach((span, index) => {
-                                if (index === 0) {
-                                  span.style.setProperty("color", "#000000", "important")
-                                } else {
-                                  span.style.setProperty("color", "#374151", "important")
-                                }
-                              })
-                            }}
+                            className="block p-4 rounded-xl hover:bg-gradient-to-r hover:from-orange-500 hover:to-red-500 hover:text-white transition-all duration-200 group"
                           >
-                            <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
-                              <span
-                                style={{
-                                  color: "#000000 !important",
-                                  fontWeight: "500 !important",
-                                  transition: "all 0.2s ease !important",
-                                }}
-                              >
+                            <div className="flex flex-col gap-1">
+                              <span className="font-medium text-gray-900 dark:text-gray-100 group-hover:text-white text-sm">
                                 {subItem.name}
                               </span>
-                              <span
-                                style={{
-                                  color: "#374151 !important",
-                                  fontSize: "12px !important",
-                                  transition: "all 0.2s ease !important",
-                                }}
-                              >
+                              <span className="text-gray-600 dark:text-gray-400 group-hover:text-white text-xs">
                                 {subItem.description}
                               </span>
                             </div>
@@ -474,7 +417,7 @@ export default function Navbar({ onSearchOpen }: NavbarProps) {
                                   : "#ea580c"
                                 : theme === "dark"
                                   ? "#e5e7eb"
-                                  : "#374151",
+                                  : "#4b5563",
                             }}
                           >
                             {subItem.description}
