@@ -1,10 +1,12 @@
 "use client"
 
 import { useState, useEffect, useRef } from "react"
-import { Menu, Search, Sun, Moon, ChevronDown, MapPin, Users, X, Camera } from "lucide-react"
+import { Menu, Search, Sun, Moon, ChevronDown, MapPin, Users, X, Camera, LogOut, User, Settings } from "lucide-react"
 import Link from "next/link"
-import { usePathname } from "next/navigation"
+import { usePathname, useRouter } from "next/navigation"
 import Image from "next/image"
+import { useAuth } from "@/context/AuthContext"
+import { signOutUser } from "@/lib/auth"
 
 interface NavbarProps {
   onSearchOpen: () => void
@@ -19,6 +21,8 @@ export default function Navbar({ onSearchOpen }: NavbarProps) {
   const [theme, setThemeState] = useState<"light" | "dark">("light")
   const navRef = useRef(null)
   const pathname = usePathname()
+  const router = useRouter()
+  const { user, userProfile, loading, isAdmin } = useAuth()
 
   const [lastScrollY, setLastScrollY] = useState(0)
   const [isHidden, setIsHidden] = useState(false)
@@ -132,6 +136,15 @@ export default function Navbar({ onSearchOpen }: NavbarProps) {
     const newTheme = theme === "dark" ? "light" : "dark"
     setThemeState(newTheme)
     document.documentElement.classList.toggle("dark", newTheme === "dark")
+  }
+
+  const handleLogout = async () => {
+    try {
+      await signOutUser()
+      router.push('/')
+    } catch (error) {
+      console.error('Error signing out:', error)
+    }
   }
 
   // Get appropriate logo based on device and theme
@@ -289,19 +302,85 @@ export default function Navbar({ onSearchOpen }: NavbarProps) {
               )}
             </button>
 
-            <Link
-              href="/contatti"
-              className="
-                hidden sm:inline-flex items-center px-6 py-3 rounded-full font-semibold text-sm min-h-[44px]
-                transition-all duration-300 hover:scale-105 hover:shadow-lg
-              "
-              style={{
-                background: "linear-gradient(to right, #f97316, #dc2626) !important",
-                color: "#ffffff !important",
-              }}
-            >
-              Pianifica Viaggio
-            </Link>
+            {/* Authentication Buttons */}
+            {loading ? (
+              <div className="w-10 h-10 rounded-full bg-muted animate-pulse" />
+            ) : user ? (
+              <div className="relative">
+                <button
+                  onClick={() => setActiveDropdown(activeDropdown === 'user' ? null : 'user')}
+                  className="flex items-center space-x-2 px-4 py-3 rounded-full bg-muted hover:bg-muted/80 transition-all duration-200 min-h-[44px]"
+                >
+                  {isAdmin ? (
+                    <Settings className="w-5 h-5 text-orange-600" />
+                  ) : (
+                    <User className="w-5 h-5 text-foreground" />
+                  )}
+                  <span className="hidden md:inline text-sm font-medium">
+                    {isAdmin ? 'Admin' : userProfile?.displayName || 'Utente'}
+                  </span>
+                  <ChevronDown
+                    className={`w-4 h-4 transition-transform duration-200 ${
+                      activeDropdown === 'user' ? 'rotate-180' : ''
+                    }`}
+                  />
+                </button>
+
+                {/* User Dropdown */}
+                {activeDropdown === 'user' && (
+                  <div className="absolute right-0 top-full mt-2 w-48 bg-card border border-border rounded-xl shadow-lg py-2 z-50">
+                    {isAdmin && (
+                      <Link
+                        href="/admin"
+                        className="flex items-center space-x-3 px-4 py-3 text-sm text-foreground hover:bg-muted transition-colors"
+                        onClick={() => setActiveDropdown(null)}
+                      >
+                        <Settings className="w-4 h-4 text-orange-600" />
+                        <span>Pannello Admin</span>
+                      </Link>
+                    )}
+                    <Link
+                      href="/dashboard"
+                      className="flex items-center space-x-3 px-4 py-3 text-sm text-foreground hover:bg-muted transition-colors"
+                      onClick={() => setActiveDropdown(null)}
+                    >
+                      <User className="w-4 h-4" />
+                      <span>La Mia Area</span>
+                    </Link>
+                    <button
+                      onClick={() => {
+                        setActiveDropdown(null)
+                        handleLogout()
+                      }}
+                      className="w-full flex items-center space-x-3 px-4 py-3 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+                    >
+                      <LogOut className="w-4 h-4" />
+                      <span>Logout</span>
+                    </button>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div className="flex items-center space-x-2">
+                <Link
+                  href="/auth/login"
+                  className="hidden sm:inline-flex items-center px-4 py-3 rounded-full border border-border text-sm font-medium text-foreground hover:bg-muted transition-all duration-200 min-h-[44px]"
+                >
+                  Accedi
+                </Link>
+                <Link
+                  href="/contatti"
+                  className="inline-flex items-center px-6 py-3 rounded-full font-semibold text-sm min-h-[44px] transition-all duration-300 hover:scale-105 hover:shadow-lg"
+                  style={{
+                    background: "linear-gradient(to right, #f97316, #dc2626) !important",
+                    color: "#ffffff !important",
+                  }}
+                >
+                  <span className="hidden sm:inline">Pianifica Viaggio</span>
+                  <span className="sm:hidden">Contatti</span>
+                </Link>
+              </div>
+            )}
 
             {/* Mobile Menu Button */}
             <button
@@ -323,22 +402,78 @@ export default function Navbar({ onSearchOpen }: NavbarProps) {
         `}
       >
         <div className="px-4 py-6 space-y-4 max-h-[80vh] overflow-y-auto">
-          {/* Mobile CTA */}
-          <Link
-            href="/contatti"
-            className="
-              flex items-center justify-center px-6 py-4
-              rounded-full
-              font-semibold min-h-[48px]
-              transition-all duration-300
-            "
-            style={{
-              background: "linear-gradient(to right, #f97316, #dc2626)",
-              color: "#ffffff",
-            }}
-          >
-            Pianifica il Tuo Viaggio
-          </Link>
+          {/* Mobile Authentication */}
+          {loading ? (
+            <div className="w-full h-12 rounded-full bg-muted animate-pulse" />
+          ) : user ? (
+            <div className="space-y-3">
+              {/* Mobile User Info */}
+              <div className="flex items-center space-x-3 px-4 py-3 bg-muted rounded-xl">
+                {isAdmin ? (
+                  <Settings className="w-6 h-6 text-orange-600" />
+                ) : (
+                  <User className="w-6 h-6 text-foreground" />
+                )}
+                <div className="flex-1">
+                  <p className="font-semibold text-foreground">
+                    {isAdmin ? 'Admin Panel' : userProfile?.displayName || 'Utente'}
+                  </p>
+                  <p className="text-sm text-muted-foreground">{user.email}</p>
+                </div>
+              </div>
+              
+              {/* Mobile User Actions */}
+              {isAdmin && (
+                <Link
+                  href="/admin"
+                  className="w-full flex items-center space-x-3 px-4 py-4 bg-orange-50 dark:bg-orange-900/20 text-orange-600 rounded-xl transition-colors"
+                  onClick={() => setIsOpen(false)}
+                >
+                  <Settings className="w-5 h-5" />
+                  <span className="font-medium">Pannello Admin</span>
+                </Link>
+              )}
+              <Link
+                href="/dashboard"
+                className="w-full flex items-center space-x-3 px-4 py-4 bg-muted hover:bg-muted/80 rounded-xl transition-colors"
+                onClick={() => setIsOpen(false)}
+              >
+                <User className="w-5 h-5" />
+                <span className="font-medium">La Mia Area</span>
+              </Link>
+              <button
+                onClick={() => {
+                  setIsOpen(false)
+                  handleLogout()
+                }}
+                className="w-full flex items-center space-x-3 px-4 py-4 bg-red-50 dark:bg-red-900/20 text-red-600 rounded-xl transition-colors"
+              >
+                <LogOut className="w-5 h-5" />
+                <span className="font-medium">Logout</span>
+              </button>
+            </div>
+          ) : (
+            <div className="space-y-3">
+              <Link
+                href="/auth/login"
+                className="w-full flex items-center justify-center px-6 py-4 border-2 border-border rounded-full font-semibold min-h-[48px] transition-all duration-300 text-foreground hover:bg-muted"
+                onClick={() => setIsOpen(false)}
+              >
+                Accedi / Registrati
+              </Link>
+              <Link
+                href="/contatti"
+                className="w-full flex items-center justify-center px-6 py-4 rounded-full font-semibold min-h-[48px] transition-all duration-300"
+                style={{
+                  background: "linear-gradient(to right, #f97316, #dc2626)",
+                  color: "#ffffff",
+                }}
+                onClick={() => setIsOpen(false)}
+              >
+                Pianifica il Tuo Viaggio
+              </Link>
+            </div>
+          )}
 
           {/* Mobile Search */}
           <button
