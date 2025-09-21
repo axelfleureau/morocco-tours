@@ -10,9 +10,7 @@ const nextConfig = {
     unoptimized: true,
   },
   // Configure for Replit environment
-  experimental: {
-    allowedHosts: true,
-  },
+  // Note: allowedHosts is handled via hostname binding in dev script
   // Allow all hosts for Replit proxy
   async headers() {
     return [
