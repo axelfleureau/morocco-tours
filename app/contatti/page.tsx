@@ -1,4 +1,5 @@
 import { Phone, Mail, MessageCircle, Clock, Globe } from "lucide-react"
+import ContactForm from "@/components/forms/ContactForm"
 
 export default function ContactsPage() {
   return (
@@ -103,90 +104,7 @@ export default function ContactsPage() {
                 Compila il form e ti ricontatteremo entro 24 ore con tutte le informazioni di cui hai bisogno.
               </p>
 
-              <form className="space-y-6">
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-foreground mb-2">Nome</label>
-                    <input
-                      type="text"
-                      className="w-full px-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent bg-background text-foreground"
-                      placeholder="Il tuo nome"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-foreground mb-2">Cognome</label>
-                    <input
-                      type="text"
-                      className="w-full px-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent bg-background text-foreground"
-                      placeholder="Il tuo cognome"
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-foreground mb-2">Email</label>
-                  <input
-                    type="email"
-                    className="w-full px-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent bg-background text-foreground"
-                    placeholder="la-tua-email@esempio.com"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-foreground mb-2">Telefono</label>
-                  <input
-                    type="tel"
-                    className="w-full px-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent bg-background text-foreground"
-                    placeholder="+39 329 233 3370"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-foreground mb-2">
-                    Tipo di viaggio
-                  </label>
-                  <select className="px-4 py-2 border border-border rounded-lg bg-card text-card-foreground w-full focus:ring-2 focus:ring-orange-500 focus:border-transparent">
-                    <option value="">Seleziona il tipo di viaggio</option>
-                    <option value="gruppo">Viaggio di Gruppo</option>
-                    <option value="misura">Viaggio su Misura</option>
-                    <option value="deserto">Tour del Deserto</option>
-                    <option value="citta">Città Imperiali</option>
-                    <option value="esperienze">Esperienze Speciali</option>
-                    <option value="altro">Altro</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-foreground mb-2">Messaggio</label>
-                  <textarea
-                    rows={5}
-                    className="w-full px-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent bg-background text-foreground resize-none"
-                    placeholder="Raccontaci il tuo sogno di viaggio in Marocco..."
-                  />
-                </div>
-
-                <div className="flex items-start space-x-3">
-                  <input
-                    type="checkbox"
-                    id="privacy"
-                    className="mt-1 w-4 h-4 text-orange-600 border-gray-300 rounded focus:ring-orange-500"
-                  />
-                  <label htmlFor="privacy" className="text-sm text-muted-foreground">
-                    Accetto la{" "}
-                    <a href="/privacy" className="text-orange-600 hover:text-orange-700 underline">
-                      Privacy Policy
-                    </a>{" "}
-                    e autorizzo il trattamento dei miei dati personali per ricevere informazioni sui viaggi.
-                  </label>
-                </div>
-
-                <button
-                  type="submit"
-                  className="w-full bg-gradient-to-r from-orange-500 to-red-500 text-white py-4 px-6 rounded-xl hover:from-orange-600 hover:to-red-600 transition-all duration-300 font-semibold text-lg"
-                >
-                  Invia Messaggio
-                </button>
-              </form>
+              <ContactForm type="general" />
 
               <div className="mt-8 pt-8 border-t border-gray-200 dark:border-gray-600">
                 <p className="text-sm text-muted-foreground text-center">

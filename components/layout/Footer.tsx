@@ -1,16 +1,8 @@
-import { Phone, Mail, Clock, Facebook, Instagram, Twitter, Youtube, Send } from "lucide-react"
+import { Phone, Mail, Clock, Facebook, Instagram, Twitter, Youtube } from "lucide-react"
 import Link from "next/link"
-import { useState } from "react"
+import NewsletterForm from "@/components/forms/NewsletterForm"
 
 export default function Footer() {
-  const [email, setEmail] = useState("")
-
-  const handleSubscribe = (e) => {
-    e.preventDefault()
-    // Inserisci qui la tua logica di iscrizione!
-    setEmail("")
-    alert("Grazie per la tua iscrizione!")
-  }
 
   return (
     <footer className="bg-card border-t border-border">
@@ -94,25 +86,7 @@ export default function Footer() {
           <div className="lg:col-span-2 flex flex-col justify-between space-y-8 lg:space-y-0">
             {/* Newsletter */}
             <div className="mb-8">
-              <h3 className="text-lg font-semibold mb-4 text-foreground">Iscriviti alla Newsletter</h3>
-              <form className="flex space-x-2 items-center" onSubmit={handleSubscribe}>
-                <input
-                  type="email"
-                  required
-                  value={email}
-                  onChange={e => setEmail(e.target.value)}
-                  placeholder="Tua email..."
-                  className="flex-1 px-4 py-3 rounded-xl bg-muted border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-orange-500 transition-all"
-                />
-                <button
-                  type="submit"
-                  className="flex items-center justify-center bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-xl h-12 w-12 hover:from-orange-600 hover:to-red-600 transition-all"
-                  aria-label="Iscriviti"
-                >
-                  <Send className="w-5 h-5" />
-                </button>
-              </form>
-              <p className="text-xs text-muted-foreground mt-2">Ricevi offerte e novità dal Marocco. <span className="text-orange-500 font-semibold">Niente spam!</span></p>
+              <NewsletterForm />
             </div>
             {/* Social & Legal */}
             <div>
