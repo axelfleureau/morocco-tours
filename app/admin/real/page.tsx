@@ -1,40 +1,16 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { useRouter } from 'next/navigation';
+import ProtectedRoute from '@/components/auth/ProtectedRoute';
 import { BarChart3, MapPin, Package, Users, Calendar, Settings, FileText } from 'lucide-react';
 import DashboardOverview from '@/components/admin/DashboardOverview';
 import UsersManagement from '@/components/admin/UsersManagement';
 
-export default function RealAdminPanel() {
-  const { user, userProfile, isAdmin, loading } = useAuth();
-  const router = useRouter();
+function RealAdminPanelContent() {
+  const { user, userProfile } = useAuth();
   const [activeTab, setActiveTab] = useState("dashboard");
-
-  // Redirect if not admin
-  useEffect(() => {
-    if (!loading && (!user || !isAdmin)) {
-      router.push('/auth/signin');
-    }
-  }, [user, isAdmin, loading, router]);
-
-  // Show loading while checking auth
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-gray-50 dark:bg-background flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-orange-500 mx-auto"></div>
-          <p className="mt-4 text-gray-600 dark:text-gray-400">Caricamento pannello admin...</p>
-        </div>
-      </div>
-    );
-  }
-
-  // Don't render if not admin
-  if (!user || !isAdmin) {
-    return null;
-  }
 
   const navigation = [
     { id: "dashboard", name: "Dashboard", icon: BarChart3 },
@@ -133,10 +109,10 @@ export default function RealAdminPanel() {
             </div>
             <div className="flex items-center space-x-4">
               <div className="text-sm text-gray-500 dark:text-gray-400">
-                Benvenuto, {userProfile?.displayName || user.email}
+                Benvenuto, {userProfile?.displayName || user?.email}
               </div>
               <div className="w-8 h-8 bg-gradient-to-br from-orange-400 to-red-500 rounded-full flex items-center justify-center text-white text-sm font-semibold">
-                {userProfile?.displayName?.charAt(0)?.toUpperCase() || user.email?.charAt(0)?.toUpperCase()}
+                {userProfile?.displayName?.charAt(0)?.toUpperCase() || user?.email?.charAt(0)?.toUpperCase()}
               </div>
             </div>
           </div>
@@ -170,5 +146,13 @@ export default function RealAdminPanel() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function RealAdminPanel() {
+  return (
+    <ProtectedRoute requireAdmin={true}>
+      <RealAdminPanelContent />
+    </ProtectedRoute>
   );
 }

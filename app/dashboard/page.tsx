@@ -1,43 +1,20 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { useRouter } from 'next/navigation';
+import ProtectedRoute from '@/components/auth/ProtectedRoute';
 import { Home, Calendar, Heart, User, Settings, LogOut, Menu, X } from 'lucide-react';
 import UserOverview from '@/components/dashboard/UserOverview';
 import UserBookings from '@/components/dashboard/UserBookings';
 import UserWishlist from '@/components/dashboard/UserWishlist';
 import UserProfile from '@/components/dashboard/UserProfile';
 
-export default function UserDashboard() {
-  const { user, userProfile, signOut, loading } = useAuth();
+function UserDashboardContent() {
+  const { user, userProfile, signOut } = useAuth();
   const router = useRouter();
   const [activeTab, setActiveTab] = useState("overview");
   const [sidebarOpen, setSidebarOpen] = useState(false);
-
-  // Redirect if not authenticated
-  useEffect(() => {
-    if (!loading && !user) {
-      router.push('/auth/signin');
-    }
-  }, [user, loading, router]);
-
-  // Show loading while checking auth
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-gray-50 dark:bg-background flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-orange-500 mx-auto"></div>
-          <p className="mt-4 text-gray-600 dark:text-gray-400">Caricamento dashboard...</p>
-        </div>
-      </div>
-    );
-  }
-
-  // Don't render if not authenticated
-  if (!user) {
-    return null;
-  }
 
   const navigation = [
     { id: "overview", name: "Panoramica", icon: Home },
@@ -135,10 +112,10 @@ export default function UserDashboard() {
             </div>
             <div className="flex items-center space-x-4">
               <div className="hidden sm:block text-sm text-gray-500 dark:text-gray-400">
-                Benvenuto, {userProfile?.displayName || user.email}
+                Benvenuto, {userProfile?.displayName || user?.email}
               </div>
               <div className="w-8 h-8 bg-gradient-to-br from-orange-400 to-red-500 rounded-full flex items-center justify-center text-white text-sm font-semibold">
-                {userProfile?.displayName?.charAt(0)?.toUpperCase() || user.email?.charAt(0)?.toUpperCase()}
+                {userProfile?.displayName?.charAt(0)?.toUpperCase() || user?.email?.charAt(0)?.toUpperCase()}
               </div>
             </div>
           </div>
@@ -182,5 +159,13 @@ export default function UserDashboard() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function UserDashboard() {
+  return (
+    <ProtectedRoute>
+      <UserDashboardContent />
+    </ProtectedRoute>
   );
 }
