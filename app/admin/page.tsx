@@ -27,19 +27,7 @@ import { auth } from "@/lib/firebase"
 import { onAuthStateChanged } from "firebase/auth"
 import CMSInterface from "@/components/admin/CMSInterface"
 
-// Mock Firebase functions (replace with actual Firebase implementation)
-const mockAuth = {
-  login: async (username: string, password: string) => {
-    // Mock authentication - replace with Firebase Auth
-    if (username === "admin" && password === "morocco2024") {
-      return { success: true, user: { id: "1", username: "admin" } }
-    }
-    return { success: false, error: "Credenziali non valide" }
-  },
-  logout: async () => {
-    return { success: true }
-  },
-}
+// Firebase Authentication is handled by onAuthStateChanged listener below
 
 const mockDatabase = {
   cities: [
