@@ -27,29 +27,49 @@ export default function UserWishlist() {
 
   useEffect(() => {
     const loadWishlist = async () => {
-      if (!user || !userProfile?.profile?.wishlist) {
+      if (!user || !userProfile?.profile?.wishlist || userProfile.profile.wishlist.length === 0) {
         setLoading(false);
         return;
       }
       
       try {
-        // In a real implementation, you would fetch the actual travel/experience data
-        // For now, we'll create mock data based on the wishlist IDs
-        const mockWishlistItems: WishlistItem[] = userProfile.profile.wishlist.map((id, index) => ({
-          id,
-          type: index % 2 === 0 ? 'travel' : 'experience',
-          title: index % 2 === 0 ? `Viaggio del Deserto ${index + 1}` : `Esperienza Culturale ${index + 1}`,
-          description: index % 2 === 0 
-            ? 'Un avventura indimenticabile tra le dune del Sahara' 
-            : 'Immergiti nella cultura locale con guide esperte',
-          price: 450 + (index * 100),
-          image: '/images/morocco-desert.jpg',
-          location: index % 3 === 0 ? 'Marrakech' : index % 3 === 1 ? 'Fez' : 'Casablanca',
-          rating: 4.2 + (index * 0.1),
-          addedAt: new Date(Date.now() - (index * 24 * 60 * 60 * 1000))
+        // Fetch real travels and experiences data from Firestore
+        const [travels, experiences] = await Promise.all([
+          firestoreService.getPublishedTravels(),
+          firestoreService.getPublishedExperiences()
+        ]);
+
+        // Filter items that are in the user's wishlist
+        const wishlistTravels = travels.filter(travel => 
+          travel.id && userProfile.profile.wishlist.includes(travel.id)
+        ).map(travel => ({
+          id: travel.id!,
+          type: 'travel' as const,
+          title: travel.title,
+          description: travel.description,
+          price: travel.price,
+          image: travel.images?.[0] || '/images/sahara-adventure.png',
+          location: travel.category || 'Marocco',
+          rating: travel.rating || 4.5,
+          addedAt: new Date() // We don't have the exact date it was added to wishlist
         }));
-        
-        setWishlistItems(mockWishlistItems);
+
+        const wishlistExperiences = experiences.filter(experience => 
+          experience.id && userProfile.profile.wishlist.includes(experience.id)
+        ).map(experience => ({
+          id: experience.id!,
+          type: 'experience' as const,
+          title: experience.title,
+          description: experience.description,
+          price: experience.price,
+          image: experience.images?.[0] || '/images/couple-hammam.jpg',
+          location: experience.location || experience.category || 'Marocco',
+          rating: experience.rating || 4.3,
+          addedAt: new Date() // We don't have the exact date it was added to wishlist
+        }));
+
+        const allWishlistItems = [...wishlistTravels, ...wishlistExperiences];
+        setWishlistItems(allWishlistItems);
       } catch (err: any) {
         setError('Errore nel caricamento della lista desideri');
         console.error('Wishlist loading error:', err);
@@ -72,14 +92,21 @@ export default function UserWishlist() {
   });
 
   const removeFromWishlist = async (itemId: string) => {
-    if (!user) return;
+    if (!user || !userProfile) return;
     
     try {
-      // In a real implementation, you would update Firestore
+      // Update user profile in Firestore to remove item from wishlist
+      const updatedWishlist = userProfile.profile.wishlist.filter(id => id !== itemId);
+      
+      await firestoreService.update('users', user.uid, {
+        'profile.wishlist': updatedWishlist
+      });
+
+      // Update local state immediately for better UX
       setWishlistItems(prev => prev.filter(item => item.id !== itemId));
-      console.log('Removed from wishlist:', itemId);
     } catch (err) {
       console.error('Error removing from wishlist:', err);
+      setError('Errore nella rimozione dalla lista desideri');
     }
   };
 
