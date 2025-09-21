@@ -1,8 +1,12 @@
-import { Phone, Mail, Clock, Facebook, Instagram, Twitter, Youtube } from "lucide-react"
+"use client";
+
+import { Phone, Mail, Clock, Facebook, Instagram, Twitter, Youtube, User, Settings, LogOut } from "lucide-react"
 import Link from "next/link"
 import NewsletterForm from "@/components/forms/NewsletterForm"
+import { useAuth } from "@/context/AuthContext"
 
 export default function Footer() {
+  const { user, userProfile, isAdmin } = useAuth();
 
   return (
     <footer className="bg-card border-t border-border">
@@ -42,6 +46,7 @@ export default function Footer() {
                 { href: "/viaggi/su-misura", label: "Viaggi su Misura" },
                 { href: "/esperienze", label: "Esperienze" },
                 { href: "/servizi", label: "Servizi" },
+                { href: "/contatti", label: "Contatti" },
                 { href: "/blog", label: "Blog" },
               ].map(link => (
                 <li key={link.href}>
@@ -82,8 +87,65 @@ export default function Footer() {
             </ul>
           </div>
 
+          {/* Account Links */}
+          <div>
+            <h3 className="text-lg font-semibold mb-4 text-foreground">Account</h3>
+            <ul className="space-y-2">
+              {user ? (
+                <>
+                  <li>
+                    <Link
+                      href="/dashboard"
+                      className="group text-muted-foreground hover:text-orange-500 text-sm transition-colors flex items-center"
+                    >
+                      <User className="w-4 h-4 mr-2" />
+                      <span className="group-hover:underline">La Mia Area</span>
+                      <span className="ml-1 group-hover:translate-x-1 transition-transform">&#8594;</span>
+                    </Link>
+                  </li>
+                  {isAdmin && (
+                    <li>
+                      <Link
+                        href="/admin"
+                        className="group text-muted-foreground hover:text-orange-500 text-sm transition-colors flex items-center"
+                      >
+                        <Settings className="w-4 h-4 mr-2" />
+                        <span className="group-hover:underline">Pannello Admin</span>
+                        <span className="ml-1 group-hover:translate-x-1 transition-transform">&#8594;</span>
+                      </Link>
+                    </li>
+                  )}
+                  <li>
+                    <span className="text-sm text-muted-foreground flex items-center">
+                      <LogOut className="w-4 h-4 mr-2" />
+                      Connesso come {userProfile?.displayName || user.email}
+                    </span>
+                  </li>
+                </>
+              ) : (
+                <>
+                  <li>
+                    <Link
+                      href="/auth/login"
+                      className="group text-muted-foreground hover:text-orange-500 text-sm transition-colors flex items-center"
+                    >
+                      <User className="w-4 h-4 mr-2" />
+                      <span className="group-hover:underline">Accedi / Registrati</span>
+                      <span className="ml-1 group-hover:translate-x-1 transition-transform">&#8594;</span>
+                    </Link>
+                  </li>
+                  <li>
+                    <span className="text-sm text-muted-foreground">
+                      Crea un account per gestire le tue prenotazioni
+                    </span>
+                  </li>
+                </>
+              )}
+            </ul>
+          </div>
+
           {/* Newsletter + Social/Legal */}
-          <div className="lg:col-span-2 flex flex-col justify-between space-y-8 lg:space-y-0">
+          <div className="lg:col-span-1 flex flex-col justify-between space-y-8 lg:space-y-0">
             {/* Newsletter */}
             <div className="mb-8">
               <NewsletterForm />

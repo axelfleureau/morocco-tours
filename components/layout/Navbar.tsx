@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect, useRef } from "react"
-import { Menu, Search, Sun, Moon, ChevronDown, MapPin, Users, X, Camera, LogOut, User, Settings } from "lucide-react"
+import { Menu, Search, Sun, Moon, ChevronDown, MapPin, Users, X, Camera, LogOut, User, Settings, Mail } from "lucide-react"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
 import Image from "next/image"
@@ -121,10 +121,9 @@ export default function Navbar({ onSearchOpen }: NavbarProps) {
         { name: "Noleggio Auto", href: "/servizi/noleggio-auto", description: "Veicoli per ogni esigenza" },
         { name: "Assicurazioni", href: "/servizi/assicurazioni", description: "Protezione completa" },
       ],
-    } /*
+    },
     { name: "Blog", href: "/blog", icon: Camera },
     { name: "Contatti", href: "/contatti", icon: Mail },
-    */,
   ]
 
   const isActiveRoute = (href: string) => {

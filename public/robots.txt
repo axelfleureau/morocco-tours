@@ -1,0 +1,20 @@
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://morocco-dreams.vercel.app/sitemap.xml
+
+# Admin areas - block from search engines
+Disallow: /admin/
+Disallow: /admin/setup/
+Disallow: /dashboard/
+
+# Authentication pages - allow but low priority
+Allow: /auth/login
+
+# API routes (if any)
+Disallow: /api/
+
+# Next.js specific
+Disallow: /_next/
+Disallow: /.next/
