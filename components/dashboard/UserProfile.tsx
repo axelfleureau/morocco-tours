@@ -23,8 +23,14 @@ export default function UserProfile() {
       language: 'it'
     },
     profile: {
+      bio: '',
       travelPreferences: [] as string[],
-      wishlist: [] as string[]
+      wishlist: [] as string[],
+      emergencyContact: {
+        name: '',
+        phone: '',
+        relationship: ''
+      }
     }
   });
 
@@ -41,8 +47,14 @@ export default function UserProfile() {
           language: userProfile.preferences?.language || 'it'
         },
         profile: {
+          bio: userProfile.profile?.bio || '',
           travelPreferences: userProfile.profile?.travelPreferences || [],
-          wishlist: userProfile.profile?.wishlist || []
+          wishlist: userProfile.profile?.wishlist || [],
+          emergencyContact: {
+            name: userProfile.profile?.emergencyContact?.name || '',
+            phone: userProfile.profile?.emergencyContact?.phone || '',
+            relationship: userProfile.profile?.emergencyContact?.relationship || ''
+          }
         }
       });
     }
@@ -52,14 +64,29 @@ export default function UserProfile() {
     const { name, value, type } = e.target;
     
     if (name.includes('.')) {
-      const [parent, child] = name.split('.');
-      setFormData(prev => ({
-        ...prev,
-        [parent]: {
-          ...(prev[parent as keyof typeof prev] as any),
-          [child]: type === 'checkbox' ? (e.target as HTMLInputElement).checked : value
+      // Handle deep nested paths like "profile.emergencyContact.name"
+      const keys = name.split('.');
+      const finalValue = type === 'checkbox' ? (e.target as HTMLInputElement).checked : value;
+      
+      setFormData(prev => {
+        const newData = { ...prev };
+        let current: any = newData;
+        
+        // Navigate to the parent of the final key
+        for (let i = 0; i < keys.length - 1; i++) {
+          if (!current[keys[i]]) {
+            current[keys[i]] = {};
+          } else {
+            current[keys[i]] = { ...current[keys[i]] };
+          }
+          current = current[keys[i]];
         }
-      }));
+        
+        // Set the final value
+        current[keys[keys.length - 1]] = finalValue;
+        
+        return newData;
+      });
     } else {
       setFormData(prev => ({
         ...prev,

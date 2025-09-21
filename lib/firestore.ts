@@ -11,7 +11,8 @@ import {
   where, 
   orderBy, 
   limit,
-  Timestamp
+  Timestamp,
+  serverTimestamp
 } from 'firebase/firestore';
 import { db } from './firebase';
 
@@ -118,13 +119,42 @@ export interface Inquiry {
 // Generic CRUD operations
 export const firestoreService = {
   // Create
-  async create<T>(collectionName: string, data: Omit<T, 'id'>): Promise<string> {
-    const docRef = await addDoc(collection(db, collectionName), {
+  async create<T>(collectionName: string, data: Omit<T, 'id' | 'createdAt' | 'updatedAt'>): Promise<string> {
+    // Remove undefined values to prevent Firestore errors
+    const cleanData = this.removeUndefinedValues({
       ...data,
-      createdAt: Timestamp.now(),
-      updatedAt: Timestamp.now()
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp()
     });
+    
+    const docRef = await addDoc(collection(db, collectionName), cleanData);
     return docRef.id;
+  },
+
+  // Helper method to remove undefined values recursively
+  removeUndefinedValues(obj: any): any {
+    if (obj === null || obj === undefined) {
+      return null;
+    }
+    
+    if (Array.isArray(obj)) {
+      // Filter out undefined elements instead of converting to null
+      return obj
+        .filter(item => item !== undefined)
+        .map(item => this.removeUndefinedValues(item));
+    }
+    
+    if (typeof obj === 'object') {
+      const cleaned: any = {};
+      for (const [key, value] of Object.entries(obj)) {
+        if (value !== undefined) {
+          cleaned[key] = this.removeUndefinedValues(value);
+        }
+      }
+      return cleaned;
+    }
+    
+    return obj;
   },
 
   // Read single document
@@ -165,10 +195,12 @@ export const firestoreService = {
   // Update
   async update<T>(collectionName: string, id: string, data: Partial<T>): Promise<void> {
     const docRef = doc(db, collectionName, id);
-    await updateDoc(docRef, {
+    // Remove undefined values to prevent Firestore errors
+    const cleanData = this.removeUndefinedValues({
       ...data,
-      updatedAt: Timestamp.now()
+      updatedAt: serverTimestamp()
     });
+    await updateDoc(docRef, cleanData);
   },
 
   // Delete
