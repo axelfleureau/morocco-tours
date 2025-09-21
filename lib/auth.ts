@@ -6,7 +6,10 @@ import {
   getRedirectResult,
   GoogleAuthProvider,
   User,
-  onAuthStateChanged
+  onAuthStateChanged,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  updateProfile
 } from 'firebase/auth';
 import { doc, setDoc, getDoc } from 'firebase/firestore';
 import { auth, googleProvider, db } from './firebase';
@@ -120,6 +123,103 @@ export const getUserProfile = async (uid: string): Promise<UserProfile | null> =
     return null;
   } catch (error) {
     console.error('Error getting user profile:', error);
+    throw error;
+  }
+};
+
+// Sign up with email and password
+export const signUp = async (email: string, password: string, displayName?: string) => {
+  try {
+    const result = await createUserWithEmailAndPassword(auth, email, password);
+    
+    // Update user profile with display name
+    if (displayName && result.user) {
+      await updateProfile(result.user, {
+        displayName: displayName
+      });
+    }
+    
+    // Create user profile in Firestore
+    await createUserProfile(result.user);
+    return result.user;
+  } catch (error) {
+    console.error('Error signing up:', error);
+    throw error;
+  }
+};
+
+// Sign in with email and password
+export const signIn = async (email: string, password: string) => {
+  try {
+    const result = await signInWithEmailAndPassword(auth, email, password);
+    return result.user;
+  } catch (error) {
+    console.error('Error signing in:', error);
+    throw error;
+  }
+};
+
+// Create admin user
+export const createAdminUser = async (email: string, password: string, displayName: string) => {
+  try {
+    const result = await createUserWithEmailAndPassword(auth, email, password);
+    
+    // Update user profile with display name
+    if (result.user) {
+      await updateProfile(result.user, {
+        displayName: displayName
+      });
+    }
+    
+    // Create admin profile in Firestore
+    await createAdminProfile(result.user, displayName);
+    return result.user;
+  } catch (error) {
+    console.error('Error creating admin user:', error);
+    throw error;
+  }
+};
+
+// Create admin profile in Firestore
+export const createAdminProfile = async (user: User, displayName: string) => {
+  if (!user) return;
+
+  const userRef = doc(db, 'users', user.uid);
+  const adminProfile: UserProfile = {
+    uid: user.uid,
+    email: user.email || '',
+    displayName: displayName,
+    photoURL: user.photoURL || '',
+    role: 'admin', // Set role as admin
+    createdAt: new Date(),
+    preferences: {
+      newsletter: true,
+      notifications: true,
+      language: 'it'
+    },
+    profile: {
+      travelPreferences: [],
+      wishlist: []
+    }
+  };
+
+  try {
+    await setDoc(userRef, adminProfile);
+    console.log('Admin profile created successfully');
+  } catch (error) {
+    console.error('Error creating admin profile:', error);
+    throw error;
+  }
+};
+
+// Update user role (admin function)
+export const updateUserRole = async (uid: string, role: 'user' | 'admin' | 'editor') => {
+  try {
+    const userRef = doc(db, 'users', uid);
+    await setDoc(userRef, { role }, { merge: true });
+    console.log(`User role updated to ${role}`);
+  } catch (error) {
+    console.error('Error updating user role:', error);
     throw error;
   }
 };
