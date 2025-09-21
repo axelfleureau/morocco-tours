@@ -32,6 +32,14 @@ export interface UserProfile {
     nationality?: string;
     travelPreferences: string[];
     wishlist: string[];
+    cart: Array<{
+      id: string;
+      type: 'travel' | 'experience';
+      title: string;
+      price: number;
+      quantity: number;
+      addedAt: Date;
+    }>;
   };
 }
 
@@ -43,11 +51,22 @@ export const signInWithGoogle = async () => {
     await createUserProfile(result.user);
     return result.user;
   } catch (error: any) {
+    console.error('Google sign-in error:', error);
     if (error.code === 'auth/popup-blocked') {
-      // Fallback to redirect for mobile or when popup is blocked
-      await signInWithRedirect(auth, googleProvider);
+      try {
+        // Fallback to redirect for mobile or when popup is blocked
+        await signInWithRedirect(auth, googleProvider);
+        return null; // Redirect in progress
+      } catch (redirectError: any) {
+        console.error('Redirect sign-in error:', redirectError);
+        throw new Error('Impossibile accedere con Google. Riprova più tardi.');
+      }
+    } else if (error.code === 'auth/cancelled-popup-request') {
+      throw new Error('Accesso annullato. Riprova se necessario.');
+    } else if (error.code === 'auth/network-request-failed') {
+      throw new Error('Errore di connessione. Controlla la tua connessione internet.');
     }
-    throw error;
+    throw new Error('Errore durante l\'accesso con Google. Riprova.');
   }
 };
 
@@ -97,7 +116,8 @@ export const createUserProfile = async (user: User) => {
       },
       profile: {
         travelPreferences: [],
-        wishlist: []
+        wishlist: [],
+        cart: []
       }
     };
 
@@ -199,7 +219,8 @@ export const createAdminProfile = async (user: User, displayName: string) => {
     },
     profile: {
       travelPreferences: [],
-      wishlist: []
+      wishlist: [],
+      cart: []
     }
   };
 

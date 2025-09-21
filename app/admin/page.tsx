@@ -195,29 +195,35 @@ export default function AdminPanel() {
     setLoginError("")
 
     try {
-      // For now, use mock auth until Firebase Auth users are set up with admin roles
-      const result = await mockAuth.login(loginForm.username, loginForm.password)
-      if (result.success) {
-        setIsAuthenticated(true)
+      // Use Firebase Auth
+      const { signInWithEmailAndPassword } = await import('firebase/auth')
+      await signInWithEmailAndPassword(auth, loginForm.username, loginForm.password)
+      // The onAuthStateChanged listener will handle authentication and role verification
+    } catch (error: any) {
+      console.error('Admin login error:', error)
+      if (error.code === 'auth/user-not-found') {
+        setLoginError("Admin non trovato")
+      } else if (error.code === 'auth/wrong-password') {
+        setLoginError("Password errata")
+      } else if (error.code === 'auth/invalid-email') {
+        setLoginError("Email non valida")
       } else {
-        setLoginError(result.error || "Errore di login")
+        setLoginError("Errore di login. Verifica le credenziali.")
       }
-      
-      // TODO: Replace with Firebase Auth
-      // import { signInWithEmailAndPassword } from 'firebase/auth'
-      // const userCredential = await signInWithEmailAndPassword(auth, loginForm.email, loginForm.password)
-      // The onAuthStateChanged listener will handle role verification
-    } catch (error) {
-      setLoginError("Errore di connessione")
     } finally {
       setIsLoading(false)
     }
   }
 
   const handleLogout = async () => {
-    await mockAuth.logout()
-    setIsAuthenticated(false)
-    setLoginForm({ username: "", password: "" })
+    try {
+      const { signOut } = await import('firebase/auth')
+      await signOut(auth)
+      setIsAuthenticated(false)
+      setLoginForm({ username: "", password: "" })
+    } catch (error) {
+      console.error('Logout error:', error)
+    }
   }
 
   const toggleSectionVisibility = async (sectionId: string) => {
