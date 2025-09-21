@@ -5,12 +5,12 @@ import { getFirestore } from 'firebase/firestore';
 import { getStorage } from 'firebase/storage';
 
 const firebaseConfig = {
-  apiKey: "AIzaSyCExNo12riEK2JEIpwj4MZ3AOrOCPLMvXQ",
-  authDomain: "maroccotours-228d7.firebaseapp.com",
-  projectId: "maroccotours-228d7",
-  storageBucket: "maroccotours-228d7.firebasestorage.app",
+  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY || process.env.VITE_FIREBASE_API_KEY,
+  authDomain: `${process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || process.env.VITE_FIREBASE_PROJECT_ID}.firebaseapp.com`,
+  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || process.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: `${process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || process.env.VITE_FIREBASE_PROJECT_ID}.firebasestorage.app`,
   messagingSenderId: "869999205295",
-  appId: "1:869999205295:web:9e830ce4b58e5ffdaa2d5a",
+  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID || process.env.VITE_FIREBASE_APP_ID,
   measurementId: "G-G6326PNFLF"
 };
 

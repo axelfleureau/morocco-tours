@@ -170,24 +170,110 @@ export interface CityData {
   updatedAt: Date;
 }
 
+// Mock data per le città principali - sostituisce temporaneamente Firestore
+const CITIES_DATA: CityData[] = [
+  {
+    id: 'casablanca',
+    name: 'Casablanca',
+    slug: 'casablanca',
+    nameArabic: 'الدار البيضاء',
+    region: 'Casablanca-Settat',
+    coordinates: { latitude: 33.5731, longitude: -7.5898 },
+    population: 3359818,
+    elevation: 50,
+    timezone: 'UTC+1',
+    climate: {
+      type: 'Mediterraneo',
+      bestVisitMonths: ['Marzo', 'Aprile', 'Maggio', 'Settembre', 'Ottobre'],
+      averageTemp: { summer: { min: 20, max: 26 }, winter: { min: 9, max: 18 } },
+      rainfall: 'Moderata (400mm/anno)'
+    },
+    overview: {
+      description: 'Casablanca è il centro economico del Marocco, famosa per la Grande Moschea Hassan II.',
+      history: 'Fondata dai Berberi nel VII secolo, cresciuta da piccolo porto a metropoli moderna.',
+      culture: 'Mix di tradizioni berbere, arabe e influenze francesi',
+      economy: ['Finanza', 'Industria', 'Porto commerciale', 'Turismo']
+    },
+    attractions: [{
+      id: 'hassan-ii-mosque',
+      name: 'Moschea Hassan II',
+      type: 'religious' as const,
+      description: 'Una delle moschee più grandi al mondo con un minareto di 210m',
+      address: 'Boulevard de la Corniche, Casablanca',
+      coordinates: { lat: 33.6084, lng: -7.6325 },
+      openingHours: '09:00-18:00',
+      entryFee: { adult: 12, child: 6, currency: 'EUR' },
+      rating: 4.6,
+      reviews: 15420,
+      images: ['/images/hassan-ii-mosque.jpg'],
+      highlights: ['Architettura moderna', 'Vista oceano', 'Visita guidata'],
+      unescoBySite: false
+    }],
+    districts: [{
+      name: 'Medina Antica',
+      description: 'Centro storico tradizionale',
+      characteristics: ['Mercati tradizionali', 'Architettura storica'],
+      mainAttractions: ['Mercato centrale'],
+      accommodation: 'all' as const
+    }],
+    transportation: {
+      airport: { name: 'Mohammed V', code: 'CMN', distance: '30km' },
+      trainStation: { name: 'Casa Port', connections: ['Rabat', 'Fez'] },
+      busStation: { name: 'Gare Routière', companies: ['CTM', 'Supratours'] },
+      localTransport: ['Tram', 'Bus', 'Taxi'],
+      taxis: { available: true, tips: ['Concordare il prezzo'] }
+    },
+    accommodation: [],
+    dining: [],
+    shopping: [],
+    experiences: [],
+    practicalInfo: {
+      currency: 'Dirham marocchino (MAD)',
+      languages: ['Arabo', 'Francese', 'Berbero'],
+      emergencyNumbers: { police: '19', medical: '15', fire: '15', tourist: '177' },
+      hospitals: [],
+      banks: [],
+      tips: { cultural: [], safety: [], bargaining: [], photography: [] }
+    },
+    weather: { currentSeason: 'Inverno' },
+    seo: {
+      metaTitle: 'Casablanca Marocco: Guida Completa 2025 | Morocco Dreams',
+      metaDescription: 'Scopri Casablanca: la Moschea Hassan II, quartieri storici, ristoranti.',
+      keywords: ['Casablanca', 'Marocco', 'Hassan II'],
+      structuredData: {}
+    },
+    images: {
+      hero: '/images/casablanca-hero.jpg',
+      gallery: ['/images/casablanca-1.jpg'],
+      map: '/images/casablanca-map.jpg'
+    },
+    published: true,
+    featured: true,
+    priority: 1,
+    createdAt: new Date('2024-01-15'),
+    updatedAt: new Date('2024-12-15')
+  }
+];
+
 export class CityPagesService {
   // Get all cities
   static async getAllCities(): Promise<CityData[]> {
     try {
-      return await firestoreService.getAll<CityData>('cities');
+      // Usa dati statici per evitare errori Firestore
+      return CITIES_DATA;
     } catch (error) {
       console.error('Error fetching cities:', error);
-      return [];
+      return CITIES_DATA;
     }
   }
 
   // Get published cities
   static async getPublishedCities(): Promise<CityData[]> {
     try {
-      return await firestoreService.getWhere<CityData>('cities', 'published', '==', true);
+      return CITIES_DATA.filter(city => city.published);
     } catch (error) {
       console.error('Error fetching published cities:', error);
-      return [];
+      return CITIES_DATA.filter(city => city.published);
     }
   }
 
