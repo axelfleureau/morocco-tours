@@ -175,43 +175,43 @@ export default function AdminPanel() {
 
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center p-4">
-        <div className="bg-white rounded-3xl shadow-2xl p-8 w-full max-w-md">
+      <div className="min-h-screen bg-primary flex items-center justify-center p-4">
+        <div className="bg-card border border-border rounded-3xl shadow-2xl p-8 w-full max-w-md">
           <div className="text-center mb-8">
-            <div className="w-16 h-16 bg-gradient-to-br from-orange-500 to-red-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
-              <span className="text-white font-bold text-2xl">M</span>
+            <div className="w-16 h-16 bg-primary rounded-2xl flex items-center justify-center mx-auto mb-4">
+              <span className="text-primary-foreground font-bold text-2xl">M</span>
             </div>
-            <h1 className="text-2xl font-bold text-gray-900 mb-2">Admin Panel</h1>
-            <p className="text-gray-600">Morocco Dreams</p>
+            <h1 className="text-2xl font-bold text-foreground mb-2">Admin Panel</h1>
+            <p className="text-muted-foreground">Morocco Dreams</p>
           </div>
 
           <form onSubmit={handleLogin} className="space-y-6">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Username</label>
+              <label className="block text-sm font-medium text-foreground mb-2">Username</label>
               <input
                 type="text"
                 value={loginForm.username}
                 onChange={(e) => setLoginForm((prev) => ({ ...prev, username: e.target.value }))}
-                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                className="w-full px-4 py-3 border border-border bg-background text-foreground rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
                 placeholder="admin"
                 required
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Password</label>
+              <label className="block text-sm font-medium text-foreground mb-2">Password</label>
               <input
                 type="password"
                 value={loginForm.password}
                 onChange={(e) => setLoginForm((prev) => ({ ...prev, password: e.target.value }))}
-                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                className="w-full px-4 py-3 border border-border bg-background text-foreground rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
                 placeholder="morocco2024"
                 required
               />
             </div>
 
             {loginError && (
-              <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl text-sm">
+              <div className="bg-destructive/10 border border-destructive/20 text-destructive px-4 py-3 rounded-xl text-sm">
                 {loginError}
               </div>
             )}
@@ -219,14 +219,14 @@ export default function AdminPanel() {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full bg-gradient-to-r from-orange-500 to-red-500 text-white py-3 px-4 rounded-xl hover:from-orange-600 hover:to-red-600 transition-all duration-300 font-semibold disabled:opacity-50"
+              className="w-full bg-primary text-primary-foreground py-3 px-4 rounded-xl hover:bg-primary/90 transition-all duration-300 font-semibold disabled:opacity-50"
             >
               {isLoading ? "Accesso in corso..." : "Accedi"}
             </button>
           </form>
 
-          <div className="mt-6 p-4 bg-gray-50 rounded-xl">
-            <p className="text-xs text-gray-600 text-center">
+          <div className="mt-6 p-4 bg-muted rounded-xl">
+            <p className="text-xs text-muted-foreground text-center">
               <strong>Credenziali di test:</strong>
               <br />
               Username: admin
@@ -240,23 +240,23 @@ export default function AdminPanel() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700">
+      <header className="bg-card shadow-sm border-b border-border">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-orange-500 to-red-500 rounded-2xl flex items-center justify-center">
-                <span className="text-white font-bold text-lg">M</span>
+              <div className="w-10 h-10 bg-primary rounded-2xl flex items-center justify-center">
+                <span className="text-primary-foreground font-bold text-lg">M</span>
               </div>
               <div>
-                <h1 className="text-xl font-bold text-gray-900 dark:text-white">Admin Panel</h1>
-                <p className="text-sm text-gray-500 dark:text-gray-400">Morocco Dreams</p>
+                <h1 className="text-xl font-bold text-foreground">Admin Panel</h1>
+                <p className="text-sm text-muted-foreground">Morocco Dreams</p>
               </div>
             </div>
             <button
               onClick={handleLogout}
-              className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors"
+              className="px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
             >
               Logout
             </button>
@@ -268,7 +268,7 @@ export default function AdminPanel() {
         <div className="grid lg:grid-cols-4 gap-8">
           {/* Sidebar */}
           <div className="lg:col-span-1">
-            <nav className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm p-4 space-y-2">
+            <nav className="bg-card rounded-2xl shadow-sm p-4 space-y-2">
               {[
                 { id: "dashboard", name: "Dashboard", icon: BarChart3 },
                 { id: "sections", name: "Sezioni Homepage", icon: Settings },
@@ -281,8 +281,8 @@ export default function AdminPanel() {
                   onClick={() => setActiveTab(item.id)}
                   className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-left transition-colors ${
                     activeTab === item.id
-                      ? "bg-orange-50 dark:bg-orange-900/20 text-orange-600 dark:text-orange-400"
-                      : "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
+                      ? "bg-primary/10 text-primary"
+                      : "text-muted-foreground hover:bg-muted hover:text-foreground"
                   }`}
                 >
                   <item.icon className="w-5 h-5" />
@@ -297,77 +297,77 @@ export default function AdminPanel() {
             {/* Dashboard */}
             {activeTab === "dashboard" && (
               <div className="space-y-6">
-                <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Dashboard</h2>
+                <h2 className="text-2xl font-bold text-foreground">Dashboard</h2>
 
                 <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-                  <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm">
+                  <div className="bg-card rounded-2xl p-6 shadow-sm border border-border">
                     <div className="flex items-center justify-between">
                       <div>
-                        <p className="text-sm text-gray-600 dark:text-gray-400">Utenti Totali</p>
-                        <p className="text-2xl font-bold text-gray-900 dark:text-white">{users.length}</p>
+                        <p className="text-sm text-muted-foreground">Utenti Totali</p>
+                        <p className="text-2xl font-bold text-foreground">{users.length}</p>
                       </div>
-                      <Users className="w-8 h-8 text-orange-500" />
+                      <Users className="w-8 h-8 text-primary" />
                     </div>
                   </div>
 
-                  <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm">
+                  <div className="bg-card rounded-2xl p-6 shadow-sm border border-border">
                     <div className="flex items-center justify-between">
                       <div>
-                        <p className="text-sm text-gray-600 dark:text-gray-400">Città Attive</p>
-                        <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                        <p className="text-sm text-muted-foreground">Città Attive</p>
+                        <p className="text-2xl font-bold text-foreground">
                           {cities.filter((c) => c.visible).length}
                         </p>
                       </div>
-                      <MapPin className="w-8 h-8 text-orange-500" />
+                      <MapPin className="w-8 h-8 text-primary" />
                     </div>
                   </div>
 
-                  <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm">
+                  <div className="bg-card rounded-2xl p-6 shadow-sm border border-border">
                     <div className="flex items-center justify-between">
                       <div>
-                        <p className="text-sm text-gray-600 dark:text-gray-400">Pacchetti</p>
-                        <p className="text-2xl font-bold text-gray-900 dark:text-white">{packages.length}</p>
+                        <p className="text-sm text-muted-foreground">Pacchetti</p>
+                        <p className="text-2xl font-bold text-foreground">{packages.length}</p>
                       </div>
-                      <Package className="w-8 h-8 text-orange-500" />
+                      <Package className="w-8 h-8 text-primary" />
                     </div>
                   </div>
 
-                  <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm">
+                  <div className="bg-card rounded-2xl p-6 shadow-sm border border-border">
                     <div className="flex items-center justify-between">
                       <div>
-                        <p className="text-sm text-gray-600 dark:text-gray-400">Sezioni Attive</p>
-                        <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                        <p className="text-sm text-muted-foreground">Sezioni Attive</p>
+                        <p className="text-2xl font-bold text-foreground">
                           {sections.filter((s) => s.visible).length}
                         </p>
                       </div>
-                      <Settings className="w-8 h-8 text-orange-500" />
+                      <Settings className="w-8 h-8 text-primary" />
                     </div>
                   </div>
                 </div>
 
                 {/* Recent Activity */}
-                <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm">
-                  <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">Attività Recente</h3>
+                <div className="bg-card rounded-2xl p-6 shadow-sm border border-border">
+                  <h3 className="text-lg font-bold text-foreground mb-4">Attività Recente</h3>
                   <div className="space-y-4">
                     {users.slice(0, 3).map((user) => (
                       <div
                         key={user.id}
-                        className="flex items-center space-x-4 p-4 bg-gray-50 dark:bg-gray-700 rounded-xl"
+                        className="flex items-center space-x-4 p-4 bg-muted/50 rounded-xl"
                       >
-                        <div className="w-10 h-10 bg-orange-100 dark:bg-orange-900/30 rounded-full flex items-center justify-center">
-                          <Users className="w-5 h-5 text-orange-600 dark:text-orange-400" />
+                        <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
+                          <Users className="w-5 h-5 text-primary" />
                         </div>
                         <div className="flex-1">
-                          <p className="font-medium text-gray-900 dark:text-white">{user.name}</p>
-                          <p className="text-sm text-gray-500 dark:text-gray-400">
+                          <p className="font-medium text-foreground">{user.name}</p>
+                          <p className="text-sm text-muted-foreground">
                             Ultima attività: {user.lastActivity}
                           </p>
                         </div>
                         <div className="text-right">
-                          <p className="text-sm font-medium text-gray-900 dark:text-white">
+                          <p className="text-sm font-medium text-foreground">
                             {user.totalBookings} prenotazioni
                           </p>
-                          <p className="text-sm text-gray-500 dark:text-gray-400">€{user.totalSpent}</p>
+                          <p className="text-sm text-muted-foreground">€{user.totalSpent}</p>
                         </div>
                       </div>
                     ))}
@@ -380,12 +380,12 @@ export default function AdminPanel() {
             {activeTab === "sections" && (
               <div className="space-y-6">
                 <div className="flex items-center justify-between">
-                  <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Sezioni Homepage</h2>
+                  <h2 className="text-2xl font-bold text-foreground">Sezioni Homepage</h2>
                 </div>
 
-                <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm overflow-hidden">
+                <div className="bg-card rounded-2xl shadow-sm overflow-hidden border border-border">
                   <div className="p-6">
-                    <p className="text-gray-600 dark:text-gray-400 mb-6">
+                    <p className="text-muted-foreground mb-6">
                       Gestisci la visibilità delle sezioni sulla homepage
                     </p>
 
@@ -393,18 +393,18 @@ export default function AdminPanel() {
                       {sections.map((section) => (
                         <div
                           key={section.id}
-                          className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-700 rounded-xl"
+                          className="flex items-center justify-between p-4 bg-muted/50 rounded-xl"
                         >
                           <div>
-                            <h3 className="font-medium text-gray-900 dark:text-white">{section.name}</h3>
-                            <p className="text-sm text-gray-500 dark:text-gray-400">ID: {section.id}</p>
+                            <h3 className="font-medium text-foreground">{section.name}</h3>
+                            <p className="text-sm text-muted-foreground">ID: {section.id}</p>
                           </div>
                           <button
                             onClick={() => toggleSectionVisibility(section.id)}
                             className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-colors ${
                               section.visible
-                                ? "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400"
-                                : "bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400"
+                                ? "bg-primary/10 text-primary"
+                                : "bg-destructive/10 text-destructive"
                             }`}
                           >
                             {section.visible ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
@@ -422,13 +422,13 @@ export default function AdminPanel() {
             {activeTab === "cities" && (
               <div className="space-y-6">
                 <div className="flex items-center justify-between">
-                  <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Gestione Città</h2>
+                  <h2 className="text-2xl font-bold text-foreground">Gestione Città</h2>
                   <button
                     onClick={() => {
                       setEditingCity(null)
                       setShowCityModal(true)
                     }}
-                    className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-xl hover:from-orange-600 hover:to-red-600 transition-all duration-300"
+                    className="flex items-center space-x-2 px-4 py-2 bg-primary text-primary-foreground rounded-xl hover:bg-primary/90 transition-all duration-300"
                   >
                     <Plus className="w-4 h-4" />
                     <span>Aggiungi Città</span>
@@ -437,7 +437,7 @@ export default function AdminPanel() {
 
                 <div className="grid md:grid-cols-2 gap-6">
                   {cities.map((city) => (
-                    <div key={city.id} className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm overflow-hidden">
+                    <div key={city.id} className="bg-card rounded-2xl shadow-sm overflow-hidden border border-border">
                       <div className="relative h-48">
                         <img
                           src={city.image || "/placeholder.svg?height=200&width=400"}
@@ -448,7 +448,7 @@ export default function AdminPanel() {
                           <button
                             onClick={() => toggleCityVisibility(city.id)}
                             className={`p-2 rounded-full ${
-                              city.visible ? "bg-green-500 text-white" : "bg-red-500 text-white"
+                              city.visible ? "bg-primary/10 text-primary" : "bg-destructive/10 text-destructive"
                             }`}
                           >
                             {city.visible ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
@@ -457,9 +457,9 @@ export default function AdminPanel() {
                       </div>
 
                       <div className="p-6">
-                        <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">{city.name}</h3>
-                        <p className="text-gray-600 dark:text-gray-300 text-sm mb-4">{city.description}</p>
-                        <p className="text-xs text-gray-500 dark:text-gray-400 mb-4">
+                        <h3 className="text-lg font-bold text-foreground mb-2">{city.name}</h3>
+                        <p className="text-muted-foreground text-sm mb-4">{city.description}</p>
+                        <p className="text-xs text-muted-foreground mb-4">
                           Coordinate: {city.coordinates[0]}, {city.coordinates[1]}
                         </p>
 
@@ -469,14 +469,14 @@ export default function AdminPanel() {
                               setEditingCity(city)
                               setShowCityModal(true)
                             }}
-                            className="flex-1 flex items-center justify-center space-x-2 px-4 py-2 border border-orange-500 text-orange-500 rounded-xl hover:bg-orange-500 hover:text-white transition-all duration-300"
+                            className="flex-1 flex items-center justify-center space-x-2 px-4 py-2 border border-primary text-primary rounded-xl hover:bg-primary hover:text-primary-foreground transition-all duration-300"
                           >
                             <Edit className="w-4 h-4" />
                             <span>Modifica</span>
                           </button>
                           <button
                             onClick={() => handleDeleteCity(city.id)}
-                            className="px-4 py-2 border border-red-500 text-red-500 rounded-xl hover:bg-red-500 hover:text-white transition-all duration-300"
+                            className="px-4 py-2 border border-destructive text-destructive rounded-xl hover:bg-destructive hover:text-destructive-foreground transition-all duration-300"
                           >
                             <Trash2 className="w-4 h-4" />
                           </button>
@@ -491,38 +491,38 @@ export default function AdminPanel() {
             {/* Users Management */}
             {activeTab === "users" && (
               <div className="space-y-6">
-                <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Gestione Utenti</h2>
+                <h2 className="text-2xl font-bold text-foreground">Gestione Utenti</h2>
 
-                <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm overflow-hidden">
+                <div className="bg-card rounded-2xl shadow-sm overflow-hidden border border-border">
                   <div className="overflow-x-auto">
                     <table className="w-full">
-                      <thead className="bg-gray-50 dark:bg-gray-700">
+                      <thead className="bg-muted">
                         <tr>
-                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                          <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                             Utente
                           </th>
-                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                          <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                             Contatti
                           </th>
-                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                          <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                             Statistiche
                           </th>
-                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                          <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                             Ultima Attività
                           </th>
                         </tr>
                       </thead>
-                      <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
+                      <tbody className="divide-y divide-border">
                         {users.map((user) => (
-                          <tr key={user.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
+                          <tr key={user.id} className="hover:bg-muted/50">
                             <td className="px-6 py-4 whitespace-nowrap">
                               <div className="flex items-center">
-                                <div className="w-10 h-10 bg-orange-100 dark:bg-orange-900/30 rounded-full flex items-center justify-center">
-                                  <Users className="w-5 h-5 text-orange-600 dark:text-orange-400" />
+                                <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
+                                  <Users className="w-5 h-5 text-primary" />
                                 </div>
                                 <div className="ml-4">
-                                  <div className="text-sm font-medium text-gray-900 dark:text-white">{user.name}</div>
-                                  <div className="text-sm text-gray-500 dark:text-gray-400">
+                                  <div className="text-sm font-medium text-foreground">{user.name}</div>
+                                  <div className="text-sm text-muted-foreground">
                                     Registrato: {user.registrationDate}
                                   </div>
                                 </div>
@@ -530,25 +530,25 @@ export default function AdminPanel() {
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap">
                               <div className="space-y-1">
-                                <div className="flex items-center space-x-2 text-sm text-gray-900 dark:text-white">
-                                  <Mail className="w-4 h-4 text-gray-400" />
+                                <div className="flex items-center space-x-2 text-sm text-foreground">
+                                  <Mail className="w-4 h-4 text-muted-foreground" />
                                   <span>{user.email}</span>
                                 </div>
-                                <div className="flex items-center space-x-2 text-sm text-gray-500 dark:text-gray-400">
-                                  <Phone className="w-4 h-4 text-gray-400" />
+                                <div className="flex items-center space-x-2 text-sm text-muted-foreground">
+                                  <Phone className="w-4 h-4 text-muted-foreground" />
                                   <span>{user.phone}</span>
                                 </div>
                               </div>
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap">
                               <div className="space-y-1">
-                                <div className="text-sm text-gray-900 dark:text-white">
+                                <div className="text-sm text-foreground">
                                   {user.totalBookings} prenotazioni
                                 </div>
-                                <div className="text-sm text-gray-500 dark:text-gray-400">€{user.totalSpent} spesi</div>
+                                <div className="text-sm text-muted-foreground">€{user.totalSpent} spesi</div>
                               </div>
                             </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">
                               {user.lastActivity}
                             </td>
                           </tr>
@@ -593,46 +593,46 @@ function CityModal({ city, onSave, onClose }: { city: any; onSave: (data: any) =
   }
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
-      <div className="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-        <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+    <div className="fixed inset-0 z-50 bg-background/80 backdrop-blur-sm flex items-center justify-center p-4">
+      <div className="bg-card rounded-3xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto border border-border">
+        <div className="flex items-center justify-between p-6 border-b border-border">
+          <h2 className="text-2xl font-bold text-foreground">
             {city ? "Modifica Città" : "Aggiungi Città"}
           </h2>
           <button
             onClick={onClose}
-            className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-colors"
+            className="p-2 hover:bg-muted rounded-full transition-colors"
           >
-            <X className="w-5 h-5 text-gray-500" />
+            <X className="w-5 h-5 text-muted-foreground" />
           </button>
         </div>
 
         <form onSubmit={handleSubmit} className="p-6 space-y-6">
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Nome Città</label>
+            <label className="block text-sm font-medium text-foreground mb-2">Nome Città</label>
             <input
               type="text"
               value={formData.name}
               onChange={(e) => setFormData((prev) => ({ ...prev, name: e.target.value }))}
-              className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+              className="w-full px-4 py-3 border border-border bg-background text-foreground rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent"
               required
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Descrizione</label>
+            <label className="block text-sm font-medium text-foreground mb-2">Descrizione</label>
             <textarea
               value={formData.description}
               onChange={(e) => setFormData((prev) => ({ ...prev, description: e.target.value }))}
               rows={3}
-              className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent dark:bg-gray-700 dark:text-white resize-none"
+              className="w-full px-4 py-3 border border-border bg-background text-foreground rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent resize-none"
               required
             />
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Longitudine</label>
+              <label className="block text-sm font-medium text-foreground mb-2">Longitudine</label>
               <input
                 type="number"
                 step="any"
@@ -643,12 +643,12 @@ function CityModal({ city, onSave, onClose }: { city: any; onSave: (data: any) =
                     coordinates: [Number.parseFloat(e.target.value), prev.coordinates[1]],
                   }))
                 }
-                className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+                className="w-full px-4 py-3 border border-border bg-background text-foreground rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent"
                 required
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Latitudine</label>
+              <label className="block text-sm font-medium text-foreground mb-2">Latitudine</label>
               <input
                 type="number"
                 step="any"
@@ -659,14 +659,14 @@ function CityModal({ city, onSave, onClose }: { city: any; onSave: (data: any) =
                     coordinates: [prev.coordinates[0], Number.parseFloat(e.target.value)],
                   }))
                 }
-                className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+                className="w-full px-4 py-3 border border-border bg-background text-foreground rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent"
                 required
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">URL Immagine</label>
+            <label className="block text-sm font-medium text-foreground mb-2">URL Immagine</label>
             <input
               type="url"
               value={formData.image}
@@ -680,7 +680,7 @@ function CityModal({ city, onSave, onClose }: { city: any; onSave: (data: any) =
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 px-6 py-3 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+              className="flex-1 px-6 py-3 border border-border bg-background text-foreground rounded-xl hover:bg-muted transition-colors"
             >
               Annulla
             </button>
