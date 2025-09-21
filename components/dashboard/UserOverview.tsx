@@ -35,9 +35,9 @@ export default function UserOverview() {
       <div className="space-y-6">
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
           {[...Array(4)].map((_, i) => (
-            <div key={i} className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm animate-pulse">
-              <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/2 mb-2"></div>
-              <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded w-1/3"></div>
+            <div key={i} className="bg-card rounded-2xl p-6 shadow-sm animate-pulse">
+              <div className="h-4 bg-muted rounded w-1/2 mb-2"></div>
+              <div className="h-8 bg-muted rounded w-1/3"></div>
             </div>
           ))}
         </div>
@@ -74,7 +74,7 @@ export default function UserOverview() {
   return (
     <div className="space-y-6">
       {/* Welcome Header */}
-      <div className="bg-gradient-to-r from-orange-500 to-red-500 rounded-2xl p-6 text-white">
+      <div className="bg-primary rounded-2xl p-6 text-primary-foreground">
         <div className="flex items-center space-x-4">
           <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center text-2xl font-bold">
             {userProfile?.displayName?.charAt(0)?.toUpperCase() || user?.email?.charAt(0)?.toUpperCase() || 'U'}
@@ -83,7 +83,7 @@ export default function UserOverview() {
             <h1 className="text-2xl font-bold">
               Benvenuto, {userProfile?.displayName || 'Viaggiatore'}!
             </h1>
-            <p className="text-orange-100">
+            <p className="text-primary-foreground/80">
               Gestisci le tue prenotazioni e scopri nuove avventure
             </p>
           </div>
@@ -92,53 +92,53 @@ export default function UserOverview() {
 
       {/* Stats Cards */}
       <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-border">
+        <div className="bg-card rounded-2xl p-6 shadow-sm border border-border">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600 dark:text-gray-400">Prenotazioni Totali</p>
-              <p className="text-2xl font-bold text-gray-900 dark:text-white">{stats.totalBookings}</p>
+              <p className="text-sm text-muted-foreground">Prenotazioni Totali</p>
+              <p className="text-2xl font-bold text-foreground">{stats.totalBookings}</p>
             </div>
-            <Calendar className="w-8 h-8 text-blue-500" />
+            <Calendar className="w-8 h-8 text-primary" />
           </div>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-border">
+        <div className="bg-card rounded-2xl p-6 shadow-sm border border-border">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600 dark:text-gray-400">Viaggi Confermati</p>
-              <p className="text-2xl font-bold text-gray-900 dark:text-white">{stats.confirmedBookings}</p>
+              <p className="text-sm text-muted-foreground">Viaggi Confermati</p>
+              <p className="text-2xl font-bold text-foreground">{stats.confirmedBookings}</p>
             </div>
-            <Star className="w-8 h-8 text-green-500" />
+            <Star className="w-8 h-8 text-primary" />
           </div>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-border">
+        <div className="bg-card rounded-2xl p-6 shadow-sm border border-border">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600 dark:text-gray-400">Totale Speso</p>
-              <p className="text-2xl font-bold text-gray-900 dark:text-white">€{stats.totalSpent.toLocaleString()}</p>
+              <p className="text-sm text-muted-foreground">Totale Speso</p>
+              <p className="text-2xl font-bold text-foreground">€{stats.totalSpent.toLocaleString()}</p>
             </div>
-            <Euro className="w-8 h-8 text-purple-500" />
+            <Euro className="w-8 h-8 text-primary" />
           </div>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-border">
+        <div className="bg-card rounded-2xl p-6 shadow-sm border border-border">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600 dark:text-gray-400">Lista Desideri</p>
-              <p className="text-2xl font-bold text-gray-900 dark:text-white">{stats.wishlistItems}</p>
+              <p className="text-sm text-muted-foreground">Lista Desideri</p>
+              <p className="text-2xl font-bold text-foreground">{stats.wishlistItems}</p>
             </div>
-            <Heart className="w-8 h-8 text-red-500" />
+            <Heart className="w-8 h-8 text-primary" />
           </div>
         </div>
       </div>
 
       {/* Upcoming Trips Alert */}
       {upcomingBookings.length > 0 && (
-        <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
+        <div className="bg-primary/10 border border-primary/20 rounded-lg p-4">
           <div className="flex items-center space-x-2">
-            <Clock className="w-5 h-5 text-blue-600" />
-            <span className="text-blue-800 dark:text-blue-200 font-medium">
+            <Clock className="w-5 h-5 text-primary" />
+            <span className="text-primary font-medium">
               Hai {upcomingBookings.length} viaggio{upcomingBookings.length > 1 ? 'i' : ''} in programma!
             </span>
           </div>
@@ -148,32 +148,32 @@ export default function UserOverview() {
       {/* Quick Actions & Recent Activity */}
       <div className="grid lg:grid-cols-2 gap-6">
         {/* Recent Bookings */}
-        <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-border">
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
-            <Calendar className="w-5 h-5 mr-2 text-orange-500" />
+        <div className="bg-card rounded-2xl p-6 shadow-sm border border-border">
+          <h3 className="text-lg font-semibold text-foreground mb-4 flex items-center">
+            <Calendar className="w-5 h-5 mr-2 text-primary" />
             Prenotazioni Recenti
           </h3>
           {recentBookings.length > 0 ? (
             <div className="space-y-3">
               {recentBookings.map((booking) => (
-                <div key={booking.id} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                <div key={booking.id} className="flex items-center justify-between p-3 bg-muted rounded-lg">
                   <div className="flex-1">
-                    <p className="font-medium text-sm text-gray-900 dark:text-white">
+                    <p className="font-medium text-sm text-foreground">
                       Prenotazione #{booking.id?.slice(-6)}
                     </p>
-                    <p className="text-xs text-gray-500 dark:text-gray-400">
+                    <p className="text-xs text-muted-foreground">
                       Partenza: {booking.personalDetails.departureDate}
                     </p>
                   </div>
                   <div className="text-right">
-                    <p className="font-semibold text-sm text-gray-900 dark:text-white">
+                    <p className="font-semibold text-sm text-foreground">
                       €{booking.totalPrice}
                     </p>
                     <span className={`inline-block px-2 py-1 text-xs rounded-full ${
-                      booking.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
-                      booking.status === 'confirmed' ? 'bg-green-100 text-green-800' :
-                      booking.status === 'cancelled' ? 'bg-red-100 text-red-800' :
-                      'bg-blue-100 text-blue-800'
+                      booking.status === 'pending' ? 'bg-accent/10 text-accent border border-accent/20' :
+                      booking.status === 'confirmed' ? 'bg-primary/10 text-primary border border-primary/20' :
+                      booking.status === 'cancelled' ? 'bg-destructive/10 text-destructive border border-destructive/20' :
+                      'bg-primary/10 text-primary border border-primary/20'
                     }`}>
                       {booking.status}
                     </span>
@@ -195,7 +195,7 @@ export default function UserOverview() {
         </div>
 
         {/* Quick Links */}
-        <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-border">
+        <div className="bg-card rounded-2xl p-6 shadow-sm border border-border">
           <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
             Azioni Rapide
           </h3>
@@ -209,7 +209,7 @@ export default function UserOverview() {
             </a>
             <a
               href="/dashboard/bookings"
-              className="flex items-center space-x-3 p-3 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 rounded-lg hover:bg-blue-100 dark:hover:bg-blue-900/30 transition-colors"
+              className="flex items-center space-x-3 p-3 bg-primary/10 text-primary rounded-lg hover:bg-primary/20 transition-colors"
             >
               <Calendar className="w-5 h-5" />
               <span className="font-medium">Le Mie Prenotazioni</span>
@@ -234,7 +234,7 @@ export default function UserOverview() {
 
       {/* Travel Preferences */}
       {userProfile?.profile?.travelPreferences && userProfile.profile.travelPreferences.length > 0 && (
-        <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-border">
+        <div className="bg-card rounded-2xl p-6 shadow-sm border border-border">
           <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
             Le Tue Preferenze di Viaggio
           </h3>

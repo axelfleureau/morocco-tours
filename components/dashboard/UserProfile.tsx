@@ -137,10 +137,10 @@ export default function UserProfile() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Il Mio Profilo</h2>
+        <h2 className="text-2xl font-bold text-foreground">Il Mio Profilo</h2>
         <button
           onClick={() => setIsEditing(!isEditing)}
-          className="flex items-center space-x-2 px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors"
+          className="flex items-center space-x-2 px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors"
         >
           <Edit2 className="w-4 h-4" />
           <span>{isEditing ? 'Annulla' : 'Modifica'}</span>
@@ -162,15 +162,15 @@ export default function UserProfile() {
 
       <form onSubmit={handleSave} className="space-y-6">
         {/* Personal Information */}
-        <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-border">
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
-            <User className="w-5 h-5 mr-2 text-orange-500" />
+        <div className="bg-card rounded-2xl p-6 shadow-sm border border-border">
+          <h3 className="text-lg font-semibold text-foreground mb-4 flex items-center">
+            <User className="w-5 h-5 mr-2 text-primary" />
             Informazioni Personali
           </h3>
           
           <div className="grid md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              <label className="block text-sm font-medium text-muted-foreground mb-1">
                 Nome Completo
               </label>
               <input
@@ -179,25 +179,25 @@ export default function UserProfile() {
                 value={formData.displayName}
                 onChange={handleInputChange}
                 disabled={!isEditing}
-                className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent bg-background text-foreground disabled:bg-gray-50 dark:disabled:bg-gray-700"
+                className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-foreground disabled:bg-muted disabled:text-muted-foreground"
                 placeholder="Il tuo nome completo"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              <label className="block text-sm font-medium text-muted-foreground mb-1">
                 Email
               </label>
               <input
                 type="email"
                 value={user?.email || ''}
                 disabled
-                className="w-full px-3 py-2 border border-border rounded-lg bg-gray-50 dark:bg-gray-700 text-gray-500 dark:text-gray-400"
+                className="w-full px-3 py-2 border border-border rounded-lg bg-muted text-muted-foreground"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              <label className="block text-sm font-medium text-muted-foreground mb-1">
                 Telefono
               </label>
               <input
@@ -206,13 +206,13 @@ export default function UserProfile() {
                 value={formData.phone}
                 onChange={handleInputChange}
                 disabled={!isEditing}
-                className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent bg-background text-foreground disabled:bg-gray-50 dark:disabled:bg-gray-700"
+                className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-foreground disabled:bg-muted disabled:text-muted-foreground"
                 placeholder="+39 123 456 7890"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              <label className="block text-sm font-medium text-muted-foreground mb-1">
                 Data di Nascita
               </label>
               <input
@@ -221,12 +221,12 @@ export default function UserProfile() {
                 value={formData.birthDate}
                 onChange={handleInputChange}
                 disabled={!isEditing}
-                className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent bg-background text-foreground disabled:bg-gray-50 dark:disabled:bg-gray-700"
+                className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-foreground disabled:bg-muted disabled:text-muted-foreground"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              <label className="block text-sm font-medium text-muted-foreground mb-1">
                 Nazionalità
               </label>
               <input
@@ -235,7 +235,7 @@ export default function UserProfile() {
                 value={formData.nationality}
                 onChange={handleInputChange}
                 disabled={!isEditing}
-                className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent bg-background text-foreground disabled:bg-gray-50 dark:disabled:bg-gray-700"
+                className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-foreground disabled:bg-muted disabled:text-muted-foreground"
                 placeholder="Italia"
               />
             </div>
@@ -244,8 +244,8 @@ export default function UserProfile() {
         </div>
 
         {/* Travel Preferences */}
-        <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-border">
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
+        <div className="bg-card rounded-2xl p-6 shadow-sm border border-border">
+          <h3 className="text-lg font-semibold text-foreground mb-4 flex items-center">
             <MapPin className="w-5 h-5 mr-2 text-orange-500" />
             Preferenze di Viaggio
           </h3>
@@ -294,15 +294,15 @@ export default function UserProfile() {
         </div>
 
         {/* Emergency Contact */}
-        <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-border">
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
+        <div className="bg-card rounded-2xl p-6 shadow-sm border border-border">
+          <h3 className="text-lg font-semibold text-foreground mb-4 flex items-center">
             <Shield className="w-5 h-5 mr-2 text-orange-500" />
             Contatto di Emergenza
           </h3>
           
           <div className="grid md:grid-cols-3 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              <label className="block text-sm font-medium text-muted-foreground mb-1">
                 Nome
               </label>
               <input
@@ -311,13 +311,13 @@ export default function UserProfile() {
                 value={formData.profile.emergencyContact.name}
                 onChange={handleInputChange}
                 disabled={!isEditing}
-                className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent bg-background text-foreground disabled:bg-gray-50 dark:disabled:bg-gray-700"
+                className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-foreground disabled:bg-muted disabled:text-muted-foreground"
                 placeholder="Nome del contatto"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              <label className="block text-sm font-medium text-muted-foreground mb-1">
                 Telefono
               </label>
               <input
@@ -326,13 +326,13 @@ export default function UserProfile() {
                 value={formData.profile.emergencyContact.phone}
                 onChange={handleInputChange}
                 disabled={!isEditing}
-                className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent bg-background text-foreground disabled:bg-gray-50 dark:disabled:bg-gray-700"
+                className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-foreground disabled:bg-muted disabled:text-muted-foreground"
                 placeholder="+39 123 456 7890"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              <label className="block text-sm font-medium text-muted-foreground mb-1">
                 Parentela
               </label>
               <select
@@ -340,7 +340,7 @@ export default function UserProfile() {
                 value={formData.profile.emergencyContact.relationship}
                 onChange={handleInputChange}
                 disabled={!isEditing}
-                className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent bg-background text-foreground disabled:bg-gray-50 dark:disabled:bg-gray-700"
+                className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-foreground disabled:bg-muted disabled:text-muted-foreground"
               >
                 <option value="">Seleziona...</option>
                 <option value="parent">Genitore</option>
@@ -355,8 +355,8 @@ export default function UserProfile() {
         </div>
 
         {/* Notification Preferences */}
-        <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-border">
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
+        <div className="bg-card rounded-2xl p-6 shadow-sm border border-border">
+          <h3 className="text-lg font-semibold text-foreground mb-4 flex items-center">
             <Bell className="w-5 h-5 mr-2 text-orange-500" />
             Preferenze Notifiche
           </h3>
@@ -397,7 +397,7 @@ export default function UserProfile() {
             </label>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              <label className="block text-sm font-medium text-muted-foreground mb-1">
                 Lingua Preferita
               </label>
               <select

@@ -113,15 +113,15 @@ export default function UserWishlist() {
   if (loading) {
     return (
       <div className="space-y-6">
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Lista Desideri</h2>
+        <h2 className="text-2xl font-bold text-foreground">Lista Desideri</h2>
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {[...Array(6)].map((_, i) => (
-            <div key={i} className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm animate-pulse">
-              <div className="h-48 bg-gray-200 dark:bg-gray-700 rounded-t-2xl"></div>
+            <div key={i} className="bg-card rounded-2xl shadow-sm animate-pulse">
+              <div className="h-48 bg-muted rounded-t-2xl"></div>
               <div className="p-4 space-y-3">
-                <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4"></div>
-                <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded w-1/2"></div>
-                <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-1/3"></div>
+                <div className="h-4 bg-muted rounded w-3/4"></div>
+                <div className="h-3 bg-muted rounded w-1/2"></div>
+                <div className="h-6 bg-muted rounded w-1/3"></div>
               </div>
             </div>
           ))}
@@ -133,7 +133,7 @@ export default function UserWishlist() {
   if (error) {
     return (
       <div className="space-y-6">
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Lista Desideri</h2>
+        <h2 className="text-2xl font-bold text-foreground">Lista Desideri</h2>
         <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4 text-red-700 dark:text-red-300">
           {error}
         </div>
@@ -144,35 +144,35 @@ export default function UserWishlist() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Lista Desideri</h2>
-        <div className="flex items-center space-x-2 text-sm text-gray-500">
+        <h2 className="text-2xl font-bold text-foreground">Lista Desideri</h2>
+        <div className="flex items-center space-x-2 text-sm text-muted-foreground">
           <Heart className="w-4 h-4" />
           <span>{filteredItems.length} di {wishlistItems.length} elementi</span>
         </div>
       </div>
 
       {/* Filters and Search */}
-      <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-border">
+      <div className="bg-card rounded-2xl p-6 shadow-sm border border-border">
         <div className="flex flex-col sm:flex-row gap-4">
           {/* Search */}
           <div className="flex-1 relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <input
               type="text"
               placeholder="Cerca per titolo o destinazione..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 border border-border rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent bg-background text-foreground"
+              className="w-full pl-10 pr-4 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-foreground"
             />
           </div>
 
           {/* Type Filter */}
           <div className="relative">
-            <Filter className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+            <Filter className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <select
               value={filterType}
               onChange={(e) => setFilterType(e.target.value)}
-              className="pl-10 pr-8 py-2 border border-border rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent bg-background text-foreground"
+              className="pl-10 pr-8 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-foreground"
             >
               <option value="all">Tutti</option>
               <option value="travel">Viaggi</option>
@@ -199,8 +199,8 @@ export default function UserWishlist() {
                 <div className="absolute top-3 left-3">
                   <span className={`px-2 py-1 text-xs font-medium rounded-full ${
                     item.type === 'travel'
-                      ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-300'
-                      : 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-300'
+                      ? 'bg-primary/10 text-primary border border-primary/20'
+                      : 'bg-green-500/10 text-green-600 dark:text-green-400 border border-green-500/20'
                   }`}>
                     {item.type === 'travel' ? 'Viaggio' : 'Esperienza'}
                   </span>
@@ -286,7 +286,7 @@ export default function UserWishlist() {
       {/* Summary Stats */}
       {wishlistItems.length > 0 && (
         <div className="grid md:grid-cols-3 gap-6">
-          <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-border">
+          <div className="bg-card rounded-2xl p-6 shadow-sm border border-border">
             <div className="flex items-center space-x-3">
               <MapPin className="w-8 h-8 text-blue-600" />
               <div>
@@ -298,7 +298,7 @@ export default function UserWishlist() {
             </div>
           </div>
           
-          <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-border">
+          <div className="bg-card rounded-2xl p-6 shadow-sm border border-border">
             <div className="flex items-center space-x-3">
               <Star className="w-8 h-8 text-green-600" />
               <div>
@@ -310,7 +310,7 @@ export default function UserWishlist() {
             </div>
           </div>
 
-          <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-border">
+          <div className="bg-card rounded-2xl p-6 shadow-sm border border-border">
             <div className="flex items-center space-x-3">
               <Euro className="w-8 h-8 text-purple-600" />
               <div>

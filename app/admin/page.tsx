@@ -2,7 +2,7 @@
 
 import type React from "react"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import {
   Users,
   MapPin,
@@ -19,6 +19,11 @@ import {
   Mail,
   Phone,
 } from "lucide-react"
+
+// Firebase imports
+import { firestoreService, COLLECTIONS } from "@/lib/firestore"
+import { auth } from "@/lib/firebase"
+import { onAuthStateChanged } from "firebase/auth"
 
 // Mock Firebase functions (replace with actual Firebase implementation)
 const mockAuth = {
@@ -104,12 +109,14 @@ export default function AdminPanel() {
   const [loginForm, setLoginForm] = useState({ username: "", password: "" })
   const [loginError, setLoginError] = useState("")
   const [isLoading, setIsLoading] = useState(false)
+  const [currentUser, setCurrentUser] = useState<any>(null)
 
-  // Data states
-  const [cities, setCities] = useState(mockDatabase.cities)
-  const [packages, setPackages] = useState(mockDatabase.packages)
-  const [sections, setSections] = useState(mockDatabase.sections)
-  const [users, setUsers] = useState(mockDatabase.users)
+  // Data states (now dynamic from Firebase)
+  const [cities, setCities] = useState<any[]>([])
+  const [packages, setPackages] = useState<any[]>([])
+  const [sections, setSections] = useState<any[]>([])
+  const [users, setUsers] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
 
   // Modal states
   const [showCityModal, setShowCityModal] = useState(false)
@@ -117,18 +124,89 @@ export default function AdminPanel() {
   const [editingCity, setEditingCity] = useState<any>(null)
   const [editingPackage, setEditingPackage] = useState<any>(null)
 
+  // Firebase data loading
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        setLoading(true)
+        
+        // Load data from Firebase collections
+        const [citiesData, packagesData, usersData, sectionsData] = await Promise.all([
+          firestoreService.getAll('cities'),
+          firestoreService.getAll(COLLECTIONS.travels),
+          firestoreService.getAll(COLLECTIONS.users),
+          firestoreService.getAll(COLLECTIONS.siteContent)
+        ])
+
+        setCities(citiesData || [])
+        setPackages(packagesData || [])
+        setUsers(usersData || [])
+        setSections(sectionsData || [])
+        
+      } catch (error) {
+        console.error('Error loading data:', error)
+        // Fallback to mock data if Firebase fails
+        setCities(mockDatabase.cities)
+        setPackages(mockDatabase.packages)
+        setUsers(mockDatabase.users)
+        setSections(mockDatabase.sections)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    if (isAuthenticated) {
+      loadData()
+    }
+  }, [isAuthenticated])
+
+  // Firebase Authentication listener
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        try {
+          // Check if user has admin role in Firestore
+          const userProfile = await firestoreService.getById(COLLECTIONS.users, user.uid)
+          if (userProfile && typeof userProfile === 'object' && 'role' in userProfile && userProfile.role === 'admin') {
+            setCurrentUser(userProfile)
+            setIsAuthenticated(true)
+            setLoginError("")
+          } else {
+            setLoginError("Accesso non autorizzato - solo admin")
+            setIsAuthenticated(false)
+          }
+        } catch (error) {
+          console.error('Error checking user role:', error)
+          setLoginError("Errore verifica utente")
+          setIsAuthenticated(false)
+        }
+      } else {
+        setCurrentUser(null)
+        setIsAuthenticated(false)
+      }
+    })
+
+    return () => unsubscribe()
+  }, [])
+
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsLoading(true)
     setLoginError("")
 
     try {
+      // For now, use mock auth until Firebase Auth users are set up with admin roles
       const result = await mockAuth.login(loginForm.username, loginForm.password)
       if (result.success) {
         setIsAuthenticated(true)
       } else {
         setLoginError(result.error || "Errore di login")
       }
+      
+      // TODO: Replace with Firebase Auth
+      // import { signInWithEmailAndPassword } from 'firebase/auth'
+      // const userCredential = await signInWithEmailAndPassword(auth, loginForm.email, loginForm.password)
+      // The onAuthStateChanged listener will handle role verification
     } catch (error) {
       setLoginError("Errore di connessione")
     } finally {
@@ -142,34 +220,150 @@ export default function AdminPanel() {
     setLoginForm({ username: "", password: "" })
   }
 
-  const toggleSectionVisibility = (sectionId: string) => {
-    setSections((prev) =>
-      prev.map((section) => (section.id === sectionId ? { ...section, visible: !section.visible } : section)),
-    )
-  }
-
-  const toggleCityVisibility = (cityId: string) => {
-    setCities((prev) => prev.map((city) => (city.id === cityId ? { ...city, visible: !city.visible } : city)))
-  }
-
-  const handleSaveCity = (cityData: any) => {
-    if (editingCity) {
-      setCities((prev) => prev.map((city) => (city.id === editingCity.id ? { ...city, ...cityData } : city)))
-    } else {
-      const newCity = {
-        id: Date.now().toString(),
-        ...cityData,
-        visible: true,
+  const toggleSectionVisibility = async (sectionId: string) => {
+    try {
+      const section = sections.find(s => s.id === sectionId)
+      if (section) {
+        await firestoreService.update(COLLECTIONS.siteContent, sectionId, { 
+          visible: !section.visible 
+        })
       }
-      setCities((prev) => [...prev, newCity])
+      setSections((prev) =>
+        prev.map((section) => (section.id === sectionId ? { ...section, visible: !section.visible } : section)),
+      )
+    } catch (error) {
+      console.error('Error toggling section visibility:', error)
+      // Fallback to local state update
+      setSections((prev) =>
+        prev.map((section) => (section.id === sectionId ? { ...section, visible: !section.visible } : section)),
+      )
+    }
+  }
+
+  const toggleCityVisibility = async (cityId: string) => {
+    try {
+      const city = cities.find(c => c.id === cityId)
+      if (city) {
+        await firestoreService.update('cities', cityId, { 
+          visible: !city.visible 
+        })
+      }
+      setCities((prev) => prev.map((city) => (city.id === cityId ? { ...city, visible: !city.visible } : city)))
+    } catch (error) {
+      console.error('Error toggling city visibility:', error)
+      // Fallback to local state update
+      setCities((prev) => prev.map((city) => (city.id === cityId ? { ...city, visible: !city.visible } : city)))
+    }
+  }
+
+  const handleSaveCity = async (cityData: any) => {
+    try {
+      if (editingCity) {
+        // Update existing city in Firebase
+        await firestoreService.update('cities', editingCity.id, cityData)
+        setCities((prev) => prev.map((city) => (city.id === editingCity.id ? { ...city, ...cityData } : city)))
+      } else {
+        // Create new city in Firebase
+        const newCityId = await firestoreService.create('cities', {
+          ...cityData,
+          visible: true,
+          createdAt: new Date(),
+          updatedAt: new Date()
+        })
+        const newCity = { id: newCityId, ...cityData, visible: true }
+        setCities((prev) => [...prev, newCity])
+      }
+    } catch (error) {
+      console.error('Error saving city:', error)
+      // Fallback to local state update
+      if (editingCity) {
+        setCities((prev) => prev.map((city) => (city.id === editingCity.id ? { ...city, ...cityData } : city)))
+      } else {
+        const newCity = { id: Date.now().toString(), ...cityData, visible: true }
+        setCities((prev) => [...prev, newCity])
+      }
     }
     setShowCityModal(false)
     setEditingCity(null)
   }
 
-  const handleDeleteCity = (cityId: string) => {
+  const handleDeleteCity = async (cityId: string) => {
     if (confirm("Sei sicuro di voler eliminare questa città?")) {
-      setCities((prev) => prev.filter((city) => city.id !== cityId))
+      try {
+        // Delete from Firebase
+        await firestoreService.delete('cities', cityId)
+        setCities((prev) => prev.filter((city) => city.id !== cityId))
+      } catch (error) {
+        console.error('Error deleting city:', error)
+        // Fallback to local state update
+        setCities((prev) => prev.filter((city) => city.id !== cityId))
+      }
+    }
+  }
+
+  // Package CRUD operations with Firebase
+  const handleSavePackage = async (packageData: any) => {
+    try {
+      if (editingPackage) {
+        // Update existing package in Firebase
+        await firestoreService.update(COLLECTIONS.travels, editingPackage.id, packageData)
+        setPackages((prev) => prev.map((pkg) => (pkg.id === editingPackage.id ? { ...pkg, ...packageData } : pkg)))
+      } else {
+        // Create new package in Firebase
+        const newPackageId = await firestoreService.create(COLLECTIONS.travels, {
+          ...packageData,
+          visible: true,
+          published: true,
+          featured: false,
+          rating: 0,
+          reviews: 0,
+          createdAt: new Date(),
+          updatedAt: new Date()
+        })
+        const newPackage = { id: newPackageId, ...packageData, visible: true }
+        setPackages((prev) => [...prev, newPackage])
+      }
+    } catch (error) {
+      console.error('Error saving package:', error)
+      // Fallback to local state update
+      if (editingPackage) {
+        setPackages((prev) => prev.map((pkg) => (pkg.id === editingPackage.id ? { ...pkg, ...packageData } : pkg)))
+      } else {
+        const newPackage = { id: Date.now().toString(), ...packageData, visible: true }
+        setPackages((prev) => [...prev, newPackage])
+      }
+    }
+    setShowPackageModal(false)
+    setEditingPackage(null)
+  }
+
+  const handleDeletePackage = async (packageId: string) => {
+    if (confirm("Sei sicuro di voler eliminare questo pacchetto?")) {
+      try {
+        // Delete from Firebase
+        await firestoreService.delete(COLLECTIONS.travels, packageId)
+        setPackages((prev) => prev.filter((pkg) => pkg.id !== packageId))
+      } catch (error) {
+        console.error('Error deleting package:', error)
+        // Fallback to local state update
+        setPackages((prev) => prev.filter((pkg) => pkg.id !== packageId))
+      }
+    }
+  }
+
+  const togglePackageVisibility = async (packageId: string) => {
+    try {
+      const pkg = packages.find(p => p.id === packageId)
+      if (pkg) {
+        await firestoreService.update(COLLECTIONS.travels, packageId, { 
+          visible: !pkg.visible 
+        })
+      }
+      setPackages((prev) => prev.map((pkg) => (pkg.id === packageId ? { ...pkg, visible: !pkg.visible } : pkg)))
+    } catch (error) {
+      console.error('Error toggling package visibility:', error)
+      // Fallback to local state update
+      setPackages((prev) => prev.map((pkg) => (pkg.id === packageId ? { ...pkg, visible: !pkg.visible } : pkg)))
     }
   }
 
