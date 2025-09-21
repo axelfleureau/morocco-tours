@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { User } from 'firebase/auth';
-import { onAuthStateChange, getUserProfile, handleRedirectResult } from '@/lib/auth';
+import { onAuthStateChange, getUserProfile, handleRedirectResult, signIn as authSignIn, signUp as authSignUp, signOutUser } from '@/lib/auth';
 import { UserProfile } from '@/lib/auth';
 
 interface AuthContextType {
@@ -10,6 +10,9 @@ interface AuthContextType {
   userProfile: UserProfile | null;
   loading: boolean;
   isAdmin: boolean;
+  signIn: (email: string, password: string) => Promise<void>;
+  signUp: (email: string, password: string, displayName?: string) => Promise<void>;
+  signOut: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType>({
@@ -17,6 +20,9 @@ const AuthContext = createContext<AuthContextType>({
   userProfile: null,
   loading: true,
   isAdmin: false,
+  signIn: async () => {},
+  signUp: async () => {},
+  signOut: async () => {},
 });
 
 export const useAuth = () => {
@@ -59,12 +65,28 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const isAdmin = userProfile?.role === 'admin';
 
+  // Auth functions
+  const signIn = async (email: string, password: string) => {
+    await authSignIn(email, password);
+  };
+
+  const signUp = async (email: string, password: string, displayName?: string) => {
+    await authSignUp(email, password, displayName);
+  };
+
+  const signOut = async () => {
+    await signOutUser();
+  };
+
   return (
     <AuthContext.Provider value={{ 
       user, 
       userProfile, 
       loading, 
-      isAdmin 
+      isAdmin,
+      signIn,
+      signUp,
+      signOut
     }}>
       {children}
     </AuthContext.Provider>

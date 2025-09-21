@@ -362,7 +362,7 @@ export default function Navbar({ onSearchOpen }: NavbarProps) {
             ) : (
               <div className="flex items-center space-x-2">
                 <Link
-                  href="/auth/login"
+                  href="/auth/signin"
                   className="hidden sm:inline-flex items-center px-4 py-3 rounded-full border border-border text-sm font-medium text-foreground hover:bg-muted transition-all duration-200 min-h-[44px]"
                 >
                   Accedi
@@ -454,7 +454,7 @@ export default function Navbar({ onSearchOpen }: NavbarProps) {
           ) : (
             <div className="space-y-3">
               <Link
-                href="/auth/login"
+                href="/auth/signin"
                 className="w-full flex items-center justify-center px-6 py-4 border-2 border-border rounded-full font-semibold min-h-[48px] transition-all duration-300 text-foreground hover:bg-muted"
                 onClick={() => setIsOpen(false)}
               >
