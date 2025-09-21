@@ -107,6 +107,7 @@ export interface Inquiry {
   email: string;
   phone?: string;
   message: string;
+  travelType?: string; // Type of travel requested
   type: 'general' | 'travel_plan' | 'booking' | 'custom_trip';
   tripDetails?: any; // For custom trip planner data
   status: 'new' | 'replied' | 'closed';

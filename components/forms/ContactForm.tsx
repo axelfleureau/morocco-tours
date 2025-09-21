@@ -58,9 +58,9 @@ export default function ContactForm({ type = 'general', className = '' }: Contac
         email: formData.email,
         phone: formData.phone,
         message: formData.message,
+        travelType: formData.travelType,
         type: type,
-        status: 'new',
-        createdAt: new Date() as any // Firestore will convert this
+        status: 'new'
       };
 
       // Save to Firestore
