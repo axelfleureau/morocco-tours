@@ -462,12 +462,12 @@ export default function MoroccoMap() {
                           >
                             {city.name}
                           </h4>
-                          <button
+                          <div
                             onClick={(e) => {
                               e.stopPropagation()
                               toggleFavorite(city.id)
                             }}
-                            className="p-0.5"
+                            className="p-0.5 cursor-pointer"
                           >
                             <Heart
                               className={`w-3 h-3 ${
@@ -478,7 +478,7 @@ export default function MoroccoMap() {
                                     : "text-muted-foreground"
                               }`}
                             />
-                          </button>
+                          </div>
                         </div>
                         <p
                           className={`text-xs line-clamp-2 mb-2 ${
