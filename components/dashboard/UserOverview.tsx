@@ -18,10 +18,10 @@ export default function UserOverview() {
       try {
         // Get user's bookings
         const userBookings = await firestoreService.getUserBookings(user.uid);
-        setBookings(userBookings);
+        setBookings(userBookings || []);
       } catch (err: any) {
-        setError('Errore nel caricamento dei dati');
-        console.error('User data loading error:', err);
+        console.warn('Bookings not available, using empty array:', err);
+        setBookings([]); // Use empty array instead of showing error
       } finally {
         setLoading(false);
       }

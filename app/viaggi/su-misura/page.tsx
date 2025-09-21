@@ -71,10 +71,10 @@ Budget/persona: €${formData.budget || "-"}
 _Grazie!_`
   }
 
-  const handleWhatsapp = (e) => {
+  const handleWhatsapp = (e: React.FormEvent) => {
     e.preventDefault()
-    if (!privacyRef.current.checked) {
-      privacyRef.current.focus()
+    if (!privacyRef.current?.checked) {
+      privacyRef.current?.focus()
       return
     }
     const msg = encodeURIComponent(composeWhatsappMessage())
