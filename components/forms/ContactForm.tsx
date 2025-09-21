@@ -53,7 +53,7 @@ export default function ContactForm({ type = 'general', className = '' }: Contac
       }
 
       // Create inquiry object
-      const inquiry: Omit<Inquiry, 'id'> = {
+      const inquiry: Omit<Inquiry, 'id' | 'createdAt' | 'updatedAt'> = {
         name: `${formData.name} ${formData.surname}`.trim(),
         email: formData.email,
         phone: formData.phone,

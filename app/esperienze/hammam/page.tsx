@@ -1,9 +1,23 @@
 "use client"
 
+import { useState } from "react"
 import { Droplets, Heart, Sparkles, Clock, Star, Thermometer, Leaf } from "lucide-react"
 import Link from "next/link"
+import BookingModal from "@/components/modals/BookingModal"
 
 export default function HammamPage() {
+  const [bookingModal, setBookingModal] = useState<{
+    isOpen: boolean;
+    hammam: any;
+  }>({ isOpen: false, hammam: null });
+
+  const openBookingModal = (hammam: any) => {
+    setBookingModal({ isOpen: true, hammam });
+  };
+
+  const closeBookingModal = () => {
+    setBookingModal({ isOpen: false, hammam: null });
+  };
   const hammamTypes = [
     {
       id: "tradizionale",
@@ -273,12 +287,12 @@ export default function HammamPage() {
 
                   {/* Actions */}
                   <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-3">
-                    <Link
-                      href="/contatti"
+                    <button
+                      onClick={() => openBookingModal(hammam)}
                       className="flex-1 bg-gradient-to-r from-pink-500 to-purple-500 text-white py-3 px-4 rounded-xl hover:from-pink-600 hover:to-purple-600 transition-all duration-300 font-semibold text-center"
                     >
                       Prenota Ora
-                    </Link>
+                    </button>
                   </div>
                 </div>
               </div>
@@ -365,12 +379,19 @@ export default function HammamPage() {
                         </div>
                       </div>
 
-                      <Link
-                        href="/contatti"
+                      <button
+                        onClick={() => openBookingModal({
+                          id: `${location.id}-${venue.name.toLowerCase().replace(/\s+/g, '-')}`,
+                          name: `${venue.name} - ${location.name}`,
+                          price: venue.price,
+                          duration: venue.duration || '2-3 ore',
+                          type: venue.type,
+                          rating: venue.rating
+                        })}
                         className="w-full bg-gradient-to-r from-pink-500 to-purple-500 text-white py-3 px-4 rounded-xl hover:from-pink-600 hover:to-purple-600 transition-all duration-300 font-semibold text-center block"
                       >
                         Prenota {venue.name}
-                      </Link>
+                      </button>
                     </div>
                   </div>
                 ))}
@@ -436,12 +457,12 @@ export default function HammamPage() {
             Concediti un momento di puro benessere con l'autentico hammam marocchino
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link
-              href="/contatti"
+            <button
+              onClick={() => openBookingModal(hammamTypes[0])} 
               className="bg-white text-pink-600 px-8 py-4 rounded-xl hover:bg-gray-100 transition-all duration-300 font-semibold text-lg"
             >
               Prenota Hammam
-            </Link>
+            </button>
             <Link
               href="/contatti"
               className="border-2 border-white text-white px-8 py-4 rounded-xl hover:bg-white hover:text-pink-600 transition-all duration-300 font-semibold text-lg"
@@ -451,6 +472,19 @@ export default function HammamPage() {
           </div>
         </div>
       </div>
+
+      {/* Booking Modal */}
+      {bookingModal.isOpen && bookingModal.hammam && (
+        <BookingModal
+          isOpen={bookingModal.isOpen}
+          onClose={closeBookingModal}
+          itemId={bookingModal.hammam.id}
+          itemType="experience"
+          itemTitle={bookingModal.hammam.name}
+          basePrice={parseInt(bookingModal.hammam.price.replace('€', ''))}
+          duration={bookingModal.hammam.duration}
+        />
+      )}
     </div>
   )
 }

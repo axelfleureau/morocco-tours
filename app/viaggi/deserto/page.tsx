@@ -3,9 +3,22 @@
 import { useState } from "react"
 import { Star, Clock, Users, CheckCircle } from "lucide-react"
 import Link from "next/link"
+import BookingModal from "@/components/modals/BookingModal"
 
 export default function DesertToursPage() {
   const [selectedTour, setSelectedTour] = useState<number | null>(null);
+  const [bookingModal, setBookingModal] = useState<{
+    isOpen: boolean;
+    tour: any;
+  }>({ isOpen: false, tour: null });
+
+  const openBookingModal = (tour: any) => {
+    setBookingModal({ isOpen: true, tour });
+  };
+
+  const closeBookingModal = () => {
+    setBookingModal({ isOpen: false, tour: null });
+  };
 
   const desertTours = [
     {
@@ -425,12 +438,12 @@ export default function DesertToursPage() {
                     >
                       {selectedTour === tour.id ? "Nascondi Dettagli" : "Vedi Dettagli"}
                     </button>
-                    <Link
-                      href={`/viaggi/deserto/${tour.id}/prenota`}
+                    <button
+                      onClick={() => openBookingModal(tour)}
                       className="px-6 py-3 border-2 border-orange-500 text-orange-500 rounded-xl hover:bg-orange-500 hover:text-white transition-all duration-300 font-semibold"
                     >
-                      Prenota
-                    </Link>
+                      Prenota Ora
+                    </button>
                   </div>
                   {/* Expanded Details */}
                   {selectedTour === tour.id && (
@@ -594,6 +607,19 @@ export default function DesertToursPage() {
           </div>
         </div>
       </div>
+
+      {/* Booking Modal */}
+      {bookingModal.isOpen && bookingModal.tour && (
+        <BookingModal
+          isOpen={bookingModal.isOpen}
+          onClose={closeBookingModal}
+          itemId={bookingModal.tour.id.toString()}
+          itemType="travel"
+          itemTitle={bookingModal.tour.title}
+          basePrice={parseInt(bookingModal.tour.price.replace('€', ''))}
+          duration={bookingModal.tour.duration}
+        />
+      )}
     </div>
   )
 }
