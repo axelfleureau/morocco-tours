@@ -18,12 +18,14 @@ import {
   BarChart3,
   Mail,
   Phone,
+  FileText,
 } from "lucide-react"
 
 // Firebase imports
 import { firestoreService, COLLECTIONS } from "@/lib/firestore"
 import { auth } from "@/lib/firebase"
 import { onAuthStateChanged } from "firebase/auth"
+import CMSInterface from "@/components/admin/CMSInterface"
 
 // Mock Firebase functions (replace with actual Firebase implementation)
 const mockAuth = {
@@ -471,6 +473,7 @@ export default function AdminPanel() {
             <nav className="bg-card rounded-2xl shadow-sm p-4 space-y-2">
               {[
                 { id: "dashboard", name: "Dashboard", icon: BarChart3 },
+                { id: "content", name: "Gestione Contenuti", icon: FileText },
                 { id: "sections", name: "Sezioni Homepage", icon: Settings },
                 { id: "cities", name: "Gestione Città", icon: MapPin },
                 { id: "packages", name: "Pacchetti Viaggio", icon: Package },
@@ -686,6 +689,11 @@ export default function AdminPanel() {
                   ))}
                 </div>
               </div>
+            )}
+
+            {/* Content Management */}
+            {activeTab === "content" && (
+              <CMSInterface />
             )}
 
             {/* Users Management */}

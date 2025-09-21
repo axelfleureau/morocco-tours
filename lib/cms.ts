@@ -1,5 +1,5 @@
 // CMS Content Management System for Morocco Dreams
-import { firestoreService, COLLECTIONS } from './firestore';
+import { firestoreService } from './firestore';
 
 export interface CMSContent {
   id?: string;
@@ -57,7 +57,7 @@ export class CMSService {
 
   static async getContentBySlug(slug: string): Promise<CMSContent | null> {
     try {
-      const results = await firestoreService.getWhere('cms_content', 'slug', '==', slug);
+      const results = await firestoreService.getWhere<CMSContent>('cms_content', 'slug', '==', slug);
       return results.length > 0 ? results[0] : null;
     } catch (error) {
       console.error('Error fetching content by slug:', error);

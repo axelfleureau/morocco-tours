@@ -240,15 +240,71 @@ export const firestoreService = {
 
   // Get user bookings
   async getUserBookings(userId: string): Promise<Booking[]> {
-    const q = query(
-      collection(db, COLLECTIONS.bookings),
-      where('userId', '==', userId),
-      orderBy('createdAt', 'desc')
-    );
-    const querySnapshot = await getDocs(q);
-    return querySnapshot.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data()
-    })) as Booking[];
+    try {
+      const q = query(
+        collection(db, COLLECTIONS.bookings),
+        where('userId', '==', userId),
+        orderBy('createdAt', 'desc')
+      );
+      const querySnapshot = await getDocs(q);
+      return querySnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      })) as Booking[];
+    } catch (error: any) {
+      console.error('Error fetching user bookings:', error);
+      // If error is due to missing index, return empty array
+      if (error.code === 'failed-precondition') {
+        console.warn('Firestore index missing for bookings orderBy, returning empty array');
+        return [];
+      }
+      throw error;
+    }
+  },
+
+  // Create sample bookings for testing (dev only)
+  async createSampleBookings(userId: string): Promise<void> {
+    const sampleBookings = [
+      {
+        userId,
+        status: 'confirmed' as const,
+        personalDetails: {
+          name: 'Mario Rossi',
+          email: 'mario.rossi@email.com',
+          phone: '+39 123 456 7890',
+          travelers: 2,
+          children: 0,
+          departureDate: '2024-12-15',
+          returnDate: '2024-12-22',
+          departureCity: 'Milano'
+        },
+        totalPrice: 890,
+        customRequests: 'Camera vista mare se possibile',
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp()
+      },
+      {
+        userId,
+        status: 'pending' as const,
+        personalDetails: {
+          name: 'Mario Rossi',
+          email: 'mario.rossi@email.com', 
+          phone: '+39 123 456 7890',
+          travelers: 1,
+          children: 1,
+          departureDate: '2025-03-20',
+          returnDate: '2025-03-27',
+          departureCity: 'Roma'
+        },
+        totalPrice: 650,
+        customRequests: '',
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp()
+      }
+    ];
+
+    for (const booking of sampleBookings) {
+      await this.create(COLLECTIONS.bookings, booking);
+    }
   }
 };
