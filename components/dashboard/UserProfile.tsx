@@ -175,8 +175,8 @@ export default function UserProfile() {
               </label>
               <input
                 type="tel"
-                name="phoneNumber"
-                value={formData.phoneNumber}
+                name="phone"
+                value={formData.phone}
                 onChange={handleInputChange}
                 disabled={!isEditing}
                 className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent bg-background text-foreground disabled:bg-gray-50 dark:disabled:bg-gray-700"
@@ -190,62 +190,29 @@ export default function UserProfile() {
               </label>
               <input
                 type="date"
-                name="dateOfBirth"
-                value={formData.dateOfBirth}
+                name="birthDate"
+                value={formData.birthDate}
                 onChange={handleInputChange}
                 disabled={!isEditing}
                 className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent bg-background text-foreground disabled:bg-gray-50 dark:disabled:bg-gray-700"
-              />
-            </div>
-
-            <div className="md:col-span-2">
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Indirizzo
-              </label>
-              <input
-                type="text"
-                name="address"
-                value={formData.address}
-                onChange={handleInputChange}
-                disabled={!isEditing}
-                className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent bg-background text-foreground disabled:bg-gray-50 dark:disabled:bg-gray-700"
-                placeholder="Via, numero civico"
               />
             </div>
 
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Città
+                Nazionalità
               </label>
               <input
                 type="text"
-                name="city"
-                value={formData.city}
+                name="nationality"
+                value={formData.nationality}
                 onChange={handleInputChange}
                 disabled={!isEditing}
                 className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent bg-background text-foreground disabled:bg-gray-50 dark:disabled:bg-gray-700"
-                placeholder="Roma"
+                placeholder="Italia"
               />
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Paese
-              </label>
-              <select
-                name="country"
-                value={formData.country}
-                onChange={handleInputChange}
-                disabled={!isEditing}
-                className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent bg-background text-foreground disabled:bg-gray-50 dark:disabled:bg-gray-700"
-              >
-                <option value="Italy">Italia</option>
-                <option value="France">Francia</option>
-                <option value="Spain">Spagna</option>
-                <option value="Germany">Germania</option>
-                <option value="Other">Altro</option>
-              </select>
-            </div>
           </div>
         </div>
 
