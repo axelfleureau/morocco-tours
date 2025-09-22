@@ -4,24 +4,41 @@ import { useState } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { useRouter } from 'next/navigation';
 import ProtectedRoute from '@/components/auth/ProtectedRoute';
-import { Home, Calendar, Heart, User, Settings, LogOut, Menu, X } from 'lucide-react';
+import { Home, Calendar, Heart, User, Settings, LogOut, Menu, X, Shield, Database, MapPin, FileText, Package, Globe, Palette } from 'lucide-react';
 import UserOverview from '@/components/dashboard/UserOverview';
 import UserBookings from '@/components/dashboard/UserBookings';
 import UserWishlist from '@/components/dashboard/UserWishlist';
 import UserProfile from '@/components/dashboard/UserProfile';
+import AdminOverview from '@/components/dashboard/AdminOverview';
+import ContentDataGrid from '@/components/admin/ContentDataGrid';
+import VisualEditor from '@/components/admin/VisualEditor';
+import ThemeCustomizer from '@/components/admin/ThemeCustomizer';
+import { COLLECTIONS } from '@/lib/firestore-schema';
 
 function UserDashboardContent() {
-  const { user, userProfile, signOut } = useAuth();
+  const { user, userProfile, signOut, isAdmin } = useAuth();
   const router = useRouter();
   const [activeTab, setActiveTab] = useState("overview");
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  const navigation = [
+  const userNavigation = [
     { id: "overview", name: "Panoramica", icon: Home },
     { id: "bookings", name: "Le Mie Prenotazioni", icon: Calendar },
     { id: "wishlist", name: "Lista Desideri", icon: Heart },
     { id: "profile", name: "Il Mio Profilo", icon: User },
   ];
+
+  const adminNavigation = [
+    { id: "admin-overview", name: "Admin Dashboard", icon: Shield },
+    { id: "admin-cities", name: "Gestione Città", icon: MapPin },
+    { id: "admin-experiences", name: "Gestione Esperienze", icon: FileText },
+    { id: "admin-travels", name: "Gestione Viaggi", icon: Package },
+    { id: "admin-services", name: "Gestione Servizi", icon: Settings },
+    { id: "admin-theme", name: "Personalizza Tema", icon: Palette },
+    { id: "admin-site", name: "Editor Sito", icon: Globe },
+  ];
+
+  const navigation = [...userNavigation, ...(isAdmin ? adminNavigation : [])];
 
   const handleSignOut = async () => {
     try {
@@ -42,6 +59,93 @@ function UserDashboardContent() {
         return <UserWishlist />;
       case "profile":
         return <UserProfile />;
+      case "admin-overview":
+        return <AdminOverview />;
+      case "admin-cities":
+        return (
+          <ContentDataGrid
+            collection={COLLECTIONS.cities}
+            title="Gestione Città"
+            columns={[
+              { key: 'image', label: 'Immagine', type: 'image' },
+              { key: 'name', label: 'Nome', type: 'text', sortable: true },
+              { key: 'title', label: 'Titolo', type: 'text' },
+              { key: 'category', label: 'Categoria', type: 'text' },
+              { key: 'rating', label: 'Rating', type: 'number', sortable: true },
+              { key: 'reviews', label: 'Recensioni', type: 'number' },
+              { key: 'updatedAt', label: 'Aggiornato', type: 'date', sortable: true }
+            ]}
+            onCreate={() => alert('Modal creazione città - da implementare')}
+            onEdit={(item) => alert(`Modifica città: ${item.name} - da implementare`)}
+          />
+        );
+      case "admin-experiences":
+        return (
+          <ContentDataGrid
+            collection={COLLECTIONS.experiences}
+            title="Gestione Esperienze"
+            columns={[
+              { key: 'images', label: 'Immagine', type: 'image' },
+              { key: 'title', label: 'Titolo', type: 'text', sortable: true },
+              { key: 'category', label: 'Categoria', type: 'text' },
+              { key: 'price', label: 'Prezzo', type: 'number', sortable: true },
+              { key: 'duration', label: 'Durata', type: 'text' },
+              { key: 'location', label: 'Luogo', type: 'text' },
+              { key: 'rating', label: 'Rating', type: 'number', sortable: true }
+            ]}
+            onCreate={() => alert('Modal creazione esperienza - da implementare')}
+            onEdit={(item) => alert(`Modifica esperienza: ${item.title} - da implementare`)}
+          />
+        );
+      case "admin-travels":
+        return (
+          <ContentDataGrid
+            collection={COLLECTIONS.travels}
+            title="Gestione Viaggi"
+            columns={[
+              { key: 'images', label: 'Immagine', type: 'image' },
+              { key: 'title', label: 'Titolo', type: 'text', sortable: true },
+              { key: 'category', label: 'Categoria', type: 'text' },
+              { key: 'price', label: 'Prezzo', type: 'number', sortable: true },
+              { key: 'duration', label: 'Durata', type: 'text' },
+              { key: 'rating', label: 'Rating', type: 'number', sortable: true }
+            ]}
+            onCreate={() => alert('Modal creazione viaggio - da implementare')}
+            onEdit={(item) => alert(`Modifica viaggio: ${item.title} - da implementare`)}
+          />
+        );
+      case "admin-services":
+        return (
+          <ContentDataGrid
+            collection={COLLECTIONS.services}
+            title="Gestione Servizi"
+            columns={[
+              { key: 'name', label: 'Nome', type: 'text', sortable: true },
+              { key: 'category', label: 'Categoria', type: 'text' },
+              { key: 'type', label: 'Tipo', type: 'text' },
+              { key: 'price', label: 'Prezzo', type: 'number', sortable: true },
+              { key: 'priceType', label: 'Tipo Prezzo', type: 'text' },
+              { key: 'locations', label: 'Località', type: 'array' }
+            ]}
+            onCreate={() => alert('Modal creazione servizio - da implementare')}
+            onEdit={(item) => alert(`Modifica servizio: ${item.name} - da implementare`)}
+          />
+        );
+      case "admin-theme":
+        return <ThemeCustomizer />;
+      case "admin-site":
+        return (
+          <div className="space-y-6">
+            <h2 className="text-2xl font-bold text-foreground">Editor Visuale Sito</h2>
+            <VisualEditor
+              pageType="homepage"
+              onSave={(blocks) => {
+                console.log('Saving page blocks:', blocks)
+                alert('Blocchi pagina salvati! (funzionalità da completare)')
+              }}
+            />
+          </div>
+        );
       default:
         return <UserOverview />;
     }

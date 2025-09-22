@@ -328,16 +328,6 @@ export default function Navbar({ onSearchOpen }: NavbarProps) {
                 {/* User Dropdown */}
                 {activeDropdown === 'user' && (
                   <div className="absolute right-0 top-full mt-2 w-48 bg-card border border-border rounded-xl shadow-lg py-2 z-50">
-                    {isAdmin && (
-                      <Link
-                        href="/admin"
-                        className="flex items-center space-x-3 px-4 py-3 text-sm text-foreground hover:bg-muted transition-colors"
-                        onClick={() => setActiveDropdown(null)}
-                      >
-                        <Settings className="w-4 h-4 text-orange-600" />
-                        <span>Pannello Admin</span>
-                      </Link>
-                    )}
                     <Link
                       href="/dashboard"
                       className="flex items-center space-x-3 px-4 py-3 text-sm text-foreground hover:bg-muted transition-colors"
@@ -422,16 +412,6 @@ export default function Navbar({ onSearchOpen }: NavbarProps) {
               </div>
               
               {/* Mobile User Actions */}
-              {isAdmin && (
-                <Link
-                  href="/admin"
-                  className="w-full flex items-center space-x-3 px-4 py-4 bg-orange-50 dark:bg-orange-900/20 text-orange-600 rounded-xl transition-colors"
-                  onClick={() => setIsOpen(false)}
-                >
-                  <Settings className="w-5 h-5" />
-                  <span className="font-medium">Pannello Admin</span>
-                </Link>
-              )}
               <Link
                 href="/dashboard"
                 className="w-full flex items-center space-x-3 px-4 py-4 bg-muted hover:bg-muted/80 rounded-xl transition-colors"
