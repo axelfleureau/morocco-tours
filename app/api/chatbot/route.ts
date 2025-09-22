@@ -81,10 +81,37 @@ export async function POST(request: NextRequest) {
       response: response.trim()
     })
 
-  } catch (error) {
+  } catch (error: any) {
     console.error('Chatbot API error:', error)
     
-    // Fallback response
+    // Detect specific OpenAI quota/billing errors
+    const errorMessage = error?.message || error?.toString() || ''
+    const errorCode = error?.code || error?.type || ''
+    const isQuotaError = 
+      errorCode === 'insufficient_quota' ||
+      errorMessage.includes('quota') ||
+      errorMessage.includes('billing') ||
+      errorMessage.includes('exceeded') ||
+      errorCode === 'rate_limit_exceeded'
+    
+    if (isQuotaError) {
+      // Specific message for OpenAI quota/billing issues
+      return NextResponse.json({ 
+        response: "🔋 Al momento il nostro assistente AI ha esaurito il credito disponibile. " +
+                 "Per ricevere assistenza immediata, contatta direttamente il nostro team Morocco Dreams! " +
+                 "Siamo sempre pronti ad aiutarti a pianificare il tuo viaggio perfetto in Marocco. ✨"
+      })
+    }
+    
+    // Check for API key issues
+    if (errorMessage.includes('API key') || errorCode === 'invalid_api_key') {
+      return NextResponse.json({ 
+        response: "🔑 C'è un problema tecnico con la configurazione. " +
+                 "Contatta il nostro team per assistenza immediata - siamo qui per aiutarti! 🇲🇦"
+      })
+    }
+    
+    // Generic fallback responses for other errors
     const fallbackResponses = [
       "Mi dispiace, sto avendo problemi tecnici al momento. 🔧 Puoi contattarci direttamente per assistenza immediata!",
       "Ops! Sembra che ci sia un piccolo intoppo tecnico. 💻 I nostri esperti sono disponibili via email o telefono per aiutarti.",
