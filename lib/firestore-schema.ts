@@ -80,6 +80,7 @@ export interface Experience {
   reviews: number
   
   // Publishing
+  status: 'draft' | 'published'
   published: boolean
   featured: boolean
   
@@ -127,6 +128,7 @@ export interface Travel {
   reviews: number
   
   // Publishing
+  status: 'draft' | 'published'
   published: boolean
   featured: boolean
   
@@ -154,6 +156,7 @@ export interface Service {
   travelTypes?: string[] // Which travel categories can use this
   
   // Publishing
+  status: 'draft' | 'published'
   published: boolean
   
   // System
