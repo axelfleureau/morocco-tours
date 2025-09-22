@@ -29,69 +29,7 @@ import CMSInterface from "@/components/admin/CMSInterface"
 
 // Firebase Authentication is handled by onAuthStateChanged listener below
 
-const mockDatabase = {
-  cities: [
-    {
-      id: "1",
-      name: "Marrakech",
-      description: "La Perla Rossa del Marocco",
-      coordinates: [-7.9811, 31.6295],
-      image: "/images/marrakech-medina.png",
-      visible: true,
-    },
-    {
-      id: "2",
-      name: "Fes",
-      description: "La capitale spirituale del Marocco",
-      coordinates: [-5.0003, 34.0181],
-      image: "/images/fes-architecture.png",
-      visible: true,
-    },
-  ],
-  packages: [
-    {
-      id: "1",
-      title: "Tour delle Città Imperiali",
-      duration: "8 giorni / 7 notti",
-      price: 890,
-      description: "Un viaggio completo attraverso le quattro città imperiali",
-      visible: true,
-      category: "group",
-    },
-  ],
-  sections: [
-    { id: "hero", name: "Hero Section", visible: true },
-    { id: "whyChooseUs", name: "Perché Sceglierci", visible: true },
-    { id: "popularTrips", name: "Viaggi Popolari", visible: true },
-    { id: "experiences", name: "Esperienze Autentiche", visible: true },
-    { id: "testimonials", name: "Testimonianze", visible: true },
-    { id: "contact", name: "Form Contatto", visible: true },
-    { id: "map", name: "Mappa Interattiva", visible: true },
-    { id: "faq", name: "FAQ", visible: true },
-  ],
-  users: [
-    {
-      id: "1",
-      name: "Marco Rossi",
-      email: "marco.rossi@email.com",
-      phone: "+39 123 456 7890",
-      registrationDate: "2024-01-15",
-      totalBookings: 2,
-      totalSpent: 1780,
-      lastActivity: "2024-01-20",
-    },
-    {
-      id: "2",
-      name: "Giulia Bianchi",
-      email: "giulia.bianchi@email.com",
-      phone: "+39 987 654 3210",
-      registrationDate: "2024-01-10",
-      totalBookings: 1,
-      totalSpent: 650,
-      lastActivity: "2024-01-18",
-    },
-  ],
-}
+// Data will be managed through Firebase Firestore and CMS system
 
 export default function AdminPanel() {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
@@ -135,11 +73,11 @@ export default function AdminPanel() {
         
       } catch (error) {
         console.error('Error loading data:', error)
-        // Fallback to mock data if Firebase fails
-        setCities(mockDatabase.cities)
-        setPackages(mockDatabase.packages)
-        setUsers(mockDatabase.users)
-        setSections(mockDatabase.sections)
+        // Fallback to empty arrays if Firebase fails
+        setCities([])
+        setPackages([])
+        setUsers([])
+        setSections([])
       } finally {
         setLoading(false)
       }
