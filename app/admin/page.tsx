@@ -166,10 +166,10 @@ export default function AdminPanel() {
   // Login screen
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-orange-50 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center p-4">
+      <div className="min-h-screen bg-gradient-to-br from-orange-50 to-red-50 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center p-4">
         <div className="bg-card border border-border rounded-3xl shadow-2xl p-8 w-full max-w-md">
           <div className="text-center mb-8">
-            <div className="w-16 h-16 bg-gradient-to-r from-blue-600 to-orange-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
+            <div className="w-16 h-16 bg-gradient-to-r from-orange-500 to-red-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
               <span className="text-white font-bold text-2xl">M</span>
             </div>
             <h1 className="text-3xl font-bold text-foreground mb-2">Admin CMS</h1>
@@ -207,7 +207,7 @@ export default function AdminPanel() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-gradient-to-r from-blue-600 to-orange-600 rounded-2xl flex items-center justify-center">
+              <div className="w-10 h-10 bg-gradient-to-r from-orange-500 to-red-500 rounded-2xl flex items-center justify-center">
                 <span className="text-white font-bold text-lg">M</span>
               </div>
               <div>
@@ -286,7 +286,7 @@ export default function AdminPanel() {
                 {/* Stats Cards */}
                 <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
                   {[
-                    { label: "Città", value: stats.cities, icon: MapPin, color: "blue" },
+                    { label: "Città", value: stats.cities, icon: MapPin, color: "orange" },
                     { label: "Esperienze", value: stats.experiences, icon: FileText, color: "green" },
                     { label: "Viaggi", value: stats.travels, icon: Package, color: "orange" },
                     { label: "Servizi", value: stats.services, icon: Settings, color: "purple" }
@@ -309,7 +309,7 @@ export default function AdminPanel() {
                   <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
                     <button
                       onClick={populateDatabase}
-                      className="p-4 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 rounded-xl hover:bg-blue-100 dark:hover:bg-blue-900/30 transition-colors text-left"
+                      className="p-4 bg-orange-50 dark:bg-orange-900/20 text-orange-700 dark:text-orange-300 rounded-xl hover:bg-orange-100 dark:hover:bg-orange-900/30 transition-colors text-left"
                     >
                       <Database className="w-6 h-6 mb-2" />
                       <div className="font-medium">Popola Database</div>
