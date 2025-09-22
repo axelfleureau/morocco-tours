@@ -6,6 +6,7 @@ import ClientLayout from "./client-layout"
 import { ThemeProvider } from "@/components/theme-provider"
 import { MoroccoThemeProvider } from "@/context/ThemeContext"
 import { NotificationProvider } from "@/components/NotificationSystem"
+import ChatBot from "@/components/ChatBot"
 
 const inter = Inter({
   subsets: ["latin"],
@@ -89,6 +90,7 @@ export default function RootLayout({
                 Salta al contenuto principale
               </a>
               <ClientLayout>{children}</ClientLayout>
+              <ChatBot />
             </NotificationProvider>
           </MoroccoThemeProvider>
         </ThemeProvider>
