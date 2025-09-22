@@ -11,7 +11,7 @@ const nextConfig = {
   },
   // Configure for Replit environment
   // Note: allowedHosts is handled via hostname binding in dev script
-  // Allow all hosts for Replit proxy
+  // Allow all hosts for Replit proxy and Firebase
   async headers() {
     return [
       {
@@ -21,15 +21,17 @@ const nextConfig = {
             key: 'X-Frame-Options',
             value: 'SAMEORIGIN',
           },
+          {
+            key: 'Cross-Origin-Embedder-Policy',
+            value: 'unsafe-none',
+          },
+          {
+            key: 'Cross-Origin-Opener-Policy',
+            value: 'same-origin-allow-popups',
+          },
         ],
       },
     ]
-  },
-  // Environment variables mapping for Firebase
-  env: {
-    NEXT_PUBLIC_FIREBASE_API_KEY: process.env.VITE_FIREBASE_API_KEY,
-    NEXT_PUBLIC_FIREBASE_PROJECT_ID: process.env.VITE_FIREBASE_PROJECT_ID,
-    NEXT_PUBLIC_FIREBASE_APP_ID: process.env.VITE_FIREBASE_APP_ID,
   },
 }
 
