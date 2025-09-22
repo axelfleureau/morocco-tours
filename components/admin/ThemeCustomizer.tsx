@@ -59,7 +59,7 @@ interface ThemeConfig {
 
 const defaultTheme: ThemeConfig = {
   colors: {
-    primary: '#3b82f6',
+    primary: '#ea580c',
     secondary: '#f97316',
     accent: '#06b6d4',
     background: '#ffffff',
@@ -230,8 +230,8 @@ export default function ThemeCustomizer() {
   // Color palette presets
   const colorPresets = [
     {
-      name: 'Morocco Blue',
-      colors: { primary: '#1e40af', secondary: '#f97316', accent: '#06b6d4' }
+      name: 'Morocco Sand',
+      colors: { primary: '#ea580c', secondary: '#dc2626', accent: '#f59e0b' }
     },
     {
       name: 'Desert Sand',

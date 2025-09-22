@@ -48,7 +48,7 @@ export default function VisualEditor({ pageId, pageType, onSave }: VisualEditorP
       type: 'button' as const,
       content: { text: 'Clicca qui', href: '#', variant: 'primary' },
       styling: { 
-        colors: { background: '#3b82f6', text: '#ffffff' },
+        colors: { background: '#ea580c', text: '#ffffff' },
         spacing: { padding: '12px 24px' }
       }
     },

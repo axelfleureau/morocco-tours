@@ -162,8 +162,8 @@ export default function TripDetailsModal({ trip, isOpen, onClose }: TripDetailsM
             {/* Sidebar */}
             <div className="space-y-6">
               {/* Booking Info */}
-              <div className="bg-blue-50 dark:bg-blue-900/20 p-6 rounded-xl">
-                <h3 className="text-lg font-bold text-blue-800 dark:text-blue-300 mb-4">Informazioni Prenotazione</h3>
+              <div className="bg-orange-50 dark:bg-orange-900/20 p-6 rounded-xl">
+                <h3 className="text-lg font-bold text-orange-800 dark:text-orange-300 mb-4">Informazioni Prenotazione</h3>
                 <div className="space-y-3 text-sm">
                   {trip.nextDeparture && (
                     <div>
