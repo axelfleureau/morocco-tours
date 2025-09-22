@@ -94,7 +94,7 @@ export async function populateDatabaseDirect() {
         images: ["/images/traditional-hammam.jpg"],
         price: 45,
         duration: "2-3 ore",
-        category: 'spa' as const,
+        category: 'hammam' as const,
         published: true,
         rating: 4.9,
         reviews: 234,
@@ -110,7 +110,7 @@ export async function populateDatabaseDirect() {
         const existing = await firestoreService.getWhere(COLLECTIONS.experiences, 'title', '==', experience.title);
         if (existing.length > 0) {
           const existingExp = existing[0] as any;
-          await firestoreService.update(COLLECTIONS.experiences, existingExp.id!, experience);
+          await firestoreService.update(COLLECTIONS.experiences, existingExp.id!, { ...experience, updatedAt: new Date() });
           results.experiences.push({ id: existingExp.id!, title: experience.title, action: 'updated' });
         } else {
           const expId = await firestoreService.create(COLLECTIONS.experiences, experience);
