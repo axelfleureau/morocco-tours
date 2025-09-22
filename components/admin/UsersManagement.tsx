@@ -43,7 +43,7 @@ export default function UsersManagement() {
       case 'admin':
         return 'bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-300';
       case 'editor':
-        return 'bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-300';
+        return 'bg-orange-100 text-orange-800 dark:bg-orange-900/20 dark:text-orange-300';
       default:
         return 'bg-gray-100 text-gray-800 dark:bg-gray-900/20 dark:text-gray-300';
     }
@@ -221,7 +221,7 @@ export default function UsersManagement() {
       <div className="grid md:grid-cols-3 gap-6">
         <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-border">
           <div className="flex items-center space-x-3">
-            <User className="w-8 h-8 text-blue-600" />
+            <User className="w-8 h-8 text-orange-600" />
             <div>
               <p className="text-sm text-gray-600 dark:text-gray-400">Utenti Standard</p>
               <p className="text-xl font-bold text-gray-900 dark:text-white">

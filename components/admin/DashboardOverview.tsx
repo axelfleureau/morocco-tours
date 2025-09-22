@@ -61,8 +61,8 @@ export default function DashboardOverview() {
       title: "Utenti Totali",
       value: stats.totalUsers,
       icon: Users,
-      color: "text-blue-600",
-      bgColor: "bg-blue-50 dark:bg-blue-900/20"
+      color: "text-orange-600",
+      bgColor: "bg-orange-50 dark:bg-orange-900/20"
     },
     {
       title: "Viaggi Pubblicati",
@@ -150,7 +150,7 @@ export default function DashboardOverview() {
                       booking.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
                       booking.status === 'confirmed' ? 'bg-green-100 text-green-800' :
                       booking.status === 'cancelled' ? 'bg-red-100 text-red-800' :
-                      'bg-blue-100 text-blue-800'
+                      'bg-orange-100 text-orange-800'
                     }`}>
                       {booking.status}
                     </span>

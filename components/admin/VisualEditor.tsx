@@ -158,7 +158,7 @@ export default function VisualEditor({ pageId, pageType, onSave }: VisualEditorP
           <div style={baseStyle}>
             <button 
               style={{
-                backgroundColor: styling.colors?.background || '#3b82f6',
+                backgroundColor: styling.colors?.background || '#ea580c',
                 color: styling.colors?.text || '#ffffff',
                 padding: styling.spacing?.padding || '12px 24px',
                 border: 'none',
@@ -189,7 +189,7 @@ export default function VisualEditor({ pageId, pageType, onSave }: VisualEditorP
       <div
         key={block.id}
         className={`relative group border-2 ${
-          isSelected ? 'border-blue-500' : 'border-transparent hover:border-blue-300'
+          isSelected ? 'border-orange-500' : 'border-transparent hover:border-orange-300'
         } transition-colors cursor-pointer`}
         onClick={() => setSelectedBlockId(block.id)}
       >
@@ -203,7 +203,7 @@ export default function VisualEditor({ pageId, pageType, onSave }: VisualEditorP
                 e.stopPropagation()
                 moveBlock(block.id, 'up')
               }}
-              className="p-1 bg-blue-500 text-white rounded text-xs hover:bg-blue-600"
+              className="p-1 bg-orange-500 text-white rounded text-xs hover:bg-orange-600"
               title="Sposta su"
             >
               ↑
@@ -213,7 +213,7 @@ export default function VisualEditor({ pageId, pageType, onSave }: VisualEditorP
                 e.stopPropagation()
                 moveBlock(block.id, 'down')
               }}
-              className="p-1 bg-blue-500 text-white rounded text-xs hover:bg-blue-600"
+              className="p-1 bg-orange-500 text-white rounded text-xs hover:bg-orange-600"
               title="Sposta giù"
             >
               ↓
@@ -387,7 +387,7 @@ export default function VisualEditor({ pageId, pageType, onSave }: VisualEditorP
         <div className="mt-4 flex gap-2">
           <button
             onClick={() => setIsEditing(false)}
-            className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+            className="px-4 py-2 bg-orange-500 text-white rounded hover:bg-orange-600"
           >
             Fine
           </button>

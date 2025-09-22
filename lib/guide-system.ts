@@ -53,14 +53,18 @@ export interface GuideContent {
 }
 
 export class GuideService {
-  // Generate PDF guide
+  // Generate PDF guide with enhanced graphics
   static async generatePDF(guide: GuideContent): Promise<Blob> {
     const pdf = new jsPDF();
     let yPosition = 20;
 
-    // Title page
-    pdf.setFontSize(24);
-    pdf.setTextColor(234, 88, 12); // Orange color
+    // Add header with background color
+    pdf.setFillColor(234, 88, 12); // Orange background
+    pdf.rect(0, 0, 210, 30, 'F');
+
+    // Title page with better styling
+    pdf.setFontSize(28);
+    pdf.setTextColor(255, 255, 255); // White text
     pdf.text(guide.title, 20, yPosition);
     yPosition += 15;
 
