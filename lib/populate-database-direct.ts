@@ -110,10 +110,18 @@ export async function populateDatabaseDirect() {
         const existing = await firestoreService.getWhere(COLLECTIONS.experiences, 'title', '==', experience.title);
         if (existing.length > 0) {
           const existingExp = existing[0] as any;
-          await firestoreService.update(COLLECTIONS.experiences, existingExp.id!, { ...experience, updatedAt: new Date() });
+          await firestoreService.update(COLLECTIONS.experiences, existingExp.id!, { 
+            ...experience, 
+            updatedAt: new Date(), 
+            createdAt: existingExp.createdAt 
+          });
           results.experiences.push({ id: existingExp.id!, title: experience.title, action: 'updated' });
         } else {
-          const expId = await firestoreService.create(COLLECTIONS.experiences, experience);
+          const expId = await firestoreService.create(COLLECTIONS.experiences, { 
+            ...experience, 
+            createdAt: new Date(), 
+            updatedAt: new Date() 
+          });
           results.experiences.push({ id: expId, title: experience.title, action: 'created' });
         }
       } catch (error) {
