@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react'
 import { Palette, Type, Layout, Save, RotateCcw, Eye } from 'lucide-react'
-import { GoogleAuthService } from '@/lib/google-auth'
+import { useAuth } from '@/context/AuthContext'
 
 interface ThemeConfig {
   colors: {
@@ -111,6 +111,7 @@ const defaultTheme: ThemeConfig = {
 }
 
 export default function ThemeCustomizer() {
+  const { user } = useAuth()
   const [theme, setTheme] = useState<ThemeConfig>(defaultTheme)
   const [activeTab, setActiveTab] = useState<'colors' | 'typography' | 'layout'>('colors')
   const [isLoading, setIsLoading] = useState(false)
@@ -144,7 +145,7 @@ export default function ThemeCustomizer() {
   const saveTheme = async () => {
     try {
       setIsLoading(true)
-      const token = await GoogleAuthService.getCurrentUserToken()
+      const token = user ? await user.getIdToken() : null
       
       if (!token) {
         alert('Token di autenticazione necessario')

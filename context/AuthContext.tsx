@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { User } from 'firebase/auth';
-import { onAuthStateChange, getUserProfile, handleRedirectResult, signIn as authSignIn, signUp as authSignUp, signOutUser } from '@/lib/auth';
+import { onAuthStateChange, getUserProfile, handleRedirectResult, signIn as authSignIn, signUp as authSignUp, signOutUser, signInWithGoogle as authSignInWithGoogle } from '@/lib/auth';
 import { UserProfile } from '@/lib/auth';
 
 interface AuthContextType {
@@ -12,6 +12,7 @@ interface AuthContextType {
   isAdmin: boolean;
   signIn: (email: string, password: string) => Promise<void>;
   signUp: (email: string, password: string, displayName?: string) => Promise<void>;
+  signInWithGoogle: () => Promise<User | null>;
   signOut: () => Promise<void>;
 }
 
@@ -22,6 +23,7 @@ const AuthContext = createContext<AuthContextType>({
   isAdmin: false,
   signIn: async () => {},
   signUp: async () => {},
+  signInWithGoogle: async () => null,
   signOut: async () => {},
 });
 
@@ -74,6 +76,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     await authSignUp(email, password, displayName);
   };
 
+  const signInWithGoogle = async () => {
+    return await authSignInWithGoogle();
+  };
+
   const signOut = async () => {
     await signOutUser();
   };
@@ -86,6 +92,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       isAdmin,
       signIn,
       signUp,
+      signInWithGoogle,
       signOut
     }}>
       {children}

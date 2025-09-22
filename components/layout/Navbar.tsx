@@ -6,7 +6,6 @@ import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
 import Image from "next/image"
 import { useAuth } from "@/context/AuthContext"
-import { signOutUser } from "@/lib/auth"
 
 interface NavbarProps {
   onSearchOpen: () => void
@@ -22,7 +21,7 @@ export default function Navbar({ onSearchOpen }: NavbarProps) {
   const navRef = useRef(null)
   const pathname = usePathname()
   const router = useRouter()
-  const { user, userProfile, loading, isAdmin } = useAuth()
+  const { user, userProfile, loading, isAdmin, signOut } = useAuth()
 
   const [lastScrollY, setLastScrollY] = useState(0)
   const [isHidden, setIsHidden] = useState(false)
@@ -139,7 +138,7 @@ export default function Navbar({ onSearchOpen }: NavbarProps) {
 
   const handleLogout = async () => {
     try {
-      await signOutUser()
+      await signOut()
       router.push('/')
     } catch (error) {
       console.error('Error signing out:', error)

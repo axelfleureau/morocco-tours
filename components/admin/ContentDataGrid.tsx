@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react'
 import { Eye, EyeOff, Edit, Trash2, Plus, Search, Filter } from 'lucide-react'
-import { GoogleAuthService } from '@/lib/google-auth'
+import { useAuth } from '@/context/AuthContext'
 
 interface ContentDataGridProps {
   collection: string
@@ -24,6 +24,7 @@ export default function ContentDataGrid({
   onEdit, 
   onCreate 
 }: ContentDataGridProps) {
+  const { user } = useAuth()
   const [items, setItems] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
@@ -36,7 +37,7 @@ export default function ContentDataGrid({
   const loadData = async () => {
     try {
       setLoading(true)
-      const token = await GoogleAuthService.getCurrentUserToken()
+      const token = user ? await user.getIdToken() : null
       
       const params = new URLSearchParams({
         collection,
@@ -71,7 +72,7 @@ export default function ContentDataGrid({
   // Toggle published status
   const togglePublished = async (item: any) => {
     try {
-      const token = await GoogleAuthService.getCurrentUserToken()
+      const token = user ? await user.getIdToken() : null
       if (!token) throw new Error('Token not available')
       
       const response = await fetch('/api/admin/content', {
@@ -108,7 +109,7 @@ export default function ContentDataGrid({
     }
 
     try {
-      const token = await GoogleAuthService.getCurrentUserToken()
+      const token = user ? await user.getIdToken() : null
       if (!token) throw new Error('Token not available')
       
       const response = await fetch(`/api/admin/content?collection=${collection}&id=${item.id}`, {
@@ -312,7 +313,7 @@ export default function ContentDataGrid({
                       {onEdit && (
                         <button
                           onClick={() => onEdit(item)}
-                          className="p-1 text-blue-600 hover:bg-blue-100 dark:hover:bg-blue-900 rounded-lg transition-colors"
+                          className="p-1 text-orange-600 hover:bg-orange-100 dark:hover:bg-orange-900 rounded-lg transition-colors"
                           title="Modifica"
                         >
                           <Edit className="w-4 h-4" />

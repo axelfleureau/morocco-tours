@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Mail, Lock, Loader2, Eye, EyeOff, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
-import { signIn, signInWithGoogle } from '@/lib/auth';
+import { useAuth } from '@/context/AuthContext';
 
 interface SignInProps {
   onSuccess?: () => void;
@@ -14,6 +14,7 @@ interface SignInProps {
 
 export default function SignIn({ onSuccess, redirectTo = '/dashboard', className = '' }: SignInProps) {
   const router = useRouter();
+  const { signIn, signInWithGoogle } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);

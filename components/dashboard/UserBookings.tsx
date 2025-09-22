@@ -265,7 +265,7 @@ export default function UserBookings() {
         <div className="grid md:grid-cols-4 gap-6">
           <div className="bg-card rounded-2xl p-6 shadow-sm border border-border">
             <div className="flex items-center space-x-3">
-              <Calendar className="w-8 h-8 text-blue-600" />
+              <Calendar className="w-8 h-8 text-orange-600" />
               <div>
                 <p className="text-sm text-gray-600 dark:text-gray-400">Totale</p>
                 <p className="text-xl font-bold text-gray-900 dark:text-white">{bookings.length}</p>
