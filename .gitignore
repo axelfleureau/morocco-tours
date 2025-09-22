@@ -26,3 +26,4 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts# SECURITY REMEDIATION - FIREBASE CREDENTIALS REMOVED
 attached_assets/*firebase*admin*
+.env.local
