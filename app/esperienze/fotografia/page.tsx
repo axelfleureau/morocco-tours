@@ -115,7 +115,7 @@ export default function FotografiaPage() {
                 <div className="mb-10">
                   <h3 className="text-2xl font-bold mb-4 text-foreground">Attrezzatura consigliata</h3>
                   <div className="grid sm:grid-cols-2 gap-6">
-                    <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-xl border border-border">
+                    <div className="p-4 bg-orange-50 dark:bg-orange-900/20 rounded-xl border border-border">
                       <h4 className="font-semibold mb-3 text-foreground flex items-center gap-2">
                         <Aperture className="w-5 h-5" />
                         Obiettivi essenziali
@@ -149,9 +149,9 @@ export default function FotografiaPage() {
                         Luce dura del deserto, controluce, riflessi su superfici, bilanciamento del bianco
                       </p>
                     </div>
-                    <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-xl border-l-4 border-blue-500">
-                      <h4 className="font-semibold text-blue-800 dark:text-blue-300">Composizione avanzata</h4>
-                      <p className="text-blue-700 dark:text-blue-400 text-sm">
+                    <div className="p-4 bg-orange-50 dark:bg-orange-900/20 rounded-xl border-l-4 border-orange-500">
+                      <h4 className="font-semibold text-orange-800 dark:text-orange-300">Composizione avanzata</h4>
+                      <p className="text-orange-700 dark:text-orange-400 text-sm">
                         Regola dei terzi, linee guida, pattern geometrici islamici, inquadrature creative
                       </p>
                     </div>

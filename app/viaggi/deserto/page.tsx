@@ -489,9 +489,9 @@ export default function DesertToursPage() {
                         </div>
                       </div>
                       {/* Season Info */}
-                      <div className="bg-blue-50 dark:bg-blue-900/20 rounded-xl p-4">
-                        <h4 className="font-semibold text-blue-800 dark:text-blue-300 mb-2">Stagione consigliata:</h4>
-                        <p className="text-sm text-blue-700 dark:text-blue-300">{tour.season}</p>
+                      <div className="bg-orange-50 dark:bg-orange-900/20 rounded-xl p-4">
+                        <h4 className="font-semibold text-orange-800 dark:text-orange-300 mb-2">Stagione consigliata:</h4>
+                        <p className="text-sm text-orange-700 dark:text-orange-300">{tour.season}</p>
                       </div>
                     </div>
                   )}

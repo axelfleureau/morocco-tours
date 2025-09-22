@@ -21,13 +21,13 @@ export default function BlogPage() {
   }
 
   const categories = [
-    { name: "Guide di Viaggio", count: 15, color: "bg-blue-500", description: "Consigli pratici e itinerari" },
+    { name: "Guide di Viaggio", count: 15, color: "bg-orange-500", description: "Consigli pratici e itinerari" },
     { name: "Gastronomia", count: 12, color: "bg-orange-500", description: "Cucina e tradizioni culinarie" },
     { name: "Cultura", count: 18, color: "bg-purple-500", description: "Tradizioni e storia marocchina" },
     { name: "Avventura", count: 9, color: "bg-green-500", description: "Trekking e attività outdoor" },
     { name: "Benessere", count: 7, color: "bg-pink-500", description: "Hammam e relax" },
     { name: "Shopping", count: 5, color: "bg-yellow-500", description: "Souks e artigianato" },
-    { name: "Mare", count: 8, color: "bg-cyan-500", description: "Spiagge e costa atlantica" },
+    { name: "Mare", count: 8, color: "bg-orange-500", description: "Spiagge e costa atlantica" },
     { name: "Montagna", count: 6, color: "bg-emerald-500", description: "Atlante e natura" },
   ]
 

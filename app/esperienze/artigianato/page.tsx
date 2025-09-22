@@ -82,7 +82,7 @@ export default function ArtigianatoPage() {
                     <div className="grid md:grid-cols-2 gap-6">
                       <div className="p-4 bg-background/50 rounded-xl">
                         <h4 className="font-semibold text-foreground mb-2 flex items-center gap-2">
-                          <Palette className="w-5 h-5 text-blue-600" />
+                          <Palette className="w-5 h-5 text-orange-600" />
                           Ceramica di Salé
                         </h4>
                         <p className="text-muted-foreground text-sm mb-2">
@@ -267,7 +267,7 @@ export default function ArtigianatoPage() {
                     </div>
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">Zellige:</span>
-                      <span className="font-semibold text-blue-600">Lun-Ven</span>
+                      <span className="font-semibold text-orange-600">Lun-Ven</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">Tessitura:</span>

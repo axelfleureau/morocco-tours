@@ -12,8 +12,8 @@ export default function PrivacyPolicyPage() {
       <div className="py-16 lg:py-24">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <header className="text-center mb-12">
-            <div className="w-16 h-16 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mx-auto mb-6">
-              <Shield className="w-8 h-8 text-blue-600 dark:text-blue-400" />
+            <div className="w-16 h-16 bg-orange-100 dark:bg-orange-900/30 rounded-full flex items-center justify-center mx-auto mb-6">
+              <Shield className="w-8 h-8 text-orange-600 dark:text-orange-400" />
             </div>
             <h1 className="text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-4">
               Privacy Policy
@@ -31,7 +31,7 @@ export default function PrivacyPolicyPage() {
             {/* Data Collection */}
             <section className="bg-gray-50 dark:bg-gray-900 rounded-2xl p-8">
               <div className="flex items-center gap-3 mb-6">
-                <Eye className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+                <Eye className="w-6 h-6 text-orange-600 dark:text-orange-400" />
                 <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Dati che raccogliamo</h2>
               </div>
               <div className="space-y-4 text-gray-600 dark:text-gray-300">
@@ -44,7 +44,7 @@ export default function PrivacyPolicyPage() {
                   <li><strong>Prenotazioni:</strong> dati necessari per organizzare il viaggio</li>
                   <li><strong>Cookie tecnici:</strong> per il funzionamento del sito (vedi Cookie Policy)</li>
                 </ul>
-                <p className="text-sm bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg border-l-4 border-blue-500">
+                <p className="text-sm bg-orange-50 dark:bg-orange-900/20 p-4 rounded-lg border-l-4 border-orange-500">
                   <strong>Non raccogliamo mai:</strong> dati sensibili, informazioni finanziarie complete, 
                   dati di navigazione per profilazione commerciale.
                 </p>
@@ -67,9 +67,9 @@ export default function PrivacyPolicyPage() {
                     <li>• Assistenza clienti durante il viaggio</li>
                   </ul>
                 </div>
-                <div className="p-6 bg-blue-50 dark:bg-blue-900/20 rounded-xl border border-blue-200 dark:border-blue-800">
-                  <h3 className="font-bold text-blue-800 dark:text-blue-300 mb-3">Comunicazioni</h3>
-                  <ul className="text-blue-700 dark:text-blue-400 text-sm space-y-2">
+                <div className="p-6 bg-orange-50 dark:bg-orange-900/20 rounded-xl border border-orange-200 dark:border-orange-800">
+                  <h3 className="font-bold text-orange-800 dark:text-orange-300 mb-3">Comunicazioni</h3>
+                  <ul className="text-orange-700 dark:text-orange-400 text-sm space-y-2">
                     <li>• Newsletter con consigli di viaggio</li>
                     <li>• Aggiornamenti sui servizi</li>
                     <li>• Offerte speciali (solo se richieste)</li>

@@ -242,13 +242,13 @@ export default function CostaBluPage() {
                   <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-3">
                     <Link
                       href={`/viaggi/costa-atlantica/${destination.id}`}
-                      className="flex-1 bg-gradient-to-r from-sky-500 to-blue-600 dark:from-blue-600 dark:to-indigo-700 text-white py-3 px-4 rounded-xl hover:from-sky-600 hover:to-blue-700 dark:hover:from-blue-700 dark:hover:to-indigo-800 transition-all duration-300 font-semibold text-center shadow-md"
+                      className="flex-1 bg-gradient-to-r from-orange-500 to-red-600 dark:from-orange-600 dark:to-red-700 text-white py-3 px-4 rounded-xl hover:from-orange-600 hover:to-red-700 dark:hover:from-orange-700 dark:hover:to-red-800 transition-all duration-300 font-semibold text-center shadow-md"
                     >
                       Scopri {destination.name}
                     </Link>
                     <Link
                       href="/viaggi/gruppo"
-                      className="px-6 py-3 border-2 border-sky-500 dark:border-blue-500 text-sky-700 dark:text-blue-400 rounded-xl hover:bg-sky-500 hover:text-white dark:hover:bg-blue-600 dark:hover:text-white dark:hover:border-blue-600 transition-all duration-300 font-semibold text-center"
+                      className="px-6 py-3 border-2 border-orange-500 dark:border-orange-500 text-orange-700 dark:text-orange-400 rounded-xl hover:bg-orange-500 hover:text-white dark:hover:bg-orange-600 dark:hover:text-white dark:hover:border-orange-600 transition-all duration-300 font-semibold text-center"
                     >
                       Tour
                     </Link>

@@ -31,7 +31,7 @@ export default function CookiesPolicyPage() {
             {/* What are cookies */}
             <section className="bg-gray-50 dark:bg-gray-900 rounded-2xl p-8">
               <div className="flex items-center gap-3 mb-6">
-                <Info className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+                <Info className="w-6 h-6 text-orange-600 dark:text-orange-400" />
                 <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Cosa sono i cookie</h2>
               </div>
               <div className="space-y-4 text-gray-600 dark:text-gray-300">
@@ -88,21 +88,21 @@ export default function CookiesPolicyPage() {
                   </div>
                 </div>
 
-                <div className="p-6 bg-blue-50 dark:bg-blue-900/20 rounded-xl border border-blue-200 dark:border-blue-800">
+                <div className="p-6 bg-orange-50 dark:bg-orange-900/20 rounded-xl border border-orange-200 dark:border-orange-800">
                   <div className="flex items-center gap-3 mb-4">
-                    <Settings className="w-5 h-5 text-blue-600 dark:text-blue-400" />
-                    <h3 className="text-lg font-bold text-blue-800 dark:text-blue-300">Cookie Analitici</h3>
-                    <span className="px-2 py-1 bg-blue-200 dark:bg-blue-800 text-blue-800 dark:text-blue-200 rounded-full text-xs font-medium">
+                    <Settings className="w-5 h-5 text-orange-600 dark:text-orange-400" />
+                    <h3 className="text-lg font-bold text-orange-800 dark:text-orange-300">Cookie Analitici</h3>
+                    <span className="px-2 py-1 bg-orange-200 dark:bg-orange-800 text-orange-800 dark:text-orange-200 rounded-full text-xs font-medium">
                       Consenso richiesto
                     </span>
                   </div>
-                  <p className="text-blue-700 dark:text-blue-400 mb-4">
+                  <p className="text-orange-700 dark:text-orange-400 mb-4">
                     Ci aiutano a capire come i visitatori interagiscono con il sito per migliorare l'esperienza utente.
                   </p>
                   <div className="grid sm:grid-cols-2 gap-4">
                     <div>
-                      <h4 className="font-semibold text-blue-800 dark:text-blue-300 mb-2">Servizi utilizzati</h4>
-                      <ul className="text-sm text-blue-700 dark:text-blue-400 space-y-1">
+                      <h4 className="font-semibold text-orange-800 dark:text-orange-300 mb-2">Servizi utilizzati</h4>
+                      <ul className="text-sm text-orange-700 dark:text-orange-400 space-y-1">
                         <li>• Google Analytics 4 (anonimizzato)</li>
                         <li>• Statistiche di utilizzo</li>
                         <li>• Performance del sito</li>
@@ -110,8 +110,8 @@ export default function CookiesPolicyPage() {
                       </ul>
                     </div>
                     <div>
-                      <h4 className="font-semibold text-blue-800 dark:text-blue-300 mb-2">Dati raccolti</h4>
-                      <ul className="text-sm text-blue-700 dark:text-blue-400 space-y-1">
+                      <h4 className="font-semibold text-orange-800 dark:text-orange-300 mb-2">Dati raccolti</h4>
+                      <ul className="text-sm text-orange-700 dark:text-orange-400 space-y-1">
                         <li>• Pagine visitate (anonime)</li>
                         <li>• Tempo di permanenza</li>
                         <li>• Dispositivo e browser</li>
@@ -143,13 +143,13 @@ export default function CookiesPolicyPage() {
                       Puoi anche gestire i cookie direttamente dalle impostazioni del browser:
                     </p>
                     <div className="space-y-2 text-xs">
-                      <a href="https://support.google.com/chrome/answer/95647" target="_blank" rel="noopener noreferrer" className="block text-blue-600 hover:text-blue-700">
+                      <a href="https://support.google.com/chrome/answer/95647" target="_blank" rel="noopener noreferrer" className="block text-orange-600 hover:text-orange-700">
                         → Chrome
                       </a>
-                      <a href="https://support.mozilla.org/it/kb/Attivare%20e%20disattivare%20i%20cookie" target="_blank" rel="noopener noreferrer" className="block text-blue-600 hover:text-blue-700">
+                      <a href="https://support.mozilla.org/it/kb/Attivare%20e%20disattivare%20i%20cookie" target="_blank" rel="noopener noreferrer" className="block text-orange-600 hover:text-orange-700">
                         → Firefox
                       </a>
-                      <a href="https://support.apple.com/it-it/guide/safari/sfri11471/mac" target="_blank" rel="noopener noreferrer" className="block text-blue-600 hover:text-blue-700">
+                      <a href="https://support.apple.com/it-it/guide/safari/sfri11471/mac" target="_blank" rel="noopener noreferrer" className="block text-orange-600 hover:text-orange-700">
                         → Safari
                       </a>
                     </div>
@@ -192,7 +192,7 @@ export default function CookiesPolicyPage() {
                   <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
                     <p className="text-xs text-gray-500 dark:text-gray-400">
                       Per maggiori informazioni: 
-                      <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-700 ml-1">
+                      <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer" className="text-orange-600 hover:text-orange-700 ml-1">
                         Privacy Policy Google
                       </a>
                     </p>

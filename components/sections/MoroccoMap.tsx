@@ -100,7 +100,7 @@ const categoryConfig = {
     label: "Imperiale",
   },
   coastal: {
-    color: "from-blue-500 to-cyan-600",
+    color: "from-orange-500 to-red-600",
     icon: "🌊",
     label: "Costiera",
   },

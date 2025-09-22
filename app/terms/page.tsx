@@ -134,9 +134,9 @@ export default function TermsPage() {
                     </div>
                   </div>
                 </div>
-                <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
-                  <h4 className="font-semibold text-blue-800 dark:text-blue-300 mb-2">💡 Consiglio</h4>
-                  <p className="text-sm text-blue-700 dark:text-blue-400">
+                <div className="p-4 bg-orange-50 dark:bg-orange-900/20 rounded-lg border border-orange-200 dark:border-orange-800">
+                  <h4 className="font-semibold text-orange-800 dark:text-orange-300 mb-2">💡 Consiglio</h4>
+                  <p className="text-sm text-orange-700 dark:text-orange-400">
                     Ti consigliamo vivamente di sottoscrivere un'assicurazione di viaggio che copra 
                     cancellazioni per motivi di salute, lavoro o altre emergenze impreviste.
                   </p>
@@ -233,19 +233,19 @@ export default function TermsPage() {
                   In caso di problemi o controversie, ci impegniamo a risolverli in modo amichevole 
                   e professionale attraverso il dialogo diretto.
                 </p>
-                <div className="p-6 bg-blue-50 dark:bg-blue-900/20 rounded-xl border border-blue-200 dark:border-blue-800">
-                  <h3 className="text-lg font-bold text-blue-800 dark:text-blue-300 mb-4">Procedura di reclamo</h3>
-                  <div className="space-y-3 text-blue-700 dark:text-blue-400">
+                <div className="p-6 bg-orange-50 dark:bg-orange-900/20 rounded-xl border border-orange-200 dark:border-orange-800">
+                  <h3 className="text-lg font-bold text-orange-800 dark:text-orange-300 mb-4">Procedura di reclamo</h3>
+                  <div className="space-y-3 text-orange-700 dark:text-orange-400">
                     <div className="flex gap-3">
-                      <span className="w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center text-xs font-bold">1</span>
+                      <span className="w-6 h-6 bg-orange-500 text-white rounded-full flex items-center justify-center text-xs font-bold">1</span>
                       <p className="text-sm">Contatta immediatamente la nostra assistenza durante il viaggio</p>
                     </div>
                     <div className="flex gap-3">
-                      <span className="w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center text-xs font-bold">2</span>
+                      <span className="w-6 h-6 bg-orange-500 text-white rounded-full flex items-center justify-center text-xs font-bold">2</span>
                       <p className="text-sm">Invia reclamo scritto entro 10 giorni dal rientro</p>
                     </div>
                     <div className="flex gap-3">
-                      <span className="w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center text-xs font-bold">3</span>
+                      <span className="w-6 h-6 bg-orange-500 text-white rounded-full flex items-center justify-center text-xs font-bold">3</span>
                       <p className="text-sm">Riceverai risposta entro 30 giorni lavorativi</p>
                     </div>
                   </div>

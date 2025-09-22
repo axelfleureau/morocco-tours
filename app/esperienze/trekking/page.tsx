@@ -145,7 +145,7 @@ export default function TrekkingAtlantePage() {
                 {/* Equipment List */}
                 <div className="mb-10">
                   <h3 className="text-2xl font-bold mb-4 text-foreground">Equipaggiamento consigliato</h3>
-                  <div className="bg-blue-50 dark:bg-blue-900/20 rounded-2xl p-6 border border-border">
+                  <div className="bg-orange-50 dark:bg-orange-900/20 rounded-2xl p-6 border border-border">
                     <div className="grid sm:grid-cols-2 gap-4 text-sm">
                       <div>
                         <h4 className="font-semibold mb-2 text-foreground">Abbigliamento</h4>

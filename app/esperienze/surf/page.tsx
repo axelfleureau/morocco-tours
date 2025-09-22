@@ -65,7 +65,7 @@ export default function SurfTaghazoutPage() {
                     },
                   ].map((feature, i) => (
                     <div key={i} className="p-6 rounded-2xl bg-card border border-border">
-                      <feature.icon className="w-8 h-8 text-blue-600 dark:text-blue-400 mb-4" />
+                      <feature.icon className="w-8 h-8 text-orange-600 dark:text-orange-400 mb-4" />
                       <h3 className="font-bold text-lg mb-2 text-card-foreground">{feature.title}</h3>
                       <p className="text-muted-foreground text-sm leading-relaxed">{feature.text}</p>
                     </div>
@@ -77,7 +77,7 @@ export default function SurfTaghazoutPage() {
                   <h3 className="text-2xl font-bold mb-4 text-foreground">Programma surf camp 5 giorni</h3>
                   <div className="space-y-4">
                     <div className="flex gap-4">
-                      <div className="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center font-bold text-sm">
+                      <div className="w-8 h-8 bg-orange-500 text-white rounded-full flex items-center justify-center font-bold text-sm">
                         1
                       </div>
                       <div>
@@ -89,7 +89,7 @@ export default function SurfTaghazoutPage() {
                       </div>
                     </div>
                     <div className="flex gap-4">
-                      <div className="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center font-bold text-sm">
+                      <div className="w-8 h-8 bg-orange-500 text-white rounded-full flex items-center justify-center font-bold text-sm">
                         2-3
                       </div>
                       <div>
@@ -101,7 +101,7 @@ export default function SurfTaghazoutPage() {
                       </div>
                     </div>
                     <div className="flex gap-4">
-                      <div className="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center font-bold text-sm">
+                      <div className="w-8 h-8 bg-orange-500 text-white rounded-full flex items-center justify-center font-bold text-sm">
                         4-5
                       </div>
                       <div>
@@ -147,9 +147,9 @@ export default function SurfTaghazoutPage() {
                         Prime onde in schiuma, equilibrio sulla tavola, remata e alzata di base
                       </p>
                     </div>
-                    <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-xl border-l-4 border-blue-500">
-                      <h4 className="font-semibold text-blue-800 dark:text-blue-300">Intermedio</h4>
-                      <p className="text-blue-700 dark:text-blue-400 text-sm">
+                    <div className="p-4 bg-orange-50 dark:bg-orange-900/20 rounded-xl border-l-4 border-orange-500">
+                      <h4 className="font-semibold text-orange-800 dark:text-orange-300">Intermedio</h4>
+                      <p className="text-orange-700 dark:text-orange-400 text-sm">
                         Onde non frangenti, curve di base, lettura delle onde e posizionamento
                       </p>
                     </div>
@@ -190,7 +190,7 @@ export default function SurfTaghazoutPage() {
                 <div className="p-6 rounded-2xl bg-muted/50 border border-border">
                   <div className="text-center mb-4">
                     <h3 className="text-xl font-bold text-foreground mb-2">Prezzo indicativo</h3>
-                    <div className="text-3xl font-extrabold text-blue-600 dark:text-blue-400 mb-1">da €220</div>
+                    <div className="text-3xl font-extrabold text-orange-600 dark:text-orange-400 mb-1">da €220</div>
                     <p className="text-sm text-muted-foreground">5 giorni surf camp completo</p>
                   </div>
 
