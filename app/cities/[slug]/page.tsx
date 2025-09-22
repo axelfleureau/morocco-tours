@@ -4,14 +4,14 @@ import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import { Clock, MapPin, Star, Users, Calendar, Car, Utensils, Camera, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
-import { CityPagesService, CityData } from '@/lib/city-pages';
+import { City } from '@/lib/firestore-schema';
 import { EnhancedMapboxService, MarkerData } from '@/lib/mapbox-enhanced';
 
 export default function CityPage() {
   const params = useParams();
   const slug = params.slug as string;
   
-  const [city, setCity] = useState<CityData | null>(null);
+  const [city, setCity] = useState<City | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [activeTab, setActiveTab] = useState('overview');
@@ -19,11 +19,16 @@ export default function CityPage() {
   useEffect(() => {
     const loadCity = async () => {
       try {
-        const cityData = await CityPagesService.getCityBySlug(slug);
-        if (cityData) {
+        // Use public API for database-driven content with publication system
+        const response = await fetch(`/api/public/content?collection=cities&slug=${slug}`);
+        
+        if (response.ok) {
+          const cityData = await response.json();
           setCity(cityData);
+        } else if (response.status === 404) {
+          setError('Città non trovata o non pubblicata');
         } else {
-          setError('Città non trovata');
+          throw new Error('Failed to load city');
         }
       } catch (err) {
         setError('Errore nel caricamento della città');

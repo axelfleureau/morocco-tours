@@ -1,12 +1,18 @@
 import { notFound } from "next/navigation"
 import ContactBanner from "@/components/cta/contact-banner"
-import { blogPosts } from "@/content/blog-posts"
+import { BlogPost } from "@/lib/firestore-schema"
 import Link from "next/link"
 import { Calendar, Clock, User, ArrowLeft, Share2, Bookmark } from 'lucide-react'
 
-export default function BlogPostPage({ params }: { params: { slug: string } }) {
-  const post = blogPosts.find((p) => p.slug === params.slug)
-  if (!post) return notFound()
+export default async function BlogPostPage({ params }: { params: { slug: string } }) {
+  // Use public API for database-driven content with publication system
+  const response = await fetch(`/api/public/content?collection=blogPosts&slug=${params.slug}`, { cache: 'no-store' })
+  
+  if (!response.ok) {
+    return notFound()
+  }
+  
+  const post = await response.json() as BlogPost
 
   return (
     <article className="min-h-screen bg-white dark:bg-gray-950">
@@ -138,35 +144,11 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
           </div>
         </div>
 
-        {/* Related Articles */}
+        {/* Related Articles - Database-driven */}
         <div className="mt-16">
           <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-8">Altri articoli che potrebbero interessarti</h3>
-          <div className="grid md:grid-cols-2 gap-6">
-            {blogPosts
-              .filter(p => p.slug !== post.slug)
-              .slice(0, 2)
-              .map((relatedPost) => (
-                <article key={relatedPost.slug} className="group">
-                  <Link href={`/blog/${relatedPost.slug}`}>
-                    <div className="aspect-[16/9] overflow-hidden rounded-xl mb-4">
-                      <img 
-                        src={relatedPost.cover || "/placeholder.svg?height=200&width=300"} 
-                        alt={relatedPost.title}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                      />
-                    </div>
-                    <h4 className="text-lg font-bold text-gray-900 dark:text-white mb-2 group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors">
-                      {relatedPost.title}
-                    </h4>
-                    <p className="text-gray-600 dark:text-gray-300 text-sm mb-3">
-                      {relatedPost.excerpt}
-                    </p>
-                    <div className="text-xs text-gray-500 dark:text-gray-400">
-                      {new Date(relatedPost.date).toLocaleDateString("it-IT")} • {relatedPost.readingMinutes} min
-                    </div>
-                  </Link>
-                </article>
-              ))}
+          <div className="text-sm text-gray-500 dark:text-gray-400">
+            <p>Articoli correlati saranno mostrati quando il contenuto del blog sarà popolato nel database.</p>
           </div>
         </div>
       </div>
