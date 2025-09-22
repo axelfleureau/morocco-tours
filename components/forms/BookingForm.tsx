@@ -2,9 +2,11 @@
 
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Calendar, Users, Baby, MapPin, CreditCard, Check, AlertCircle, Loader2 } from 'lucide-react';
+import { Calendar, Users, Baby, MapPin, CreditCard, Check, AlertCircle, Loader2, Download } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { firestoreService, COLLECTIONS, Booking } from '@/lib/firestore';
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
 
 interface BookingFormData {
   name: string;
@@ -68,6 +70,74 @@ export default function BookingForm({
     const adultPrice = basePrice * formData.travelers;
     const childPrice = basePrice * 0.7 * formData.children; // 30% discount for children
     return Math.round(adultPrice + childPrice);
+  };
+
+  const generateBookingPDF = () => {
+    const pdf = new jsPDF();
+    let yPosition = 20;
+
+    // Header with Morocco Dreams branding
+    pdf.setFillColor(234, 88, 12); // Orange background
+    pdf.rect(0, 0, 210, 30, 'F');
+    
+    pdf.setFontSize(24);
+    pdf.setTextColor(255, 255, 255);
+    pdf.text('Morocco Dreams', 20, yPosition);
+    yPosition += 10;
+    
+    pdf.setFontSize(14);
+    pdf.text('Conferma Prenotazione', 20, yPosition);
+    yPosition += 20;
+
+    // Booking details
+    pdf.setFontSize(16);
+    pdf.setTextColor(0, 0, 0);
+    pdf.text('Dettagli Prenotazione', 20, yPosition);
+    yPosition += 10;
+
+    const bookingData = [
+      ['Esperienza', itemTitle],
+      ['Nome', formData.name],
+      ['Email', formData.email],
+      ['Telefono', formData.phone || 'Non specificato'],
+      ['Viaggiatori', `${formData.travelers} adulti`],
+      ['Bambini', formData.children > 0 ? `${formData.children} bambini` : 'Nessuno'],
+      ['Data partenza', formData.departureDate],
+      ['Data ritorno', formData.returnDate || 'Non specificata'],
+      ['Città partenza', formData.departureCity || 'Non specificata'],
+      ['Durata', duration],
+      ['Prezzo totale', `€${calculateTotalPrice()}`],
+      ['Stato', 'In attesa di conferma']
+    ];
+
+    (pdf as any).autoTable({
+      startY: yPosition,
+      head: [['Campo', 'Valore']],
+      body: bookingData,
+      theme: 'grid',
+      styles: { fontSize: 10 },
+      headStyles: { fillColor: [234, 88, 12] }
+    });
+
+    yPosition = (pdf as any).lastAutoTable.finalY + 15;
+
+    if (formData.customRequests) {
+      pdf.setFontSize(14);
+      pdf.text('Richieste Speciali:', 20, yPosition);
+      yPosition += 8;
+      pdf.setFontSize(10);
+      const requestLines = pdf.splitTextToSize(formData.customRequests, 170);
+      pdf.text(requestLines, 20, yPosition);
+      yPosition += requestLines.length * 4 + 10;
+    }
+
+    // Footer
+    pdf.setFontSize(10);
+    pdf.setTextColor(100, 100, 100);
+    pdf.text('Ti contatteremo entro 24 ore per confermare la prenotazione.', 20, yPosition + 10);
+    pdf.text('WhatsApp: +39 329 233 3370 | Email: info@moroccodreams.com', 20, yPosition + 20);
+
+    pdf.save(`MoroccoDreams_Prenotazione_${formData.name.replace(/\s+/g, '_')}.pdf`);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -160,9 +230,16 @@ export default function BookingForm({
             {formData.children > 0 && ` + ${formData.children} ${formData.children === 1 ? 'bambino' : 'bambini'}`}
           </p>
         </div>
-        <p className="text-sm text-green-600 dark:text-green-400">
+        <p className="text-sm text-green-600 dark:text-green-400 mb-4">
           Ti contatteremo entro 24 ore per confermare la disponibilità e finalizzare la prenotazione.
         </p>
+        <button
+          onClick={generateBookingPDF}
+          className="inline-flex items-center gap-2 px-4 py-2 bg-orange-600 hover:bg-orange-700 text-white rounded-lg font-medium transition-colors"
+        >
+          <Download className="w-4 h-4" />
+          Scarica Conferma PDF
+        </button>
       </motion.div>
     );
   }

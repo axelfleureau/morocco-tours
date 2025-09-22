@@ -47,7 +47,7 @@ export default function CustomTripsPage() {
 
   const WHATSAPP_NUMBER = "393292333370" // Solo numeri!
 
-  const privacyRef = useRef(null)
+  const privacyRef = useRef<HTMLInputElement>(null)
 
   const composeWhatsappMessage = () => {
     return `Ciao Morocco Dreams! Vorrei ricevere una proposta di viaggio personalizzata. Ecco i miei dettagli:
