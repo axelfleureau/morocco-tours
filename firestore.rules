@@ -1,3 +1,4 @@
+// Backup of secure rules before temporary population
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
@@ -31,28 +32,24 @@ service cloud.firestore {
       allow write: if request.auth != null && request.auth.token.admin == true;
     }
     
+    // CMS sections - admin only
     match /cms_sections/{document} {
+      allow read, write: if request.auth != null && request.auth.token.admin == true;
+    }
+    
+    // Package components - admin only write, public read
+    match /package_components/{document} {
       allow read: if true;
       allow write: if request.auth != null && request.auth.token.admin == true;
     }
     
-    // Package components and templates - public read, admin write
-    match /package_components/{document} {
-      allow read: if resource.data.available == true || (request.auth != null && request.auth.token.admin == true);
-      allow write: if request.auth != null && request.auth.token.admin == true;
-    }
-    
+    // Package templates - admin only write, public read
     match /package_templates/{document} {
-      allow read: if resource.data.published == true || (request.auth != null && request.auth.token.admin == true);
+      allow read: if true;
       allow write: if request.auth != null && request.auth.token.admin == true;
     }
     
-    // User themes - user's own themes or admin
-    match /user_themes/{document} {
-      allow read, write: if request.auth != null && (resource.data.userId == request.auth.uid || request.auth.token.admin == true);
-    }
-    
-    // Guides - public read for published, admin write
+    // Guides - admin only write, public read
     match /guides/{document} {
       allow read: if resource.data.isPublic == true || (request.auth != null && request.auth.token.admin == true);
       allow write: if request.auth != null && request.auth.token.admin == true;
@@ -75,26 +72,26 @@ service cloud.firestore {
       allow write: if request.auth != null && request.auth.token.admin == true;
     }
     
+    // User themes - user can read/write their own, admin can read/write all
+    match /user_themes/{document} {
+      allow read, write: if request.auth != null && (resource.data.userId == request.auth.uid || request.auth.token.admin == true);
+    }
+    
     // Analytics - admin only
     match /analytics/{document} {
       allow read, write: if request.auth != null && request.auth.token.admin == true;
     }
     
-    // Site content - public read, admin write
-    match /site_content/{document} {
-      allow read: if true;
-      allow write: if request.auth != null && request.auth.token.admin == true;
-    }
-    
-    // Services - public read, admin write
+    // Services - admin only write, public read
     match /services/{document} {
       allow read: if true;
       allow write: if request.auth != null && request.auth.token.admin == true;
     }
     
-    // Default deny all other documents
-    match /{document=**} {
-      allow read, write: if false;
+    // Site content - admin only write, public read
+    match /site_content/{document} {
+      allow read: if true;
+      allow write: if request.auth != null && request.auth.token.admin == true;
     }
   }
 }
