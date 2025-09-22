@@ -14,12 +14,15 @@ import ContentDataGrid from '@/components/admin/ContentDataGrid';
 import VisualEditor from '@/components/admin/VisualEditor';
 import ThemeCustomizer from '@/components/admin/ThemeCustomizer';
 import { COLLECTIONS } from '@/lib/firestore-schema';
+import ServiceModal from '@/components/admin/ServiceModal';
 
 function UserDashboardContent() {
   const { user, userProfile, signOut, isAdmin } = useAuth();
   const router = useRouter();
   const [activeTab, setActiveTab] = useState("overview");
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [serviceModalOpen, setServiceModalOpen] = useState(false);
+  const [editingService, setEditingService] = useState(null);
 
   const userNavigation = [
     { id: "overview", name: "Panoramica", icon: Home },
@@ -46,6 +49,48 @@ function UserDashboardContent() {
       router.push('/');
     } catch (error) {
       console.error('Error signing out:', error);
+    }
+  };
+
+  // Service modal handlers
+  const handleCreateService = () => {
+    setEditingService(null);
+    setServiceModalOpen(true);
+  };
+
+  const handleEditService = (service: any) => {
+    setEditingService(service);
+    setServiceModalOpen(true);
+  };
+
+  const handleSaveService = async (serviceData: any) => {
+    try {
+      const token = user ? await user.getIdToken() : null;
+      if (!token) throw new Error('Token not available');
+
+      const method = editingService ? 'PUT' : 'POST';
+      const body = editingService
+        ? { collection: 'services', id: editingService.id, data: serviceData }
+        : { collection: 'services', data: serviceData };
+
+      const response = await fetch('/api/admin/content', {
+        method,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(body)
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to save service');
+      }
+
+      // Refresh the data in ContentDataGrid
+      window.location.reload(); // Simple refresh for now
+    } catch (error) {
+      console.error('Error saving service:', error);
+      alert('Errore nel salvataggio del servizio');
     }
   };
 
@@ -127,8 +172,8 @@ function UserDashboardContent() {
               { key: 'priceType', label: 'Tipo Prezzo', type: 'text' },
               { key: 'locations', label: 'Località', type: 'array' }
             ]}
-            onCreate={() => alert('Modal creazione servizio - da implementare')}
-            onEdit={(item) => alert(`Modifica servizio: ${item.name} - da implementare`)}
+            onCreate={handleCreateService}
+            onEdit={handleEditService}
           />
         );
       case "admin-theme":
@@ -262,6 +307,14 @@ function UserDashboardContent() {
           {renderActiveComponent()}
         </div>
       </div>
+
+      {/* Service Modal */}
+      <ServiceModal
+        isOpen={serviceModalOpen}
+        onClose={() => setServiceModalOpen(false)}
+        service={editingService}
+        onSave={handleSaveService}
+      />
     </div>
   );
 }
