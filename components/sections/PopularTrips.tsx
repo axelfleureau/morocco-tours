@@ -205,15 +205,7 @@ export default function PopularTrips() {
                     </div>
                     <div className="flex flex-col sm:flex-row gap-3">
                       <Link
-                        href={
-                          trip.title === "Tour delle Città Imperiali"
-                            ? "/viaggi/citta-imperiali"
-                            : trip.title === "Avventura nel Deserto"
-                              ? "/viaggi/deserto"
-                              : trip.title === "Marocco Completo"
-                                ? "/viaggi/completo"
-                                : `/viaggi/gruppo/${trip.id}`
-                        }
+                        href={`/viaggi/${trip.slug || trip.id}`}
                         className="flex-1 bg-gradient-to-r from-orange-500 to-red-500 text-white py-4 px-4 rounded-xl hover:from-orange-600 hover:to-red-600 transition-all duration-300 font-semibold text-center min-h-[48px] flex items-center justify-center transform hover:scale-105 active:scale-95 touch-manipulation"
                       >
                         Scopri di Più

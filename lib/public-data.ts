@@ -48,7 +48,8 @@ export async function getPublishedTravels(filters?: {
     })) as Travel[];
   } catch (error) {
     console.error('Error fetching published travels:', error);
-    return [];
+    // Throw error instead of returning empty array to expose Firestore issues
+    throw new Error(`Database error: ${error instanceof Error ? error.message : 'Unknown error'}`);
   }
 }
 
@@ -87,7 +88,8 @@ export async function getPublishedExperiences(filters?: {
     })) as Experience[];
   } catch (error) {
     console.error('Error fetching published experiences:', error);
-    return [];
+    // Throw error instead of returning empty array to expose Firestore issues
+    throw new Error(`Database error: ${error instanceof Error ? error.message : 'Unknown error'}`);
   }
 }
 
@@ -121,7 +123,8 @@ export async function getPublishedServices(filters?: {
     })) as Service[];
   } catch (error) {
     console.error('Error fetching published services:', error);
-    return [];
+    // Throw error instead of returning empty array to expose Firestore issues  
+    throw new Error(`Database error: ${error instanceof Error ? error.message : 'Unknown error'}`);
   }
 }
 
