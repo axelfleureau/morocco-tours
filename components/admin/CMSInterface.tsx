@@ -159,6 +159,8 @@ export default function CMSInterface() {
                     <div className="mt-2 text-sm">
                       <p>Città: {populationResult.summary.cities}</p>
                       <p>Esperienze: {populationResult.summary.experiences}</p>
+                      <p>Viaggi: {populationResult.summary.travels}</p>
+                      <p>Blog: {populationResult.summary.blog}</p>
                       <p>Componenti: {populationResult.summary.packageComponents}</p>
                       {populationResult.summary.errors > 0 && (
                         <p className="text-orange-600">Errori: {populationResult.summary.errors}</p>

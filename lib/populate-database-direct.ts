@@ -121,6 +121,43 @@ export async function populateDatabaseDirect() {
       }
     }
 
+    // Travels data (basic package structure)
+    const travelsData = [
+      {
+        id: 'imperial-cities-tour',
+        title: 'Tour delle Città Imperiali',
+        description: 'Scopri le quattro città imperiali del Marocco: Fez, Meknes, Rabat e Marrakech.',
+        duration: '8 giorni',
+        price: 1200,
+        category: 'cultural',
+        published: true,
+        featured: true,
+        images: ['/images/fez-mosque.jpg', '/images/marrakech-square.jpg'],
+        itinerary: ['Giorno 1: Arrivo a Casablanca', 'Giorno 2-3: Fez', 'Giorno 4-5: Meknes e Rabat', 'Giorno 6-8: Marrakech'],
+        includes: ['Trasporti privati', 'Guide locali', 'Pernottamenti in riad tradizionali'],
+        rating: 4.8,
+        reviews: 156
+      }
+    ];
+
+    // Blog data  
+    const blogData = [
+      {
+        title: 'Guida Completa al Viaggio in Marocco',
+        slug: 'guida-completa-viaggio-marocco',
+        excerpt: 'Tutto quello che devi sapere per organizzare il tuo primo viaggio in Marocco.',
+        content: 'Il Marocco è una destinazione che affascina con i suoi colori, profumi e tradizioni millenarie...',
+        author: 'Morocco Dreams Team',
+        publishedAt: new Date('2024-01-15'),
+        published: true,
+        featured: true,
+        category: 'guide',
+        tags: ['viaggio', 'consigli', 'cultura'],
+        readTime: 8,
+        image: '/images/blog/morocco-guide.jpg'
+      }
+    ];
+
     // Package components data
     const packageComponentsData = [
       {
@@ -153,6 +190,40 @@ export async function populateDatabaseDirect() {
         }
       } catch (error) {
         results.errors.push(`Component ${component.name}: ${(error as Error).message}`);
+      }
+    }
+
+    // Upsert travels by title
+    for (const travel of travelsData) {
+      try {
+        const existing = await firestoreService.getWhere(COLLECTIONS.travels, 'title', '==', travel.title);
+        if (existing.length > 0) {
+          const existingTravel = existing[0] as any;
+          await firestoreService.update(COLLECTIONS.travels, existingTravel.id!, travel);
+          results.travels.push({ id: existingTravel.id!, title: travel.title, action: 'updated' });
+        } else {
+          const travelId = await firestoreService.create(COLLECTIONS.travels, travel);
+          results.travels.push({ id: travelId, title: travel.title, action: 'created' });
+        }
+      } catch (error) {
+        results.errors.push(`Travel ${travel.title}: ${(error as Error).message}`);
+      }
+    }
+
+    // Upsert blog posts by slug
+    for (const post of blogData) {
+      try {
+        const existing = await firestoreService.getWhere(COLLECTIONS.blog, 'slug', '==', post.slug);
+        if (existing.length > 0) {
+          const existingPost = existing[0] as any;
+          await firestoreService.update(COLLECTIONS.blog, existingPost.id!, post);
+          results.blog.push({ id: existingPost.id!, title: post.title, action: 'updated' });
+        } else {
+          const postId = await firestoreService.create(COLLECTIONS.blog, post);
+          results.blog.push({ id: postId, title: post.title, action: 'created' });
+        }
+      } catch (error) {
+        results.errors.push(`Blog ${post.title}: ${(error as Error).message}`);
       }
     }
 
