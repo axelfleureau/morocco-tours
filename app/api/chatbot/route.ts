@@ -65,10 +65,10 @@ export async function POST(request: NextRequest) {
 
     // Use GPT-4o-mini for cost efficiency
     const completion = await openai.chat.completions.create({
-      model: 'gpt-4o-mini', // Cost-effective model for production
+      model: 'gpt-4o-mini', // Most cost-effective model for production
       messages: messages,
-      max_tokens: 500,
-      temperature: 0.7,
+      max_tokens: 350, // Reduced for maximum cost savings
+      temperature: 0.6, // Slightly more focused responses
     })
 
     const response = completion.choices[0]?.message?.content
