@@ -25,7 +25,16 @@ export const COLLECTIONS = {
   inquiries: 'inquiries',
   services: 'services',
   siteContent: 'site_content',
-  analytics: 'analytics'
+  analytics: 'analytics',
+  // New CMS Collections
+  cmsContent: 'cms_content',
+  cmsSections: 'cms_sections',
+  cities: 'cities',
+  packageComponents: 'package_components',
+  packageTemplates: 'package_templates',
+  guides: 'guides',
+  userThemes: 'user_themes',
+  blog: 'blog'
 } as const;
 
 // Travel/Tour Types
@@ -114,6 +123,217 @@ export interface Inquiry {
   status: 'new' | 'replied' | 'closed';
   createdAt: Timestamp;
   updatedAt?: Timestamp;
+}
+
+// City Types
+export interface City {
+  id?: string;
+  name: string;
+  slug: string;
+  title: string;
+  description: string;
+  image: string;
+  highlights: string[];
+  duration: string;
+  bestTime: string;
+  rating: number;
+  reviews: number;
+  category: 'imperial-cities' | 'coast' | 'mountains' | 'desert' | 'other';
+  arabicName?: string;
+  region?: string;
+  coordinates?: {
+    lat: number;
+    lng: number;
+  };
+  population?: string;
+  climate?: string;
+  overview?: string;
+  attractions?: Array<{
+    name: string;
+    description: string;
+    image?: string;
+  }>;
+  transportation?: {
+    airport?: string;
+    trainStation?: string;
+    busStation?: string;
+  };
+  accommodation?: Array<{
+    type: string;
+    name: string;
+    priceRange: string;
+  }>;
+  seoData?: {
+    title: string;
+    description: string;
+    keywords: string[];
+  };
+  published: boolean;
+  featured: boolean;
+  createdAt: Timestamp;
+  updatedAt: Timestamp;
+}
+
+// CMS Content Types (extending from cms.ts)
+export interface CMSContent {
+  id?: string;
+  type: 'page' | 'section' | 'travel' | 'experience' | 'blog';
+  title: string;
+  slug: string;
+  content: {
+    [language: string]: {
+      title: string;
+      description: string;
+      body?: string;
+      meta?: {
+        title?: string;
+        description?: string;
+        keywords?: string[];
+      };
+    };
+  };
+  published: boolean;
+  featured: boolean;
+  category?: string;
+  tags?: string[];
+  images?: string[];
+  author?: string;
+  createdAt: Timestamp;
+  updatedAt: Timestamp;
+}
+
+// Package Components
+export interface PackageComponent {
+  id?: string;
+  name: string;
+  type: 'accommodation' | 'transport' | 'activity' | 'meal' | 'guide' | 'insurance';
+  description: string;
+  price: number;
+  duration?: string;
+  capacity?: number;
+  category: string;
+  location?: string;
+  available: boolean;
+  providers?: string[];
+  inclusions?: string[];
+  exclusions?: string[];
+  createdAt: Timestamp;
+  updatedAt: Timestamp;
+}
+
+// Package Templates
+export interface PackageTemplate {
+  id?: string;
+  name: string;
+  category: 'economy' | 'standard' | 'premium' | 'luxury';
+  description: string;
+  duration: string;
+  basePrice: number;
+  components: string[]; // Array of component IDs
+  itinerary: Array<{
+    day: number;
+    title: string;
+    description: string;
+    activities: string[];
+  }>;
+  inclusions: string[];
+  exclusions: string[];
+  maxParticipants: number;
+  difficulty: number;
+  bestFor: string;
+  seasons: string[];
+  published: boolean;
+  featured: boolean;
+  createdAt: Timestamp;
+  updatedAt: Timestamp;
+}
+
+// User Themes
+export interface UserTheme {
+  id?: string;
+  userId: string;
+  name: string;
+  colors: {
+    primary: string;
+    secondary: string;
+    accent: string;
+    background: string;
+    text: string;
+  };
+  fonts: {
+    heading: string;
+    body: string;
+  };
+  layout: {
+    headerStyle: string;
+    footerStyle: string;
+    sidebarPosition: 'left' | 'right' | 'none';
+  };
+  isActive: boolean;
+  isDefault: boolean;
+  createdAt: Timestamp;
+  updatedAt: Timestamp;
+}
+
+// PDF Guides
+export interface Guide {
+  id?: string;
+  title: string;
+  type: 'city' | 'travel' | 'experience' | 'custom';
+  content: {
+    sections: Array<{
+      title: string;
+      content: string;
+      images?: string[];
+    }>;
+  };
+  templateId?: string;
+  associatedIds?: string[]; // Related travel, experience, or city IDs
+  language: string;
+  fileUrl?: string;
+  fileSize?: number;
+  downloadCount: number;
+  isPublic: boolean;
+  createdBy: string;
+  createdAt: Timestamp;
+  updatedAt: Timestamp;
+}
+
+// Blog Posts
+export interface BlogPost {
+  id?: string;
+  title: string;
+  slug: string;
+  excerpt: string;
+  content: string;
+  featuredImage?: string;
+  images?: string[];
+  category: 'travel-tips' | 'culture' | 'food' | 'adventure' | 'photography' | 'news';
+  tags: string[];
+  author: {
+    name: string;
+    avatar?: string;
+    bio?: string;
+  };
+  seoData: {
+    title: string;
+    description: string;
+    keywords: string[];
+  };
+  readTime: number; // minutes
+  published: boolean;
+  featured: boolean;
+  views: number;
+  likes: number;
+  comments?: Array<{
+    id: string;
+    author: string;
+    content: string;
+    createdAt: Timestamp;
+  }>;
+  createdAt: Timestamp;
+  updatedAt: Timestamp;
+  publishedAt?: Timestamp;
 }
 
 // Generic CRUD operations
