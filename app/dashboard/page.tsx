@@ -16,6 +16,7 @@ import ThemeCustomizer from '@/components/admin/ThemeCustomizer';
 import { COLLECTIONS } from '@/lib/firestore-schema';
 import ServiceModal from '@/components/admin/ServiceModal';
 import PageManager from '@/components/admin/PageManager';
+import ExperienceEditModal from '@/components/admin/ExperienceEditModal';
 import { NotificationCenter, useNotifications } from '@/components/NotificationSystem';
 
 function UserDashboardContent() {
@@ -26,6 +27,8 @@ function UserDashboardContent() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [serviceModalOpen, setServiceModalOpen] = useState(false);
   const [editingService, setEditingService] = useState(null);
+  const [experienceModalOpen, setExperienceModalOpen] = useState(false);
+  const [editingExperience, setEditingExperience] = useState(null);
 
   const userNavigation = [
     { id: "overview", name: "Panoramica", icon: Home },
@@ -142,7 +145,10 @@ function UserDashboardContent() {
               { key: 'rating', label: 'Rating', type: 'number', sortable: true }
             ]}
             onCreate={() => alert('Modal creazione esperienza - da implementare')}
-            onEdit={(item) => alert(`Modifica esperienza: ${item.title} - da implementare`)}
+            onEdit={(item) => {
+              setEditingExperience(item);
+              setExperienceModalOpen(true);
+            }}
           />
         );
       case "admin-travels":
@@ -189,17 +195,17 @@ function UserDashboardContent() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-background">
+    <div className="min-h-screen bg-background">
       {/* Mobile sidebar overlay */}
       {sidebarOpen && (
         <div className="fixed inset-0 z-40 lg:hidden">
           <div className="absolute inset-0 bg-black/50" onClick={() => setSidebarOpen(false)} />
-          <div className="absolute left-0 top-0 h-full w-64 bg-white dark:bg-gray-900 shadow-lg">
+          <div className="absolute left-0 top-0 h-full w-64 bg-card shadow-lg">
             <div className="flex items-center justify-between p-4 border-b border-border">
-              <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Dashboard</h2>
+              <h2 className="text-lg font-semibold text-card-foreground">Dashboard</h2>
               <button
                 onClick={() => setSidebarOpen(false)}
-                className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg"
+                className="p-2 hover:bg-accent/10 rounded-lg">
               >
                 <X className="w-5 h-5" />
               </button>
@@ -214,8 +220,8 @@ function UserDashboardContent() {
                   }}
                   className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-left transition-colors ${
                     activeTab === item.id
-                      ? "bg-orange-50 dark:bg-orange-900/20 text-orange-600 dark:text-orange-400"
-                      : "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800"
+                      ? "bg-primary/10 text-primary"
+                      : "text-muted-foreground hover:bg-accent/10"
                   }`}
                 >
                   <item.icon className="w-5 h-5" />
@@ -225,7 +231,7 @@ function UserDashboardContent() {
               <div className="pt-4 border-t border-border">
                 <button
                   onClick={handleSignOut}
-                  className="w-full flex items-center space-x-3 px-4 py-3 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-xl transition-colors"
+                  className="w-full flex items-center space-x-3 px-4 py-3 text-destructive hover:bg-destructive/10 rounded-xl transition-colors"
                 >
                   <LogOut className="w-5 h-5" />
                   <span className="font-medium">Esci</span>
@@ -237,23 +243,23 @@ function UserDashboardContent() {
       )}
 
       {/* Header */}
-      <div className="bg-white dark:bg-gray-900 border-b border-border">
+      <div className="bg-card border-b border-border">
         <div className="px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center space-x-4">
               <button
                 onClick={() => setSidebarOpen(true)}
-                className="lg:hidden p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg"
+                className="lg:hidden p-2 hover:bg-accent/10 rounded-lg"
               >
                 <Menu className="w-5 h-5" />
               </button>
-              <h1 className="text-xl font-bold text-gray-900 dark:text-white">
+              <h1 className="text-xl font-bold text-card-foreground">
                 La Mia Dashboard
               </h1>
             </div>
             <div className="flex items-center space-x-4">
               <NotificationCenter />
-              <div className="hidden sm:block text-sm text-gray-500 dark:text-gray-400">
+              <div className="hidden sm:block text-sm text-muted-foreground">
                 Benvenuto, {userProfile?.displayName || user?.email}
               </div>
               <div className="w-8 h-8 bg-gradient-to-br from-orange-400 to-red-500 rounded-full flex items-center justify-center text-white text-sm font-semibold">
@@ -266,7 +272,7 @@ function UserDashboardContent() {
 
       <div className="flex">
         {/* Desktop Sidebar */}
-        <div className="hidden lg:block w-64 bg-white dark:bg-gray-900 border-r border-border min-h-screen">
+        <div className="hidden lg:block w-64 bg-card border-r border-border min-h-screen">
           <nav className="p-4 space-y-2">
             {navigation.map((item) => (
               <button
@@ -274,8 +280,8 @@ function UserDashboardContent() {
                 onClick={() => setActiveTab(item.id)}
                 className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-left transition-colors ${
                   activeTab === item.id
-                    ? "bg-orange-50 dark:bg-orange-900/20 text-orange-600 dark:text-orange-400"
-                    : "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800"
+                    ? "bg-primary/10 text-primary"
+                    : "text-muted-foreground hover:bg-accent/10"
                 }`}
               >
                 <item.icon className="w-5 h-5" />
@@ -286,7 +292,7 @@ function UserDashboardContent() {
             <div className="pt-4 border-t border-border">
               <button
                 onClick={handleSignOut}
-                className="w-full flex items-center space-x-3 px-4 py-3 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-xl transition-colors"
+                className="w-full flex items-center space-x-3 px-4 py-3 text-destructive hover:bg-destructive/10 rounded-xl transition-colors"
               >
                 <LogOut className="w-5 h-5" />
                 <span className="font-medium">Esci</span>
@@ -307,6 +313,20 @@ function UserDashboardContent() {
         onClose={() => setServiceModalOpen(false)}
         service={editingService}
         onSave={handleSaveService}
+      />
+
+      {/* Experience Edit Modal */}
+      <ExperienceEditModal
+        isOpen={experienceModalOpen}
+        onClose={() => setExperienceModalOpen(false)}
+        experience={editingExperience}
+        onSave={() => {
+          // Success callback
+        }}
+        onRefreshData={() => {
+          // Refresh data without full page reload
+          window.location.reload();
+        }}
       />
     </div>
   );

@@ -84,20 +84,20 @@ const AuthenticExperiences = () => {
                   alt={experience.title}
                   className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                 />
-                <div className="absolute top-4 right-4 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm text-gray-900 dark:text-gray-100 px-3 py-1 rounded-full text-sm font-bold">
+                <div className="absolute top-4 right-4 bg-card/90 backdrop-blur-sm text-card-foreground px-3 py-1 rounded-full text-sm font-bold">
                   {experience.price}
                 </div>
-                <div className="absolute bottom-4 left-4 bg-black/50 backdrop-blur-sm text-white px-3 py-1 rounded-full text-sm">
+                <div className="absolute bottom-4 left-4 bg-foreground/50 backdrop-blur-sm text-primary-foreground px-3 py-1 rounded-full text-sm">
                   {experience.duration}
                 </div>
               </div>
 
-              <CardContent className="text-center bg-white dark:bg-gray-900 p-6">
-                <div className="w-12 h-12 bg-orange-100 dark:bg-orange-900/30 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
-                  <experience.icon className="w-6 h-6 text-orange-600 dark:text-orange-400" />
+              <CardContent className="text-center bg-card p-6">
+                <div className="w-12 h-12 bg-accent/20 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
+                  <experience.icon className="w-6 h-6 text-primary" />
                 </div>
-                <CardTitle className="text-lg mb-2 text-gray-900 dark:text-gray-100">{experience.title}</CardTitle>
-                <p className="text-gray-600 dark:text-gray-400 text-sm mb-4 text-pretty">{experience.description}</p>
+                <CardTitle className="text-lg mb-2 text-card-foreground">{experience.title}</CardTitle>
+                <p className="text-muted-foreground text-sm mb-4 text-pretty">{experience.description}</p>
                 <div className="flex gap-2">
                   <Button
                     asChild
@@ -168,7 +168,7 @@ const TestimonialsSection = () => {
           ].map((testimonial, idx) => (
             <Card
               key={idx}
-              className="hover:shadow-xl transition-all duration-300 hover:scale-105 active:scale-95 touch-manipulation bg-white dark:bg-gray-900"
+              className="hover:shadow-xl transition-all duration-300 hover:scale-105 active:scale-95 touch-manipulation bg-card"
             >
               <CardContent className="p-6">
                 <div className="flex items-center mb-4">
@@ -181,8 +181,8 @@ const TestimonialsSection = () => {
                     className="w-12 h-12 rounded-full object-cover mr-4"
                   />
                   <div>
-                    <h4 className="font-bold text-gray-900 dark:text-gray-100">{testimonial.name}</h4>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">{testimonial.location}</p>
+                    <h4 className="font-bold text-card-foreground">{testimonial.name}</h4>
+                    <p className="text-sm text-muted-foreground">{testimonial.location}</p>
                   </div>
                 </div>
 
@@ -194,11 +194,11 @@ const TestimonialsSection = () => {
                   ))}
                 </div>
 
-                <p className="text-gray-600 dark:text-gray-400 mb-4 italic text-pretty leading-relaxed">
+                <p className="text-muted-foreground mb-4 italic text-pretty leading-relaxed">
                   "{testimonial.text}"
                 </p>
 
-                <div className="text-sm text-orange-600 dark:text-orange-400 font-semibold">{testimonial.trip}</div>
+                <div className="text-sm text-primary font-semibold">{testimonial.trip}</div>
               </CardContent>
             </Card>
           ))}
@@ -261,17 +261,17 @@ const FAQSection = () => {
           {faqs.map((faq, idx) => (
             <Card
               key={idx}
-              className="overflow-hidden transition-all duration-300 hover:shadow-lg hover:scale-105 active:scale-95 touch-manipulation bg-white dark:bg-gray-900"
+              className="overflow-hidden transition-all duration-300 hover:shadow-lg hover:scale-105 active:scale-95 touch-manipulation bg-card"
             >
               <button
                 onClick={() => setOpenFAQ(openFAQ === idx ? null : idx)}
-                className="w-full px-6 py-4 text-left flex items-center justify-between hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors duration-200 min-h-[44px] touch-manipulation"
+                className="w-full px-6 py-4 text-left flex items-center justify-between hover:bg-accent/10 transition-colors duration-200 min-h-[44px] touch-manipulation"
               >
-                <span className="font-semibold text-gray-900 dark:text-gray-100 pr-4 text-balance">{faq.question}</span>
+                <span className="font-semibold text-card-foreground pr-4 text-balance">{faq.question}</span>
                 {openFAQ === idx ? (
-                  <span className="text-orange-500 text-xl">−</span>
+                  <span className="text-primary text-xl">−</span>
                 ) : (
-                  <span className="text-orange-500 text-xl">+</span>
+                  <span className="text-primary text-xl">+</span>
                 )}
               </button>
               <div
@@ -279,7 +279,7 @@ const FAQSection = () => {
                   openFAQ === idx ? "max-h-96 pb-4" : "max-h-0"
                 }`}
               >
-                <p className="text-gray-600 dark:text-gray-400 leading-relaxed text-pretty">{faq.answer}</p>
+                <p className="text-muted-foreground leading-relaxed text-pretty">{faq.answer}</p>
               </div>
             </Card>
           ))}

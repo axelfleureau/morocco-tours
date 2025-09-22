@@ -6,7 +6,9 @@ import { Calendar, Clock, User, ArrowLeft, Share2, Bookmark } from 'lucide-react
 
 export default async function BlogPostPage({ params }: { params: { slug: string } }) {
   // Use public API for database-driven content with publication system
-  const response = await fetch(`/api/public/content?collection=blogPosts&slug=${params.slug}`, { cache: 'no-store' })
+  // Direct API call in server component to avoid SSR fetch issues
+  const baseUrl = process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:5000';
+  const response = await fetch(`${baseUrl}/api/public/content?collection=blogPosts&slug=${params.slug}`, { cache: 'no-store' })
   
   if (!response.ok) {
     return notFound()
