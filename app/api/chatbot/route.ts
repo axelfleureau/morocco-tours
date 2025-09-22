@@ -63,10 +63,12 @@ export async function POST(request: NextRequest) {
       { role: 'user', content: message }
     ]
 
+    // Use GPT-4o-mini for cost efficiency
     const completion = await openai.chat.completions.create({
-      model: 'gpt-5', // the newest OpenAI model is "gpt-5" which was released August 7, 2025
+      model: 'gpt-4o-mini', // Cost-effective model for production
       messages: messages,
-      max_completion_tokens: 500,
+      max_tokens: 500,
+      temperature: 0.7,
     })
 
     const response = completion.choices[0]?.message?.content
