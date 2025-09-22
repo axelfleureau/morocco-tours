@@ -117,17 +117,12 @@ export function MoroccoThemeProvider({ children }: ThemeProviderProps) {
   const applyTheme = (theme: SiteTheme) => {
     if (typeof window === 'undefined') return
 
-    // Generate CSS variables
+    // FIXED: Only override brand colors, respect native dark/light mode for backgrounds
     const cssVariables = [
-      // Colors
+      // Brand colors only - let native dark/light mode handle backgrounds
       `--color-primary: ${theme.colors.primary}`,
       `--color-secondary: ${theme.colors.secondary}`,
       `--color-accent: ${theme.colors.accent}`,
-      `--color-background: ${theme.colors.background}`,
-      `--color-surface: ${theme.colors.surface}`,
-      `--color-text: ${theme.colors.text}`,
-      `--color-text-secondary: ${theme.colors.textSecondary}`,
-      `--color-border: ${theme.colors.border}`,
       `--color-success: ${theme.colors.success}`,
       `--color-warning: ${theme.colors.warning}`,
       `--color-error: ${theme.colors.error}`,
@@ -152,15 +147,13 @@ export function MoroccoThemeProvider({ children }: ThemeProviderProps) {
       `--border-radius-lg: ${theme.layout.borderRadius.lg}`,
       `--border-radius-xl: ${theme.layout.borderRadius.xl}`,
       
-      // Tailwind CSS compatible variables
+      // Brand colors only - NO background/foreground/muted override!
       `--primary: ${theme.colors.primary}`,
       `--secondary: ${theme.colors.secondary}`,
-      `--background: ${theme.colors.background}`,
-      `--foreground: ${theme.colors.text}`,
-      `--muted: ${theme.colors.surface}`,
-      `--muted-foreground: ${theme.colors.textSecondary}`,
-      `--border: ${theme.colors.border}`,
+      `--accent: ${theme.colors.accent}`,
       `--ring: ${theme.colors.primary}`
+      // REMOVED: --background, --foreground, --muted, --muted-foreground, --border
+      // These are now handled by native CSS dark/light mode in globals.css
     ].join(';\n')
 
     // Remove existing theme styles
@@ -178,7 +171,8 @@ export function MoroccoThemeProvider({ children }: ThemeProviderProps) {
     // Update document classes for theme-aware components
     document.documentElement.setAttribute('data-theme', theme.name.toLowerCase().replace(/\s+/g, '-'))
     
-    console.log('🎨 Applied theme:', theme.name)
+    console.log('🎨 Applied Morocco Dreams brand theme:', theme.name)
+    console.log('🌓 Native dark/light mode handled by CSS')
   }
 
   const setTheme = (theme: SiteTheme) => {

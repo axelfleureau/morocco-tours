@@ -70,17 +70,48 @@ export async function GET(request: NextRequest) {
       query = query.where('category', '==', category)
     }
     
-    // Apply limit and ordering
-    query = query.orderBy('updatedAt', 'desc').limit(Math.min(limit, 100))
+    // Apply limit and ordering - with Firestore index fallback
+    let items: any[] = []
+    let indexMissing = false
     
-    // Get collection
-    const snapshot = await query.get()
-    const items = snapshot.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data()
-    }))
+    try {
+      // Try query with ordering (requires composite index)
+      query = query.orderBy('updatedAt', 'desc').limit(Math.min(limit, 100))
+      const snapshot = await query.get()
+      items = snapshot.docs.map((doc: any) => ({
+        id: doc.id,
+        ...doc.data()
+      }))
+    } catch (error: any) {
+      // Check if it's a Firestore index error
+      if (error?.code === 9 || error?.message?.includes('requires an index')) {
+        console.warn(`🔥 Firestore index missing for collection '${collection}'. Using fallback query without ordering.`)
+        indexMissing = true
+        
+        // Fallback: Query without ordering (no index required)
+        let fallbackQuery = adminDb.collection(collection).where('published', '==', true)
+        
+        // Re-apply filters
+        if (featured === 'true') {
+          fallbackQuery = fallbackQuery.where('featured', '==', true)
+        }
+        if (category) {
+          fallbackQuery = fallbackQuery.where('category', '==', category)
+        }
+        
+        fallbackQuery = fallbackQuery.limit(Math.min(limit, 100))
+        const snapshot = await fallbackQuery.get()
+        items = snapshot.docs.map((doc: any) => ({
+          id: doc.id,
+          ...doc.data()
+        }))
+      } else {
+        // Re-throw non-index errors
+        throw error
+      }
+    }
     
-    // Add pagination info
+    // Add pagination info with index status
     const response = {
       items,
       count: items.length,
@@ -90,6 +121,15 @@ export async function GET(request: NextRequest) {
         ...(featured && { featured }),
         ...(category && { category }),
         limit
+      },
+      // Include index status for debugging
+      meta: {
+        indexMissing,
+        ...(indexMissing && {
+          message: `⚠️ Database optimization needed: Create Firestore composite index for faster queries`,
+          indexNeeded: `Collection: ${collection}, Fields: (published, updatedAt)`,
+          performance: "Queries are working but not optimized - results may be unordered"
+        })
       }
     }
     
