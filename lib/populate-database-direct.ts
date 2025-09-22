@@ -110,8 +110,20 @@ export async function populateDatabaseDirect() {
         const existing = await firestoreService.getWhere(COLLECTIONS.experiences, 'title', '==', experience.title);
         if (existing.length > 0) {
           const existingExp = existing[0] as any;
+          // Only update if the category matches or if we're updating an existing record completely
           await firestoreService.update(COLLECTIONS.experiences, existingExp.id!, { 
-            ...experience, 
+            title: experience.title,
+            description: experience.description,
+            images: experience.images,
+            price: experience.price,
+            duration: experience.duration,
+            category: experience.category,
+            published: experience.published,
+            rating: experience.rating,
+            reviews: experience.reviews,
+            maxParticipants: experience.maxParticipants,
+            includes: experience.includes,
+            location: experience.location,
             updatedAt: new Date(), 
             createdAt: existingExp.createdAt 
           });
