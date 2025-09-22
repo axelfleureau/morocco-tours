@@ -1,7 +1,7 @@
 // API Endpoint for Populating Services Database
 import { NextRequest, NextResponse } from 'next/server'
 import { requireAdmin, adminDb } from '@/lib/auth-admin'
-import { serverTimestamp } from 'firebase-admin/firestore'
+import { FieldValue } from 'firebase-admin/firestore'
 
 const servicesData = [
   // 1. Guide Private
@@ -108,8 +108,8 @@ export async function POST(request: NextRequest) {
         // Create new service
         const docData = {
           ...serviceData,
-          createdAt: serverTimestamp(),
-          updatedAt: serverTimestamp()
+          createdAt: FieldValue.serverTimestamp(),
+          updatedAt: FieldValue.serverTimestamp()
         }
 
         const docRef = await adminDb.collection('services').add(docData)

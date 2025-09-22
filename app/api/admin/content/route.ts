@@ -25,7 +25,7 @@ async function ensureUniqueSlug(collection: string, slug: string, excludeId?: st
     const snapshot = await query.get()
     
     // Check if slug exists (excluding current document)
-    const existingDocs = snapshot.docs.filter(doc => doc.id !== excludeId)
+    const existingDocs = snapshot.docs.filter((doc: any) => doc.id !== excludeId)
     
     if (existingDocs.length === 0) {
       break
@@ -90,7 +90,7 @@ export async function GET(request: NextRequest) {
     
     // Get collection
     const snapshot = await query.orderBy('updatedAt', 'desc').get()
-    const items = snapshot.docs.map(doc => ({
+    const items = snapshot.docs.map((doc: any) => ({
       id: doc.id,
       ...doc.data()
     }))

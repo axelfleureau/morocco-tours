@@ -4,6 +4,8 @@ import { Inter } from "next/font/google"
 import "./globals.css"
 import ClientLayout from "./client-layout"
 import { ThemeProvider } from "@/components/theme-provider"
+import { MoroccoThemeProvider } from "@/context/ThemeContext"
+import { NotificationProvider } from "@/components/NotificationSystem"
 
 const inter = Inter({
   subsets: ["latin"],
@@ -78,13 +80,17 @@ export default function RootLayout({
       </head>
       <body className={`${inter.className} antialiased`}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
-          <a
-            href="#main-content"
-            className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-primary focus:text-primary-foreground focus:rounded-md focus:shadow-lg"
-          >
-            Salta al contenuto principale
-          </a>
-          <ClientLayout>{children}</ClientLayout>
+          <MoroccoThemeProvider>
+            <NotificationProvider>
+              <a
+                href="#main-content"
+                className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-primary focus:text-primary-foreground focus:rounded-md focus:shadow-lg"
+              >
+                Salta al contenuto principale
+              </a>
+              <ClientLayout>{children}</ClientLayout>
+            </NotificationProvider>
+          </MoroccoThemeProvider>
         </ThemeProvider>
       </body>
     </html>

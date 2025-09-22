@@ -1,8 +1,9 @@
 "use client"
 
 import React, { useState, useEffect } from 'react'
-import { X, Save, Check } from 'lucide-react'
+import { X, Save, Check, Eye, Globe, FileText } from 'lucide-react'
 import { Service } from '@/lib/firestore-schema'
+import { useNotifications } from '../NotificationSystem'
 
 interface ServiceModalProps {
   isOpen: boolean
@@ -12,6 +13,7 @@ interface ServiceModalProps {
 }
 
 export default function ServiceModal({ isOpen, onClose, service, onSave }: ServiceModalProps) {
+  const { showSuccess, showError } = useNotifications()
   const [formData, setFormData] = useState<Partial<Service>>({
     name: '',
     slug: '',
@@ -76,19 +78,39 @@ export default function ServiceModal({ isOpen, onClose, service, onSave }: Servi
     }
   }, [formData.name, service])
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+  const handleSave = async (publishStatus: 'draft' | 'published') => {
     if (!formData.name || !formData.slug) return
 
     setSaving(true)
     try {
-      await onSave(formData)
+      const saveData = {
+        ...formData,
+        status: publishStatus,
+        published: publishStatus === 'published'
+      }
+      
+      await onSave(saveData)
+      
+      // Show success notification
+      const serviceName = saveData.name || 'Servizio'
+      if (publishStatus === 'published') {
+        showSuccess('Servizio Pubblicato', `"${serviceName}" è ora pubblico e visibile agli utenti.`)
+      } else {
+        showSuccess('Bozza Salvata', `"${serviceName}" salvato come bozza.`)
+      }
+      
       onClose()
     } catch (error) {
       console.error('Error saving service:', error)
+      showError('Errore Salvataggio', 'Si è verificato un errore durante il salvataggio del servizio.')
     } finally {
       setSaving(false)
     }
+  }
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    await handleSave(formData.status as 'draft' | 'published' || 'draft')
   }
 
   const addLocation = () => {
@@ -389,14 +411,16 @@ export default function ServiceModal({ isOpen, onClose, service, onSave }: Servi
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 px-4 py-2 text-gray-700 dark:text-gray-300 border border-border rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800"
+              className="px-4 py-2 text-gray-700 dark:text-gray-300 border border-border rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800"
             >
               Annulla
             </button>
+            
             <button
-              type="submit"
+              type="button"
+              onClick={() => handleSave('draft')}
               disabled={saving || !formData.name || !formData.slug}
-              className="flex-1 px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              className="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
             >
               {saving ? (
                 <>
@@ -405,8 +429,27 @@ export default function ServiceModal({ isOpen, onClose, service, onSave }: Servi
                 </>
               ) : (
                 <>
-                  <Save className="w-4 h-4" />
-                  {service ? 'Aggiorna' : 'Crea'} Servizio
+                  <FileText className="w-4 h-4" />
+                  Salva Bozza
+                </>
+              )}
+            </button>
+            
+            <button
+              type="button"
+              onClick={() => handleSave('published')}
+              disabled={saving || !formData.name || !formData.slug}
+              className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+            >
+              {saving ? (
+                <>
+                  <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  Pubblicando...
+                </>
+              ) : (
+                <>
+                  <Globe className="w-4 h-4" />
+                  Pubblica
                 </>
               )}
             </button>

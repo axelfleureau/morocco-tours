@@ -15,9 +15,12 @@ import VisualEditor from '@/components/admin/VisualEditor';
 import ThemeCustomizer from '@/components/admin/ThemeCustomizer';
 import { COLLECTIONS } from '@/lib/firestore-schema';
 import ServiceModal from '@/components/admin/ServiceModal';
+import PageManager from '@/components/admin/PageManager';
+import { NotificationCenter, useNotifications } from '@/components/NotificationSystem';
 
 function UserDashboardContent() {
   const { user, userProfile, signOut, isAdmin } = useAuth();
+  const { showSuccess, showInfo } = useNotifications();
   const router = useRouter();
   const [activeTab, setActiveTab] = useState("overview");
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -70,7 +73,7 @@ function UserDashboardContent() {
 
       const method = editingService ? 'PUT' : 'POST';
       const body = editingService
-        ? { collection: 'services', id: editingService.id, data: serviceData }
+        ? { collection: 'services', id: (editingService as any).id, data: serviceData }
         : { collection: 'services', data: serviceData };
 
       const response = await fetch('/api/admin/content', {
@@ -179,18 +182,7 @@ function UserDashboardContent() {
       case "admin-theme":
         return <ThemeCustomizer />;
       case "admin-site":
-        return (
-          <div className="space-y-6">
-            <h2 className="text-2xl font-bold text-foreground">Editor Visuale Sito</h2>
-            <VisualEditor
-              pageType="homepage"
-              onSave={(blocks) => {
-                console.log('Saving page blocks:', blocks)
-                alert('Blocchi pagina salvati! (funzionalità da completare)')
-              }}
-            />
-          </div>
-        );
+        return <PageManager />;
       default:
         return <UserOverview />;
     }
@@ -260,6 +252,7 @@ function UserDashboardContent() {
               </h1>
             </div>
             <div className="flex items-center space-x-4">
+              <NotificationCenter />
               <div className="hidden sm:block text-sm text-gray-500 dark:text-gray-400">
                 Benvenuto, {userProfile?.displayName || user?.email}
               </div>

@@ -17,7 +17,7 @@ interface Block {
 
 interface VisualEditorProps {
   pageId?: string
-  pageType: 'homepage' | 'city' | 'experience' | 'travel' | 'about' | 'contact'
+  pageType: 'homepage' | 'city' | 'experience' | 'travel' | 'about' | 'contact' | 'custom'
   onSave: (blocks: Block[]) => void
 }
 

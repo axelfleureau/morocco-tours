@@ -1,8 +1,10 @@
 "use client"
 
 import React, { useState, useEffect } from 'react'
-import { Palette, Type, Layout, Save, RotateCcw, Eye } from 'lucide-react'
+import { Palette, Type, Layout, Save, RotateCcw, Eye, Sparkles } from 'lucide-react'
 import { useAuth } from '@/context/AuthContext'
+import { useMoroccoTheme } from '@/context/ThemeContext'
+import { SiteTheme } from '@/lib/firestore-schema'
 
 interface ThemeConfig {
   colors: {
@@ -112,15 +114,22 @@ const defaultTheme: ThemeConfig = {
 
 export default function ThemeCustomizer() {
   const { user } = useAuth()
+  const { currentTheme, setTheme: setGlobalTheme, applyTheme, resetTheme: resetGlobalTheme } = useMoroccoTheme()
   const [theme, setTheme] = useState<ThemeConfig>(defaultTheme)
   const [activeTab, setActiveTab] = useState<'colors' | 'typography' | 'layout'>('colors')
   const [isLoading, setIsLoading] = useState(false)
   const [previewMode, setPreviewMode] = useState(false)
 
-  // Load current theme
+  // Load current theme from context
   useEffect(() => {
-    loadCurrentTheme()
-  }, [])
+    if (currentTheme) {
+      setTheme({
+        colors: currentTheme.colors,
+        typography: currentTheme.typography,
+        layout: currentTheme.layout
+      })
+    }
+  }, [currentTheme])
 
   const loadCurrentTheme = async () => {
     try {
@@ -173,7 +182,18 @@ export default function ThemeCustomizer() {
 
       if (response.ok) {
         alert('Tema salvato con successo!')
-        generateCSSVariables()
+        
+        // Apply the saved theme globally
+        const siteTheme: SiteTheme = {
+          name: 'Custom Theme',
+          isActive: true,
+          colors: theme.colors,
+          typography: theme.typography,
+          layout: theme.layout,
+          createdAt: new Date() as any,
+          updatedAt: new Date() as any
+        }
+        setGlobalTheme(siteTheme)
       } else {
         const error = await response.json()
         alert(`Errore nel salvataggio: ${error.error}`)
@@ -186,33 +206,26 @@ export default function ThemeCustomizer() {
     }
   }
 
-  // Generate CSS variables for live preview
-  const generateCSSVariables = () => {
-    const cssVars = [
-      `--color-primary: ${theme.colors.primary}`,
-      `--color-secondary: ${theme.colors.secondary}`,
-      `--color-accent: ${theme.colors.accent}`,
-      `--color-background: ${theme.colors.background}`,
-      `--color-surface: ${theme.colors.surface}`,
-      `--color-text: ${theme.colors.text}`,
-      `--color-text-secondary: ${theme.colors.textSecondary}`,
-      `--color-border: ${theme.colors.border}`,
-      `--font-heading: ${theme.typography.headingFont}`,
-      `--font-body: ${theme.typography.bodyFont}`,
-      `--max-width: ${theme.layout.maxWidth}`,
-      `--container-padding: ${theme.layout.containerPadding}`
-    ].join(';\n')
-
-    // Apply to document root
-    const style = document.createElement('style')
-    style.textContent = `:root { ${cssVars} }`
-    document.head.appendChild(style)
+  // Apply preview instantly via context
+  const applyPreview = () => {
+    const siteTheme: SiteTheme = {
+      name: 'Preview Theme',
+      isActive: true,
+      colors: theme.colors,
+      typography: theme.typography,
+      layout: theme.layout,
+      createdAt: new Date() as any,
+      updatedAt: new Date() as any
+    }
+    
+    setGlobalTheme(siteTheme)
   }
 
   // Reset to default
   const resetTheme = () => {
     if (confirm('Ripristinare il tema predefinito? Tutte le personalizzazioni andranno perse.')) {
       setTheme(defaultTheme)
+      resetGlobalTheme()
     }
   }
 
@@ -253,13 +266,11 @@ export default function ThemeCustomizer() {
         <h2 className="text-2xl font-bold text-foreground">Personalizzazione Tema</h2>
         <div className="flex gap-2">
           <button
-            onClick={() => setPreviewMode(!previewMode)}
-            className={`px-4 py-2 rounded-xl flex items-center gap-2 ${
-              previewMode ? 'bg-green-500 text-white' : 'bg-gray-200 text-gray-700'
-            }`}
+            onClick={applyPreview}
+            className="px-4 py-2 bg-blue-500 text-white rounded-xl hover:bg-blue-600 flex items-center gap-2"
           >
-            <Eye className="w-4 h-4" />
-            {previewMode ? 'Modifica' : 'Anteprima'}
+            <Sparkles className="w-4 h-4" />
+            Anteprima Live
           </button>
           <button
             onClick={resetTheme}
