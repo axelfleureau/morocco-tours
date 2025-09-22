@@ -1,8 +1,6 @@
 // Google OAuth Client-side Authentication
-import { GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from 'firebase/auth'
-import { auth } from '@/lib/firebase'
-
-const googleProvider = new GoogleAuthProvider()
+import { signInWithPopup, signOut, onAuthStateChanged } from 'firebase/auth'
+import { auth, googleProvider } from '@/lib/firebase'
 
 // Configure Google OAuth
 googleProvider.setCustomParameters({

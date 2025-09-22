@@ -9,7 +9,8 @@ import {
   onAuthStateChanged,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
-  updateProfile
+  updateProfile,
+  sendPasswordResetEmail
 } from 'firebase/auth';
 import { doc, setDoc, getDoc } from 'firebase/firestore';
 import { auth, googleProvider, db } from './firebase';
@@ -91,6 +92,30 @@ export const signOutUser = async () => {
   } catch (error) {
     console.error('Error signing out:', error);
     throw error;
+  }
+};
+
+// Send password reset email
+export const resetPassword = async (email: string) => {
+  try {
+    await sendPasswordResetEmail(auth, email, {
+      url: `${window.location.origin}/auth/login`, // Redirect after reset
+      handleCodeInApp: false
+    });
+    console.log('Password reset email sent successfully');
+  } catch (error: any) {
+    console.error('Error sending password reset email:', error);
+    
+    // Handle specific Firebase errors
+    if (error.code === 'auth/user-not-found') {
+      throw new Error('Nessun account trovato con questa email');
+    } else if (error.code === 'auth/invalid-email') {
+      throw new Error('Formato email non valido');
+    } else if (error.code === 'auth/too-many-requests') {
+      throw new Error('Troppe richieste di reset. Riprova più tardi');
+    } else {
+      throw new Error('Errore nell\'invio dell\'email di reset. Riprova');
+    }
   }
 };
 

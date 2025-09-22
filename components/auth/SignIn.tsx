@@ -2,9 +2,10 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Mail, Lock, Loader2, Eye, EyeOff, ArrowRight } from 'lucide-react';
+import { Mail, Lock, Loader2, Eye, EyeOff, ArrowRight, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 import { useAuth } from '@/context/AuthContext';
+import { resetPassword } from '@/lib/auth';
 
 interface SignInProps {
   onSuccess?: () => void;
@@ -18,6 +19,10 @@ export default function SignIn({ onSuccess, redirectTo = '/dashboard', className
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
+  const [resetLoading, setResetLoading] = useState(false);
+  const [showResetForm, setShowResetForm] = useState(false);
+  const [resetEmail, setResetEmail] = useState('');
+  const [resetMessage, setResetMessage] = useState('');
   const [formData, setFormData] = useState({
     email: '',
     password: ''
@@ -70,14 +75,33 @@ export default function SignIn({ onSuccess, redirectTo = '/dashboard', className
     }
   };
 
+  const handleResetPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setResetLoading(true);
+    setError('');
+    setResetMessage('');
+
+    try {
+      await resetPassword(resetEmail);
+      setResetMessage('Email di reset inviata! Controlla la tua casella di posta.');
+      setResetEmail('');
+    } catch (err: any) {
+      setError(err.message || 'Errore durante l\'invio dell\'email di reset');
+    } finally {
+      setResetLoading(false);
+    }
+  };
+
   return (
     <div className={`w-full max-w-md mx-auto ${className}`}>
-      <form onSubmit={handleSubmit} className="space-y-6">
-        {error && (
-          <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4 text-red-700 dark:text-red-300 text-sm">
-            {error}
-          </div>
-        )}
+      {!showResetForm ? (
+        // Regular Login Form
+        <form onSubmit={handleSubmit} className="space-y-6">
+          {error && (
+            <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4 text-red-700 dark:text-red-300 text-sm">
+              {error}
+            </div>
+          )}
 
         {/* Email */}
         <div>
@@ -175,6 +199,17 @@ export default function SignIn({ onSuccess, redirectTo = '/dashboard', className
           )}
         </button>
 
+        {/* Password Reset Link */}
+        <div className="text-center text-sm text-muted-foreground">
+          <button
+            type="button"
+            onClick={() => setShowResetForm(true)}
+            className="text-orange-600 hover:text-orange-500 font-medium underline"
+          >
+            Password dimenticata?
+          </button>
+        </div>
+
         {/* Sign Up Link */}
         <div className="text-center text-sm text-muted-foreground">
           Non hai ancora un account?{' '}
@@ -183,6 +218,79 @@ export default function SignIn({ onSuccess, redirectTo = '/dashboard', className
           </Link>
         </div>
       </form>
+      ) : (
+        // Password Reset Form
+        <form onSubmit={handleResetPassword} className="space-y-6">
+          <div className="text-center mb-6">
+            <h3 className="text-lg font-semibold text-foreground">Recupera Password</h3>
+            <p className="text-sm text-muted-foreground mt-2">
+              Inserisci la tua email per ricevere il link di reset
+            </p>
+          </div>
+
+          {error && (
+            <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4 text-red-700 dark:text-red-300 text-sm">
+              {error}
+            </div>
+          )}
+
+          {resetMessage && (
+            <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-4 text-green-700 dark:text-green-300 text-sm">
+              {resetMessage}
+            </div>
+          )}
+
+          {/* Email for Reset */}
+          <div>
+            <label htmlFor="resetEmail" className="block text-sm font-medium text-foreground mb-2">
+              Email
+            </label>
+            <div className="relative">
+              <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+              <input
+                type="email"
+                id="resetEmail"
+                value={resetEmail}
+                onChange={(e) => setResetEmail(e.target.value)}
+                required
+                className="w-full pl-10 pr-4 py-3 border border-border rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent bg-background text-foreground placeholder-muted-foreground"
+                placeholder="inserisci@email.com"
+              />
+            </div>
+          </div>
+
+          {/* Reset Button */}
+          <button
+            type="submit"
+            disabled={resetLoading}
+            className="w-full bg-gradient-to-r from-orange-500 to-red-500 text-white py-3 px-4 rounded-lg font-semibold hover:from-orange-600 hover:to-red-600 focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+          >
+            {resetLoading ? (
+              <Loader2 className="w-5 h-5 animate-spin" />
+            ) : (
+              <>
+                Invia Email di Reset
+                <ArrowRight className="w-5 h-5" />
+              </>
+            )}
+          </button>
+
+          {/* Back to Login */}
+          <button
+            type="button"
+            onClick={() => {
+              setShowResetForm(false);
+              setResetEmail('');
+              setResetMessage('');
+              setError('');
+            }}
+            className="w-full text-muted-foreground hover:text-foreground transition-colors flex items-center justify-center gap-2"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Torna al Login
+          </button>
+        </form>
+      )}
     </div>
   );
 }
