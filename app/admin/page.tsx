@@ -16,6 +16,8 @@ import {
 // Components
 import GoogleAuthButton from "@/components/admin/GoogleAuthButton"
 import ContentDataGrid from "@/components/admin/ContentDataGrid"
+import VisualEditor from "@/components/admin/VisualEditor"
+import ThemeCustomizer from "@/components/admin/ThemeCustomizer"
 import { GoogleAuthService } from "@/lib/google-auth"
 import { COLLECTIONS } from "@/lib/firestore-schema"
 
@@ -436,8 +438,46 @@ export default function AdminPanel() {
               </div>
             )}
 
+            {/* Blog Management */}
+            {activeTab === "blog" && (
+              <ContentDataGrid
+                collection={COLLECTIONS.blog}
+                title="Gestione Blog"
+                columns={[
+                  { key: 'coverImage', label: 'Immagine', type: 'image' },
+                  { key: 'title', label: 'Titolo', type: 'text', sortable: true },
+                  { key: 'excerpt', label: 'Estratto', type: 'text' },
+                  { key: 'author', label: 'Autore', type: 'text' },
+                  { key: 'category', label: 'Categoria', type: 'text' },
+                  { key: 'tags', label: 'Tag', type: 'array' },
+                  { key: 'updatedAt', label: 'Aggiornato', type: 'date', sortable: true }
+                ]}
+                onCreate={() => alert('Modal creazione post - da implementare')}
+                onEdit={(item) => alert(`Modifica post: ${item.title} - da implementare`)}
+              />
+            )}
+
+            {/* Theme Customization */}
+            {activeTab === "theme" && (
+              <ThemeCustomizer />
+            )}
+
+            {/* Visual Site Editor */}
+            {activeTab === "site" && (
+              <div className="space-y-6">
+                <h2 className="text-2xl font-bold text-foreground">Editor Visuale Sito</h2>
+                <VisualEditor
+                  pageType="homepage"
+                  onSave={(blocks) => {
+                    console.log('Saving page blocks:', blocks)
+                    alert('Blocchi pagina salvati! (funzionalità da completare)')
+                  }}
+                />
+              </div>
+            )}
+
             {/* Placeholder for other tabs */}
-            {!["dashboard", "cities", "experiences", "travels", "services", "database"].includes(activeTab) && (
+            {!["dashboard", "cities", "experiences", "travels", "services", "database", "blog", "theme", "site"].includes(activeTab) && (
               <div className="bg-card rounded-2xl p-8 text-center">
                 <div className="text-muted-foreground">
                   <Settings className="w-16 h-16 mx-auto mb-4 opacity-50" />
