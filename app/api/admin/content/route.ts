@@ -54,20 +54,25 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Database not available' }, { status: 500 })
     }
     
-    // For authenticated admin requests, verify token
+    // ADMIN API: Always require authentication and admin role
     const authHeader = request.headers.get('authorization')
-    const isAdminRequest = !!authHeader
+    const idToken = authHeader?.replace('Bearer ', '')
     
-    if (isAdminRequest) {
-      const idToken = authHeader.replace('Bearer ', '')
-      await requireAdmin(idToken)
+    if (!idToken) {
+      return NextResponse.json({ error: 'Authentication required' }, { status: 401 })
     }
+    
+    // Verify admin role - this will throw if not admin
+    await requireAdmin(idToken)
     
     let query = adminDb.collection(collection)
     
-    // Filter by published status for public requests
-    if (!isAdminRequest && published !== 'false') {
+    // Admin can see all content, including unpublished
+    // Optional filtering by published status
+    if (published === 'true') {
       query = query.where('published', '==', true)
+    } else if (published === 'false') {
+      query = query.where('published', '==', false)
     }
     
     // Get specific document
