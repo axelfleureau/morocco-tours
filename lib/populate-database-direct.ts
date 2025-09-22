@@ -94,7 +94,7 @@ export async function populateDatabaseDirect() {
         images: ["/images/traditional-hammam.jpg"],
         price: 45,
         duration: "2-3 ore",
-        category: 'hammam' as const,
+        category: 'spa' as const,
         published: true,
         rating: 4.9,
         reviews: 234,

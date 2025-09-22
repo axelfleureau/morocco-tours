@@ -1,4 +1,3 @@
-// Backup of secure rules before temporary population
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
@@ -32,24 +31,23 @@ service cloud.firestore {
       allow write: if request.auth != null && request.auth.token.admin == true;
     }
     
-    // CMS sections - admin only
     match /cms_sections/{document} {
-      allow read, write: if request.auth != null && request.auth.token.admin == true;
+      allow read: if true;
+      allow write: if request.auth != null && request.auth.token.admin == true;
     }
     
-    // Package components - admin only write, public read
+    // Package components and templates - public read, admin write
     match /package_components/{document} {
-      allow read: if true;
+      allow read: if resource.data.available == true || (request.auth != null && request.auth.token.admin == true);
       allow write: if request.auth != null && request.auth.token.admin == true;
     }
     
-    // Package templates - admin only write, public read
     match /package_templates/{document} {
-      allow read: if true;
+      allow read: if resource.data.available == true || (request.auth != null && request.auth.token.admin == true);
       allow write: if request.auth != null && request.auth.token.admin == true;
     }
     
-    // Guides - admin only write, public read
+    // Guides - admin only write, public read based on visibility
     match /guides/{document} {
       allow read: if resource.data.isPublic == true || (request.auth != null && request.auth.token.admin == true);
       allow write: if request.auth != null && request.auth.token.admin == true;
