@@ -1,70 +1,83 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Link from "next/link"
 import { Clock, Users, Star, ArrowRight, Filter } from "lucide-react"
+import { getPublishedTravels } from "@/lib/public-data"
+import { Travel } from "@/lib/firestore-schema"
 
 export default function PopularTrips() {
   const [activeTrip, setActiveTrip] = useState(0)
   const [selectedCategory, setSelectedCategory] = useState("Tutti")
   const [selectedStyle, setSelectedStyle] = useState("Tutti")
+  const [trips, setTrips] = useState<Travel[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState("")
 
-  const trips = [
-    {
-      id: 1,
-      title: "Tour delle Città Imperiali",
-      subtitle: "Marrakech • Fes • Meknes • Rabat",
-      duration: "8 giorni / 7 notti",
-      price: "€890",
-      originalPrice: "€1090",
-      rating: 4.9,
-      reviews: 127,
-      image: "/images/imperial-cities-tour.png",
-      highlights: ["Medine UNESCO", "Palazzi reali", "Souks autentici", "Guide esperte"],
-      description:
-        "Scopri le quattro città imperiali del Marocco in un viaggio indimenticabile attraverso storia, cultura e tradizioni millenarie.",
-      category: "Culturale",
-      style: "Gruppo",
-    },
-    {
-      id: 2,
-      title: "Avventura nel Deserto",
-      subtitle: "Marrakech • Merzouga • Sahara",
-      duration: "4 giorni / 3 notti",
-      price: "€450",
-      originalPrice: "€550",
-      rating: 4.8,
-      reviews: 89,
-      image: "/images/sahara-adventure.png",
-      highlights: ["Notte nel deserto", "Cammelli", "Alba sulle dune", "Campo berbero"],
-      description:
-        "Vivi l'esperienza magica del Sahara con notti sotto le stelle e tramonti mozzafiato sulle dune dorate.",
-      category: "Avventura",
-      style: "Piccoli Gruppi",
-    },
-    {
-      id: 3,
-      title: "Marocco Completo",
-      subtitle: "Da Nord a Sud",
-      duration: "12 giorni / 11 notti",
-      price: "€1290",
-      originalPrice: "€1490",
-      rating: 4.9,
-      reviews: 156,
-      image: "/images/complete-morocco.png",
-      highlights: ["Tutto il Marocco", "Città + Deserto", "Costa atlantica", "Montagne Atlas"],
-      description:
-        "Il tour più completo per scoprire ogni angolo del Marocco: dalle città imperiali al deserto, dalla costa alle montagne.",
-      category: "Completo",
-      style: "Su Misura",
-    },
-  ]
+  // Load published travels from database
+  useEffect(() => {
+    const loadTrips = async () => {
+      try {
+        setLoading(true)
+        const publishedTrips = await getPublishedTravels({ 
+          featured: true, 
+          limit: 6 
+        })
+        setTrips(publishedTrips)
+        setError("")
+      } catch (err) {
+        console.error('Error loading trips:', err)
+        setError("Errore nel caricamento dei viaggi")
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    loadTrips()
+  }, [])
 
   const filteredTrips = trips.filter((trip) => {
     const categoryMatch = selectedCategory === "Tutti" || trip.category === selectedCategory
-    const styleMatch = selectedStyle === "Tutti" || trip.style === selectedStyle
-    return categoryMatch && styleMatch
+    // Add style filtering based on trip data when available
+    return categoryMatch
   })
+
+  if (loading) {
+    return (
+      <div className="py-16 lg:py-24 bg-muted/30">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12 lg:mb-16">
+            <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-4">Viaggi Più Richiesti</h2>
+            <p className="text-lg lg:text-xl text-muted-foreground max-w-2xl mx-auto">
+              I nostri tour più amati, perfetti per scoprire il meglio del Marocco
+            </p>
+          </div>
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {[...Array(6)].map((_, i) => (
+              <div key={i} className="bg-card rounded-2xl p-6 shadow-lg animate-pulse">
+                <div className="h-48 bg-gray-200 dark:bg-gray-700 rounded-xl mb-4"></div>
+                <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4 mb-2"></div>
+                <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/2"></div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="py-16 lg:py-24 bg-muted/30">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center">
+            <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-4">Viaggi Più Richiesti</h2>
+            <p className="text-red-600 dark:text-red-400">{error}</p>
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="py-16 lg:py-24 bg-muted/30">
@@ -90,10 +103,12 @@ export default function PopularTrips() {
                 className="w-full px-4 py-4 bg-background border border-border rounded-xl text-foreground focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 min-h-[48px] text-base"
               >
                 <option value="Tutti">Tutte le Categorie</option>
-                <option value="Culturale">Culturale</option>
-                <option value="Avventura">Avventura</option>
-                <option value="Completo">Completo</option>
-                <option value="Relax">Relax</option>
+                <option value="imperial-cities">Città Imperiali</option>
+                <option value="desert">Deserto</option>
+                <option value="coast">Costa</option>
+                <option value="mountains">Montagne</option>
+                <option value="cultural">Culturale</option>
+                <option value="custom">Su Misura</option>
               </select>
             </div>
             <div>
@@ -107,7 +122,7 @@ export default function PopularTrips() {
                 <option value="Gruppo">Gruppo</option>
                 <option value="Piccoli Gruppi">Piccoli Gruppi</option>
                 <option value="Su Misura">Su Misura</option>
-                <option value="Famiglia">Famiglia</option>
+                <option value="Privato">Privato</option>
               </select>
             </div>
           </div>
@@ -134,7 +149,7 @@ export default function PopularTrips() {
                   <div className="relative h-64 lg:h-80 overflow-hidden">
                     <img
                       src={
-                        trip.image ||
+                        trip.images?.[0] ||
                         `/placeholder.svg?height=400&width=600&query=${encodeURIComponent(trip.title + " marocco viaggio")}`
                       }
                       alt={trip.title}
@@ -143,10 +158,10 @@ export default function PopularTrips() {
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
                     <div className="absolute top-4 right-4 bg-white dark:bg-gray-800 rounded-full px-4 py-2 shadow-lg">
                       <div className="flex items-center space-x-2">
-                        <span className="font-bold text-lg text-gray-900 dark:text-gray-100">{trip.price}</span>
+                        <span className="font-bold text-lg text-gray-900 dark:text-gray-100">€{trip.price}</span>
                         {trip.originalPrice && (
                           <span className="text-sm line-through text-gray-500 dark:text-gray-400">
-                            {trip.originalPrice}
+                            €{trip.originalPrice}
                           </span>
                         )}
                       </div>
@@ -158,7 +173,7 @@ export default function PopularTrips() {
                     </div>
                     <div className="absolute bottom-6 left-6 text-white">
                       <h3 className="text-2xl lg:text-3xl font-bold mb-2 text-balance">{trip.title}</h3>
-                      <p className="text-gray-200 text-sm lg:text-base text-pretty">{trip.subtitle}</p>
+                      <p className="text-gray-200 text-sm lg:text-base text-pretty">{trip.category}</p>
                     </div>
                   </div>
                   <div className="p-6 lg:p-8">

@@ -24,4 +24,5 @@ yarn-error.log*
 
 # typescript
 *.tsbuildinfo
-next-env.d.ts
+next-env.d.ts# SECURITY REMEDIATION - FIREBASE CREDENTIALS REMOVED
+attached_assets/*firebase*admin*
