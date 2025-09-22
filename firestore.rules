@@ -1,96 +1,95 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Allow public read access to cities data
+    // Cities data - public read, admin write
     match /cities/{document} {
       allow read: if true;
-      allow write: if request.auth != null;
+      allow write: if request.auth != null && request.auth.token.admin == true;
     }
     
-    // Allow public read access to travel packages
+    // Travel packages - public read, admin write
     match /travels/{document} {
       allow read: if true;
-      allow write: if request.auth != null;
+      allow write: if request.auth != null && request.auth.token.admin == true;
     }
     
-    // Allow public read access to experiences
+    // Experiences - public read, admin write
     match /experiences/{document} {
       allow read: if true;
-      allow write: if request.auth != null;
+      allow write: if request.auth != null && request.auth.token.admin == true;
     }
     
-    // Bookings - authenticated users can create, admin can read/write
+    // Bookings - owner can read/write their own, admin can read/write all
     match /bookings/{document} {
-      allow read, write: if request.auth != null;
       allow create: if true; // Allow anonymous bookings
+      allow read, write: if request.auth != null && (request.auth.token.admin == true || resource.data.userId == request.auth.uid);
     }
     
-    // CMS content - admin only
+    // CMS content - admin only write, published content public read
     match /cms_content/{document} {
-      allow read: if true; // Public read for published content
-      allow write: if request.auth != null; // Admin write
+      allow read: if resource.data.published == true || (request.auth != null && request.auth.token.admin == true);
+      allow write: if request.auth != null && request.auth.token.admin == true;
     }
     
     match /cms_sections/{document} {
       allow read: if true;
-      allow write: if request.auth != null;
+      allow write: if request.auth != null && request.auth.token.admin == true;
     }
     
     // Package components and templates - public read, admin write
     match /package_components/{document} {
-      allow read: if true;
-      allow write: if request.auth != null;
+      allow read: if resource.data.available == true || (request.auth != null && request.auth.token.admin == true);
+      allow write: if request.auth != null && request.auth.token.admin == true;
     }
     
     match /package_templates/{document} {
-      allow read: if true;
-      allow write: if request.auth != null;
+      allow read: if resource.data.published == true || (request.auth != null && request.auth.token.admin == true);
+      allow write: if request.auth != null && request.auth.token.admin == true;
     }
     
-    // User themes - authenticated users only
+    // User themes - user's own themes or admin
     match /user_themes/{document} {
-      allow read, write: if request.auth != null;
+      allow read, write: if request.auth != null && (resource.data.userId == request.auth.uid || request.auth.token.admin == true);
     }
     
-    // Guides - public read, admin write
+    // Guides - public read for published, admin write
     match /guides/{document} {
-      allow read: if true;
-      allow write: if request.auth != null;
+      allow read: if resource.data.isPublic == true || (request.auth != null && request.auth.token.admin == true);
+      allow write: if request.auth != null && request.auth.token.admin == true;
     }
     
-    // Users - authenticated users can read/write their own data
+    // Users - users can read/write their own data, admin can read/write all
     match /users/{userId} {
-      allow read, write: if request.auth != null && request.auth.uid == userId;
-      allow read: if request.auth != null; // Admin can read all users
+      allow read, write: if request.auth != null && (request.auth.uid == userId || request.auth.token.admin == true);
     }
     
     // Inquiries - allow creation, admin can read/write
     match /inquiries/{document} {
       allow create: if true; // Allow anonymous inquiries
-      allow read, write: if request.auth != null; // Admin access
+      allow read, write: if request.auth != null && request.auth.token.admin == true;
     }
     
-    // Blog posts - public read, admin write
+    // Blog posts - public read for published, admin write
     match /blog/{document} {
-      allow read: if true;
-      allow write: if request.auth != null;
+      allow read: if resource.data.published == true || (request.auth != null && request.auth.token.admin == true);
+      allow write: if request.auth != null && request.auth.token.admin == true;
     }
     
     // Analytics - admin only
     match /analytics/{document} {
-      allow read, write: if request.auth != null;
+      allow read, write: if request.auth != null && request.auth.token.admin == true;
     }
     
     // Site content - public read, admin write
     match /site_content/{document} {
       allow read: if true;
-      allow write: if request.auth != null;
+      allow write: if request.auth != null && request.auth.token.admin == true;
     }
     
     // Services - public read, admin write
     match /services/{document} {
       allow read: if true;
-      allow write: if request.auth != null;
+      allow write: if request.auth != null && request.auth.token.admin == true;
     }
     
     // Default deny all other documents

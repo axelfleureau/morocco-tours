@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { Plus, Edit, Trash2, Save, Eye, EyeOff, Calendar, Image, Type, Layout } from 'lucide-react';
+import { Plus, Edit, Trash2, Save, Eye, EyeOff, Calendar, Image, Type, Layout, Database } from 'lucide-react';
 import { CMSService, CMSContent, CMSSection } from '@/lib/cms';
 
 interface CMSTab {
@@ -17,12 +17,15 @@ export default function CMSInterface() {
   const [loading, setLoading] = useState(false);
   const [editingItem, setEditingItem] = useState<CMSContent | null>(null);
   const [showEditor, setShowEditor] = useState(false);
+  const [populatingDb, setPopulatingDb] = useState(false);
+  const [populationResult, setPopulationResult] = useState<any>(null);
 
   const tabs: CMSTab[] = [
     { id: 'content', name: 'Gestione Contenuti', icon: Type },
     { id: 'sections', name: 'Sezioni Homepage', icon: Layout },
     { id: 'blog', name: 'Blog', icon: Calendar },
-    { id: 'cities', name: 'Pagine Città', icon: Image }
+    { id: 'cities', name: 'Pagine Città', icon: Image },
+    { id: 'database', name: 'Database Setup', icon: Database }
   ];
 
   useEffect(() => {
@@ -38,6 +41,8 @@ export default function CMSInterface() {
       } else if (activeTab === 'sections') {
         const sectionsData = await CMSService.getAllSections();
         setSections(sectionsData);
+      } else if (activeTab === 'database') {
+        // Database tab doesn't need to load data initially
       }
     } catch (error) {
       console.error('Error loading CMS data:', error);
@@ -93,6 +98,85 @@ export default function CMSInterface() {
     } catch (error) {
       console.error('Error toggling publish:', error);
     }
+  };
+
+  const handlePopulateDatabase = async () => {
+    setPopulatingDb(true);
+    setPopulationResult(null);
+    
+    try {
+      // Import the population data directly (client-side approach for admin)
+      const { populateDatabaseDirect } = await import('@/lib/populate-database-direct');
+      const result = await populateDatabaseDirect();
+      setPopulationResult(result);
+      
+      if (result.success) {
+        // Reload data if we're on a content tab
+        if (['content', 'blog', 'cities', 'sections'].includes(activeTab)) {
+          loadData();
+        }
+      }
+    } catch (error) {
+      console.error('Error populating database:', error);
+      setPopulationResult({ 
+        success: false, 
+        error: 'Errore durante la popolazione del database: ' + (error as Error).message
+      });
+    } finally {
+      setPopulatingDb(false);
+    }
+  };
+
+  const renderDatabaseTab = () => {
+    return (
+      <div className="space-y-6">
+        <div className="flex justify-between items-center">
+          <h3 className="text-lg font-semibold">Database Management</h3>
+        </div>
+        
+        <div className="bg-card border border-border rounded-lg p-6">
+          <h4 className="text-md font-medium mb-4">Popola Database</h4>
+          <p className="text-sm text-muted-foreground mb-4">
+            Popola il database con i dati esistenti dalle pagine del sito (città, esperienze, viaggi, componenti pacchetti).
+            Utilizza logica upsert per evitare duplicati.
+          </p>
+          
+          <button
+            onClick={handlePopulateDatabase}
+            disabled={populatingDb}
+            className="flex items-center space-x-2 bg-primary text-primary-foreground px-4 py-2 rounded-lg hover:opacity-90 disabled:opacity-50"
+          >
+            <Database className="w-4 h-4" />
+            <span>{populatingDb ? 'Popolando...' : 'Popola Database'}</span>
+          </button>
+          
+          {populationResult && (
+            <div className="mt-4 p-4 border rounded-lg">
+              {populationResult.success ? (
+                <div className="text-green-600">
+                  <p className="font-medium">✅ Database popolato con successo!</p>
+                  {populationResult.summary && (
+                    <div className="mt-2 text-sm">
+                      <p>Città: {populationResult.summary.cities}</p>
+                      <p>Esperienze: {populationResult.summary.experiences}</p>
+                      <p>Componenti: {populationResult.summary.packageComponents}</p>
+                      {populationResult.summary.errors > 0 && (
+                        <p className="text-orange-600">Errori: {populationResult.summary.errors}</p>
+                      )}
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <div className="text-red-600">
+                  <p className="font-medium">❌ Errore durante la popolazione</p>
+                  <p className="text-sm mt-1">{populationResult.error}</p>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      </div>
+    );
   };
 
   const renderContentList = () => {
@@ -235,7 +319,7 @@ export default function CMSInterface() {
 
       {/* Content Area */}
       <div className="bg-background rounded-lg">
-        {renderContentList()}
+        {activeTab === 'database' ? renderDatabaseTab() : renderContentList()}
       </div>
 
       {/* Content Editor Modal */}
