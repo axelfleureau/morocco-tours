@@ -1,6 +1,6 @@
 "use client";
 
-import { Phone, Mail, Clock, Facebook, Instagram, Twitter, Youtube, User, Settings, LogOut } from "lucide-react"
+import { Phone, Mail, Clock, Instagram, User, Settings, LogOut } from "lucide-react"
 import Link from "next/link"
 import NewsletterForm from "@/components/forms/NewsletterForm"
 import { useAuth } from "@/context/AuthContext"
@@ -152,41 +152,20 @@ export default function Footer() {
             </div>
             {/* Social & Legal */}
             <div>
-              <h4 className="text-sm font-semibold mb-3 text-foreground">Seguici</h4>
+              <h4 className="text-sm font-semibold mb-3 text-foreground">Seguici su Instagram</h4>
               <div className="flex space-x-3">
                 <a
-                  href="#"
-                  aria-label="Facebook"
-                  className="group w-9 h-9 bg-muted rounded-full flex items-center justify-center hover:bg-gradient-to-r hover:from-orange-500 hover:to-red-500 hover:text-white transition-all"
-                  title="Facebook"
-                >
-                  <Facebook className="w-4 h-4 group-hover:scale-110 transition-transform" />
-                </a>
-                <a
-                  href="#"
+                  href="https://www.instagram.com/omarito_chill/"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   aria-label="Instagram"
-                  className="group w-9 h-9 bg-muted rounded-full flex items-center justify-center hover:bg-gradient-to-r hover:from-orange-500 hover:to-red-500 hover:text-white transition-all"
-                  title="Instagram"
+                  className="group w-10 h-10 bg-gradient-to-br from-purple-600 via-pink-500 to-orange-500 rounded-full flex items-center justify-center hover:scale-110 transition-transform shadow-lg"
+                  title="Seguici su Instagram"
                 >
-                  <Instagram className="w-4 h-4 group-hover:scale-110 transition-transform" />
-                </a>
-                <a
-                  href="#"
-                  aria-label="Twitter"
-                  className="group w-9 h-9 bg-muted rounded-full flex items-center justify-center hover:bg-gradient-to-r hover:from-orange-500 hover:to-red-500 hover:text-white transition-all"
-                  title="Twitter"
-                >
-                  <Twitter className="w-4 h-4 group-hover:scale-110 transition-transform" />
-                </a>
-                <a
-                  href="#"
-                  aria-label="Youtube"
-                  className="group w-9 h-9 bg-muted rounded-full flex items-center justify-center hover:bg-gradient-to-r hover:from-orange-500 hover:to-red-500 hover:text-white transition-all"
-                  title="Youtube"
-                >
-                  <Youtube className="w-4 h-4 group-hover:scale-110 transition-transform" />
+                  <Instagram className="w-5 h-5 text-white" />
                 </a>
               </div>
+              <p className="text-xs text-muted-foreground mt-2">@omarito_chill</p>
             </div>
             {/* Legal links */}
             <div className="mt-8">
