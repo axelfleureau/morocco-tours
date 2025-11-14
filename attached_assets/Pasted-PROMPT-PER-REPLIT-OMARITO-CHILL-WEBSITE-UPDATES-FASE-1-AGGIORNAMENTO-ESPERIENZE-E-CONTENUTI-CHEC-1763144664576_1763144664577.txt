@@ -1,0 +1,247 @@
+PROMPT PER REPLIT - OMARITO CHILL WEBSITE UPDATES
+FASE 1: AGGIORNAMENTO ESPERIENZE E CONTENUTI (CHECKPOINT 1)
+Goal: Aggiornare la sezione esperienze, risolvere i bug di navigazione, e modificare i testi visibili agli utenti.
+
+Contesto: Il sito omarito_chill offre esperienze e viaggi in Marocco. Nel documento allegato (sito.docx) sono evidenziati i bug e i contenuti da modificare. Le istruzioni dettagliate sono indicate con commenti su screenshot.
+
+Azioni specifiche da eseguire (in questo ordine):
+
+Sezione Esperienze - Modifica della lista:
+
+Eliminare la visualizzazione delle sottocategorie per Surf: mostrare solo "Surf" senza Taghazout, Essouira e Imsouane
+
+Mantenere le altre esperienze: Giro a cavallo, Immersioni subacquee, Giro in barca, Mongolfiera
+
+Rimuovere completamente la card "Tour fotografico"
+
+Sezione Tour nel Deserto - Aggiungere "Avventure nel Deserto di Agafay":
+
+Creare una nuova card/sezione denominata "Quad e Cammelli - L'avventura perfetta nel deserto di Agafay" (NOT "120€" ma "50€")
+
+Questa card deve trovarsi nella sezione "Esperienze Autentiche" accanto a "Notte nel Deserto"
+
+Il pulsante "Dettagli" su questa card deve portare alla sezione deserto di Agafay (attualmente rimanda a "Trekking nell'Alto Atlante" - BUG da correggere)
+
+Sezione Viaggi - Aggiornare sottotitoli:
+
+Trovare il sottotitolo "Emozioni nel Sahara: dalle dune dorate alle notti stellate"
+
+Modificare in: "Emozioni nei Deserti: dalle dune dorate alle notti stellate" (rimuovere la parola "Sahara" perché ci sono più deserti)
+
+Sezione Città Imperiali - Aggiungere descrizioni:
+
+Nel dropdown "Città Imperiali", quando l'utente clicca su "Scopri", deve visualizzare una pagina/modal con le descrizioni dettagliate di ogni città imperiale
+
+Attualmente il pulsante non funziona - fix richiesto
+
+Sezione Costa Atlantica - Fix navigazione:
+
+Nel dropdown "Costa Atlantica", il pulsante "Scopri" per le varie città non funziona - fix richiesto
+
+Assicurarsi che cliccando su una città si apra la pagina/sezione corretta
+
+Form Prenotazioni Personalizzate - Rendere obbligatorio il campo data ritorno:
+
+Individuare il form per le prenotazioni personalizzate
+
+Attualmente il campo "Data di ritorno" è opzionale - deve diventare required/obbligatorio
+
+Aggiungere validazione lato client e server per verificare che la data sia presente
+
+Sezione Team - Aggiornare membri:
+
+Mostrare SOLO i seguenti membri (rimuovere tutti gli altri):
+
+El Kharroubi Omar (Fondatore e CEO)
+
+Latifa Abkal (Responsabile Esperienze)
+
+FASE 2: FUNZIONALITÀ DASHBOARD UTENTE (CHECKPOINT 2)
+Goal: Risolvere i bug di navigazione e di interazione nella dashboard utente.
+
+Azioni specifiche:
+
+Pulsante "Esplora Viaggi" nella Dashboard:
+
+Il pulsante attualmente non funziona - fix richiesto
+
+Deve portare l'utente alla pagina principale dei viaggi/esperienze
+
+Test: click → navigazione alla sezione viaggi (verificare che non rimanga sulla dashboard)
+
+Pulsante "Wishlist" - Aggiungere a Lista dei Desideri:
+
+Funzionalità: quando l'utente clicca sul pulsante ❤️ (like) o "Aggiungi a Wishlist" su un viaggio/esperienza:
+
+Se l'utente NON è autenticato: mostrare prompt/modal "Accedi per salvare questo viaggio nella tua lista dei desideri"
+
+Reindirizzare al login
+
+Se l'utente è autenticato: salvare il viaggio nel database (Replit Database)
+
+Visualizzare conferma: "Aggiunto alla lista dei desideri" (con visual feedback, es. cuore che cambia colore)
+
+Attualmente questa funzionalità non funziona - fix richiesto
+
+FASE 3: INTEGRAZIONE SOCIAL MEDIA (CHECKPOINT 3)
+Goal: Aggiungere il profilo Instagram e nascondere i social non attivi.
+
+Azioni specifiche:
+
+Sezione Social Media Footer/Contatti:
+
+Integrare il link al profilo Instagram: https://www.instagram.com/omarito_chill/
+
+Icona Instagram deve essere cliccabile (apre il profilo in nuova finestra/tab)
+
+Nascondere temporaneamente gli altri link social non attivi (Facebook, TikTok, Twitter, ecc.)
+
+Assicurarsi che il link sia ben visibile e prominente
+
+FASE 4: SEZIONE NOLEGGIO AUTO - STRUTTURA E INTEGRAZIONE DATI (CHECKPOINT 4)
+Goal: Implementare la sezione noleggio auto utilizzando i dati dai CSV allegati.
+
+Contesto tecnico:
+
+CSV 1 contiene: lista veicoli con categorie, specifiche tecniche, prezzi stagionali
+
+CSV 2 contiene: servizi inclusi nel prezzo e servizi extra
+
+Struttura da implementare:
+
+Pagina/Sezione Noleggio Auto:
+
+Titolo: "Noleggio Auto a Marrakech"
+
+Sottotitolo: descrizione breve del servizio di noleggio
+
+Sistema di Filtri:
+
+Filtro per Categoria: Economica, SUV, Premium
+
+Filtro per Tipo di Cambio: Manuale, Automatica
+
+Filtro per Carburante: Benzina, Diesel
+
+Selezione date: calendario per "Data Inizio" e "Data Fine" (obbligatorie)
+
+Pulsante "Cerca" per applicare i filtri
+
+Elenco Veicoli (Grid/List View):
+
+Card per ogni veicolo con:
+
+Immagine del veicolo
+
+Nome e modello
+
+Categoria (badge)
+
+Specifiche: aria condizionata (sì/no), cambio, carburante, numero porte, numero posti
+
+Franchigia giornaliera
+
+Prezzo dinamico calcolato in base a:
+
+Periodo stagionale selezionato (4 periodi dal CSV)
+
+Durata della prenotazione (2-5 giorni / 6-20 giorni / più di 20 giorni)
+
+Pulsante "Prenota" o "Visualizza Dettagli"
+
+Logica di Calcolo Prezzi:
+
+Le tariffe variano in base a 4 periodi:
+
+Dal 10/01 al 15/07
+
+Dal 15/07 al 05/09
+
+Dal 20/12 al 10/01 (Capodanno - alta stagione)
+
+Dal 5/09 al 20/12
+
+Per ogni periodo, il prezzo cambia in base alla durata:
+
+2-5 giorni: prezzo più alto
+
+6-20 giorni: prezzo ridotto
+
+Oltre 20 giorni: miglior prezzo
+
+La data selezionata determina il periodo e la durata calcolata automaticamente
+
+Pagina Dettagli Veicolo:
+
+Immagine principale + gallery
+
+Nome completo del veicolo
+
+Tutte le specifiche tecniche
+
+Descrizione breve del veicolo
+
+Servizi inclusi nel prezzo (da CSV 2):
+
+✓ Chilometraggio illimitato
+
+✓ Secondo conducente gratuito
+
+✓ Consegna gratuita a Marrakech
+
+✓ Assistenza 24/7
+
+✓ IVA inclusa
+
+Servizi extra disponibili (opzionali a pagamento - da CSV 2):
+
+Assicurazione a franchigia zero
+
+Esenzione danni da collisione
+
+Protezione antifurto
+
+Calcolo prezzo totale con selezione data
+
+Pulsante "Conferma Prenotazione"
+
+CHECKPOINT TEST - Prima di procedere:
+Dopo la Fase 1, verificare:
+
+ Esperienze mostrate correttamente (solo Surf senza categorie)
+
+ Card "Quad e Cammelli - 50€" visibile nella sezione deserto Agafay
+
+ Pulsante "Dettagli" su "Notte nel Deserto" rimanda a deserto
+
+ Sottotitolo Sahara corretto
+
+ Pulsanti "Scopri" per Città Imperiali e Costa funzionanti
+
+ Campo "Data Ritorno" obbligatorio nel form
+
+ Team mostra solo El Kharroubi Omar e Latifa Abkal
+
+Dopo la Fase 2, verificare:
+
+ Pulsante "Esplora Viaggi" naviga correttamente
+
+ Wishlist richiede login e salva nel database
+
+ Feedback visuale conferma il salvataggio
+
+Dopo la Fase 3, verificare:
+
+ Link Instagram visibile e funzionante
+
+ Social inattivi nascosti
+
+Dopo la Fase 4, verificare:
+
+ Filtri funzionanti
+
+ Prezzi calcolati correttamente in base a date e durata
+
+ Pagina dettagli carica correttamente
+
+PRIORITÀ GENERALE: Fasi in ordine (1 → 2 → 3 → 4). Usare Checkpoint tra ogni fase.
