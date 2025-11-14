@@ -201,7 +201,7 @@ export default function UserOverview() {
           </h3>
           <div className="space-y-3">
             <a
-              href="/viaggi"
+              href="/esperienze"
               className="flex items-center space-x-3 p-3 bg-orange-50 dark:bg-orange-900/20 text-orange-700 dark:text-orange-300 rounded-lg hover:bg-orange-100 dark:hover:bg-orange-900/30 transition-colors"
             >
               <MapPin className="w-5 h-5" />
