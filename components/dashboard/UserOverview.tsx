@@ -222,11 +222,11 @@ export default function UserOverview() {
               <span className="font-medium">Lista Desideri</span>
             </a>
             <a
-              href="/dashboard/profile"
+              href="/dashboard"
               className="flex items-center space-x-3 p-3 bg-gray-50 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors"
             >
               <User className="w-5 h-5" />
-              <span className="font-medium">Modifica Profilo</span>
+              <span className="font-medium">Il Mio Profilo</span>
             </a>
           </div>
         </div>
