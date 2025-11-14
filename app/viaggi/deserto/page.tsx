@@ -275,7 +275,7 @@ export default function DesertToursPage() {
             </span>
           </h1>
           <p className="text-xl md:text-2xl max-w-3xl mx-auto mb-8">
-            Emozioni nel Sahara: dalle dune dorate alle notti stellate
+            Emozioni nei Deserti: dalle dune dorate alle notti stellate
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <div className="bg-white/20 dark:bg-white/5 backdrop-blur-sm px-6 py-3 rounded-full">

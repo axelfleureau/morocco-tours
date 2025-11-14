@@ -38,6 +38,15 @@ const AuthenticExperiences = () => {
               href: "/esperienze/trekking",
             },
             {
+              icon: Mountain,
+              title: "Quad e Cammelli",
+              description: "L'avventura perfetta nel deserto di Agafay",
+              price: "€50",
+              image: "/images/sahara-sunset.png",
+              duration: "4 ore",
+              href: "/esperienze/quad-cammelli",
+            },
+            {
               icon: Heart,
               title: "Hammam Tradizionale",
               description: "Rilassati con un autentico bagno turco marocchino",
@@ -54,15 +63,6 @@ const AuthenticExperiences = () => {
               image: "/images/cooking-class.png",
               duration: "4 ore",
               href: "/esperienze/cucina",
-            },
-            {
-              icon: Camera,
-              title: "Tour Fotografico",
-              description: "Cattura la bellezza del Marocco con un fotografo",
-              price: "€85",
-              image: "/images/photo-tour.png",
-              duration: "6 ore",
-              href: "/esperienze/fotografia",
             },
           ].map((experience, idx) => (
             <Card

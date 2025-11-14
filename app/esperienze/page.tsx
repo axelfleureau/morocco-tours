@@ -1,6 +1,6 @@
 import Link from "next/link"
 import ContactBanner from "@/components/cta/contact-banner"
-import { Mountain, Waves, Camera, Hammer } from "lucide-react"
+import { Mountain, Waves, Hammer } from "lucide-react"
 
 const experiences = [
   {
@@ -14,21 +14,12 @@ const experiences = [
   },
   {
     slug: "surf",
-    title: "Surf Taghazout", // Updated from "Surf Essaouira" to "Surf Taghazout"
+    title: "Surf",
     icon: Waves,
-    excerpt: "Surf camp e lezioni a Taghazout: onde consistenti e atmosfera rilassata sulla costa atlantica.", // Updated description to reflect Taghazout location
+    excerpt: "Surf camp e lezioni sulla costa atlantica: onde consistenti e atmosfera rilassata.",
     image: "/images/essaouira-coast.png",
     price: "da €220",
     duration: "4-7 giorni",
-  },
-  {
-    slug: "fotografia",
-    title: "Fotografia",
-    icon: Camera,
-    excerpt: "Dalla luce del deserto ai colori delle medine: workshop fotografici per cogliere l'essenza del Marocco.",
-    image: "/images/photo-tour.png",
-    price: "da €150",
-    duration: "Mezza/intera giornata",
   },
   {
     slug: "artigianato",

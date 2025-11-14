@@ -408,13 +408,14 @@ _Grazie!_`
 
                     <div>
                       <label className="block text-sm font-medium text-card-foreground mb-2">
-                        Data di ritorno preferita
+                        Data di ritorno preferita <span className="text-red-500">*</span>
                       </label>
                       <input
                         type="date"
                         value={formData.returnDate}
                         onChange={(e) => handleInputChange("returnDate", e.target.value)}
                         className="w-full px-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-foreground"
+                        required
                       />
                     </div>
                   </div>

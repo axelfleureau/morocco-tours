@@ -122,25 +122,19 @@ export default function AboutPage() {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-6 lg:gap-8">
+          <div className="grid md:grid-cols-2 gap-6 lg:gap-8 max-w-4xl mx-auto">
             {[
               {
-                name: "Ahmed El Fassi",
-                role: "Fondatore & CEO",
+                name: "El Kharroubi Omar",
+                role: "Fondatore e CEO",
                 image: "/images/team-ahmed.png",
                 description: "Guida esperta con 15 anni di esperienza nel turismo marocchino",
               },
               {
-                name: "Fatima Benali",
+                name: "Latifa Abkal",
                 role: "Responsabile Esperienze",
                 image: "/images/team-fatima.png",
                 description: "Specialista in cultura berbera e tradizioni locali",
-              },
-              {
-                name: "Youssef Alami",
-                role: "Guida del Deserto",
-                image: "/images/team-youssef.png",
-                description: "Esperto del Sahara e delle rotte carovaniere tradizionali",
               },
             ].map((member, idx) => (
               <div
