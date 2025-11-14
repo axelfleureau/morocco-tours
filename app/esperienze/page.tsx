@@ -1,38 +1,47 @@
+"use client";
+
+import { useState, useEffect } from 'react';
 import Link from "next/link"
 import ContactBanner from "@/components/cta/contact-banner"
-import { Mountain, Waves, Hammer } from "lucide-react"
+import WishlistButton from "@/components/WishlistButton"
+import { Mountain, Waves, Hammer, Loader2 } from "lucide-react"
+import { firestoreService } from "@/lib/firestore"
 
-const experiences = [
-  {
-    slug: "trekking",
-    title: "Trekking Atlante",
-    icon: Mountain,
-    excerpt: "Attraversa villaggi berberi e valli mozzafiato nel cuore dell'Alto Atlante con guide locali esperte.",
-    image: "/images/atlas-mountains.png",
-    price: "da €180",
-    duration: "3-7 giorni",
-  },
-  {
-    slug: "surf",
-    title: "Surf",
-    icon: Waves,
-    excerpt: "Surf camp e lezioni sulla costa atlantica: onde consistenti e atmosfera rilassata.",
-    image: "/images/essaouira-coast.png",
-    price: "da €220",
-    duration: "4-7 giorni",
-  },
-  {
-    slug: "artigianato",
-    title: "Artigianato",
-    icon: Hammer,
-    excerpt: "Laboratori con maestri artigiani: ceramica, tessitura, pelle e zellige per vivere la tradizione.",
-    image: "/images/moroccan-souk.png",
-    price: "da €45",
-    duration: "2-8 ore",
-  },
-]
+const iconMap: Record<string, any> = {
+  'trekking': Mountain,
+  'surf': Waves,
+  'artigianato': Hammer,
+};
 
 export default function EsperienzeIndexPage() {
+  const [experiences, setExperiences] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const loadExperiences = async () => {
+      try {
+        const data = await firestoreService.getPublishedExperiences();
+        setExperiences(data);
+      } catch (error) {
+        console.error('Error loading experiences:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadExperiences();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-white dark:bg-gray-950 flex items-center justify-center">
+        <div className="text-center">
+          <Loader2 className="w-12 h-12 text-orange-500 animate-spin mx-auto mb-4" />
+          <p className="text-gray-600 dark:text-gray-400">Caricamento esperienze...</p>
+        </div>
+      </div>
+    );
+  }
   return (
     <div className="min-h-screen bg-white dark:bg-gray-950">
       <ContactBanner
@@ -54,52 +63,65 @@ export default function EsperienzeIndexPage() {
           </header>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-10">
-            {experiences.map((exp) => (
-              <article
-                key={exp.slug}
-                className="group bg-white dark:bg-gray-900 rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 border border-gray-200/60 dark:border-gray-800"
-              >
-                <div className="relative aspect-[16/10] overflow-hidden">
-                  <img
-                    src={exp.image || "/placeholder.svg?height=400&width=600"}
-                    alt={exp.title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                  />
-                  <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full">
-                    <span className="text-sm font-semibold text-gray-900">{exp.price}</span>
-                  </div>
-                  <div className="absolute top-4 right-4 bg-black/50 backdrop-blur-sm px-3 py-1 rounded-full">
-                    <span className="text-sm text-white">{exp.duration}</span>
-                  </div>
-                </div>
-
-                <div className="p-6 lg:p-8">
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="w-12 h-12 bg-orange-100 dark:bg-orange-900/30 rounded-full flex items-center justify-center">
-                      <exp.icon className="w-6 h-6 text-orange-600 dark:text-orange-400" />
+            {experiences.map((exp) => {
+              const IconComponent = iconMap[exp.slug] || Mountain;
+              const displayPrice = exp.price ? `da €${exp.price}` : 'Prezzo su richiesta';
+              const displayDuration = exp.duration || 'Varia';
+              
+              return (
+                <article
+                  key={exp.id}
+                  className="group bg-white dark:bg-gray-900 rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 border border-gray-200/60 dark:border-gray-800"
+                >
+                  <div className="relative aspect-[16/10] overflow-hidden">
+                    <img
+                      src={exp.images?.[0] || exp.image || "/placeholder.svg?height=400&width=600"}
+                      alt={exp.title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    />
+                    <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full">
+                      <span className="text-sm font-semibold text-gray-900">{displayPrice}</span>
                     </div>
-                    <h2 className="text-2xl font-bold text-gray-900 dark:text-white">{exp.title}</h2>
+                    <div className="absolute top-4 right-4 bg-black/50 backdrop-blur-sm px-3 py-1 rounded-full">
+                      <span className="text-sm text-white">{displayDuration}</span>
+                    </div>
+                    <div className="absolute bottom-4 right-4">
+                      <WishlistButton 
+                        itemId={exp.id || exp.slug}
+                        itemType="experience"
+                        itemTitle={exp.title}
+                      />
+                    </div>
                   </div>
 
-                  <p className="text-gray-600 dark:text-gray-300 mb-6 leading-relaxed">{exp.excerpt}</p>
+                  <div className="p-6 lg:p-8">
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="w-12 h-12 bg-orange-100 dark:bg-orange-900/30 rounded-full flex items-center justify-center">
+                        <IconComponent className="w-6 h-6 text-orange-600 dark:text-orange-400" />
+                      </div>
+                      <h2 className="text-2xl font-bold text-gray-900 dark:text-white">{exp.title}</h2>
+                    </div>
 
-                  <div className="flex gap-3">
-                    <Link
-                      href={`/esperienze/${exp.slug}`}
-                      className="flex-1 inline-flex justify-center items-center px-5 py-3 rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white font-semibold hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
-                    >
-                      Scopri i dettagli
-                    </Link>
-                    <Link
-                      href="/contatti"
-                      className="flex-1 inline-flex justify-center items-center px-5 py-3 rounded-xl bg-gradient-to-r from-orange-500 to-red-500 text-white font-semibold hover:from-orange-600 hover:to-red-600 transition-all duration-300"
-                    >
-                      Prenota ora
-                    </Link>
+                    <p className="text-gray-600 dark:text-gray-300 mb-6 leading-relaxed">{exp.description}</p>
+
+                    <div className="flex gap-3">
+                      <Link
+                        href={`/esperienze/${exp.slug}`}
+                        className="flex-1 inline-flex justify-center items-center px-5 py-3 rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white font-semibold hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+                      >
+                        Scopri i dettagli
+                      </Link>
+                      <Link
+                        href="/contatti"
+                        className="flex-1 inline-flex justify-center items-center px-5 py-3 rounded-xl bg-gradient-to-r from-orange-500 to-red-500 text-white font-semibold hover:from-orange-600 hover:to-red-600 transition-all duration-300"
+                      >
+                        Prenota ora
+                      </Link>
+                    </div>
                   </div>
-                </div>
-              </article>
-            ))}
+                </article>
+              );
+            })}
           </div>
         </div>
       </section>

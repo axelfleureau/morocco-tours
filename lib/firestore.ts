@@ -439,8 +439,8 @@ export const firestoreService = {
     );
     const querySnapshot = await getDocs(q);
     return querySnapshot.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data()
+      ...doc.data(),
+      id: doc.id
     })) as Travel[];
   },
 
@@ -453,8 +453,8 @@ export const firestoreService = {
     );
     const querySnapshot = await getDocs(q);
     return querySnapshot.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data()
+      ...doc.data(),
+      id: doc.id
     })) as Experience[];
   },
 
