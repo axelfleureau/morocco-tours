@@ -17,11 +17,50 @@ This is a Next.js-based travel website for "Morocco Dreams" - a service offering
 - ✅ Configured deployment settings for production (autoscale target)
 - ✅ Successfully imported and set up GitHub project in Replit
 
+## Omarito Chill Website Updates - TUTTE LE FASI COMPLETATE (November 14, 2025)
+
+### FASE 1: Aggiornamento Esperienze e Contenuti ✅
+- Semplificata categoria Surf (rimossa sub-navigazione categorie)
+- Rimossa card "Fotografia" dalla sezione esperienze
+- Aggiornato team: solo El Kharroubi Omar e Latifa Abkal
+- Campo "Data Ritorno" ora obbligatorio con indicatore visivo rosso
+
+### FASE 2: Dashboard e Wishlist ✅
+- Fix pulsante "Esplora Viaggi" (ora naviga a /esperienze invece di /viaggi)
+- Sistema Wishlist completo con autenticazione Firebase
+- Persistenza dati in Firestore (collection: userProfiles)
+- Feedback visuale con notifiche toast
+- Pagina esperienze convertita a dinamica con caricamento da Firestore
+- Fix critico: spread order in getPublishedExperiences/getPublishedTravels per garantire ID persistence
+
+### FASE 3: Integrazione Social Media ✅
+- Aggiunto link Instagram: https://www.instagram.com/omarito_chill/
+- Design prominente con gradient Instagram-style
+- Username @omarito_chill visibile
+- Rimossi social inattivi (Facebook, Twitter, Youtube)
+
+### FASE 4: Sezione Noleggio Auto ✅
+- Pagina completa: /servizi/noleggio-auto
+- 9 veicoli mock realistici (3 Economiche, 3 SUV, 3 Premium)
+- Filtri: Categoria, Cambio, Carburante
+- Date obbligatorie: Data Inizio e Data Fine
+- Calcolo prezzi dinamico con 4 periodi stagionali:
+  - Periodo 1: 10/01 - 15/07
+  - Periodo 2: 15/07 - 05/09 (Estate)
+  - Periodo 3: 20/12 - 10/01 (Capodanno - Alta stagione)
+  - Periodo 4: 05/09 - 20/12
+- 3 fasce durata: 2-5 giorni, 6-20 giorni, 20+ giorni
+- Servizi inclusi (5) e servizi extra (5) con prezzi
+- File data/vehicles.ts con logica pricing completa
+
 ## Architecture
-- **Frontend Only**: No backend components, pure client-side application
+- **Frontend**: Next.js 14.2.16 with TypeScript
+- **Backend**: Firebase (Firestore + Auth)
+- **Database**: Firestore collections (experiences, travels, userProfiles)
 - **Interactive Map**: Mapbox integration for exploring Morocco cities
 - **Responsive Design**: Mobile-first approach with Tailwind CSS
 - **Component Structure**: Modular React components with TypeScript
+- **Data Management**: Dynamic content loading from Firestore with real-time updates
 
 ## Setup Configuration
 - **Development Server**: Runs on port 5000 with hostname 0.0.0.0 
