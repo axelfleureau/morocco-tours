@@ -39,19 +39,20 @@ This is a Next.js-based travel website for "Morocco Dreams" - a service offering
 - Username @omarito_chill visibile
 - Rimossi social inattivi (Facebook, Twitter, Youtube)
 
-### FASE 4: Sezione Noleggio Auto ✅
-- Pagina completa: /servizi/noleggio-auto
-- 9 veicoli mock realistici (3 Economiche, 3 SUV, 3 Premium)
-- Filtri: Categoria, Cambio, Carburante
-- Date obbligatorie: Data Inizio e Data Fine
-- Calcolo prezzi dinamico con 4 periodi stagionali:
-  - Periodo 1: 10/01 - 15/07
-  - Periodo 2: 15/07 - 05/09 (Estate)
-  - Periodo 3: 20/12 - 10/01 (Capodanno - Alta stagione)
-  - Periodo 4: 05/09 - 20/12
-- 3 fasce durata: 2-5 giorni, 6-20 giorni, 20+ giorni
-- Servizi inclusi (5) e servizi extra (5) con prezzi
-- File data/vehicles.ts con logica pricing completa
+### FASE 4: Sezione Noleggio Auto - REDESIGN COMPLETO ✅ (November 15, 2025)
+- **Pagina completamente ridisegnata**: /servizi/noleggio-auto
+- **Layout identico a guide-private/assicurazioni**: Hero section con gradient arancione, grid card veicoli, card dettagli espansa, CTA finale
+- **19 veicoli REALI da CSV** (12 Economiche, 3 SUV, 4 Premium):
+  - Dacia Sandero/Logan, Peugeot 208, Renault Clio 5, Citroen C3/C-Elysee/C4, Kia Picanto, Fiat 500, Hyundai i10/Tucson
+  - Dacia Lodgy/Duster (manuale/automatica), T-roc, Touareg
+- **14 immagini veicoli uniche** generate con AI (stile 3/4 front, sfondo neutro)
+- **Pricing da CSV originali**: 4 periodi stagionali × 3 fasce durata con prezzi esatti
+  - Periodo 1: 10/01 - 15/07 | Periodo 2: 15/07 - 05/09 (Estate)
+  - Periodo 3: 20/12 - 10/01 (Capodanno) | Periodo 4: 05/09 - 20/12
+- **Servizi inclusi e extra** da secondo CSV con prezzi reali
+- **WhatsApp booking automation**: Numero 393292333370, messaggio auto-compilato con veicolo/date/prezzo
+- **Data/vehicles.ts**: 950+ righe con tutti i dati reali strutturati in TypeScript
+- ⚠️ **Nota qualità dati**: Dacia Duster automatica period3 ha pricing illogico nel CSV originale (short 42€ < medium 58€) - trascritto fedelmente ma potrebbe richiedere verifica utente
 
 ## Architecture
 - **Frontend**: Next.js 14.2.16 with TypeScript
