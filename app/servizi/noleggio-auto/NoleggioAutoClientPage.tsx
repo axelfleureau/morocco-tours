@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useMemo } from "react"
+import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -188,6 +189,15 @@ _Grazie!_`
                         {vehicle.category}
                       </Badge>
                     </div>
+                    <div className="relative w-full h-40 mb-4 rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-800">
+                      <Image
+                        src={vehicle.image}
+                        alt={vehicle.name}
+                        fill
+                        className="object-contain"
+                        sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                      />
+                    </div>
                     <CardTitle className="text-xl">{vehicle.name}</CardTitle>
                   </CardHeader>
                   <CardContent className="text-center space-y-3">
@@ -231,6 +241,16 @@ _Grazie!_`
               <CardContent>
                 <div className="grid md:grid-cols-2 gap-8">
                   <div>
+                    <div className="relative w-full h-64 mb-6 rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-800 shadow-md">
+                      <Image
+                        src={selectedVehicle.image}
+                        alt={selectedVehicle.name}
+                        fill
+                        className="object-contain"
+                        sizes="(max-width: 768px) 100vw, 50vw"
+                        priority
+                      />
+                    </div>
                     <h4 className="font-semibold mb-4 text-lg">Caratteristiche Veicolo</h4>
                     <div className="space-y-3 mb-6">
                       <div className="flex items-center gap-2">

@@ -118,7 +118,7 @@ export const vehicles: Vehicle[] = [
     doors: 5,
     seats: 5,
     dailyDeductible: 6,
-    image: "/images/vehicles/dacia-logan.png",
+    image: "/images/vehicles/dacia-logan-automatica.png",
     pricing: {
       period1: { short: 43, medium: 39, long: 37 },
       period2: { short: 46, medium: 44, long: 44 },
@@ -190,7 +190,7 @@ export const vehicles: Vehicle[] = [
     doors: 5,
     seats: 5,
     dailyDeductible: 6,
-    image: "/images/vehicles/dacia-logan.png",
+    image: "/images/vehicles/dacia-logan-diesel.png",
     pricing: {
       period1: { short: 41, medium: 40, long: 36 },
       period2: { short: 46, medium: 44, long: 44 },
@@ -226,7 +226,7 @@ export const vehicles: Vehicle[] = [
     doors: 5,
     seats: 5,
     dailyDeductible: 7,
-    image: "/images/vehicles/renault-clio-5.png",
+    image: "/images/vehicles/renault-clio-5-automatica.png",
     pricing: {
       period1: { short: 45, medium: 42, long: 39 },
       period2: { short: 50, medium: 48, long: 48 },
@@ -280,7 +280,7 @@ export const vehicles: Vehicle[] = [
     doors: 5,
     seats: 5,
     dailyDeductible: 8,
-    image: "/images/vehicles/dacia-duster.png",
+    image: "/images/vehicles/dacia-duster-automatica.png",
     pricing: {
       period1: { short: 65, medium: 62, long: 60 },
       period2: { short: 55, medium: 53, long: 50 },
@@ -352,7 +352,7 @@ export const vehicles: Vehicle[] = [
     doors: 5,
     seats: 5,
     dailyDeductible: 6,
-    image: "/images/vehicles/dacia-sandero.png",
+    image: "/images/vehicles/dacia-sandero-diesel.png",
     pricing: {
       period1: { short: 41, medium: 39, long: 37 },
       period2: { short: 46, medium: 44, long: 44 },
