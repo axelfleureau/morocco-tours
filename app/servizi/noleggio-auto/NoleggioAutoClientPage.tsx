@@ -13,7 +13,6 @@ import {
   DoorClosed,
   CheckCircle,
   ArrowRight,
-  Phone,
   MessageCircle,
   Euro,
   Calendar,
@@ -419,11 +418,7 @@ _Grazie!_`
             <p className="text-xl text-orange-100 mb-8">
               Tariffe trasparenti • Assistenza 24/7 • Chilometraggio illimitato
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button size="lg" variant="secondary" className="bg-white text-orange-600 hover:bg-orange-50">
-                <Phone className="mr-2 h-5 w-5" />
-                Chiama: +212 123 456 789
-              </Button>
+            <div className="flex justify-center">
               <Button
                 size="lg"
                 variant="outline"

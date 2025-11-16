@@ -106,6 +106,7 @@ export default function Navbar({ onSearchOpen }: NavbarProps) {
         { name: "Trekking Atlante", href: "/esperienze/trekking", description: "Escursioni in montagna" },
         { name: "Surf", href: "/esperienze/surf", description: "Onde perfette sulla costa" },
         { name: "Artigianato", href: "/esperienze/artigianato", description: "Laboratori con maestri artigiani" },
+        { name: "Fotografia", href: "/esperienze/fotografia", description: "Workshop fotografici guidati" },
         { name: "Quad e Cammelli", href: "/esperienze/quad-cammelli", description: "Avventure nel deserto" },
       ],
     },
@@ -274,6 +275,14 @@ export default function Navbar({ onSearchOpen }: NavbarProps) {
                 )}
               </div>
             ))}
+            
+            {/* Viaggi su Misura - Prominent Button */}
+            <Link
+              href="/viaggi/su-misura"
+              className="ml-2 px-5 py-3 rounded-full text-sm font-semibold min-h-[44px] flex items-center space-x-2 bg-gradient-to-r from-orange-500 to-red-500 text-white hover:from-orange-600 hover:to-red-600 transition-all duration-300 shadow-md hover:shadow-lg transform hover:scale-105"
+            >
+              <span>✨ Viaggi su Misura</span>
+            </Link>
           </div>
 
           {/* Right Side Actions */}
@@ -557,6 +566,15 @@ export default function Navbar({ onSearchOpen }: NavbarProps) {
               )}
             </div>
           ))}
+
+          {/* Viaggi su Misura - Mobile Prominent Button */}
+          <Link
+            href="/viaggi/su-misura"
+            className="w-full flex items-center justify-center px-6 py-4 rounded-full font-semibold min-h-[48px] transition-all duration-300 shadow-md bg-gradient-to-r from-orange-500 to-red-500 text-white hover:from-orange-600 hover:to-red-600"
+            onClick={() => setIsOpen(false)}
+          >
+            <span>✨ Viaggi su Misura</span>
+          </Link>
 
           {/* Mobile Actions */}
           <div className="pt-4 border-t border-border space-y-3">
