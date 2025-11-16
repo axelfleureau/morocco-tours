@@ -169,13 +169,15 @@ _Grazie!_`
               {filteredVehicles.map((vehicle) => (
                 <Card
                   key={vehicle.id}
-                  className={`cursor-pointer transition-all duration-300 hover:shadow-xl ${
-                    selectedVehicle.id === vehicle.id ? "ring-2 ring-orange-500 shadow-lg" : "hover:shadow-lg"
+                  className={`cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-2xl ${
+                    selectedVehicle.id === vehicle.id 
+                      ? "ring-4 ring-orange-500 shadow-2xl bg-gradient-to-br from-orange-50 to-red-50 dark:from-orange-900/20 dark:to-red-900/20 scale-105" 
+                      : "hover:shadow-xl"
                   }`}
                   onClick={() => setSelectedVehicle(vehicle)}
                 >
-                  <CardHeader className="text-center">
-                    <div className="mb-4">
+                  <CardHeader className="text-center relative">
+                    <div className="mb-4 flex items-center justify-between">
                       <Badge
                         className={`${
                           vehicle.category === "economica"
@@ -187,7 +189,15 @@ _Grazie!_`
                       >
                         {vehicle.category}
                       </Badge>
+                      <Badge className="bg-gradient-to-r from-orange-500 to-red-500 text-white font-bold">
+                        Da €{Math.min(vehicle.pricing.period1.short, vehicle.pricing.period2.short, vehicle.pricing.period3.short, vehicle.pricing.period4.short)}/gg
+                      </Badge>
                     </div>
+                    {selectedVehicle.id === vehicle.id && (
+                      <div className="absolute top-2 right-2">
+                        <CheckCircle className="h-6 w-6 text-orange-500 fill-current" />
+                      </div>
+                    )}
                     <div className="relative w-full h-40 mb-4 rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-800">
                       <Image
                         src={vehicle.image}
@@ -217,10 +227,6 @@ _Grazie!_`
                         <DoorClosed className="h-3 w-3" />
                         {vehicle.doors} porte
                       </div>
-                    </div>
-
-                    <div className="text-sm font-medium text-orange-600 dark:text-orange-400">
-                      da €{Math.min(vehicle.pricing.period1.short, vehicle.pricing.period2.short, vehicle.pricing.period3.short, vehicle.pricing.period4.short)}/giorno
                     </div>
 
                     <div className="text-xs text-muted-foreground">Franchigia: €{vehicle.dailyDeductible}/gg</div>
@@ -291,8 +297,14 @@ _Grazie!_`
                     </ul>
 
                     <h4 className="font-semibold mb-4 text-lg text-blue-600 dark:text-blue-400">
-                      Servizi Extra (compresi nella franchigia)
+                      Servizi Extra Disponibili
                     </h4>
+                    <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg mb-4">
+                      <p className="text-sm text-blue-800 dark:text-blue-200 font-medium flex items-start gap-2">
+                        <Shield className="h-4 w-4 mt-0.5 flex-shrink-0" />
+                        <span>La <strong>franchigia ridotta o azzerata</strong> è disponibile come extra opzionale su ogni veicolo. Contattaci per maggiori dettagli.</span>
+                      </p>
+                    </div>
                     <ul className="space-y-2">
                       {extraServices.map((service, index) => (
                         <li key={index} className="flex items-start gap-2">
