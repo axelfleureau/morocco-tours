@@ -5,27 +5,44 @@ import { Heart } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { useNotifications } from '@/components/NotificationSystem';
 import { firestoreService } from '@/lib/firestore';
+import { WishlistItem } from '@/lib/auth';
 
 interface WishlistButtonProps {
   itemId: string;
-  itemType: 'travel' | 'experience';
+  itemType: 'vehicle' | 'experience' | 'travel' | 'city' | 'activity';
   itemTitle: string;
+  itemImage?: string;
+  itemPrice?: number;
+  itemDescription?: string;
   className?: string;
 }
 
-export default function WishlistButton({ itemId, itemType, itemTitle, className = '' }: WishlistButtonProps) {
+export default function WishlistButton({ 
+  itemId, 
+  itemType, 
+  itemTitle, 
+  itemImage,
+  itemPrice,
+  itemDescription,
+  className = '' 
+}: WishlistButtonProps) {
   const { user, userProfile } = useAuth();
   const { showSuccess, showInfo, showWarning } = useNotifications();
   const [isInWishlist, setIsInWishlist] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    if (userProfile?.profile?.wishlist) {
+    if (userProfile?.profile?.wishlistItems) {
+      const found = userProfile.profile.wishlistItems.some(
+        (item: WishlistItem) => item.id === itemId && item.type === itemType
+      );
+      setIsInWishlist(found);
+    } else if (userProfile?.profile?.wishlist) {
       setIsInWishlist(userProfile.profile.wishlist.includes(itemId));
     } else {
       setIsInWishlist(false);
     }
-  }, [userProfile, itemId]);
+  }, [userProfile, itemId, itemType]);
 
   const handleToggleWishlist = async (e: React.MouseEvent) => {
     e.preventDefault();
@@ -47,7 +64,7 @@ export default function WishlistButton({ itemId, itemType, itemTitle, className 
         [
           {
             label: 'Vai al Login',
-            onClick: () => window.location.href = '/auth/login',
+            onClick: () => window.location.href = '/auth/signin',
             variant: 'primary'
           }
         ]
@@ -60,13 +77,19 @@ export default function WishlistButton({ itemId, itemType, itemTitle, className 
     setIsLoading(true);
 
     try {
+      const currentWishlistItems = userProfile?.profile?.wishlistItems || [];
       const currentWishlist = userProfile?.profile?.wishlist || [];
+      let updatedWishlistItems: WishlistItem[];
       let updatedWishlist: string[];
 
       if (isInWishlist) {
+        updatedWishlistItems = currentWishlistItems.filter(
+          (item: WishlistItem) => !(item.id === itemId && item.type === itemType)
+        );
         updatedWishlist = currentWishlist.filter((id: string) => id !== itemId);
         
         await firestoreService.update('users', user.uid, {
+          'profile.wishlistItems': updatedWishlistItems,
           'profile.wishlist': updatedWishlist
         });
 
@@ -76,9 +99,20 @@ export default function WishlistButton({ itemId, itemType, itemTitle, className 
           `"${itemTitle}" è stato rimosso dalla tua lista desideri`
         );
       } else {
+        const newItem: WishlistItem = {
+          id: itemId,
+          type: itemType,
+          title: itemTitle,
+          image: itemImage,
+          price: itemPrice,
+          description: itemDescription
+        };
+        
+        updatedWishlistItems = [...currentWishlistItems, newItem];
         updatedWishlist = [...currentWishlist, itemId];
         
         await firestoreService.update('users', user.uid, {
+          'profile.wishlistItems': updatedWishlistItems,
           'profile.wishlist': updatedWishlist
         });
 
@@ -89,7 +123,7 @@ export default function WishlistButton({ itemId, itemType, itemTitle, className 
           [
             {
               label: 'Vedi Wishlist',
-              onClick: () => window.location.href = '/dashboard/wishlist',
+              onClick: () => window.location.href = '/dashboard',
               variant: 'primary'
             }
           ]

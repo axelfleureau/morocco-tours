@@ -19,6 +19,7 @@ import {
   Shield,
 } from "lucide-react"
 import { vehicles, includedServices, extraServices, type Vehicle, calculateRentalPrice, periodNames } from "@/data/vehicles"
+import WishlistButton from "@/components/WishlistButton"
 
 const structuredData = {
   "@context": "https://schema.org",
@@ -194,10 +195,20 @@ _Grazie!_`
                       </Badge>
                     </div>
                     {selectedVehicle.id === vehicle.id && (
-                      <div className="absolute top-2 right-2">
+                      <div className="absolute top-2 right-2 z-10">
                         <CheckCircle className="h-6 w-6 text-orange-500 fill-current" />
                       </div>
                     )}
+                    <div className="absolute top-2 left-2 z-10">
+                      <WishlistButton
+                        itemId={vehicle.id}
+                        itemType="vehicle"
+                        itemTitle={vehicle.name}
+                        itemImage={vehicle.image}
+                        itemPrice={Math.min(vehicle.pricing.period1.short, vehicle.pricing.period2.short, vehicle.pricing.period3.short, vehicle.pricing.period4.short)}
+                        itemDescription={`${vehicle.category} - ${vehicle.transmission} - ${vehicle.seats} posti`}
+                      />
+                    </div>
                     <div className="relative w-full h-40 mb-4 rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-800">
                       <Image
                         src={vehicle.image}

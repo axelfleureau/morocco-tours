@@ -15,6 +15,15 @@ import {
 import { doc, setDoc, getDoc } from 'firebase/firestore';
 import { auth, googleProvider, db } from './firebase';
 
+export interface WishlistItem {
+  id: string;
+  type: 'vehicle' | 'experience' | 'travel' | 'city' | 'activity';
+  title: string;
+  image?: string;
+  price?: number;
+  description?: string;
+}
+
 export interface UserProfile {
   uid: string;
   email: string;
@@ -33,6 +42,7 @@ export interface UserProfile {
     nationality?: string;
     travelPreferences: string[];
     wishlist: string[];
+    wishlistItems?: WishlistItem[];
     cart: Array<{
       id: string;
       type: 'travel' | 'experience';
@@ -142,6 +152,7 @@ export const createUserProfile = async (user: User) => {
       profile: {
         travelPreferences: [],
         wishlist: [],
+        wishlistItems: [],
         cart: []
       }
     };

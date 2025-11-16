@@ -90,6 +90,9 @@ export default function EsperienzeIndexPage() {
                         itemId={exp.id || exp.slug}
                         itemType="experience"
                         itemTitle={exp.title}
+                        itemImage={exp.images?.[0] || exp.image}
+                        itemPrice={exp.price}
+                        itemDescription={exp.description}
                       />
                     </div>
                   </div>

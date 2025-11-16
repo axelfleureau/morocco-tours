@@ -1,25 +1,42 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { Heart, Search, Filter, MapPin, Star, Euro, Calendar, Trash2 } from 'lucide-react';
+import { Heart, Search, Filter, MapPin, Star, Euro, Calendar, Trash2, Car } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { firestoreService } from '@/lib/firestore';
+import { WishlistItem as AuthWishlistItem } from '@/lib/auth';
 
-interface WishlistItem {
+interface DisplayWishlistItem {
   id: string;
-  type: 'travel' | 'experience';
+  type: 'vehicle' | 'experience' | 'travel' | 'city' | 'activity';
   title: string;
-  description: string;
-  price: number;
-  image: string;
-  location: string;
-  rating: number;
+  description?: string;
+  price?: number;
+  image?: string;
+  location?: string;
+  rating?: number;
   addedAt: Date;
 }
 
+const typeLabels = {
+  vehicle: 'Veicolo',
+  experience: 'Esperienza',
+  travel: 'Viaggio',
+  city: 'Città',
+  activity: 'Attività'
+};
+
+const typeColors = {
+  vehicle: 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20',
+  experience: 'bg-green-500/10 text-green-600 dark:text-green-400 border-green-500/20',
+  travel: 'bg-orange-500/10 text-orange-600 dark:text-orange-400 border-orange-500/20',
+  city: 'bg-purple-500/10 text-purple-600 dark:text-purple-400 border-purple-500/20',
+  activity: 'bg-pink-500/10 text-pink-600 dark:text-pink-400 border-pink-500/20'
+};
+
 export default function UserWishlist() {
   const { user, userProfile } = useAuth();
-  const [wishlistItems, setWishlistItems] = useState<WishlistItem[]>([]);
+  const [wishlistItems, setWishlistItems] = useState<DisplayWishlistItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
@@ -27,49 +44,32 @@ export default function UserWishlist() {
 
   useEffect(() => {
     const loadWishlist = async () => {
-      if (!user || !userProfile?.profile?.wishlist || userProfile.profile.wishlist.length === 0) {
+      if (!user) {
+        setLoading(false);
+        return;
+      }
+
+      const wishlistItemsData = userProfile?.profile?.wishlistItems || [];
+      
+      if (wishlistItemsData.length === 0) {
         setLoading(false);
         return;
       }
       
       try {
-        // Fetch real travels and experiences data from Firestore
-        const [travels, experiences] = await Promise.all([
-          firestoreService.getPublishedTravels(),
-          firestoreService.getPublishedExperiences()
-        ]);
-
-        // Filter items that are in the user's wishlist
-        const wishlistTravels = travels.filter(travel => 
-          travel.id && userProfile.profile.wishlist.includes(travel.id)
-        ).map(travel => ({
-          id: travel.id!,
-          type: 'travel' as const,
-          title: travel.title,
-          description: travel.description,
-          price: travel.price,
-          image: travel.images?.[0] || '/images/sahara-adventure.png',
-          location: travel.category || 'Marocco',
-          rating: travel.rating || 4.5,
-          addedAt: new Date() // We don't have the exact date it was added to wishlist
+        const displayItems: DisplayWishlistItem[] = wishlistItemsData.map((item: AuthWishlistItem) => ({
+          id: item.id,
+          type: item.type,
+          title: item.title,
+          description: item.description,
+          price: item.price,
+          image: item.image,
+          location: 'Marocco',
+          rating: 4.5,
+          addedAt: new Date()
         }));
-
-        const wishlistExperiences = experiences.filter(experience => 
-          experience.id && userProfile.profile.wishlist.includes(experience.id)
-        ).map(experience => ({
-          id: experience.id!,
-          type: 'experience' as const,
-          title: experience.title,
-          description: experience.description,
-          price: experience.price,
-          image: experience.images?.[0] || '/images/couple-hammam.jpg',
-          location: experience.location || experience.category || 'Marocco',
-          rating: experience.rating || 4.3,
-          addedAt: new Date() // We don't have the exact date it was added to wishlist
-        }));
-
-        const allWishlistItems = [...wishlistTravels, ...wishlistExperiences];
-        setWishlistItems(allWishlistItems);
+        
+        setWishlistItems(displayItems);
       } catch (err: any) {
         setError('Errore nel caricamento della lista desideri');
         console.error('Wishlist loading error:', err);
@@ -84,26 +84,28 @@ export default function UserWishlist() {
   const filteredItems = wishlistItems.filter(item => {
     const matchesSearch = !searchTerm || 
       item.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item.location.toLowerCase().includes(searchTerm.toLowerCase());
+      (item.location?.toLowerCase() || '').includes(searchTerm.toLowerCase());
     
     const matchesType = filterType === 'all' || item.type === filterType;
     
     return matchesSearch && matchesType;
   });
 
-  const removeFromWishlist = async (itemId: string) => {
+  const removeFromWishlist = async (itemId: string, itemType: string) => {
     if (!user || !userProfile) return;
     
     try {
-      // Update user profile in Firestore to remove item from wishlist
-      const updatedWishlist = userProfile.profile.wishlist.filter(id => id !== itemId);
+      const updatedWishlistItems = (userProfile.profile.wishlistItems || []).filter(
+        (item: AuthWishlistItem) => !(item.id === itemId && item.type === itemType)
+      );
+      const updatedWishlist = (userProfile.profile.wishlist || []).filter((id: string) => id !== itemId);
       
       await firestoreService.update('users', user.uid, {
+        'profile.wishlistItems': updatedWishlistItems,
         'profile.wishlist': updatedWishlist
       });
 
-      // Update local state immediately for better UX
-      setWishlistItems(prev => prev.filter(item => item.id !== itemId));
+      setWishlistItems(prev => prev.filter(item => !(item.id === itemId && item.type === itemType)));
     } catch (err) {
       console.error('Error removing from wishlist:', err);
       setError('Errore nella rimozione dalla lista desideri');
@@ -175,8 +177,11 @@ export default function UserWishlist() {
               className="pl-10 pr-8 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-foreground"
             >
               <option value="all">Tutti</option>
-              <option value="travel">Viaggi</option>
+              <option value="vehicle">Veicoli</option>
               <option value="experience">Esperienze</option>
+              <option value="travel">Viaggi</option>
+              <option value="city">Città</option>
+              <option value="activity">Attività</option>
             </select>
           </div>
         </div>
@@ -197,16 +202,12 @@ export default function UserWishlist() {
                   className="w-full h-48 object-cover rounded-t-2xl"
                 />
                 <div className="absolute top-3 left-3">
-                  <span className={`px-2 py-1 text-xs font-medium rounded-full ${
-                    item.type === 'travel'
-                      ? 'bg-primary/10 text-primary border border-primary/20'
-                      : 'bg-green-500/10 text-green-600 dark:text-green-400 border border-green-500/20'
-                  }`}>
-                    {item.type === 'travel' ? 'Viaggio' : 'Esperienza'}
+                  <span className={`px-2 py-1 text-xs font-medium rounded-full border ${typeColors[item.type]}`}>
+                    {typeLabels[item.type]}
                   </span>
                 </div>
                 <button
-                  onClick={() => removeFromWishlist(item.id)}
+                  onClick={() => removeFromWishlist(item.id, item.type)}
                   className="absolute top-3 right-3 p-2 bg-white/90 dark:bg-gray-800/90 rounded-full opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-50 dark:hover:bg-red-900/20"
                 >
                   <Trash2 className="w-4 h-4 text-red-500" />
@@ -285,40 +286,54 @@ export default function UserWishlist() {
 
       {/* Summary Stats */}
       {wishlistItems.length > 0 && (
-        <div className="grid md:grid-cols-3 gap-6">
-          <div className="bg-card rounded-2xl p-6 shadow-sm border border-border">
-            <div className="flex items-center space-x-3">
-              <MapPin className="w-8 h-8 text-orange-600" />
-              <div>
-                <p className="text-sm text-gray-600 dark:text-gray-400">Viaggi</p>
-                <p className="text-xl font-bold text-gray-900 dark:text-white">
-                  {wishlistItems.filter(item => item.type === 'travel').length}
-                </p>
-              </div>
-            </div>
-          </div>
-          
-          <div className="bg-card rounded-2xl p-6 shadow-sm border border-border">
-            <div className="flex items-center space-x-3">
-              <Star className="w-8 h-8 text-green-600" />
-              <div>
-                <p className="text-sm text-gray-600 dark:text-gray-400">Esperienze</p>
-                <p className="text-xl font-bold text-gray-900 dark:text-white">
-                  {wishlistItems.filter(item => item.type === 'experience').length}
-                </p>
-              </div>
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+          <div className="bg-card rounded-2xl p-4 shadow-sm border border-border">
+            <div className="flex flex-col items-center text-center">
+              <Car className="w-8 h-8 text-blue-600 mb-2" />
+              <p className="text-xs text-gray-600 dark:text-gray-400 mb-1">Veicoli</p>
+              <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                {wishlistItems.filter(item => item.type === 'vehicle').length}
+              </p>
             </div>
           </div>
 
-          <div className="bg-card rounded-2xl p-6 shadow-sm border border-border">
-            <div className="flex items-center space-x-3">
-              <Euro className="w-8 h-8 text-purple-600" />
-              <div>
-                <p className="text-sm text-gray-600 dark:text-gray-400">Valore Totale</p>
-                <p className="text-xl font-bold text-gray-900 dark:text-white">
-                  €{wishlistItems.reduce((sum, item) => sum + item.price, 0).toLocaleString()}
-                </p>
-              </div>
+          <div className="bg-card rounded-2xl p-4 shadow-sm border border-border">
+            <div className="flex flex-col items-center text-center">
+              <Star className="w-8 h-8 text-green-600 mb-2" />
+              <p className="text-xs text-gray-600 dark:text-gray-400 mb-1">Esperienze</p>
+              <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                {wishlistItems.filter(item => item.type === 'experience').length}
+              </p>
+            </div>
+          </div>
+          
+          <div className="bg-card rounded-2xl p-4 shadow-sm border border-border">
+            <div className="flex flex-col items-center text-center">
+              <MapPin className="w-8 h-8 text-orange-600 mb-2" />
+              <p className="text-xs text-gray-600 dark:text-gray-400 mb-1">Viaggi</p>
+              <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                {wishlistItems.filter(item => item.type === 'travel').length}
+              </p>
+            </div>
+          </div>
+
+          <div className="bg-card rounded-2xl p-4 shadow-sm border border-border">
+            <div className="flex flex-col items-center text-center">
+              <Heart className="w-8 h-8 text-pink-600 mb-2" />
+              <p className="text-xs text-gray-600 dark:text-gray-400 mb-1">Totale</p>
+              <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                {wishlistItems.length}
+              </p>
+            </div>
+          </div>
+
+          <div className="bg-card rounded-2xl p-4 shadow-sm border border-border">
+            <div className="flex flex-col items-center text-center">
+              <Euro className="w-8 h-8 text-purple-600 mb-2" />
+              <p className="text-xs text-gray-600 dark:text-gray-400 mb-1">Valore</p>
+              <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                €{wishlistItems.reduce((sum, item) => sum + (item.price || 0), 0).toLocaleString()}
+              </p>
             </div>
           </div>
         </div>
