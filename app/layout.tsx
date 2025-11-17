@@ -5,6 +5,7 @@ import "./globals.css"
 import ClientLayout from "./client-layout"
 import { ThemeProvider } from "@/components/theme-provider"
 import { MoroccoThemeProvider } from "@/context/ThemeContext"
+import { AuthProvider } from "@/context/AuthContext"
 import { NotificationProvider } from "@/components/NotificationSystem"
 import ChatBot from "@/components/ChatBot"
 
@@ -82,16 +83,18 @@ export default function RootLayout({
       <body className={`${inter.className} antialiased`}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
           <MoroccoThemeProvider>
-            <NotificationProvider>
-              <a
-                href="#main-content"
-                className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-primary focus:text-primary-foreground focus:rounded-md focus:shadow-lg"
-              >
-                Salta al contenuto principale
-              </a>
-              <ClientLayout>{children}</ClientLayout>
-              <ChatBot />
-            </NotificationProvider>
+            <AuthProvider>
+              <NotificationProvider>
+                <a
+                  href="#main-content"
+                  className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-primary focus:text-primary-foreground focus:rounded-md focus:shadow-lg"
+                >
+                  Salta al contenuto principale
+                </a>
+                <ClientLayout>{children}</ClientLayout>
+                <ChatBot />
+              </NotificationProvider>
+            </AuthProvider>
           </MoroccoThemeProvider>
         </ThemeProvider>
       </body>
