@@ -1,12 +1,15 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { Calendar, Download, Search, Filter, Eye, Star, MapPin, Users, Plane, MessageCircle, ChevronDown, ChevronUp } from 'lucide-react';
+import { Calendar, Download, Search, Filter, Eye, Star, MapPin, Users, Plane, MessageCircle, ChevronDown, ChevronUp, MessageSquare, X } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
-import { firestoreService, Booking } from '@/lib/firestore';
+import { firestoreService, Booking, Conversation } from '@/lib/firestore';
 import { db } from '@/lib/firebase';
 import { collection, query, where, getDocs, orderBy } from 'firebase/firestore';
 import { COLLECTIONS, CustomTripRequest } from '@/lib/firestore-schema';
+import ChatWidget from '@/components/ChatWidget';
+import ShareInviteButton from '@/components/ShareInviteButton';
+import { getConversationByGroupId } from '@/lib/utils/chat-utils';
 
 export default function UserBookings() {
   const { user } = useAuth();
@@ -17,6 +20,8 @@ export default function UserBookings() {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState<string>('all');
   const [expandedTrip, setExpandedTrip] = useState<string | null>(null);
+  const [openChatBookingId, setOpenChatBookingId] = useState<string | null>(null);
+  const [conversations, setConversations] = useState<Map<string, Conversation>>(new Map());
 
   useEffect(() => {
     const loadBookings = async () => {
@@ -26,6 +31,23 @@ export default function UserBookings() {
         // Load normal bookings
         const userBookings = await firestoreService.getUserBookings(user.uid);
         setBookings(userBookings);
+        
+        // Load conversations for group bookings
+        const groupBookings = userBookings.filter(b => b.groupId);
+        const conversationsMap = new Map<string, Conversation>();
+        
+        for (const booking of groupBookings) {
+          try {
+            const conversation = await getConversationByGroupId(booking.groupId!);
+            if (conversation && booking.id) {
+              conversationsMap.set(booking.id, conversation);
+            }
+          } catch (error) {
+            console.error('Error loading conversation:', error);
+          }
+        }
+        
+        setConversations(conversationsMap);
         
         // Load custom trip requests
         const customTripsQuery = query(
@@ -210,7 +232,7 @@ export default function UserBookings() {
                 </div>
 
                 <button
-                  onClick={() => setExpandedTrip(expandedTrip === trip.id ? null : trip.id)}
+                  onClick={() => setExpandedTrip(expandedTrip === trip.id ? null : (trip.id || null))}
                   className="ml-4 p-2 hover:bg-orange-100 dark:hover:bg-orange-900/30 rounded-lg transition-colors"
                 >
                   {expandedTrip === trip.id ? 
@@ -329,6 +351,12 @@ export default function UserBookings() {
                         Prossimo
                       </span>
                     )}
+                    {booking.groupId && (
+                      <span className="px-2 py-1 text-xs bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 border border-blue-300 dark:border-blue-700 rounded-full flex items-center gap-1">
+                        <Users className="w-3 h-3" />
+                        Gruppo
+                      </span>
+                    )}
                   </div>
 
                   <div className="grid md:grid-cols-2 gap-4 mb-4">
@@ -379,6 +407,58 @@ export default function UserBookings() {
                       <p className="text-sm text-gray-600 dark:text-gray-400">
                         <strong>Richieste speciali:</strong> {booking.customRequests}
                       </p>
+                    </div>
+                  )}
+
+                  {/* Group Booking Section */}
+                  {booking.groupId && booking.participants && booking.participants.length > 0 && (
+                    <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-4 mb-3 border border-blue-200 dark:border-blue-800">
+                      <div className="flex items-center justify-between mb-3">
+                        <h4 className="text-sm font-semibold text-foreground flex items-center gap-2">
+                          <Users className="w-4 h-4 text-blue-600" />
+                          Partecipanti al Gruppo ({booking.participants.length})
+                        </h4>
+                        
+                        {booking.participants.find(p => p.userId === user?.uid)?.role === 'organizer' && booking.shareToken && booking.id && (
+                          <ShareInviteButton
+                            shareToken={booking.shareToken}
+                            bookingId={booking.id}
+                            variant="secondary"
+                          />
+                        )}
+                      </div>
+                      
+                      <div className="flex flex-wrap gap-2 mb-3">
+                        {booking.participants.map(participant => (
+                          <div
+                            key={participant.userId}
+                            className="flex items-center gap-2 bg-white dark:bg-gray-800 rounded-lg px-3 py-1.5 border border-blue-200 dark:border-blue-700"
+                          >
+                            <div className="w-6 h-6 bg-gradient-to-br from-orange-400 to-red-500 rounded-full flex items-center justify-center text-white text-xs font-bold">
+                              {participant.name.charAt(0).toUpperCase()}
+                            </div>
+                            <div>
+                              <p className="text-sm font-medium text-foreground">{participant.name}</p>
+                              {participant.role === 'organizer' && (
+                                <span className="text-xs text-blue-600">Organizzatore</span>
+                              )}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                      
+                      <button
+                        onClick={() => setOpenChatBookingId(booking.id!)}
+                        className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg hover:from-blue-700 hover:to-blue-800 transition-all font-medium"
+                      >
+                        <MessageSquare className="w-4 h-4" />
+                        Apri Chat Gruppo
+                        {conversations.get(booking.id!)?.unreadCount?.[user?.uid || ''] && conversations.get(booking.id!)!.unreadCount![user!.uid] > 0 && (
+                          <span className="ml-auto bg-red-500 text-white rounded-full px-2 py-0.5 text-xs font-bold">
+                            {conversations.get(booking.id!)!.unreadCount![user!.uid]}
+                          </span>
+                        )}
+                      </button>
                     </div>
                   )}
 
@@ -485,6 +565,40 @@ export default function UserBookings() {
           </div>
         </div>
       )}
+
+      {/* Chat Modal */}
+      {openChatBookingId && (() => {
+        const booking = bookings.find(b => b.id === openChatBookingId)
+        if (!booking || !booking.groupId || !booking.participants) return null
+        
+        return (
+          <div 
+            className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4"
+            onClick={() => setOpenChatBookingId(null)}
+          >
+            <div className="w-full max-w-2xl relative" onClick={(e) => e.stopPropagation()}>
+              <button
+                onClick={() => setOpenChatBookingId(null)}
+                className="absolute -top-10 right-0 p-2 bg-white rounded-full hover:bg-gray-100 transition-colors shadow-lg"
+                aria-label="Chiudi chat"
+              >
+                <X className="w-5 h-5 text-gray-700" />
+              </button>
+              <ChatWidget
+                groupId={booking.groupId}
+                bookingId={booking.id!}
+                participants={booking.participants.map(p => ({
+                  userId: p.userId,
+                  name: p.name,
+                  avatar: undefined
+                }))}
+                onClose={() => setOpenChatBookingId(null)}
+                className="h-[600px]"
+              />
+            </div>
+          </div>
+        )
+      })()}
     </div>
   );
 }
