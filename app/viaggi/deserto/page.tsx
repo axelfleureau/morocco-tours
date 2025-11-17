@@ -4,6 +4,7 @@ import { useState } from "react"
 import { Star, Clock, Users, CheckCircle } from "lucide-react"
 import Link from "next/link"
 import BookingModal from "@/components/modals/BookingModal"
+import WishlistButton from "@/components/WishlistButton"
 
 export default function DesertToursPage() {
   const [selectedTour, setSelectedTour] = useState<number | null>(null);
@@ -480,6 +481,19 @@ export default function DesertToursPage() {
                     className="w-full h-full object-cover"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                  
+                  {/* Wishlist Button */}
+                  <div className="absolute top-4 left-4 z-10">
+                    <WishlistButton
+                      itemId={`desert-tour-${tour.id}`}
+                      itemType="travel"
+                      itemTitle={tour.title}
+                      itemImage={tour.image}
+                      itemPrice={parseInt(tour.price.replace('€', ''))}
+                      itemDescription={tour.subtitle}
+                    />
+                  </div>
+                  
                   {/* Price Badge */}
                   <div className="absolute top-4 right-4 bg-white/95 dark:bg-card/80 backdrop-blur-sm rounded-full px-4 py-2">
                     <div className="flex items-center space-x-2">
