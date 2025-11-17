@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Car, Clock, Users, Shield, MapPin, Phone, Star, CheckCircle, ArrowRight } from "lucide-react"
+import WishlistButton from "@/components/WishlistButton"
 
 const transferTypes = [
   {
@@ -141,11 +142,23 @@ export default function TrasferimentiPage() {
             {transferTypes.map((transfer) => (
               <Card
                 key={transfer.id}
-                className={`cursor-pointer transition-all duration-300 hover:shadow-xl ${
+                className={`relative cursor-pointer transition-all duration-300 hover:shadow-xl ${
                   selectedTransfer.id === transfer.id ? "ring-2 ring-orange-500 shadow-lg" : "hover:shadow-lg"
                 }`}
                 onClick={() => setSelectedTransfer(transfer)}
               >
+                {/* Wishlist Button */}
+                <div className="absolute top-2 right-2 z-10" onClick={(e) => e.stopPropagation()}>
+                  <WishlistButton
+                    itemId={`transfer-${transfer.id}`}
+                    itemType="service"
+                    itemTitle={`Trasferimento ${transfer.name}`}
+                    itemImage={transfer.image}
+                    itemPrice={transfer.price}
+                    itemDescription={transfer.description}
+                  />
+                </div>
+                
                 <CardHeader className="text-center">
                   <div className="w-16 h-16 mx-auto mb-4 bg-orange-100 dark:bg-orange-900/30 rounded-full flex items-center justify-center">
                     <Car className="h-8 w-8 text-orange-600 dark:text-orange-400" />

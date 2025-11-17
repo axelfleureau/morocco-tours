@@ -3,6 +3,7 @@
 import { Calendar, Users, MapPin, Star, X, Check } from "lucide-react"
 import { useState } from "react"
 import Link from "next/link"
+import WishlistButton from "@/components/WishlistButton"
 
 export default function GroupTripsPage() {
   const [selectedTrip, setSelectedTrip] = useState<any | null>(null)
@@ -284,6 +285,19 @@ export default function GroupTripsPage() {
                     alt={trip.title}
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                   />
+                  
+                  {/* Wishlist Button - top left */}
+                  <div className="absolute top-16 left-4 z-10">
+                    <WishlistButton
+                      itemId={`group-trip-${trip.id}`}
+                      itemType="travel"
+                      itemTitle={trip.title}
+                      itemImage={trip.image}
+                      itemPrice={parseInt(trip.price.replace('€', ''))}
+                      itemDescription={trip.description}
+                    />
+                  </div>
+                  
                   <div className="absolute top-4 left-4">
                     <span className="bg-orange-500 text-primary-foreground px-3 py-1 rounded-full text-sm font-semibold">
                       {trip.badge}

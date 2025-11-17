@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Shield, Heart, Plane, Phone, CheckCircle, X, CreditCard, ArrowRight, Star, Briefcase } from "lucide-react"
+import WishlistButton from "@/components/WishlistButton"
 
 const structuredData = {
   "@context": "https://schema.org",
@@ -275,6 +276,17 @@ export default function AssicurazioniClientPage() {
                       <Badge className="bg-blue-600 text-white px-4 py-1">Più Popolare</Badge>
                     </div>
                   )}
+                  
+                  {/* Wishlist Button */}
+                  <div className="absolute top-2 right-2 z-10" onClick={(e) => e.stopPropagation()}>
+                    <WishlistButton
+                      itemId={`insurance-${plan.id}`}
+                      itemType="service"
+                      itemTitle={`Assicurazione ${plan.name}`}
+                      itemPrice={plan.price}
+                      itemDescription={plan.description}
+                    />
+                  </div>
 
                   <CardHeader className="text-center">
                     <div className="w-16 h-16 mx-auto mb-4 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center">

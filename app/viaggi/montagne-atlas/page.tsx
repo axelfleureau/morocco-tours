@@ -1,5 +1,6 @@
 import { Mountain, Compass, Camera, Users, Clock, Star, TreePine, Sun } from 'lucide-react'
 import Link from "next/link"
+import WishlistButton from "@/components/WishlistButton"
 
 export default function MontagneAtlasPage() {
   const regions = [
@@ -330,6 +331,19 @@ export default function MontagneAtlasPage() {
                     alt={route.name}
                     className="w-full h-full object-cover"
                   />
+                  
+                  {/* Wishlist Button */}
+                  <div className="absolute top-16 left-4 z-10">
+                    <WishlistButton
+                      itemId={`atlas-trek-${route.id}`}
+                      itemType="experience"
+                      itemTitle={route.name}
+                      itemImage={route.image}
+                      itemPrice={parseInt(route.price.replace(/[^0-9]/g, '')) || 0}
+                      itemDescription={route.description}
+                    />
+                  </div>
+                  
                   <div className="absolute top-4 left-4 bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm px-3 py-1 rounded-full shadow-lg border border-slate-200 dark:border-slate-600">
                     <span className="font-bold text-sm text-slate-900 dark:text-slate-100">{route.altitude}</span>
                   </div>

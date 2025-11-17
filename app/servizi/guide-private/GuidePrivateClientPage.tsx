@@ -17,6 +17,7 @@ import {
   Phone,
   MessageCircle,
 } from "lucide-react"
+import WishlistButton from "@/components/WishlistButton"
 
 const structuredData = {
   "@context": "https://schema.org",
@@ -235,11 +236,23 @@ export default function GuidePrivateClientPage() {
               {guides.map((guide) => (
                 <Card
                   key={guide.id}
-                  className={`cursor-pointer transition-all duration-300 hover:shadow-xl ${
+                  className={`relative cursor-pointer transition-all duration-300 hover:shadow-xl ${
                     selectedGuide.id === guide.id ? "ring-2 ring-blue-500 shadow-lg" : "hover:shadow-lg"
                   }`}
                   onClick={() => setSelectedGuide(guide)}
                 >
+                  {/* Wishlist Button */}
+                  <div className="absolute top-2 right-2 z-10" onClick={(e) => e.stopPropagation()}>
+                    <WishlistButton
+                      itemId={`guide-${guide.id}`}
+                      itemType="service"
+                      itemTitle={guide.name}
+                      itemImage={guide.image}
+                      itemPrice={guide.price}
+                      itemDescription={guide.specialization}
+                    />
+                  </div>
+                  
                   <CardHeader className="text-center">
                     <div className="w-20 h-20 mx-auto mb-4 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center">
                       <User className="h-10 w-10 text-blue-600 dark:text-blue-400" />

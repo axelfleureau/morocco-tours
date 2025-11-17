@@ -1,5 +1,6 @@
 import { MapPin, Clock, Users, Star, Camera, Utensils, Building } from 'lucide-react'
 import Link from "next/link"
+import WishlistButton from "@/components/WishlistButton"
 
 export default function CittaImperialiPage() {
   const cities = [
@@ -248,6 +249,19 @@ export default function CittaImperialiPage() {
                     alt={tour.title}
                     className="w-full h-full object-cover"
                   />
+                  
+                  {/* Wishlist Button */}
+                  <div className="absolute top-4 left-4 z-10">
+                    <WishlistButton
+                      itemId={`imperial-tour-${tour.id}`}
+                      itemType="travel"
+                      itemTitle={tour.title}
+                      itemImage={tour.image}
+                      itemPrice={parseInt(tour.price.replace('€', ''))}
+                      itemDescription={tour.bestFor}
+                    />
+                  </div>
+                  
                   <div className="absolute top-4 right-4 bg-white/95 dark:bg-card/90 backdrop-blur-sm px-4 py-2 rounded-full">
                     <div className="flex items-center space-x-2">
                       <span className="font-bold text-lg text-foreground">{tour.price}</span>

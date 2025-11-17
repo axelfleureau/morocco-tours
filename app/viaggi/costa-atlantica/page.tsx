@@ -1,5 +1,6 @@
 import { Waves, Sun, Wind, Camera, Utensils, MapPin, Clock, Star } from 'lucide-react'
 import Link from "next/link"
+import WishlistButton from "@/components/WishlistButton"
 
 export default function CostaBluPage() {
   const destinations = [

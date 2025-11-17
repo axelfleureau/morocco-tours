@@ -9,7 +9,7 @@ import { WishlistItem } from '@/lib/auth';
 
 interface WishlistButtonProps {
   itemId: string;
-  itemType: 'vehicle' | 'experience' | 'travel' | 'city' | 'activity';
+  itemType: 'vehicle' | 'experience' | 'travel' | 'city' | 'activity' | 'service';
   itemTitle: string;
   itemImage?: string;
   itemPrice?: number;

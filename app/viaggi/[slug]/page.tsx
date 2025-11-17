@@ -10,6 +10,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { db } from "@/lib/firebase"
 import { collection, query, where, getDocs, doc, getDoc } from "firebase/firestore"
 import { Travel } from "@/lib/firestore-schema"
+import WishlistButton from "@/components/WishlistButton"
 
 export default function TravelDetailPage() {
   const params = useParams()
@@ -113,6 +114,19 @@ export default function TravelDetailPage() {
           className="w-full h-full object-cover"
         />
         <div className="absolute inset-0 bg-black/50" />
+        
+        {/* Wishlist Button - top right */}
+        <div className="absolute top-4 right-4 z-20">
+          <WishlistButton
+            itemId={`travel-${travel.id}`}
+            itemType="travel"
+            itemTitle={travel.title}
+            itemImage={travel.images?.[0]}
+            itemPrice={travel.price || 0}
+            itemDescription={travel.description}
+          />
+        </div>
+        
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="text-center text-white max-w-4xl mx-auto px-4">
             <h1 className="text-4xl lg:text-5xl font-bold mb-4">{travel.title}</h1>

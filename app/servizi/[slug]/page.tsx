@@ -10,6 +10,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { db } from "@/lib/firebase"
 import { collection, query, where, getDocs, doc, getDoc } from "firebase/firestore"
 import { Service } from "@/lib/firestore-schema"
+import WishlistButton from "@/components/WishlistButton"
 
 export default function ServiceDetailPage() {
   const params = useParams()
@@ -121,7 +122,19 @@ export default function ServiceDetailPage() {
   return (
     <div className="min-h-screen bg-background">
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-orange-50 to-red-50 dark:from-orange-950/20 dark:to-red-950/20 py-20">
+      <section className="relative bg-gradient-to-br from-orange-50 to-red-50 dark:from-orange-950/20 dark:to-red-950/20 py-20">
+        {/* Wishlist Button - top right */}
+        <div className="absolute top-4 right-4 z-20">
+          <WishlistButton
+            itemId={`service-${service.id}`}
+            itemType="service"
+            itemTitle={service.name}
+            itemImage={service.images?.[0]}
+            itemPrice={service.price || 0}
+            itemDescription={service.description}
+          />
+        </div>
+        
         <div className="max-w-4xl mx-auto px-4 text-center">
           <div className="text-6xl mb-4">{getServiceIcon(service.category)}</div>
           <h1 className="text-4xl lg:text-5xl font-bold text-foreground mb-6">{service.name}</h1>
