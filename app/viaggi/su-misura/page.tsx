@@ -6,10 +6,18 @@ import { ArrowRight, ArrowLeft, CheckCircle, MessageCircle, Phone, FileText } fr
 import { useRef } from "react"
 import jsPDF from "jspdf"
 import autoTable from "jspdf-autotable"
+import { useAuth } from "@/context/AuthContext"
+import { useNotifications } from "@/components/NotificationSystem"
+import { db } from "@/lib/firebase"
+import { collection, addDoc, Timestamp } from "firebase/firestore"
+import { COLLECTIONS, CustomTripRequest } from "@/lib/firestore-schema"
 
 export default function CustomTripsPage() {
+  const { user } = useAuth()
+  const { showSuccess, showWarning, showError, showInfo } = useNotifications()
   const [currentStep, setCurrentStep] = useState(1)
   const [validationErrors, setValidationErrors] = useState<Record<string, string>>({})
+  const [isSaving, setIsSaving] = useState(false)
   const [formData, setFormData] = useState({
     // Step 1 - Basic Info
     name: "",
@@ -72,14 +80,95 @@ Budget/persona: €${formData.budget || "-"}
 _Grazie!_`
   }
 
-  const handleWhatsapp = (e: React.FormEvent) => {
+  const handleWhatsapp = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!privacyRef.current?.checked) {
       privacyRef.current?.focus()
+      showWarning("Privacy", "Devi accettare la privacy policy per continuare")
       return
     }
-    const msg = encodeURIComponent(composeWhatsappMessage())
-    window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${msg}`, "_blank")
+    
+    // For guest users: open WhatsApp directly without saving
+    if (!user) {
+      showInfo(
+        "Richiesta Inviata", 
+        "La tua richiesta sarà inviata via WhatsApp. Effettua il login per salvare le richieste nella dashboard."
+      )
+      const msg = encodeURIComponent(composeWhatsappMessage())
+      window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${msg}`, "_blank")
+      return
+    }
+    
+    // Save to Firestore
+    setIsSaving(true)
+    try {
+      const tripRequest: Omit<CustomTripRequest, 'id'> = {
+        userId: user.uid,
+        userEmail: user.email || formData.email,
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone,
+        travelers: formData.travelers,
+        children: formData.children,
+        childrenAges: formData.childrenAges,
+        departureDate: formData.departureDate,
+        returnDate: formData.returnDate,
+        duration: formData.duration,
+        departureCity: formData.departureCity,
+        budget: formData.budget,
+        travelStyle: formData.travelStyle,
+        travelPace: formData.travelPace,
+        interests: formData.interests,
+        destinations: formData.destinations,
+        mustVisit: formData.mustVisit,
+        accommodation: formData.accommodation,
+        accommodationPreferences: formData.accommodationPreferences,
+        transport: formData.transport,
+        additionalServices: formData.additionalServices,
+        specialRequests: formData.specialRequests,
+        dietaryRestrictions: formData.dietaryRestrictions,
+        accessibility: formData.accessibility,
+        occasion: formData.occasion,
+        status: 'pending',
+        estimatedCost: calculateEstimatedCost(),
+        createdAt: Timestamp.now(),
+        updatedAt: Timestamp.now(),
+        sentToWhatsApp: true,
+        whatsAppSentAt: Timestamp.now()
+      }
+      
+      const docRef = await addDoc(collection(db, COLLECTIONS.customTripRequests), tripRequest)
+      
+      showSuccess(
+        "Richiesta Salvata!",
+        "La tua richiesta è stata salvata nella dashboard. Ora ti reindirizziamo a WhatsApp."
+      )
+      
+      // Open WhatsApp after save
+      setTimeout(() => {
+        const msg = encodeURIComponent(composeWhatsappMessage())
+        window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${msg}`, "_blank")
+      }, 1500)
+      
+    } catch (error) {
+      console.error("Error saving trip request:", error)
+      showError(
+        "Errore Salvataggio",
+        "Impossibile salvare la richiesta. Puoi comunque procedere con WhatsApp.",
+        [
+          {
+            label: 'Continua con WhatsApp',
+            onClick: () => {
+              const msg = encodeURIComponent(composeWhatsappMessage())
+              window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${msg}`, "_blank")
+            },
+            variant: 'primary'
+          }
+        ]
+      )
+    } finally {
+      setIsSaving(false)
+    }
   }
 
   const handlePdf = () => {

@@ -1,25 +1,45 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { Calendar, Download, Search, Filter, Eye, Star, MapPin, Users } from 'lucide-react';
+import { Calendar, Download, Search, Filter, Eye, Star, MapPin, Users, Plane, MessageCircle, ChevronDown, ChevronUp } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { firestoreService, Booking } from '@/lib/firestore';
+import { db } from '@/lib/firebase';
+import { collection, query, where, getDocs, orderBy } from 'firebase/firestore';
+import { COLLECTIONS, CustomTripRequest } from '@/lib/firestore-schema';
 
 export default function UserBookings() {
   const { user } = useAuth();
   const [bookings, setBookings] = useState<Booking[]>([]);
+  const [customTrips, setCustomTrips] = useState<CustomTripRequest[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState<string>('all');
+  const [expandedTrip, setExpandedTrip] = useState<string | null>(null);
 
   useEffect(() => {
     const loadBookings = async () => {
       if (!user) return;
       
       try {
+        // Load normal bookings
         const userBookings = await firestoreService.getUserBookings(user.uid);
         setBookings(userBookings);
+        
+        // Load custom trip requests
+        const customTripsQuery = query(
+          collection(db, COLLECTIONS.customTripRequests),
+          where('userId', '==', user.uid),
+          orderBy('createdAt', 'desc')
+        );
+        const customTripsSnap = await getDocs(customTripsQuery);
+        const customTripsData = customTripsSnap.docs.map(doc => ({ 
+          id: doc.id, 
+          ...doc.data() 
+        })) as CustomTripRequest[];
+        setCustomTrips(customTripsData);
+        
       } catch (err: any) {
         setError('Errore nel caricamento delle prenotazioni');
         console.error('Bookings loading error:', err);
@@ -138,6 +158,154 @@ export default function UserBookings() {
           </div>
         </div>
       </div>
+
+      {/* Custom Trip Requests Section */}
+      {customTrips.length > 0 && (
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <h3 className="text-xl font-semibold text-foreground flex items-center gap-2">
+              <Plane className="w-5 h-5 text-orange-600" />
+              Richieste Viaggi su Misura
+            </h3>
+            <span className="text-sm text-muted-foreground">{customTrips.length} richieste</span>
+          </div>
+
+          {customTrips.map((trip) => (
+            <div
+              key={trip.id}
+              className="bg-gradient-to-r from-orange-50 to-red-50 dark:from-orange-950/20 dark:to-red-950/20 rounded-2xl p-6 shadow-sm border border-orange-200 dark:border-orange-800"
+            >
+              <div className="flex items-start justify-between mb-4">
+                <div className="flex-1">
+                  <div className="flex items-center gap-3 mb-2">
+                    <h4 className="text-lg font-semibold text-foreground">{trip.name}</h4>
+                    <span className={`px-3 py-1 text-xs font-medium rounded-full ${
+                      trip.status === 'pending' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300' :
+                      trip.status === 'reviewed' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300' :
+                      trip.status === 'quoted' ? 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300' :
+                      trip.status === 'confirmed' ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300' :
+                      'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300'
+                    }`}>
+                      {trip.status === 'pending' ? 'In Attesa' : trip.status === 'reviewed' ? 'Esaminata' : trip.status === 'quoted' ? 'Preventivo Inviato' : trip.status === 'confirmed' ? 'Confermata' : 'Cancellata'}
+                    </span>
+                  </div>
+
+                  <div className="grid md:grid-cols-2 gap-3 text-sm text-muted-foreground">
+                    <div className="flex items-center gap-2">
+                      <Calendar className="w-4 h-4" />
+                      <span>{trip.departureDate} → {trip.returnDate}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Users className="w-4 h-4" />
+                      <span>{trip.travelers} adulti{trip.children > 0 && `, ${trip.children} bambini`}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <MapPin className="w-4 h-4" />
+                      <span>{trip.destinations.slice(0, 2).join(', ')}{trip.destinations.length > 2 && '...'}</span>
+                    </div>
+                    <div className="text-sm font-semibold text-foreground">
+                      Budget: €{trip.budget}/persona
+                    </div>
+                  </div>
+                </div>
+
+                <button
+                  onClick={() => setExpandedTrip(expandedTrip === trip.id ? null : trip.id)}
+                  className="ml-4 p-2 hover:bg-orange-100 dark:hover:bg-orange-900/30 rounded-lg transition-colors"
+                >
+                  {expandedTrip === trip.id ? 
+                    <ChevronUp className="w-5 h-5 text-orange-600" /> : 
+                    <ChevronDown className="w-5 h-5 text-orange-600" />
+                  }
+                </button>
+              </div>
+
+              {/* Expanded Details */}
+              {expandedTrip === trip.id && (
+                <div className="mt-4 pt-4 border-t border-orange-200 dark:border-orange-800 space-y-4">
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <div>
+                      <h5 className="font-semibold text-sm text-foreground mb-2">Contatti</h5>
+                      <div className="space-y-1 text-sm text-muted-foreground">
+                        <p>Email: {trip.email}</p>
+                        <p>Telefono: {trip.phone}</p>
+                        <p>Città partenza: {trip.departureCity}</p>
+                      </div>
+                    </div>
+                    <div>
+                      <h5 className="font-semibold text-sm text-foreground mb-2">Destinazioni</h5>
+                      <div className="flex flex-wrap gap-1">
+                        {trip.destinations.map(dest => (
+                          <span key={dest} className="px-2 py-1 bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300 rounded-full text-xs">
+                            {dest}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div>
+                    <h5 className="font-semibold text-sm text-foreground mb-2">Interessi</h5>
+                    <div className="flex flex-wrap gap-1">
+                      {trip.interests.map(interest => (
+                        <span key={interest} className="px-2 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-full text-xs">
+                          {interest}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <div>
+                      <h5 className="font-semibold text-sm text-foreground mb-2">Preferenze Viaggio</h5>
+                      <div className="space-y-1 text-sm text-muted-foreground">
+                        <p>Alloggio: {trip.accommodation}</p>
+                        <p>Trasporto: {trip.transport}</p>
+                        <p>Ritmo: {trip.travelPace}</p>
+                      </div>
+                    </div>
+                    <div>
+                      <h5 className="font-semibold text-sm text-foreground mb-2">Info Aggiuntive</h5>
+                      <div className="space-y-1 text-sm text-muted-foreground">
+                        {trip.occasion && <p>Occasione: {trip.occasion}</p>}
+                        {trip.dietaryRestrictions && <p>Restrizioni alimentari: {trip.dietaryRestrictions}</p>}
+                        {trip.accessibility && <p>Accessibilità: {trip.accessibility}</p>}
+                      </div>
+                    </div>
+                  </div>
+
+                  {trip.specialRequests && (
+                    <div className="bg-orange-100 dark:bg-orange-900/30 rounded-lg p-3">
+                      <h5 className="font-semibold text-sm text-foreground mb-1">Richieste Speciali</h5>
+                      <p className="text-sm text-muted-foreground">{trip.specialRequests}</p>
+                    </div>
+                  )}
+
+                  <div className="flex items-center justify-between pt-3 border-t border-orange-200 dark:border-orange-800">
+                    <div className="text-xs text-muted-foreground">
+                      Richiesto il: {new Date(trip.createdAt.seconds * 1000).toLocaleDateString('it-IT')}
+                    </div>
+                    <div className="flex gap-2">
+                      {trip.sentToWhatsApp && (
+                        <button
+                          onClick={() => {
+                            const msg = encodeURIComponent(`Ciao! Vorrei informazioni sulla mia richiesta viaggio su misura del ${new Date(trip.createdAt.seconds * 1000).toLocaleDateString('it-IT')} per ${trip.destinations.join(', ')}.`);
+                            window.open(`https://wa.me/393292333370?text=${msg}`, "_blank");
+                          }}
+                          className="flex items-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg text-sm font-medium transition-colors"
+                        >
+                          <MessageCircle className="w-4 h-4" />
+                          Contatta WhatsApp
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
 
       {/* Bookings List */}
       <div className="space-y-4">

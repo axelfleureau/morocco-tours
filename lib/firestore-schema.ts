@@ -5,6 +5,58 @@ import { Timestamp } from "firebase/firestore"
 
 // === CORE ENTITY TYPES ===
 
+// Custom Trip Requests - User-submitted trip planning requests
+export interface CustomTripRequest {
+  id?: string
+  userId: string // Firebase Auth UID
+  userEmail: string
+  
+  // Step 1 - Basic Info
+  name: string
+  email: string
+  phone: string
+  travelers: number
+  children: number
+  childrenAges?: string
+  departureDate: string
+  returnDate: string
+  duration: number
+  departureCity: string
+  budget: number
+  
+  // Step 2 - Travel Style
+  travelStyle: string[]
+  travelPace: string
+  interests: string[]
+  
+  // Step 3 - Destinations
+  destinations: string[]
+  mustVisit?: string
+  
+  // Step 4 - Accommodation & Transport
+  accommodation: string
+  accommodationPreferences: string[]
+  transport: string
+  additionalServices: string[]
+  
+  // Step 5 - Final Details
+  specialRequests?: string
+  dietaryRestrictions?: string
+  accessibility?: string
+  occasion?: string
+  
+  // Status tracking
+  status: 'pending' | 'reviewed' | 'quoted' | 'confirmed' | 'cancelled'
+  adminNotes?: string
+  estimatedCost?: number
+  
+  // System
+  createdAt: Timestamp
+  updatedAt: Timestamp
+  sentToWhatsApp: boolean
+  whatsAppSentAt?: Timestamp
+}
+
 // Cities - Separate collection for destinations
 export interface City {
   id?: string
@@ -372,6 +424,7 @@ export const COLLECTIONS = {
   
   // System
   users: 'users',
+  customTripRequests: 'customTripRequests',
   
   // Legacy (to be migrated)
   siteContent: 'site_content'
