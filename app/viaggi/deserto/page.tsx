@@ -22,7 +22,7 @@ export default function DesertChoicePage() {
         "Campi berberi autentici",
         "Musica tradizionale"
       ],
-      tours: "6 tour disponibili",
+      tours: "4 tour disponibili",
       duration: "2-4 giorni",
       distance: "550 km da Marrakech",
       bestSeason: "Mar-Mag, Set-Nov"
