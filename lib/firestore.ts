@@ -34,7 +34,10 @@ export const COLLECTIONS = {
   packageTemplates: 'package_templates',
   guides: 'guides',
   userThemes: 'user_themes',
-  blog: 'blog'
+  blog: 'blog',
+  // Group Chat Collections
+  conversations: 'conversations',
+  messages: 'messages'
 } as const;
 
 // Travel/Tour Types
@@ -95,6 +98,47 @@ export interface BookingParticipant {
   joinedAt: Timestamp;
   status: 'invited' | 'joined' | 'declined';
   role: 'organizer' | 'participant';
+}
+
+// Chat Message - For group conversations
+export interface ChatMessage {
+  id?: string;
+  conversationId: string;
+  senderId: string;
+  senderName: string;
+  senderAvatar?: string;
+  text: string;
+  timestamp: Timestamp;
+  readBy: string[]; // Array of userIds who read this message
+  edited?: boolean;
+  editedAt?: Timestamp;
+}
+
+// Conversation - Group chat room
+export interface Conversation {
+  id?: string;
+  groupId: string; // Links to Booking.groupId
+  bookingId: string; // Reference to booking
+  participants: Array<{
+    userId: string;
+    name: string;
+    avatar?: string;
+  }>;
+  // Separate map for lastRead timestamps (userId -> timestamp)
+  lastReadMap?: {
+    [userId: string]: Timestamp;
+  };
+  lastMessage?: {
+    text: string;
+    senderId: string;
+    senderName: string;
+    timestamp: Timestamp;
+  };
+  unreadCount?: {
+    [userId: string]: number;
+  };
+  createdAt: Timestamp;
+  updatedAt: Timestamp;
 }
 
 // Booking Types
