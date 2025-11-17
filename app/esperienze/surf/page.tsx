@@ -1,6 +1,7 @@
 import ContactBanner from "@/components/cta/contact-banner"
 import { Waves, Wind, Sun, Compass, Users, Clock, Shield, Star } from "lucide-react"
 import Link from "next/link"
+import WishlistButton from "@/components/WishlistButton"
 
 export default function SurfTaghazoutPage() {
   return (
@@ -13,6 +14,16 @@ export default function SurfTaghazoutPage() {
       {/* Hero Image */}
       <header className="relative">
         <div className="h-[320px] sm:h-[420px] lg:h-[520px] relative overflow-hidden">
+          {/* Wishlist Button */}
+          <div className="absolute top-6 right-6 z-10">
+            <WishlistButton
+              itemId="surf-taghazout"
+              itemType="experience"
+              itemTitle="Surf a Taghazout"
+              itemImage="/images/essaouira-coast.png"
+              itemDescription="Lezioni e coaching per tutti i livelli sulla costa atlantica"
+            />
+          </div>
           <img src="/images/essaouira-coast.png" alt="Surf a Taghazout" className="w-full h-full object-cover" />
           <div className="absolute inset-0 bg-black/30" />
           <div className="absolute bottom-8 left-8 text-white">

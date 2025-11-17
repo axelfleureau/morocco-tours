@@ -9,6 +9,7 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Card, CardContent } from "@/components/ui/card"
 import ContactBanner from "@/components/cta/contact-banner"
+import WishlistButton from "@/components/WishlistButton"
 
 export default function FotografiaPage() {
   const [formData, setFormData] = useState({
@@ -80,6 +81,16 @@ export default function FotografiaPage() {
 
       <header className="relative">
         <div className="h-[320px] sm:h-[420px] lg:h-[520px] relative overflow-hidden">
+          {/* Wishlist Button */}
+          <div className="absolute top-6 right-6 z-10">
+            <WishlistButton
+              itemId="fotografia-workshop"
+              itemType="experience"
+              itemTitle="Workshop di Fotografia"
+              itemImage="/images/photo-tour.png"
+              itemDescription="Cattura l'essenza del Marocco con coaching fotografico professionale"
+            />
+          </div>
           <img
             src="/images/photo-tour.png"
             alt="Workshop di Fotografia in Marocco"

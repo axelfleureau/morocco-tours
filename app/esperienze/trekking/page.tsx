@@ -1,6 +1,7 @@
 import ContactBanner from "@/components/cta/contact-banner"
 import { Mountain, Map, Compass, Sun, Users, Clock, Shield, Star } from "lucide-react"
 import Link from "next/link"
+import WishlistButton from "@/components/WishlistButton"
 
 export default function TrekkingAtlantePage() {
   return (
@@ -13,6 +14,17 @@ export default function TrekkingAtlantePage() {
       {/* Hero Image */}
       <header className="relative">
         <div className="h-[320px] sm:h-[420px] lg:h-[520px] relative overflow-hidden">
+          {/* Wishlist Button */}
+          <div className="absolute top-6 right-6 z-10">
+            <WishlistButton
+              itemId="trekking-atlante"
+              itemType="experience"
+              itemTitle="Trekking nell'Alto Atlante"
+              itemImage="/images/atlas-mountains.png"
+              itemPrice={35}
+              itemDescription="Esplora i villaggi berberi e le vette maestose dell'Alto Atlante con guide certificate"
+            />
+          </div>
           <img
             src="/images/atlas-mountains.png"
             alt="Trekking nell'Alto Atlante"

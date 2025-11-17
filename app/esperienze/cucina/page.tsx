@@ -2,6 +2,7 @@
 
 import { ChefHat, Utensils, Clock, Users, Star, Flame, Leaf, Heart } from "lucide-react"
 import Link from "next/link"
+import WishlistButton from "@/components/WishlistButton"
 
 export default function CucinaPage() {
   const cookingClasses = [
@@ -136,6 +137,17 @@ export default function CucinaPage() {
     <div className="min-h-screen bg-background">
       {/* Hero Section */}
       <div className="relative py-24 lg:py-32 bg-gradient-to-r from-orange-500 to-red-600 overflow-hidden">
+        {/* Wishlist Button */}
+        <div className="absolute top-6 right-6 z-10">
+          <WishlistButton
+            itemId="cucina-marocchina"
+            itemType="experience"
+            itemTitle="Corsi di Cucina Marocchina"
+            itemImage="/images/cooking-class.png"
+            itemPrice={65}
+            itemDescription="Impara a preparare i piatti iconici della cucina marocchina con chef locali"
+          />
+        </div>
         <div className="absolute inset-0">
           <img
             src="/images/cooking-class.png"

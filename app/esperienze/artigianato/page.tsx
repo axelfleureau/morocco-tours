@@ -1,6 +1,7 @@
 import ContactBanner from "@/components/cta/contact-banner"
 import { Scissors, Palette, Shield, Hand, Users, Clock, Star, Award } from "lucide-react"
 import Link from "next/link"
+import WishlistButton from "@/components/WishlistButton"
 
 export default function ArtigianatoPage() {
   return (
@@ -13,6 +14,16 @@ export default function ArtigianatoPage() {
       {/* Hero Image */}
       <header className="relative">
         <div className="h-[320px] sm:h-[420px] lg:h-[520px] relative overflow-hidden">
+          {/* Wishlist Button */}
+          <div className="absolute top-6 right-6 z-10">
+            <WishlistButton
+              itemId="artigianato-laboratori"
+              itemType="experience"
+              itemTitle="Laboratori di Artigianato"
+              itemImage="/images/moroccan-souk.png"
+              itemDescription="Ceramica, tessitura, pelle e zellige con maestri artigiani"
+            />
+          </div>
           <img
             src="/images/moroccan-souk.png"
             alt="Laboratori di Artigianato in Marocco"

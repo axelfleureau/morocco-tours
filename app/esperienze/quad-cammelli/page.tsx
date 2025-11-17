@@ -9,6 +9,7 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Card, CardContent } from "@/components/ui/card"
 import ContactBanner from "@/components/cta/contact-banner"
+import WishlistButton from "@/components/WishlistButton"
 
 export default function QuadCammelliPage() {
   const [formData, setFormData] = useState({
@@ -77,6 +78,16 @@ export default function QuadCammelliPage() {
 
       <header className="relative">
         <div className="h-[400px] sm:h-[500px] lg:h-[600px] relative overflow-hidden">
+          {/* Wishlist Button */}
+          <div className="absolute top-6 right-6 z-10">
+            <WishlistButton
+              itemId="quad-cammelli-deserto"
+              itemType="experience"
+              itemTitle="Quad e Cammelli nel Deserto"
+              itemImage="/images/sahara-sunset.png"
+              itemDescription="Esplora le dune dorate tra adrenalina e tradizione"
+            />
+          </div>
           <img
             src="/images/sahara-sunset.png"
             alt="Quad e Cammelli nel deserto del Sahara"
