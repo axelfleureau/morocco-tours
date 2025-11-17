@@ -1,10 +1,25 @@
 "use client"
 
+import { useState } from "react"
 import { ChefHat, Utensils, Clock, Users, Star, Flame, Leaf, Heart } from "lucide-react"
 import Link from "next/link"
 import WishlistButton from "@/components/WishlistButton"
+import BookingModal from "@/components/modals/BookingModal"
 
 export default function CucinaPage() {
+  const [bookingModal, setBookingModal] = useState<{
+    isOpen: boolean;
+    course: any;
+  }>({ isOpen: false, course: null });
+
+  const openBookingModal = (course: any) => {
+    setBookingModal({ isOpen: true, course });
+  };
+
+  const closeBookingModal = () => {
+    setBookingModal({ isOpen: false, course: null });
+  };
+
   const cookingClasses = [
     {
       id: "tradizionale",
@@ -259,12 +274,12 @@ export default function CucinaPage() {
 
                   {/* Actions */}
                   <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-3">
-                    <Link
-                      href="/contatti"
+                    <button
+                      onClick={() => openBookingModal(course)}
                       className="flex-1 bg-gradient-to-r from-orange-500 to-red-500 text-white py-3 px-4 rounded-xl hover:from-orange-600 hover:to-red-600 transition-all duration-300 font-semibold text-center"
                     >
                       Prenota Corso
-                    </Link>
+                    </button>
                   </div>
                 </div>
               </div>
@@ -481,12 +496,12 @@ export default function CucinaPage() {
             Unisciti ai nostri corsi di cucina e porta a casa i sapori autentici del Marocco
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link
-              href="/contatti"
+            <button
+              onClick={() => openBookingModal(cookingClasses[0])}
               className="bg-white text-orange-600 px-8 py-4 rounded-xl hover:bg-gray-100 transition-all duration-300 font-semibold text-lg"
             >
               Prenota Corso
-            </Link>
+            </button>
             <Link
               href="/contatti"
               className="border-2 border-white text-white px-8 py-4 rounded-xl hover:bg-white hover:text-orange-600 transition-all duration-300 font-semibold text-lg"
@@ -496,6 +511,19 @@ export default function CucinaPage() {
           </div>
         </div>
       </div>
+
+      {/* Booking Modal */}
+      {bookingModal.isOpen && bookingModal.course && (
+        <BookingModal
+          isOpen={bookingModal.isOpen}
+          onClose={closeBookingModal}
+          itemId={bookingModal.course.id}
+          itemType="experience"
+          itemTitle={bookingModal.course.name}
+          basePrice={parseFloat(bookingModal.course.price.replace(/[^0-9]/g, ""))}
+          duration={bookingModal.course.duration}
+        />
+      )}
     </div>
   )
 }

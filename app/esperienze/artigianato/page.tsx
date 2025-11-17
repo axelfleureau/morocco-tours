@@ -1,9 +1,22 @@
+"use client"
+
+import { useState } from "react"
 import ContactBanner from "@/components/cta/contact-banner"
 import { Scissors, Palette, Shield, Hand, Users, Clock, Star, Award } from "lucide-react"
 import Link from "next/link"
 import WishlistButton from "@/components/WishlistButton"
+import BookingModal from "@/components/modals/BookingModal"
 
 export default function ArtigianatoPage() {
+  const [showBookingModal, setShowBookingModal] = useState(false);
+  
+  const workshopData = {
+    id: "artigianato-workshop",
+    name: "Laboratorio Artigianato Marocchino",
+    price: 45,
+    duration: "2-8 ore"
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <ContactBanner
@@ -256,12 +269,12 @@ export default function ArtigianatoPage() {
                     </div>
                   </div>
 
-                  <Link
-                    href="/contatti"
+                  <button
+                    onClick={() => setShowBookingModal(true)}
                     className="block w-full text-center px-6 py-3 rounded-xl bg-gradient-to-r from-primary to-secondary text-primary-foreground font-semibold hover:from-primary/90 hover:to-secondary/90 transition-all duration-300"
                   >
                     Prenota / Richiedi Info
-                  </Link>
+                  </button>
 
                   <p className="text-xs text-muted-foreground mt-3 text-center">
                     Laboratori privati e percorsi multi-giorno disponibili su richiesta.
@@ -323,6 +336,19 @@ export default function ArtigianatoPage() {
           </div>
         </div>
       </section>
+
+      {/* Booking Modal */}
+      {showBookingModal && (
+        <BookingModal
+          isOpen={showBookingModal}
+          onClose={() => setShowBookingModal(false)}
+          itemId={workshopData.id}
+          itemType="experience"
+          itemTitle={workshopData.name}
+          basePrice={workshopData.price}
+          duration={workshopData.duration}
+        />
+      )}
     </div>
   )
 }

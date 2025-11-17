@@ -1,9 +1,22 @@
+"use client"
+
+import { useState } from "react"
 import ContactBanner from "@/components/cta/contact-banner"
 import { Mountain, Map, Compass, Sun, Users, Clock, Shield, Star } from "lucide-react"
 import Link from "next/link"
 import WishlistButton from "@/components/WishlistButton"
+import BookingModal from "@/components/modals/BookingModal"
 
 export default function TrekkingAtlantePage() {
+  const [showBookingModal, setShowBookingModal] = useState(false);
+  
+  const trekkingData = {
+    id: "trekking-atlante",
+    name: "Trekking nell'Alto Atlante",
+    price: 35,
+    duration: "1-7 giorni"
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <ContactBanner
@@ -209,12 +222,12 @@ export default function TrekkingAtlantePage() {
                     </div>
                   </div>
 
-                  <Link
-                    href="/contatti"
+                  <button
+                    onClick={() => setShowBookingModal(true)}
                     className="block w-full text-center px-6 py-3 rounded-xl bg-gradient-to-r from-orange-500 to-red-500 text-white font-semibold hover:from-orange-600 hover:to-red-600 transition-all duration-300"
                   >
                     Prenota / Richiedi Info
-                  </Link>
+                  </button>
 
                   <p className="text-xs text-muted-foreground mt-3 text-center">
                     Il prezzo varia in base a stagione, numero partecipanti e servizi aggiuntivi.
@@ -277,6 +290,19 @@ export default function TrekkingAtlantePage() {
           </div>
         </div>
       </section>
+
+      {/* Booking Modal */}
+      {showBookingModal && (
+        <BookingModal
+          isOpen={showBookingModal}
+          onClose={() => setShowBookingModal(false)}
+          itemId={trekkingData.id}
+          itemType="experience"
+          itemTitle={trekkingData.name}
+          basePrice={trekkingData.price}
+          duration={trekkingData.duration}
+        />
+      )}
     </div>
   )
 }

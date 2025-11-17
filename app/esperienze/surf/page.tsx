@@ -1,9 +1,22 @@
+"use client"
+
+import { useState } from "react"
 import ContactBanner from "@/components/cta/contact-banner"
 import { Waves, Wind, Sun, Compass, Users, Clock, Shield, Star } from "lucide-react"
 import Link from "next/link"
 import WishlistButton from "@/components/WishlistButton"
+import BookingModal from "@/components/modals/BookingModal"
 
 export default function SurfTaghazoutPage() {
+  const [showBookingModal, setShowBookingModal] = useState(false);
+  
+  const surfData = {
+    id: "surf-taghazout",
+    name: "Surf a Taghazout",
+    price: 35,
+    duration: "2-4 ore"
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <ContactBanner
@@ -220,12 +233,12 @@ export default function SurfTaghazoutPage() {
                     </div>
                   </div>
 
-                  <Link
-                    href="/contatti"
+                  <button
+                    onClick={() => setShowBookingModal(true)}
                     className="block w-full text-center px-6 py-3 rounded-xl bg-gradient-to-r from-blue-500 to-cyan-500 text-white font-semibold hover:from-blue-600 hover:to-cyan-600 transition-all duration-300"
                   >
                     Prenota / Richiedi Info
-                  </Link>
+                  </button>
 
                   <p className="text-xs text-muted-foreground mt-3 text-center">
                     Lezioni singole da €35. Noleggio attrezzatura disponibile.
@@ -287,6 +300,19 @@ export default function SurfTaghazoutPage() {
           </div>
         </div>
       </section>
+
+      {/* Booking Modal */}
+      {showBookingModal && (
+        <BookingModal
+          isOpen={showBookingModal}
+          onClose={() => setShowBookingModal(false)}
+          itemId={surfData.id}
+          itemType="experience"
+          itemTitle={surfData.name}
+          basePrice={surfData.price}
+          duration={surfData.duration}
+        />
+      )}
     </div>
   )
 }
