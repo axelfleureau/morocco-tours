@@ -1,0 +1,216 @@
+on
+
+# Creo tour combinati multi-città basati sulla ricerca effettuata
+
+tour_combinati = {
+    "Tour delle Città Imperiali": {
+        "citta": ["Casablanca", "Rabat", "Meknes", "Fes", "Marrakech"],
+        "durata": "6-8 giorni",
+        "tipo": "Tour culturale e storico",
+        "descrizione": "Esplora le quattro città imperiali del Marocco e scopri la ricca eredità culturale e architettonica",
+        "highlights": [
+            "Moschea Hassan II a Casablanca",
+            "Kasbah degli Oudayas e Torre Hassan a Rabat",
+            "Volubilis (rovine romane) e Meknes",
+            "Medina medievale di Fes (UNESCO)",
+            "Piazza Jemaa El-Fna e souks di Marrakech",
+            "Palazzi storici e madrase"
+        ],
+        "itinerario_tipo": [
+            "Giorno 1: Arrivo Casablanca - Tour città",
+            "Giorno 2: Casablanca → Rabat → Meknes",
+            "Giorno 3: Meknes → Volubilis → Fes",
+            "Giorno 4: Fes - Tour completo medina",
+            "Giorno 5: Fes → Ifrane → Marrakech",
+            "Giorno 6-7: Marrakech - Tour completo",
+            "Giorno 8: Partenza"
+        ],
+        "prezzo_medio": "€150-250/persona/giorno",
+        "target": "Appassionati di storia e cultura"
+    },
+    
+    "Tour Città Imperiali + Chefchaouen": {
+        "citta": ["Casablanca", "Rabat", "Chefchaouen", "Fes", "Marrakech"],
+        "durata": "7-9 giorni",
+        "tipo": "Tour culturale + città blu",
+        "descrizione": "Combina le città imperiali con la magica Chefchaouen, la Perla Blu",
+        "highlights": [
+            "Monumenti storici delle città imperiali",
+            "2 giorni a Chefchaouen per foto e relax",
+            "Medina blu e montagne del Rif",
+            "Souks tradizionali",
+            "Cucina marocchina autentica"
+        ],
+        "itinerario_tipo": [
+            "Giorno 1: Marrakech arrivo",
+            "Giorno 2: Marrakech → Casablanca → Rabat",
+            "Giorno 3: Rabat → Chefchaouen",
+            "Giorno 4: Chefchaouen (giorno libero)",
+            "Giorno 5: Chefchaouen → Volubilis → Meknes → Fes",
+            "Giorno 6: Fes - Tour completo",
+            "Giorno 7: Fes → Ifrane → Marrakech",
+            "Giorno 8: Marrakech tour",
+            "Giorno 9: Partenza"
+        ],
+        "prezzo_medio": "€140-230/persona/giorno",
+        "target": "Fotografi, coppie, famiglie"
+    },
+    
+    "Tour Deserto del Sahara: Marrakech → Fes": {
+        "citta": ["Marrakech", "Ouarzazate", "Merzouga (Deserto)", "Fes"],
+        "durata": "3-4 giorni",
+        "tipo": "Avventura nel deserto",
+        "descrizione": "Tour emozionante attraverso l'Alto Atlante fino alle dune del Sahara",
+        "highlights": [
+            "Passo Tizi n'Tichka (Alto Atlante)",
+            "Kasbah Ait Ben Haddou (UNESCO)",
+            "Atlas Film Studios Ouarzazate",
+            "Valle delle Rose e Gole del Todra",
+            "Tramonto in cammello nel deserto di Merzouga",
+            "Notte in campo tendato luxury",
+            "Alba sulle dune Erg Chebbi",
+            "Attraversamento Medio Atlante con foreste di cedri"
+        ],
+        "itinerario_tipo": [
+            "Giorno 1: Marrakech → Ait Ben Haddou → Ouarzazate → Valle del Dades",
+            "Giorno 2: Dades → Gole del Todra → Merzouga (cammelli al tramonto)",
+            "Giorno 3: Merzouga → Valle dello Ziz → Midelt → Ifrane → Fes",
+            "Opzione Giorno 4: Fes - Tour guidato medina"
+        ],
+        "prezzo_medio": "€100-180/persona/giorno (standard), €180-300 (luxury)",
+        "target": "Avventurieri, coppie, amanti della natura"
+    },
+    
+    "Tour Deserto del Sahara: Marrakech → Marrakech": {
+        "citta": ["Marrakech", "Ouarzazate", "Merzouga (Deserto)", "Marrakech"],
+        "durata": "3 giorni",
+        "tipo": "Circuito deserto",
+        "descrizione": "Tour circolare da Marrakech con pernottamento nel deserto",
+        "highlights": [
+            "Kasbah Ait Ben Haddou",
+            "Gole del Dades e del Todra",
+            "Deserto di Merzouga con notte in campo",
+            "Camel trekking",
+            "Rientro attraverso Ouarzazate"
+        ],
+        "itinerario_tipo": [
+            "Giorno 1: Marrakech → Ait Ben Haddou → Dades",
+            "Giorno 2: Dades → Todra → Merzouga + cammelli",
+            "Giorno 3: Merzouga → Ouarzazate → Marrakech"
+        ],
+        "prezzo_medio": "€120-200/persona/giorno",
+        "target": "Viaggiatori con tempo limitato"
+    },
+    
+    "Tour Grande Sud: Marrakech + Costa + Deserto": {
+        "citta": ["Marrakech", "Essaouira", "Agadir", "Deserto Agafay/M'hamid"],
+        "durata": "5-7 giorni",
+        "tipo": "Mix città-mare-deserto",
+        "descrizione": "Esplora Marrakech, rilassati sulla costa e avventurati nel deserto",
+        "highlights": [
+            "Marrakech: città imperiale e souks",
+            "Essaouira: città fortificata sul mare",
+            "Agadir: relax in resort e attività acquatiche",
+            "Paradise Valley: piscine naturali",
+            "Deserto Agafay o M'hamid: esperienza sahariana",
+            "Sport acquatici (surf, kitesurf)"
+        ],
+        "itinerario_tipo": [
+            "Giorno 1-2: Marrakech tour",
+            "Giorno 3: Marrakech → Essaouira",
+            "Giorno 4: Essaouira → Agadir",
+            "Giorno 5: Agadir (Paradise Valley o attività)",
+            "Giorno 6: Agadir → Deserto → Marrakech",
+            "Giorno 7: Partenza Marrakech"
+        ],
+        "prezzo_medio": "€130-220/persona/giorno",
+        "target": "Famiglie, coppie, amanti del mare"
+    },
+    
+    "Tour Completo Marocco": {
+        "citta": ["Casablanca", "Rabat", "Chefchaouen", "Fes", "Merzouga", "Ouarzazate", "Marrakech", "Essaouira"],
+        "durata": "10-14 giorni",
+        "tipo": "Tour completo",
+        "descrizione": "L'esperienza marocchina definitiva: città imperiali, deserto e costa",
+        "highlights": [
+            "Tutte le città imperiali",
+            "Chefchaouen - la città blu",
+            "Deserto del Sahara con pernottamento",
+            "Kasbahs e gole",
+            "Costa atlantica a Essaouira",
+            "Esperienze culturali complete"
+        ],
+        "itinerario_tipo": [
+            "Giorno 1-2: Casablanca e Rabat",
+            "Giorno 3-4: Chefchaouen",
+            "Giorno 5-6: Fes",
+            "Giorno 7: Fes → Midelt → Merzouga",
+            "Giorno 8: Merzouga deserto experience",
+            "Giorno 9: Merzouga → Todra → Dades → Ouarzazate",
+            "Giorno 10: Ouarzazate → Ait Ben Haddou → Marrakech",
+            "Giorno 11-12: Marrakech",
+            "Giorno 13: Marrakech → Essaouira",
+            "Giorno 14: Essaouira → Marrakech partenza"
+        ],
+        "prezzo_medio": "€140-280/persona/giorno",
+        "target": "Viaggiatori che vogliono vedere tutto"
+    },
+    
+    "Weekend nelle Città Imperiali": {
+        "citta": ["Marrakech", "Fes", "Rabat o Meknes"],
+        "durata": "3-4 giorni",
+        "tipo": "Tour breve",
+        "descrizione": "Tour concentrato delle principali città storiche",
+        "highlights": [
+            "Marrakech: Jemaa El-Fna e Medina",
+            "Fes: medina medievale",
+            "Rabat o Meknes: monumenti imperiali"
+        ],
+        "itinerario_tipo": [
+            "Giorno 1: Marrakech",
+            "Giorno 2: Marrakech → Fes via Ifrane",
+            "Giorno 3: Fes tour + sera a Rabat/Meknes",
+            "Giorno 4: Rabat/Meknes → Casablanca partenza"
+        ],
+        "prezzo_medio": "€150-250/persona/giorno",
+        "target": "Viaggiatori business, weekend lunghi"
+    },
+    
+    "Tour Nord: Tangeri → Chefchaouen → Fes": {
+        "citta": ["Tangeri", "Tetouan", "Chefchaouen", "Fes"],
+        "durata": "4-5 giorni",
+        "tipo": "Tour del Nord",
+        "descrizione": "Esplora il Marocco settentrionale e le montagne del Rif",
+        "highlights": [
+            "Tangeri: porta dell'Africa",
+            "Tetouan: patrimonio andaluso",
+            "Chefchaouen: città blu",
+            "Cascate di Akchour",
+            "Fes: capitale culturale"
+        ],
+        "itinerario_tipo": [
+            "Giorno 1: Tangeri",
+            "Giorno 2: Tangeri → Tetouan → Chefchaouen",
+            "Giorno 3: Chefchaouen (trekking Akchour)",
+            "Giorno 4: Chefchaouen → Volubilis → Fes",
+            "Giorno 5: Fes tour completo"
+        ],
+        "prezzo_medio": "€120-200/persona/giorno",
+        "target": "Escursionisti, amanti della natura"
+    }
+}
+
+print("\n" + "="*80)
+print("TOUR COMBINATI MULTI-CITTÀ")
+print("="*80)
+
+for nome_tour, dettagli in tour_combinati.items():
+    print(f"\n{'='*80}")
+    print(f"TOUR: {nome_tour}")
+    print(f"{'='*80}")
+    print(f"Durata: {dettagli['durata']}")
+    print(f"Tipo: {dettagli['tipo']}")
+    print(f"Prezzo medio: {dettagli['prezzo_medio']}")
+    print(f"Target: {dettagli['target']}")
+    print(f"\nCittà incluse: {' → '.join(dettagli['citta'])}")
+    print(f"\nNumero totale tour combinati: {len(tour_combinati)}")

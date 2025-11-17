@@ -9,6 +9,7 @@ import autoTable from "jspdf-autotable"
 
 export default function CustomTripsPage() {
   const [currentStep, setCurrentStep] = useState(1)
+  const [validationErrors, setValidationErrors] = useState<Record<string, string>>({})
   const [formData, setFormData] = useState({
     // Step 1 - Basic Info
     name: "",
@@ -182,8 +183,52 @@ _Grazie!_`
     }))
   }
 
+  const validateStep1 = (): boolean => {
+    const errors: Record<string, string> = {}
+    
+    if (!formData.name.trim()) {
+      errors.name = "Nome e cognome obbligatorio"
+    }
+    if (!formData.email.trim()) {
+      errors.email = "Email obbligatoria"
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      errors.email = "Email non valida"
+    }
+    if (!formData.phone.trim()) {
+      errors.phone = "Telefono obbligatorio"
+    }
+    if (!formData.departureCity.trim()) {
+      errors.departureCity = "Città di partenza obbligatoria"
+    }
+    if (!formData.travelers || formData.travelers < 1) {
+      errors.travelers = "Numero di adulti obbligatorio (minimo 1)"
+    }
+    if (formData.children === null || formData.children === undefined || isNaN(formData.children)) {
+      errors.children = "Numero di bambini obbligatorio (inserire 0 se nessuno)"
+    }
+    if (!formData.departureDate) {
+      errors.departureDate = "Data di partenza obbligatoria"
+    }
+    if (!formData.returnDate) {
+      errors.returnDate = "Data di ritorno obbligatoria"
+    }
+    
+    setValidationErrors(errors)
+    return Object.keys(errors).length === 0
+  }
+
   const nextStep = () => {
+    // Validate Step 1 before advancing
+    if (currentStep === 1) {
+      if (!validateStep1()) {
+        // Scroll to first error
+        window.scrollTo({ top: 300, behavior: 'smooth' })
+        return
+      }
+    }
+    
     if (currentStep < totalSteps) {
+      setValidationErrors({}) // Clear errors when advancing
       setCurrentStep(currentStep + 1)
     }
   }
@@ -311,73 +356,115 @@ _Grazie!_`
 
                   <div className="grid md:grid-cols-2 gap-6">
                     <div>
-                      <label className="block text-sm font-medium text-card-foreground mb-2">Nome e Cognome *</label>
+                      <label className="block text-sm font-medium text-card-foreground mb-2">
+                        Nome e Cognome <span className="text-red-500">*</span>
+                      </label>
                       <input
                         type="text"
                         value={formData.name}
                         onChange={(e) => handleInputChange("name", e.target.value)}
-                        className="w-full px-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-foreground"
+                        className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-foreground ${
+                          validationErrors.name ? 'border-red-500' : 'border-border'
+                        }`}
                         placeholder="Il tuo nome completo"
                       />
+                      {validationErrors.name && (
+                        <p className="text-red-500 text-sm mt-1">{validationErrors.name}</p>
+                      )}
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-card-foreground mb-2">Email *</label>
+                      <label className="block text-sm font-medium text-card-foreground mb-2">
+                        Email <span className="text-red-500">*</span>
+                      </label>
                       <input
                         type="email"
                         value={formData.email}
                         onChange={(e) => handleInputChange("email", e.target.value)}
-                        className="w-full px-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-foreground"
+                        className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-foreground ${
+                          validationErrors.email ? 'border-red-500' : 'border-border'
+                        }`}
                         placeholder="la-tua-email@esempio.com"
                       />
+                      {validationErrors.email && (
+                        <p className="text-red-500 text-sm mt-1">{validationErrors.email}</p>
+                      )}
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-card-foreground mb-2">Telefono *</label>
+                      <label className="block text-sm font-medium text-card-foreground mb-2">
+                        Telefono <span className="text-red-500">*</span>
+                      </label>
                       <input
                         type="tel"
                         value={formData.phone}
                         onChange={(e) => handleInputChange("phone", e.target.value)}
-                        className="w-full px-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-foreground"
+                        className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-foreground ${
+                          validationErrors.phone ? 'border-red-500' : 'border-border'
+                        }`}
                         placeholder="+39 123 456 7890"
                       />
+                      {validationErrors.phone && (
+                        <p className="text-red-500 text-sm mt-1">{validationErrors.phone}</p>
+                      )}
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-card-foreground mb-2">Città di partenza</label>
+                      <label className="block text-sm font-medium text-card-foreground mb-2">
+                        Città di partenza <span className="text-red-500">*</span>
+                      </label>
                       <input
                         type="text"
                         value={formData.departureCity}
                         onChange={(e) => handleInputChange("departureCity", e.target.value)}
-                        className="w-full px-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-foreground"
+                        className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-foreground ${
+                          validationErrors.departureCity ? 'border-red-500' : 'border-border'
+                        }`}
                         placeholder="Milano, Roma, etc."
                       />
+                      {validationErrors.departureCity && (
+                        <p className="text-red-500 text-sm mt-1">{validationErrors.departureCity}</p>
+                      )}
                     </div>
                   </div>
 
                   <div className="grid md:grid-cols-3 gap-6">
                     <div>
-                      <label className="block text-sm font-medium text-card-foreground mb-2">Numero di adulti</label>
+                      <label className="block text-sm font-medium text-card-foreground mb-2">
+                        Numero di adulti <span className="text-red-500">*</span>
+                      </label>
                       <input
                         type="number"
                         min="1"
                         max="20"
                         value={formData.travelers}
                         onChange={(e) => handleInputChange("travelers", Number.parseInt(e.target.value))}
-                        className="w-full px-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-foreground"
+                        className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-foreground ${
+                          validationErrors.travelers ? 'border-red-500' : 'border-border'
+                        }`}
                       />
+                      {validationErrors.travelers && (
+                        <p className="text-red-500 text-sm mt-1">{validationErrors.travelers}</p>
+                      )}
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-card-foreground mb-2">Numero di bambini</label>
+                      <label className="block text-sm font-medium text-card-foreground mb-2">
+                        Numero di bambini <span className="text-red-500">*</span>
+                      </label>
                       <input
                         type="number"
                         min="0"
                         max="10"
                         value={formData.children}
                         onChange={(e) => handleInputChange("children", Number.parseInt(e.target.value))}
-                        className="w-full px-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-foreground"
+                        className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-foreground ${
+                          validationErrors.children ? 'border-red-500' : 'border-border'
+                        }`}
                       />
+                      {validationErrors.children && (
+                        <p className="text-red-500 text-sm mt-1">{validationErrors.children}</p>
+                      )}
                     </div>
 
                     <div>
@@ -396,14 +483,19 @@ _Grazie!_`
                   <div className="grid md:grid-cols-2 gap-6">
                     <div>
                       <label className="block text-sm font-medium text-card-foreground mb-2">
-                        Data di partenza preferita
+                        Data di partenza preferita <span className="text-red-500">*</span>
                       </label>
                       <input
                         type="date"
                         value={formData.departureDate}
                         onChange={(e) => handleInputChange("departureDate", e.target.value)}
-                        className="w-full px-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-foreground"
+                        className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-foreground ${
+                          validationErrors.departureDate ? 'border-red-500' : 'border-border'
+                        }`}
                       />
+                      {validationErrors.departureDate && (
+                        <p className="text-red-500 text-sm mt-1">{validationErrors.departureDate}</p>
+                      )}
                     </div>
 
                     <div>
@@ -414,9 +506,13 @@ _Grazie!_`
                         type="date"
                         value={formData.returnDate}
                         onChange={(e) => handleInputChange("returnDate", e.target.value)}
-                        className="w-full px-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-foreground"
-                        required
+                        className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-foreground ${
+                          validationErrors.returnDate ? 'border-red-500' : 'border-border'
+                        }`}
                       />
+                      {validationErrors.returnDate && (
+                        <p className="text-red-500 text-sm mt-1">{validationErrors.returnDate}</p>
+                      )}
                     </div>
                   </div>
 

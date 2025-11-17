@@ -1,11 +1,10 @@
 "use client"
 
 import { useState, Suspense } from "react"
-import { Users, Heart, Mountain, Camera } from "lucide-react"
+import { Users, Heart, Mountain } from "lucide-react"
 import Link from "next/link"
 import HeroSection from "@/components/sections/HeroSection"
 import WhyChooseUs from "@/components/sections/WhyChooseUs"
-import PopularTrips from "@/components/sections/PopularTrips"
 import BlogTeaser from "@/components/sections/blog-teaser"
 import ContactBanner from "@/components/cta/contact-banner"
 import MoroccoMap from "@/components/sections/MoroccoMap"
@@ -294,7 +293,7 @@ export default function Home() {
     <main className="min-h-screen bg-background">
       <HeroSection />
       <WhyChooseUs />
-      <PopularTrips />
+      {/* PopularTrips temporaneamente disabilitato - riattivare quando ci saranno viaggi pubblicati */}
       <Suspense
         fallback={
           <section className="py-16 lg:py-24 bg-background">

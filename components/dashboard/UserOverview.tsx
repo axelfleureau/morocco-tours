@@ -208,21 +208,21 @@ export default function UserOverview() {
               <span className="font-medium">Esplora Nuovi Viaggi</span>
             </a>
             <a
-              href="/dashboard/bookings"
+              href="/dashboard?tab=bookings"
               className="flex items-center space-x-3 p-3 bg-primary/10 text-primary rounded-lg hover:bg-primary/20 transition-colors"
             >
               <Calendar className="w-5 h-5" />
               <span className="font-medium">Le Mie Prenotazioni</span>
             </a>
             <a
-              href="/dashboard/wishlist"
+              href="/dashboard?tab=wishlist"
               className="flex items-center space-x-3 p-3 bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-300 rounded-lg hover:bg-red-100 dark:hover:bg-red-900/30 transition-colors"
             >
               <Heart className="w-5 h-5" />
               <span className="font-medium">Lista Desideri</span>
             </a>
             <a
-              href="/dashboard"
+              href="/dashboard?tab=profile"
               className="flex items-center space-x-3 p-3 bg-gray-50 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors"
             >
               <User className="w-5 h-5" />

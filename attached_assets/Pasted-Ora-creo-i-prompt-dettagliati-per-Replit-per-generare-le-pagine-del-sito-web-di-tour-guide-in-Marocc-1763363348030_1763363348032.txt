@@ -1,0 +1,1251 @@
+Ora creo i prompt dettagliati per Replit per generare le pagine del sito web di tour guide in Marocco:
+
+## **GUIDA COMPLETA: SITO TOUR GUIDE MAROCCO**
+
+### **Panoramica del Progetto**
+
+Creazione di un sito web professionale per un'agenzia di tour guidati in Marocco, con **25 pagine totali**: 9 pagine dedicate a singole città, 8 pagine per tour combinati multi-città e 8 pagine aggiuntive (homepage, chi siamo, contatti, etc.).
+
+***
+
+## **STRUTTURA COMPLETA DEL SITO**
+
+### **A. PAGINE SINGOLE CITTÀ (9 pagine)**
+
+Le 6 città principali dalle tue immagini più 3 aggiuntive strategiche:
+
+1. **Marrakech** - "La Perla Rossa del Marocco"
+2. **Fes** - "La Capitale Spirituale"
+3. **Chefchaouen** - "La Perla Blu"
+4. **Casablanca** - "La Capitale Economica"
+5. **Rabat** - "La Capitale Moderna"
+6. **Essaouira** - "La Città del Vento"
+7. **Meknes** - "La Versailles Marocchina"
+8. **Ouarzazate** - "La Hollywood d'Africa"
+9. **Agadir** - "La Perla del Sud"
+
+### **B. TOUR COMBINATI MULTI-CITTÀ (8 pagine)**
+
+1. Tour delle Città Imperiali (6-8 giorni)
+2. Tour Città Imperiali + Chefchaouen (7-9 giorni)
+3. Tour Deserto del Sahara: Marrakech → Fes (3-4 giorni)
+4. Tour Deserto del Sahara: Marrakech → Marrakech (3 giorni)
+5. Tour Grande Sud: Marrakech + Costa + Deserto (5-7 giorni)
+6. Tour Completo Marocco (10-14 giorni)
+7. Weekend nelle Città Imperiali (3-4 giorni)
+8. Tour Nord: Tangeri → Chefchaouen → Fes (4-5 giorni)
+
+***
+
+## **PROMPT PER REPLIT - SEZIONE 1: PAGINE CITTÀ**
+
+### **Prompt Generale per Pagine Città**
+
+```
+Crea una pagina web responsive per [NOME CITTÀ], destinazione turistica in Marocco, per un'agenzia di tour guidati. 
+
+STRUTTURA DELLA PAGINA:
+
+1. HERO SECTION
+- Immagine hero a tutta larghezza della città
+- H1: "[NOME CITTÀ]" + sottotitolo "[Soprannome]"
+- Rating stelle (esempio: 4.8/5) + numero tour disponibili
+- CTA button: "Prenota Tour" e "Scopri i Tour"
+
+2. INTRODUZIONE CITTÀ
+- Paragrafo descrittivo (150-200 parole) su storia, cultura e atmosfera
+- Perché visitarla? (3-4 motivi chiave)
+- Periodo migliore per visitare
+- Durata consigliata del soggiorno
+
+3. ATTRAZIONI PRINCIPALI (sezione con card/grid)
+Per ogni attrazione:
+- Nome attrazione
+- Breve descrizione (50 parole)
+- Icona/immagine placeholder
+- Badge UNESCO se applicabile
+
+4. ESPERIENZE UNICHE & TOUR DISPONIBILI
+Grid di card con:
+- Nome esperienza/tour
+- Durata
+- Prezzo indicativo
+- Rating
+- Button "Dettagli" e "Prenota"
+
+5. TOUR GIORNALIERI DA [CITTÀ]
+Lista di escursioni di un giorno:
+- Destinazione
+- Durata
+- Highlights (bullet points)
+- Prezzo da €XX
+
+6. GALLERIA FOTOGRAFICA
+- 6-8 immagini placeholder della città
+- Lightbox per visualizzazione ingrandita
+
+7. INFORMAZIONI PRATICHE
+- Come arrivare
+- Dove alloggiare (categorie hotel/riad)
+- Consigli utili per i visitatori
+- Cosa portare
+
+8. TOUR COMBINATI CORRELATI
+Mostra 2-3 tour multi-città che includono questa destinazione con:
+- Nome tour
+- Durata
+- Città incluse
+- Prezzo da €XX
+- Link alla pagina tour
+
+9. RECENSIONI CLIENTI
+- 3 recensioni con nome, data, rating, testo
+- Sezione "Vedi tutte le recensioni"
+
+10. FAQ SPECIFICA CITTÀ
+- 5-6 domande frequenti su questa città
+
+11. CTA FINALE
+- "Pronto a scoprire [CITTÀ]?"
+- Form contatto rapido o button prenota
+
+STILE E DESIGN:
+- Palette colori: toni caldi del deserto (arancio, terracotta, blu, bianco)
+- Typography: moderne e leggibili (Google Fonts: Montserrat per titoli, Open Sans per testo)
+- Mobile-first responsive
+- Animazioni smooth on scroll
+- Card con hover effects
+
+TECNOLOGIE:
+- HTML5, CSS3, JavaScript vanilla o React
+- Tailwind CSS o Bootstrap per styling
+- Icone: FontAwesome o Heroicons
+- Immagini: Unsplash API per placeholder fotografici del Marocco
+```
+
+### **Prompt Specifici per le 9 Città**
+
+#### **1. MARRAKECH - "La Perla Rossa del Marocco"**
+
+```
+CITTÀ: Marrakech
+Rating: 4.8/5 | 12 tour disponibili
+
+ATTRAZIONI PRINCIPALI:
+- Jemaa El-Fna (piazza principale con artisti di strada)
+- Giardini Majorelle + Museo Berber
+- Palazzo Bahia (architettura moresca)
+- Moschea Koutoubia (minaret iconico)
+- Tombe Saadiane (necropoli reale)
+- Medersa Ben Youssef (scuola coranica)
+- Souks della Medina (labirinto di mercati)
+- Museo Dar El Bacha
+- Il Giardino Segreto
+
+ESPERIENZE UNICHE:
+1. Tour in mongolfiera al tramonto (€200-250, 3h, rating 4.9)
+2. Hamman tradizionale (€40-80, 2h, rating 4.7)
+3. Tour in quad nel Palmeto (€60-100, 2-3h, rating 4.6)
+4. Giro in cammello + cena deserto Agafay (€80-120, 4h, rating 4.8)
+5. Cooking class marocchina (€50-70, 3h, rating 4.9)
+6. Tour notturno Medina con tè (€35-50, 3h, rating 4.5)
+
+TOUR GIORNALIERI:
+- Cascate di Ouzoud (9h, da €45)
+- Essaouira città costiera (10h, da €55)
+- Valle dell'Ourika + villaggi berberi (6h, da €40)
+- Deserto Agafay al tramonto (4h, da €60)
+
+PERIODO MIGLIORE: Marzo-Maggio, Settembre-Novembre
+DURATA CONSIGLIATA: 2-3 giorni
+```
+
+#### **2. FES - "La Capitale Spirituale del Marocco"**
+
+```
+CITTÀ: Fes
+Rating: 4.9/5 | 15 tour disponibili
+
+ATTRAZIONI PRINCIPALI:
+- Medina di Fes el-Bali (UNESCO, la più grande del mondo)
+- Medersa Bou Inania (scuola coranica decorata)
+- Università Al Quaraouiyine (la più antica del mondo, 859 d.C.)
+- Concerie Chouara (concerie tradizionali attive)
+- Fontana Nejjarine (piazza artigiani)
+- Museo del Legno (Fondouq Nejjarine)
+- Mausoleo di Moulay Idriss II (fondatore della città)
+- Bab Boujloud (porta blu iconicaa)
+- Palazzo Reale con porta dorata
+
+ESPERIENZE UNICHE:
+1. Tour guidato Medina medievale (4h, €40-60, rating 5.0)
+2. Visita concerie tradizionali con guida (2h, €25-40, rating 4.8)
+3. Workshop ceramica tradizionale (3h, €50-80, rating 4.7)
+4. Tour souks e artigiani locali (3h, €35-55, rating 4.9)
+5. Cucina in famiglia locale (4h, €60-90, rating 4.9)
+6. Tour fotografico città vecchia (3h, €70-100, rating 4.8)
+
+TOUR GIORNALIERI:
+- Volubilis (rovine romane) + Meknes (8h, da €50)
+- Moulay Idriss Zerhoun città santa (5h, da €40)
+- Ifrane + foresta cedri con macachi (6h, da €45)
+
+PERIODO MIGLIORE: Marzo-Maggio, Settembre-Novembre
+DURATA CONSIGLIATA: 2 giorni
+```
+
+#### **3. CHEFCHAOUEN - "La Perla Blu del Marocco"**
+
+```
+CITTÀ: Chefchaouen
+Rating: 4.9/5 | 6 tour disponibili
+
+ATTRAZIONI PRINCIPALI:
+- Medina blu (vicoli interamente dipinti di azzurro)
+- Plaza Uta el-Hammam + Kasbah (fortezza)
+- Moschea Spagnola (vista panoramica tramonto)
+- Ras El Ma (sorgente d'acqua e lavatoio comune)
+- Quartiere andaluso (architettura storica)
+- Mercato locale artigianale
+- Porte e archi decorati (fotogenici)
+
+ESPERIENZE UNICHE:
+1. Tour fotografico città blu (3h, €40-60, rating 5.0)
+2. Trekking montagne del Rif (6h, €50-80, rating 4.8)
+3. Visita famiglia locale + pranzo (4h, €55-75, rating 4.9)
+4. Tour botteghe artigiane (2h, €30-45, rating 4.7)
+5. Trekking cascate di Akchour (8h, €60-90, rating 4.9)
+6. Sunset alla Moschea Spagnola (2h, €25-35, rating 4.8)
+
+TOUR GIORNALIERI:
+- Cascate di Akchour + Ponte di Dio (8h, da €55)
+- Villaggi berberi circostanti (5h, da €45)
+- Tetouan città bianca (6h, da €50)
+
+PERIODO MIGLIORE: Aprile-Ottobre
+DURATA CONSIGLIATA: 1-2 giorni
+```
+
+#### **4. CASABLANCA - "La Capitale Economica"**
+
+```
+CITTÀ: Casablanca
+Rating: 4.5/5 | 8 tour disponibili
+
+ATTRAZIONI PRINCIPALI:
+- Moschea Hassan II (visita guidata interna, 2° moschea più grande)
+- La Corniche (lungomare moderno)
+- Rick's Café (ispirato al film)
+- Quartiere Habous (medina nuova, architettura tradizionale)
+- Piazza Mohammed V (edifici coloniali)
+- Cattedrale del Sacro Cuore (architettura neo-gotica)
+- Vecchia Medina
+- Arab League Park
+- Mercato Centrale
+
+ESPERIENZE UNICHE:
+1. Tour Moschea Hassan II con biglietto (2h, €50-70, rating 4.9)
+2. Tour architettura Art Deco (3h, €40-60, rating 4.6)
+3. Tour gastronomico street food (3h, €45-65, rating 4.7)
+4. Shopping souks quartiere Habous (2h, €30-45, rating 4.5)
+5. Passeggiata Corniche + caffè (2h, €25-40, rating 4.4)
+
+TOUR GIORNALIERI:
+- Rabat capitale (4h, da €50)
+- El Jadida città fortificata (6h, da €60)
+- Azemmour città colorata (5h, da €55)
+
+PERIODO MIGLIORE: Tutto l'anno (città costiera)
+DURATA CONSIGLIATA: 1 giorno
+```
+
+#### **5. RABAT - "La Capitale Moderna del Marocco"**
+
+```
+CITTÀ: Rabat
+Rating: 4.6/5 | 10 tour disponibili
+
+ATTRAZIONI PRINCIPALI:
+- Kasbah degli Oudayas (UNESCO, case bianche e blu)
+- Torre Hassan (minaret incompiuto del XII secolo)
+- Mausoleo di Mohammed V (architettura maestosa)
+- Chellah (necropoli romana e medievale)
+- Palazzo Reale (esterno, residenza del re)
+- Giardini Andalusi
+- Medina vecchia
+- Bab Chellah (porta monumentale)
+- Museo Mohammed VI d'Arte Moderna
+
+ESPERIENZE UNICHE:
+1. Tour guidato Kasbah e monumenti (4h, €45-65, rating 4.8)
+2. Visita giardini nascosti (2h, €30-45, rating 4.6)
+3. Tour barca fiume Bouregreg (2h, €40-60, rating 4.7)
+4. Esplorazione archeologica Chellah (2h, €35-50, rating 4.8)
+5. Tour monumenti imperiali (3h, €40-60, rating 4.7)
+6. Cena tradizionale marocchina (3h, €50-80, rating 4.8)
+
+TOUR GIORNALIERI:
+- Casablanca + Moschea Hassan II (5h, da €65)
+- Sale città gemella (3h, da €40)
+- Spiagge Oceano Atlantico (4h, da €45)
+
+PERIODO MIGLIORE: Marzo-Novembre
+DURATA CONSIGLIATA: 1 giorno
+```
+
+#### **6. ESSAOUIRA - "La Città del Vento"**
+
+```
+CITTÀ: Essaouira
+Rating: 4.7/5 | 9 tour disponibili
+
+ATTRAZIONI PRINCIPALI:
+- Skala de la Ville (bastioni con cannoni, set Game of Thrones)
+- Medina (UNESCO, porto fortificato)
+- Porto dei pescatori
+- Spiaggia (sport acquatici)
+- Mellah (quartiere ebraico storico)
+- Museo Sidi Mohammed Ben Abdallah
+- Souks locali artigianato
+- Gallerie d'arte
+- Ras El Ma
+
+ESPERIENZE UNICHE:
+1. Surf e kitesurf lezioni (3h, €60-100, rating 4.8)
+2. Lezioni di windsurf (2h, €50-80, rating 4.7)
+3. Tour in quad sulle dune (2h, €70-100, rating 4.9)
+4. Giro a cavallo sulla spiaggia (2h, €50-75, rating 4.8)
+5. Visita cooperativa olio di argan (2h, €35-50, rating 4.6)
+6. Cooking class locale (3h, €55-80, rating 4.9)
+7. Tour fotografico porto e medina (3h, €60-85, rating 4.7)
+8. Concerto musica Gnawa dal vivo (sera, €30-50, rating 4.8)
+
+TOUR GIORNALIERI:
+- Sidi Kaouki spiaggia selvaggia (4h, da €45)
+- Isola di Mogador (3h, da €40)
+- Cooperativa donne argan (3h, da €35)
+
+PERIODO MIGLIORE: Aprile-Novembre
+DURATA CONSIGLIATA: 2-3 giorni
+```
+
+#### **7. MEKNES - "La Versailles Marocchina"**
+
+```
+CITTÀ: Meknes
+Rating: 4.6/5 | 10 tour disponibili
+
+ATTRAZIONI PRINCIPALI:
+- Bab Mansour (porta monumentale più bella del Marocco)
+- Mausoleo di Moulay Ismail (fondatore dinastia)
+- Heri es-Souani (granai reali storici)
+- Place El Hedim (piazza centrale)
+- Medina storica
+- Museo d'Arte Marocchina
+- Palazzo Reale (esterno)
+- Bab Khemis (porta mercato)
+
+ESPERIENZE UNICHE:
+1. Tour città imperiale completo (4h, €45-65, rating 4.8)
+2. Visita monumenti XVII secolo (3h, €40-60, rating 4.7)
+3. Esplorazione souks tradizionali (2h, €30-45, rating 4.6)
+
+TOUR COMBINATI IMPERDIBILI:
+- Volubilis rovine romane UNESCO (3h, €40-60, rating 5.0)
+- Moulay Idriss Zerhoun città santa (2h, €30-45, rating 4.8)
+- Tour combinato Meknes + Volubilis + Moulay Idriss (8h, da €70)
+
+PERIODO MIGLIORE: Marzo-Novembre
+DURATA CONSIGLIATA: Mezza giornata o 1 giorno (combinato con Volubilis)
+```
+
+#### **8. OUARZAZATE - "La Hollywood d'Africa"**
+
+```
+CITTÀ: Ouarzazate
+Rating: 4.7/5 | 12 tour disponibili
+
+ATTRAZIONI PRINCIPALI:
+- Atlas Film Studios (studi cinematografici più grandi al mondo)
+- Kasbah Taourirt (fortezza storica)
+- Kasbah Ait Ben Haddou (UNESCO, set cinematografico)
+- Museo del Cinema
+- Valle delle Rose
+- Valle del Draa
+
+FILM GIRATI QUI:
+Gladiatore, Game of Thrones, La Mummia, Lawrence d'Arabia, Prince of Persia, Kingdom of Heaven, Babel
+
+ESPERIENZE UNICHE:
+1. Tour Atlas Film Studios con guida (2h, €40-60, rating 4.8)
+2. Visita set cinematografici famosi (3h, €50-75, rating 4.9)
+3. Tour Kasbah Ait Ben Haddou (4h, €55-80, rating 5.0)
+4. Esplorazione kasbahs storiche (3h, €45-65, rating 4.7)
+5. Tour fotografico deserto (4h, €70-100, rating 4.8)
+6. Valle delle Rose al tramonto (3h, €50-70, rating 4.7)
+
+TOUR GIORNALIERI:
+- Gole del Dades (6h, da €60)
+- Gole del Todra (6h, da €65)
+- Valle del Draa e oasi (8h, da €75)
+
+PERIODO MIGLIORE: Ottobre-Aprile
+DURATA CONSIGLIATA: 1 giorno (tappa verso deserto)
+NOTA: Città di transito per tour deserto Sahara
+```
+
+#### **9. AGADIR - "La Perla del Sud"**
+
+```
+CITTÀ: Agadir
+Rating: 4.5/5 | 8 tour disponibili
+
+ATTRAZIONI PRINCIPALI:
+- Spiaggia di Agadir (10km sabbia dorata)
+- Kasbah di Agadir Oufella (vista panoramica)
+- Souk El Had (mercato tradizionale gigante)
+- Valle del Paradiso (piscine naturali)
+- Marina di Agadir
+- Parco Nazionale Souss-Massa
+
+ESPERIENZE UNICHE:
+1. Surf e sport acquatici (3h, €50-90, rating 4.7)
+2. Jet ski con istruttore (1h, €60-90, rating 4.8)
+3. Giro cammello sulla spiaggia (2h, €40-60, rating 4.6)
+4. Tour quad nel deserto (3h, €70-110, rating 4.9)
+5. Gita barca pesca + BBQ (4h, €80-120, rating 4.8)
+6. Lezioni surf con tavola (2h, €50-75, rating 4.7)
+7. Sandboarding dune (2h, €45-70, rating 4.8)
+
+TOUR GIORNALIERI:
+- Paradise Valley piscine naturali (6h, da €50)
+- Taroudant "piccola Marrakech" (8h, da €60)
+- Sidi Kaouki spiaggia surf (5h, da €55)
+- Tiznit città d'argento (7h, da €65)
+
+PERIODO MIGLIORE: Giugno-Settembre (mare), tutto l'anno (clima mite)
+DURATA CONSIGLIATA: 2-4 giorni (destinazione balneare resort)
+TIPO: Resort balneare moderno, ricostruito dopo terremoto 1960
+```
+
+***
+
+## **PROMPT PER REPLIT - SEZIONE 2: TOUR COMBINATI**
+
+### **Prompt Generale per Pagine Tour Combinati**
+
+```
+Crea una landing page completa per tour multi-città in Marocco con nome "[NOME TOUR]".
+
+STRUTTURA PAGINA:
+
+1. HERO SECTION
+- Immagine panoramica del tour
+- H1: "[Nome Tour]"
+- Sottotitolo con durata e tipo di tour
+- Highlights principali (3-4 bullet points)
+- Prezzo da €XX/persona
+- CTA "Richiedi Preventivo" e "Prenota Ora"
+
+2. PANORAMICA TOUR
+- Descrizione completa (200-300 parole)
+- Mappa interattiva con itinerario
+- Città/tappe principali visualizzate
+- Target audience ideale
+
+3. ITINERARIO GIORNO PER GIORNO
+Per ogni giorno:
+- Titolo: "Giorno X: [Tappe]"
+- Descrizione attività
+- Distanza percorsa
+- Luoghi visitati con mini descrizioni
+- Pernottamento dove
+- Icona pasti inclusi (colazione/cena)
+- Immagini rappresentative
+
+4. HIGHLIGHTS DEL TOUR (Grid con icone)
+- Lista dettagliata esperienze incluse
+- Monumenti visitati
+- Attività speciali
+- Esperienze culturali
+
+5. COSA È INCLUSO / NON INCLUSO
+Due colonne affiancate:
+INCLUSO:
+- Autista-guida privato multilingue
+- Veicolo climatizzato
+- Pernottamenti (specificare categoria)
+- Prima colazione quotidiana
+- Cene dove indicato
+- Biglietti d'ingresso principali
+- [Altri servizi specifici tour]
+
+NON INCLUSO:
+- Voli internazionali
+- Pranzi
+- Bevande
+- Mance
+- Spese personali
+
+6. OPZIONI DI ALLOGGIO
+3 card per categoria:
+- BUDGET (3★): prezzo, descrizione
+- COMFORT (4★): prezzo, descrizione
+- LUXURY (5★): prezzo, descrizione
+
+7. DATE DISPONIBILI & PREZZI
+- Calendario partenze
+- Tabella prezzi per numero partecipanti:
+  * 2 persone: €XX/persona
+  * 3-4 persone: €XX/persona
+  * 5-6 persone: €XX/persona
+  * Gruppo 7+: €XX/persona
+- Supplementi (camera singola, upgrade)
+
+8. GALLERIA FOTO
+- 12-16 immagini dalle destinazioni del tour
+- Organized per città/esperienza
+
+9. TOUR SIMILI CONSIGLIATI
+- 3 tour alternativi correlati
+- Card con immagine, titolo, durata, prezzo
+
+10. RECENSIONI VIAGGIATORI
+- 4-5 recensioni dettagliate di chi ha fatto questo tour
+- Rating, nome, data, nazionalità, testo
+
+11. FAQ TOUR
+- 8-10 domande frequenti specifiche
+
+12. FORM PRENOTAZIONE/RICHIESTA
+- Nome, email, telefono
+- Date preferite
+- Numero partecipanti
+- Categoria alloggio
+- Richieste speciali
+- Button "Invia Richiesta"
+
+STILE:
+- Design premium e professionale
+- Immagini grande impatto
+- Colori brand: blu, arancio sabbia, bianco
+- Trust badges (certificazioni, sicurezza)
+- Mobile responsive
+
+ELEMENTI TRUST:
+- Badge "Miglior prezzo garantito"
+- "Cancellazione gratuita fino a X giorni"
+- "Pagamento sicuro"
+- "Guide certificate"
+- Numero telefono WhatsApp
+```
+
+### **Tour 1: Tour delle Città Imperiali (6-8 giorni)**
+
+```
+NOME TOUR: "Le Quattro Città Imperiali del Marocco"
+DURATA: 6-8 giorni
+TIPO: Tour culturale e storico
+TARGET: Appassionati storia e cultura, first-time visitors
+PREZZO MEDIO: €150-250/persona/giorno
+
+CITTÀ INCLUSE: Casablanca → Rabat → Meknes → Fes → Marrakech
+
+HIGHLIGHTS:
+✓ Tutte le 4 città imperiali (Fes, Marrakech, Meknes, Rabat)
+✓ 3 siti UNESCO (Fes, Marrakech, Volubilis)
+✓ Moschea Hassan II a Casablanca
+✓ Rovine romane di Volubilis
+✓ Guide locali esperte in ogni città
+✓ Architettura moresca e andalusa
+✓ Souks tradizionali e artigianato locale
+
+ITINERARIO DETTAGLIATO:
+
+GIORNO 1: Arrivo Casablanca
+- Transfer aeroporto
+- Tour Moschea Hassan II (visita guidata interna)
+- Corniche e centro città
+- Rick's Café
+- Pernottamento: Casablanca (hotel 4★)
+- Pasti: Cena
+
+GIORNO 2: Casablanca → Rabat → Meknes (250 km)
+- Partenza per Rabat (1h)
+- Tour Rabat: Kasbah Oudayas, Torre Hassan, Mausoleo Mohammed V
+- Pranzo libero
+- Proseguimento Meknes (2h)
+- Visita Bab Mansour e Place El Hedim
+- Pernottamento: Meknes (riad tradizionale)
+- Pasti: Colazione, Cena
+
+GIORNO 3: Meknes → Volubilis → Moulay Idriss → Fes (80 km)
+- Mattina: completamento tour Meknes (Mausoleo Moulay Ismail, granai)
+- Rovine romane di Volubilis (UNESCO) - tour guidato 2h
+- Sosta fotografica Moulay Idriss città santa
+- Arrivo Fes pomeriggio
+- Pernottamento: Fes (riad nella medina)
+- Pasti: Colazione, Cena
+
+GIORNO 4: Fes - Tour completo
+- Tour guidato medina Fes el-Bali (UNESCO) - giornata intera
+- Università Al Quaraouiyine
+- Medersa Bou Inania
+- Concerie Chouara
+- Souks e quartieri artigiani
+- Palazzo Reale
+- Pranzo in ristorante tradizionale (opzionale)
+- Pernottamento: Fes
+- Pasti: Colazione
+
+GIORNO 5: Fes → Ifrane → Azrou → Marrakech (480 km)
+- Partenza presto
+- Sosta Ifrane "Svizzera del Marocco"
+- Foresta cedri Azrou (macachi)
+- Attraversamento Medio Atlante
+- Arrivo Marrakech sera
+- Pernottamento: Marrakech (riad)
+- Pasti: Colazione, Cena
+
+GIORNO 6: Marrakech - Tour completo
+- Tour guidato medina (mattina):
+  * Palazzo Bahia
+  * Tombe Saadiane
+  * Medersa Ben Youssef
+- Pranzo libero
+- Pomeriggio: Giardini Majorelle, moschea Koutoubia
+- Sera libera a Jemaa El-Fna
+- Pernottamento: Marrakech
+- Pasti: Colazione
+
+GIORNO 7: Marrakech (giorno libero o attività opzionali)
+- Giorno libero per esplorare
+OPZIONI:
+- Tour souks e shopping
+- Hammam tradizionale
+- Cooking class
+- Escursione Cascate Ouzoud
+- Escursione Valle Ourika
+- Pernottamento: Marrakech
+- Pasti: Colazione
+
+GIORNO 8: Partenza
+- Transfer aeroporto Marrakech
+- Pasti: Colazione
+
+PREZZI (per persona):
+- 2 persone: €1.600 (Budget) / €2.000 (Comfort) / €2.800 (Luxury)
+- 3-4 persone: €1.350 / €1.700 / €2.400
+- 5-6 persone: €1.200 / €1.500 / €2.100
+- Gruppo 7+: Quotazione su richiesta
+
+SUPPLEMENTI:
+- Camera singola: +€280
+- Upgrade Luxury: +€600
+- Guida privata Fes e Marrakech: +€120
+```
+
+### **Tour 2: Tour Città Imperiali + Chefchaouen (7-9 giorni)**
+
+```
+NOME TOUR: "Marocco Imperiale e la Perla Blu"
+DURATA: 7-9 giorni
+TIPO: Tour culturale + fotografia
+TARGET: Fotografi, coppie, famiglie, Instagram lovers
+PREZZO MEDIO: €140-230/persona/giorno
+
+CITTÀ INCLUSE: Marrakech → Casablanca → Rabat → Chefchaouen → Fes → Marrakech
+
+HIGHLIGHTS:
+✓ 4 città imperiali + Chefchaouen città blu
+✓ 2 giorni completi a Chefchaouen (tempo per foto e relax)
+✓ Montagne del Rif
+✓ Rovine romane Volubilis
+✓ Mix cultura e natura
+✓ Perfetto per fotografia
+
+ITINERARIO:
+
+GIORNO 1: Arrivo Marrakech
+- Transfer e sistemazione riad
+- Pomeriggio libero esplorazione Jemaa El-Fna
+- Orientamento con guida
+- Pernottamento: Marrakech
+- Pasti: Cena benvenuto
+
+GIORNO 2: Marrakech → Casablanca → Rabat (330 km)
+- Mattina: tour Marrakech (Bahia, Koutoubia, Majorelle)
+- Viaggio Casablanca
+- Visita Moschea Hassan II
+- Proseguimento Rabat
+- Pernottamento: Rabat
+- Pasti: Colazione
+
+GIORNO 3: Rabat → Chefchaouen (250 km)
+- Mattina: tour Rabat (Kasbah Oudayas, Torre Hassan, Mausoleo)
+- Viaggio verso montagne del Rif
+- Arrivo Chefchaouen pomeriggio
+- Prima esplorazione medina blu
+- Pernottamento: Chefchaouen (riad nel centro)
+- Pasti: Colazione, Cena
+
+GIORNO 4: Chefchaouen (giorno libero)
+- Giornata intera a disposizione:
+  * Passeggiata vicoli blu
+  * Plaza Uta el-Hammam
+  * Kasbah
+  * Sunset Moschea Spagnola
+  * Sessione fotografica
+  * Shopping artigianato locale
+- OPZIONALE: trekking cascate Akchour
+- Pernottamento: Chefchaouen
+- Pasti: Colazione
+
+GIORNO 5: Chefchaouen → Volubilis → Meknes → Fes (200 km)
+- Mattina libera Chefchaouen
+- Partenza ore 11:00
+- Visita rovine romane Volubilis (UNESCO)
+- Sosta Meknes: Bab Mansour, Place El Hedim
+- Arrivo Fes sera
+- Pernottamento: Fes (riad medina)
+- Pasti: Colazione, Cena
+
+GIORNO 6: Fes - Tour completo medina
+- Tour guidato giornata completa Fes el-Bali
+- Tutti i siti principali (come tour 1)
+- Pernottamento: Fes
+- Pasti: Colazione
+
+GIORNO 7: Fes → Ifrane → Marrakech (480 km)
+- Come tour 1
+- Pernottamento: Marrakech
+- Pasti: Colazione, Cena
+
+GIORNO 8: Marrakech - Tour completo
+- Tour guidato città
+- Pernottamento: Marrakech
+- Pasti: Colazione
+
+GIORNO 9: Partenza Marrakech
+- Transfer aeroporto
+- Pasti: Colazione
+
+PREZZI (per persona, 9 giorni):
+- 2 persone: €1.800 / €2.200 / €3.000
+- 3-4 persone: €1.500 / €1.850 / €2.600
+- 5-6 persone: €1.350 / €1.650 / €2.300
+```
+
+### **Tour 3: Deserto Sahara Marrakech → Fes (3-4 giorni)**
+
+```
+NOME TOUR: "Avventura nel Deserto del Sahara"
+DURATA: 3-4 giorni
+TIPO: Avventura nel deserto
+TARGET: Avventurieri, coppie romantiche, bucket list travelers
+PREZZO MEDIO: €100-180/giorno (standard), €180-300 (luxury)
+
+ITINERARIO: Marrakech → Ait Ben Haddou → Ouarzazate → Gole Todra → Deserto Merzouga → Fes
+
+HIGHLIGHTS:
+✓ Attraversamento Alto Atlante (passo Tizi n'Tichka 2.260m)
+✓ Kasbah Ait Ben Haddou (UNESCO) - set Game of Thrones
+✓ Atlas Film Studios Ouarzazate
+✓ Gole del Todra (canyon spettacolare)
+✓ Tramonto in cammello sulle dune Erg Chebbi
+✓ Notte in campo tendato luxury nel Sahara
+✓ Alba sulle dune del deserto
+✓ Attraversamento Medio Atlante con foreste cedri
+
+ITINERARIO DETTAGLIATO:
+
+GIORNO 1: Marrakech → Ait Ben Haddou → Ouarzazate → Valle Dades (350 km)
+- Partenza 7:30 da Marrakech
+- Passo Tizi n'Tichka (2.260m) - viste panoramiche Alto Atlante
+- Stop fotografici montagne e villaggi berberi
+- Visita guidata Kasbah Ait Ben Haddou (UNESCO, 1.5h)
+  * Set di: Gladiatore, Game of Thrones, La Mummia
+- Pranzo locale (opzionale)
+- Ouarzazate: stop Atlas Film Studios (visita opzionale 1h)
+- Valle delle Rose e strada delle 1001 Kasbahs
+- Arrivo Valle Dades/Boumalne sera
+- Cena e pernottamento: Hotel Valle Dades
+- Distanza: 350 km (7-8h con soste)
+- Pasti: Colazione, Cena
+
+GIORNO 2: Valle Dades → Gole Todra → Merzouga Deserto (260 km)
+- Colazione e partenza
+- Passeggiata Gole del Dades (30 min)
+- Gole del Todra - canyon 300m altezza (1h esplorazione)
+- Pranzo Tinjdad o Erfoud
+- Arrivo Merzouga pomeriggio
+- Transfer 4x4 + cammelli al campo tendato (1h)
+- Tramonto sulle dune Erg Chebbi in cammello
+- Cena berbera sotto le stelle
+- Musica tradizionale attorno al fuoco
+- Notte in tenda luxury (bagno privato) o standard (bagni comuni)
+- Pasti: Colazione, Cena
+- OPZIONI: sandboarding, quad nel deserto (extra €30-60)
+
+GIORNO 3: Merzouga → Valle Ziz → Midelt → Ifrane → Fes (460 km)
+- Sveglia presto per alba sulle dune (6:00-6:30)
+- Colazione al campo
+- Ritorno in cammello/4x4 a Merzouga
+- Doccia e partenza per Fes (9:00)
+- Valle dello Ziz (oasi palmeti)
+- Pranzo Midelt
+- Foresta cedri Azrou (macachi berberi)
+- Ifrane "Svizzera marocchina"
+- Arrivo Fes sera (18:00-19:00)
+- Drop-off hotel/riad o aeroporto Fes
+- Pasti: Colazione
+- Distanza: 460 km (8-9h)
+
+OPZIONE GIORNO 4: Fes - Tour guidato medina
+- Tour completo giornata Fes el-Bali con guida locale
+- Tutti i monumenti principali
+- Pernottamento Fes o partenza
+- Pasti: Colazione
+- Supplemento: +€120-180/persona (include guida, hotel, cena)
+
+COSA È INCLUSO:
+✓ Pick-up hotel Marrakech, drop-off Fes
+✓ Veicolo 4x4 o minivan climatizzato + autista
+✓ 1 notte hotel Valle Dades (camera privata con bagno)
+✓ 1 notte campo tendato deserto (luxury o standard)
+✓ 2 colazioni + 2 cene
+✓ Trekking cammelli (tramonto + alba)
+✓ Sandboarding
+✓ Guida locale Ait Ben Haddou
+✓ Carburante e tutte le tasse
+
+NON INCLUSO:
+✗ Pranzi
+✗ Bevande
+✗ Biglietti ingresso (Ait Ben Haddou €7, Atlas Studios €7)
+✗ Mance
+✗ Attività extra (quad €30-60)
+
+PREZZI (per persona):
+OPZIONE STANDARD (campo tende condivise):
+- 2 persone: €320
+- 3-4 persone: €250
+- 5-6 persone: €200
+
+OPZIONE LUXURY (campo tende private con bagno):
+- 2 persone: €450
+- 3-4 persone: €370
+- 5-6 persone: €320
+
+SUPPLEMENTO CAMERA SINGOLA: +€80
+
+PARTENZE: Ogni giorno tutto l'anno
+LINGUE GUIDA: Italiano, Inglese, Francese, Spagnolo
+```
+
+### **Tour 4-8: Continua con format simile**
+
+[Gli altri 5 tour seguono la stessa struttura dettagliata con itinerari specifici]
+
+---
+
+## **SEZIONE 3: PROMPT PER HOMEPAGE E PAGINE AGGIUNTIVE**
+
+### **Homepage**
+
+```
+Crea homepage moderna e accattivante per agenzia tour Marocco.
+
+SEZIONI:
+
+1. HERO SECTION a tutto schermo
+- Video background loop (mercati, deserto, città)
+- H1: "Scopri il Marocco Autentico"
+- Sottotitolo: "Tour privati personalizzati con guide locali esperte"
+- Search bar: "Dove vuoi andare?" (autocomplete città)
+- CTA: "Esplora i Tour" + "Richiedi Preventivo"
+
+2. DESTINAZIONI POPOLARI (Grid 3x3)
+- 9 card città con:
+  * Immagine hero
+  * Nome città + soprannome
+  * "X tour disponibili"
+  * Button "Scopri"
+
+3. TOUR IN EVIDENZA (Carousel)
+- 6-8 tour principali con card:
+  * Immagine
+  * Nome tour
+  * Durata e città
+  * Rating
+  * Prezzo da €XX
+  * Badge "Best Seller"
+
+4. PERCHÉ SCEGLIERCI (4 colonne icone)
+- Guide locali certificate
+- Tour 100% personalizzabili
+- Miglior rapporto qualità-prezzo
+- Assistenza 24/7
+
+5. ESPERIENZE UNICHE
+- Grid 2x3 esperienze speciali:
+  * Notte nel deserto
+  * Cooking class
+  * Tour fotografico
+  * Hammam
+  * Trekking Atlas
+  * Surf Essaouira
+
+6. RECENSIONI CLIENTI (Slider)
+- 10+ recensioni con foto clienti
+- Rating medio 4.9/5
+- TripAdvisor badge
+
+7. COME FUNZIONA (3 step)
+1. Scegli il tour o personalizza
+2. Prenota online sicuro
+3. Parti per l'avventura
+
+8. BLOG / GUIDE VIAGGIO
+- 3 articoli recenti con immagini
+
+9. NEWSLETTER
+- "Ricevi offerte esclusive"
+- Form email
+
+10. TRUST BADGES
+- Pagamenti sicuri
+- Licenza turismo Marocco
+- Assicurazione inclusa
+
+DESIGN:
+- Moderno, pulito, professionale
+- Immagini grandi alta qualità
+- Animazioni smooth
+- Mobile-first
+- Loading veloce
+```
+
+### **Altre Pagine Essenziali**
+
+```
+1. CHI SIAMO
+- Storia agenzia
+- Team guide con foto e bio
+- Missione e valori
+- Certificazioni e premi
+- Perché siamo diversi
+
+2. CONTATTI
+- Form contatto
+- WhatsApp live chat
+- Email, telefono
+- Indirizzo ufficio
+- Mappa Google
+- Social media links
+- Orari disponibilità
+
+3. FAQ
+- 20+ domande frequenti organizzate per categoria:
+  * Prenotazione e pagamento
+  * Tour e itinerari
+  * Alloggi e trasporti
+  * Cosa portare
+  * Sicurezza
+  * Visti e documenti
+
+4. BLOG/GUIDE
+- Articoli SEO:
+  * "10 cose da sapere prima di andare in Marocco"
+  * "Cosa mettere in valigia per il deserto"
+  * "Miglior periodo per visitare Marrakech"
+  * "Guida ai souks: come contrattare"
+  * "Piatti marocchini da provare assolutamente"
+
+5. RECENSIONI
+- Tutte le recensioni clienti
+- Filtri per tour e data
+- Form per lasciare recensione
+- Import TripAdvisor
+
+6. PRENOTA
+- Form multi-step:
+  1. Scegli tour o personalizza
+  2. Date e partecipanti
+  3. Opzioni (hotel, extra)
+  4. Contatti
+  5. Pagamento (deposit online)
+- Progress bar
+- Riepilogo dinamico prezzo
+
+7. GALLERIA
+- Portfolio fotografico organizzato per:
+  * Città
+  * Tour
+  * Esperienze
+  * Clienti in tour
+- Lightbox professionale
+- Instagram feed integrato
+
+8. TERMINI E CONDIZIONI / PRIVACY
+- Pagine legali standard
+```
+
+***
+
+## **SPECIFICHE TECNICHE PER REPLIT**
+
+```javascript
+TECNOLOGIE CONSIGLIATE:
+
+Frontend:
+- Framework: React.js o Next.js (SEO-friendly)
+- CSS: Tailwind CSS
+- Animazioni: Framer Motion
+- Icone: Heroicons o FontAwesome
+- Mappe: Google Maps API o Mapbox
+
+Backend (se necessario):
+- Node.js + Express
+- Database: MongoDB o Firebase
+- Form: EmailJS o SendGrid per notifiche
+
+Funzionalità:
+- Sistema prenotazioni
+- Calendario disponibilità
+- Calcolatore prezzi dinamico
+- Multi-lingua (IT, EN, FR, ES)
+- Chat WhatsApp integrato
+- Google Analytics
+- Schema.org markup (SEO)
+
+Performance:
+- Lazy loading immagini
+- Next/Image optimization
+- CDN per assets
+- Lighthouse score 90+
+
+Deployment:
+- Vercel (Next.js)
+- Netlify
+- Replit hosting
+```
+
+***
+
+## **STRUTTURA FILE PROGETTO**
+
+```
+morocco-tours-website/
+│
+├── public/
+│   ├── images/
+│   │   ├── cities/
+│   │   │   ├── marrakech/
+│   │   │   ├── fes/
+│   │   │   └── ...
+│   │   ├── tours/
+│   │   └── experiences/
+│   └── favicon.ico
+│
+├── src/
+│   ├── components/
+│   │   ├── Header.jsx
+│   │   ├── Footer.jsx
+│   │   ├── CityCard.jsx
+│   │   ├── TourCard.jsx
+│   │   ├── BookingForm.jsx
+│   │   └── ...
+│   │
+│   ├── pages/
+│   │   ├── index.jsx (Homepage)
+│   │   ├── about.jsx
+│   │   ├── contact.jsx
+│   │   ├── cities/
+│   │   │   ├── marrakech.jsx
+│   │   │   ├── fes.jsx
+│   │   │   └── [city].jsx (dynamic)
+│   │   ├── tours/
+│   │   │   ├── imperial-cities.jsx
+│   │   │   ├── sahara-desert.jsx
+│   │   │   └── [tour].jsx
+│   │   └── ...
+│   │
+│   ├── data/
+│   │   ├── cities.json
+│   │   ├── tours.json
+│   │   └── experiences.json
+│   │
+│   └── styles/
+│       └── globals.css
+│
+├── package.json
+└── README.md
+```
+
+***
+
+## **DATI JSON CITTÀ E TOUR**
+
+Puoi utilizzare i dati che ho elaborato per popolare il database. Ecco un esempio di struttura:
+
+```json
+{
+  "cities": {
+    "marrakech": {
+      "name": "Marrakech",
+      "nickname": "La Perla Rossa del Marocco",
+      "rating": 4.8,
+      "tours_available": 12,
+      "main_attractions": [
+        "Jemaa El-Fna",
+        "Giardini Majorelle",
+        "Palazzo Bahia",
+        "Moschea Koutoubia"
+      ],
+      "unique_experiences": [...],
+      "day_trips": [...],
+      "best_period": "Marzo-Maggio, Settembre-Novembre",
+      "recommended_stay": "2-3 giorni"
+    }
+  },
+  "combined_tours": {
+    "imperial-cities": {
+      "name": "Tour delle Città Imperiali",
+      "duration": "6-8 giorni",
+      "type": "Culturale e storico",
+      "cities": ["Casablanca", "Rabat", "Meknes", "Fes", "Marrakech"],
+      "highlights": [...],
+      "itinerary": [...],
+      "pricing": {...}
+    }
+  }
+}
+```
+
+***
+
+## **CHECKLIST IMPLEMENTAZIONE**
+
+**FASE 1 - Setup (Giorno 1)**
+- [ ] Inizializza progetto React/Next.js su Replit
+- [ ] Installa dipendenze (Tailwind, routing, etc.)
+- [ ] Setup struttura cartelle
+- [ ] Crea file JSON con dati città e tour
+
+**FASE 2 - Homepage e Layout (Giorno 2)**
+- [ ] Header con menu navigation
+- [ ] Footer con links e social
+- [ ] Homepage completa con tutte le sezioni
+- [ ] Responsive mobile
+
+**FASE 3 - Pagine Città (Giorno 3-4)**
+- [ ] Template pagina città dinamico
+- [ ] Crea 9 pagine città con tutti i dati
+- [ ] Gallerie immagini
+- [ ] CTA e form contatto
+
+**FASE 4 - Pagine Tour Combinati (Giorno 5-6)**
+- [ ] Template tour multi-città
+- [ ] 8 pagine tour dettagliate
+- [ ] Itinerari giorno per giorno
+- [ ] Sistema prezzi dinamico
+
+**FASE 5 - Funzionalità (Giorno 7)**
+- [ ] Form prenotazione/richiesta
+- [ ] Filtri e ricerca tour
+- [ ] Integrazione WhatsApp
+- [ ] Sistema recensioni
+
+**FASE 6 - Pagine Aggiuntive (Giorno 8)**
+- [ ] Chi Siamo
+- [ ] Contatti
+- [ ] FAQ
+- [ ] Blog (2-3 articoli)
+- [ ] Galleria foto
+
+**FASE 7 - Testing e Deploy (Giorno 9)**
+- [ ] Test tutti i link
+- [ ] Test responsive mobile
+- [ ] Ottimizzazione immagini
+- [ ] SEO meta tags
+- [ ] Deploy su Vercel/Netlify
+
+---
+
+Questa guida completa ti fornisce tutto il necessario per creare un sito professionale di tour guide in Marocco. Ogni prompt può essere copiato e incollato direttamente in Replit o utilizzato come specifiche per lo sviluppo.
+
+[1](https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/images/66836827/690049d0-b3f5-4349-b290-8dd5c0dbdd69/Screenshot-2025-11-17-alle-07.59.32.jpg?AWSAccessKeyId=ASIA2F3EMEYEXQYUFFIQ&Signature=%2Bzv2FqpL6WCqP8b36PImdqZ0q3U%3D&x-amz-security-token=IQoJb3JpZ2luX2VjEN%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLWVhc3QtMSJHMEUCIGCLRiYaKVm8k2XBCb%2Be3v6aFfP9%2F7xJC3ezgTuLnq37AiEA8yaJBDG5zCmt%2BQLuOiCOsoH%2FFMyrHH3whhQCV5nBGLgq%2FAQIqP%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARABGgw2OTk3NTMzMDk3MDUiDJrY31I3rb4TwykeOCrQBIKU6qlnAEdthzthdpk5S6NX4fhaibN4ZPqkja3bbzf1Zshqm0LZhkcKTP40VXoLTADEDUInzXEDwOWz25IOwhFDaQVjiiEc8fQguOwAP16BUhLI%2F4vfdm3Twqq5J7UNn%2FYKsEVifCTr1I5JyQbdUoRscliXRkyeBmIYkeZ6lR2ZLqH4z0cnAfeTtlUIwHIxuKyPm%2FPoBWyuNu7rmbQDVBvjb2FeYsvCxRtT3GSXQqFGgMK5B66Dp9uHE3AjO2pBp%2FQONijhI4ddI9ofuFOAd7G0lH1dSLxuqt%2FEU4xjTz8z1YybtMO9xVD9V9YxKElKLz%2FadyOtzVataPNn0uBfHtKWdXQnZjP2Daf0PrSJbx5dGIePP3aCbFePimJKMJQanNIjyeWAPyDnQ1fZ%2BW%2BUF%2BGsucB9VZq3wv57aeFVPU%2Fxgd5Cg205efUJ%2FbeYmK93po0DRlZj9r%2ByXUTXMjVdnIwytGETY2wQU1UJbOSwmu6SghzTDQeCNqf%2FjsNGBUV51zQxy%2FGwBwod5s8QMJGVCtoR1pV3%2BH1MWAsKBcitqfMmnF8BenuBWEwd5Y0alLwh2060zVe62gsrloFv1KDPXMRjotdmViin%2BMEdl8%2BkUvLNQpgHRgN6SovfBUhECuxGTHCgLPLgpUtb6ddBoVF7yFUaw0yuIhwwKxxPcP05gUTEvVoOUH7WyyZEhWXhu7gWZwpkpARqkUWjmLxqg%2F54mN5l8y45dpr8i8qWfs2JMFMn5GvjsGc0yUagSgBH9JHtac03HjbvUOr%2BUnMKA1iYTUswhpDryAY6mAGtPzxYrCuFw4%2BtEJxxN44wn2L7zCktjKvlIcudPmXUjd%2FSQd3So5r5%2F2RR2NAejwBfPVzXD2V5stzZVAE6jpMqXVQ6UiBsRlvZOkuAvDrZGMK6KwLtdMoi64d2eCuyy6yXiwT1z9m6TbkLzQ0dgznV2zpXLw%2Bswtsno%2F1qJP9gjMSWombpihy1JbyDECAcK1UiyzD9JSBSkQ%3D%3D&Expires=1763363923)
+[2](https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/images/66836827/1e57818d-47d5-4996-a360-89d4e6bf32eb/Screenshot-2025-11-17-alle-07.59.38.jpg?AWSAccessKeyId=ASIA2F3EMEYEXQYUFFIQ&Signature=JzBcsdjM2tz2Q1lOVTuJyUY1N%2Fs%3D&x-amz-security-token=IQoJb3JpZ2luX2VjEN%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLWVhc3QtMSJHMEUCIGCLRiYaKVm8k2XBCb%2Be3v6aFfP9%2F7xJC3ezgTuLnq37AiEA8yaJBDG5zCmt%2BQLuOiCOsoH%2FFMyrHH3whhQCV5nBGLgq%2FAQIqP%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARABGgw2OTk3NTMzMDk3MDUiDJrY31I3rb4TwykeOCrQBIKU6qlnAEdthzthdpk5S6NX4fhaibN4ZPqkja3bbzf1Zshqm0LZhkcKTP40VXoLTADEDUInzXEDwOWz25IOwhFDaQVjiiEc8fQguOwAP16BUhLI%2F4vfdm3Twqq5J7UNn%2FYKsEVifCTr1I5JyQbdUoRscliXRkyeBmIYkeZ6lR2ZLqH4z0cnAfeTtlUIwHIxuKyPm%2FPoBWyuNu7rmbQDVBvjb2FeYsvCxRtT3GSXQqFGgMK5B66Dp9uHE3AjO2pBp%2FQONijhI4ddI9ofuFOAd7G0lH1dSLxuqt%2FEU4xjTz8z1YybtMO9xVD9V9YxKElKLz%2FadyOtzVataPNn0uBfHtKWdXQnZjP2Daf0PrSJbx5dGIePP3aCbFePimJKMJQanNIjyeWAPyDnQ1fZ%2BW%2BUF%2BGsucB9VZq3wv57aeFVPU%2Fxgd5Cg205efUJ%2FbeYmK93po0DRlZj9r%2ByXUTXMjVdnIwytGETY2wQU1UJbOSwmu6SghzTDQeCNqf%2FjsNGBUV51zQxy%2FGwBwod5s8QMJGVCtoR1pV3%2BH1MWAsKBcitqfMmnF8BenuBWEwd5Y0alLwh2060zVe62gsrloFv1KDPXMRjotdmViin%2BMEdl8%2BkUvLNQpgHRgN6SovfBUhECuxGTHCgLPLgpUtb6ddBoVF7yFUaw0yuIhwwKxxPcP05gUTEvVoOUH7WyyZEhWXhu7gWZwpkpARqkUWjmLxqg%2F54mN5l8y45dpr8i8qWfs2JMFMn5GvjsGc0yUagSgBH9JHtac03HjbvUOr%2BUnMKA1iYTUswhpDryAY6mAGtPzxYrCuFw4%2BtEJxxN44wn2L7zCktjKvlIcudPmXUjd%2FSQd3So5r5%2F2RR2NAejwBfPVzXD2V5stzZVAE6jpMqXVQ6UiBsRlvZOkuAvDrZGMK6KwLtdMoi64d2eCuyy6yXiwT1z9m6TbkLzQ0dgznV2zpXLw%2Bswtsno%2F1qJP9gjMSWombpihy1JbyDECAcK1UiyzD9JSBSkQ%3D%3D&Expires=1763363923)
+[3](https://iris.polito.it/retrieve/e384c434-41d0-d4b2-e053-9f05fe0a1d67/conv_tesi_dottorato_paola_menzardi_finale.pdf)
+[4](https://www.clioedu.it/documenti/eventi-live-ondemand/rivista-elettronica/Rivista-elettronica-2_2022.pdf)
+[5](https://www.academia.edu/29819329/Iconografie_veriste)
+[6](https://iris.uniroma1.it/retrieve/63f7d4c4-b1d1-4f3d-b538-e7efcfa184e3/Omosessualit%C3%A0%20in%20Medio%20OrientePDF.pdf)
+[7](https://huggingface.co/dbmdz/bert-base-italian-uncased/raw/main/vocab.txt)
+[8](https://traces-berberes.com/the-best-5-places-to-visit-in-marrakech-in-2024/)
+[9](https://www.fmh2.ma/en/mosque/visits/paid-guided-tour)
+[10](https://www.viator.com/Fez-attractions/Medina-of-Fez/d22151-a19819)
+[11](https://archive.org/stream/MC_microcomputer-169/MC_microcomputer-169_djvu.txt)
+[12](https://theunknownenthusiast.com/unique-things-to-do-in-marrakech/)
+[13](https://www.getyourguide.com/casablanca-settat-l108747/guided-tours-tc1144/)
+[14](https://fesmedinaguidedtour.com)
+[15](https://www.academia.edu/99115653/La_questione_indigena_in_Africa)
+[16](https://rudderlesstravel.com/things-to-do-in-marrakech/)
+[17](https://www.viator.com/Casablanca/d4396-ttd)
+[18](http://www.fez-guided-tours.com/index.html)
+[19](https://abrummiehomeandabroad.com/things-to-do-and-see-in-marrakech/)
+[20](https://www.tripadvisor.com/Attractions-g293732-Activities-c42-Casablanca_Casablanca_Settat.html)
+[21](https://www.nomades.com/en/fez/medina-id1476)
+[22](https://www.tripadvisor.com/Attraction_Review-g293734-d18857701-Reviews-Marrakech_Tour_Guide-Marrakech_Marrakech_Safi.html)
+[23](https://puremoroccotours.com/best-tours-of-morocco/rabat-city-tour/)
+[24](https://www.tripadvisor.com/Attraction_Review-g304013-d19940570-Reviews-THE_BLUE_PEARL_CHEFCHAOUEN-Chefchaouen_Tanger_Tetouan_Al_Hoceima.html)
+[25](https://myflyingleap.com/travel/travel-guides/top-things-to-do-in-essaouira/)
+[26](https://www.getyourguide.com/rabat-l1693/)
+[27](https://travelsafoot.com/2-days-in-chefchaouen/)
+[28](https://bucketlistbri.com/essaouira-itinerary/)
+[29](https://www.lonelyplanet.com/articles/guide-to-rabat-morocco)
+[30](https://www.getyourguide.com/chefchaouen-l104265/)
+[31](https://www.alongdustyroads.com/posts/things-to-do-in-essaouira-morocco)
+[32](https://www.revigorate.com/things-to-do-in-rabat.html)
+[33](https://www.tripadvisor.com/AttractionProductReview-g304013-d26868912-THE_BLUE_PEARL_Chefchaouen_Day_Tour-Chefchaouen_Tanger_Tetouan_Al_Hoceima.html)
+[34](https://www.my-travelmonkey.com/things-to-do-in-essaouira/)
+[35](https://www.projectexpedition.com/tour-activity/rabat/half-day-guided-sightseeing-tour-of-rabat/109028/)
+[36](https://www.rjtravelagency.com/product/4-day-marrakech-casablanca-fes-tour-morocco/)
+[37](https://www.travellero.com/travel-offers/morocco/tours/imperial-cities-of-morocco.html)
+[38](https://www.expedia.com/things-to-do/marrakech-to-fez-via-merzouga-desert-3-day-morocco-sahara-tour.a2061130.activity-details)
+[39](https://saharaexperiencetours.com/6-giorni-da-fes-a-marrakech-deserto-e-chefchaouen/)
+[40](https://www.viator.com/tours/Marrakech/3-days-trip-from-Marrakech-to-Chefchaouen-via-Imperial-cities/d5408-54854P36)
+[41](https://www.kimkim.com/c/moroccan-highlights-fes-sahara-desert-marrakech-6-day-itinerary)
+[42](https://it.sales.secretescapes.com/148817/riad-in-marrakesch-fes-chefchaouen-marokko/)
+[43](https://redcitytoursmarrakech.com/trip/from-marrakech-3-day-tour-of-moroccos-imperial-cities/)
+[44](https://projectgora.com/sahara-desert-tour-morocco/)
+[45](https://www.tour-marocco.com/tour-da-fes-di-piu-giorni/)
+[46](https://www.getyourguide.com/marrakesh-safi-l876/imperial-cities-3-day-trip-from-marrakech-to-chefchaouen-t228385/)
+[47](https://www.tripadvisor.com/AttractionProductReview-g293734-d26769247-4_Days_Desert_Tour_From_Marrakech_to_Fes_via_Merzouga_Dunes-Marrakech_Marrakech_Sa.html)
+[48](https://www.tripadvisor.it/AttractionProductReview-g293734-d24135062-7_days_Desert_Tour_from_Marrakech_to_Fes_Chefchaouen_and_Tangier-Marrakech_Marrake.html)
+[49](https://travel.inflowdesignco.com/morocco-travel-showit-website-template)
+[50](https://tililatravel.com/morocco-tours-packages/)
+[51](https://puremoroccotours.com/morocco-private-tour-guide/)
+[52](https://chrtours.com/pages/morocco-local-travel-agency)
+[53](https://www.sun-trails.com/tour-operators-luxury-agency/morocco-travel-agency/)
+[54](https://www.authentic-morocco.com)
+[55](https://scrowp.com/luxury-travel-agency-website-on-wordpress/)
+[56](https://puremoroccotours.com)
+[57](https://www.tauck.com/tours/magic-of-morocco-escorted-tour)
+[58](https://www.specialmorocco.com/faq/)
+[59](https://excursionmoroccotours.com/morocco-tour-packages/)
+[60](https://www.facebook.com/groups/4763952345/posts/10161415955787346/)
+[61](https://www.visitmorocco.com/en)
+[62](https://www.getyourguide.com/volubilis-l104991/)
+[63](https://www.viator.com/Agadir-attractions/Agadir-Beach/d4383-a20247)
+[64](https://www.airial.travel/attractions/morocco/ouarzazate/atlas-film-studios-ouarzazate-2GqRobVI)
+[65](https://www.viator.com/Fez-attractions/Volubilis/d22151-a12357)
+[66](https://www.getyourguide.com/agadir-beach-l105163/)
+[67](https://www.viator.com/it-IT/Ouarzazate-attractions/Atlas-Film-Studios/d23956-a21368)
+[68](https://www.journalofnomads.com/guide-to-meknes-morocco-what-to-see-and-do/)
+[69](https://www.tui.co.uk/things-to-do/agadir/)
+[70](https://saharaexperiencetours.com/ouarzazate-porta-del-deserto-e-set-di-film-leggendari/)
+[71](https://www.tripadvisor.com/Attractions-g293735-Activities-c42-Meknes_Fez_Meknes.html)
+[72](https://www.blondieinmorocco.com/tours-from-agadir/)
+[73](https://www.tripadvisor.it/Attractions-g304018-Activities-c42-t232-Ouarzazate_Draa_Tafilalet.html)
+[74](https://excursionmania.com/full-day-trip-volubilis-moulay-idriss-and-meknes-group-of-8-e1485)

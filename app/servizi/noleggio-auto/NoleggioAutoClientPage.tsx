@@ -177,29 +177,9 @@ _Grazie!_`
                   }`}
                   onClick={() => setSelectedVehicle(vehicle)}
                 >
-                  <CardHeader className="text-center relative">
-                    <div className="mb-4 flex items-center justify-between">
-                      <Badge
-                        className={`${
-                          vehicle.category === "economica"
-                            ? "bg-green-500"
-                            : vehicle.category === "suv"
-                              ? "bg-blue-500"
-                              : "bg-purple-500"
-                        }`}
-                      >
-                        {vehicle.category}
-                      </Badge>
-                      <Badge className="bg-gradient-to-r from-orange-500 to-red-500 text-white font-bold">
-                        Da €{Math.min(vehicle.pricing.period1.short, vehicle.pricing.period2.short, vehicle.pricing.period3.short, vehicle.pricing.period4.short)}/gg
-                      </Badge>
-                    </div>
-                    {selectedVehicle.id === vehicle.id && (
-                      <div className="absolute top-2 right-2 z-10">
-                        <CheckCircle className="h-6 w-6 text-orange-500 fill-current" />
-                      </div>
-                    )}
-                    <div className="absolute top-2 left-2 z-10">
+                  <CardHeader className="text-center relative pb-4">
+                    {/* WishlistButton - Top Left */}
+                    <div className="absolute top-3 left-3 z-20">
                       <WishlistButton
                         itemId={vehicle.id}
                         itemType="vehicle"
@@ -209,7 +189,16 @@ _Grazie!_`
                         itemDescription={`${vehicle.category} - ${vehicle.transmission} - ${vehicle.seats} posti`}
                       />
                     </div>
-                    <div className="relative w-full h-40 mb-4 rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-800">
+                    
+                    {/* Selection Indicator - Top Right */}
+                    {selectedVehicle.id === vehicle.id && (
+                      <div className="absolute top-3 right-3 z-20 bg-white dark:bg-gray-800 rounded-full p-1 shadow-lg">
+                        <CheckCircle className="h-5 w-5 text-orange-500 fill-current" />
+                      </div>
+                    )}
+                    
+                    {/* Vehicle Image */}
+                    <div className="relative w-full h-40 mb-3 rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-800">
                       <Image
                         src={vehicle.image}
                         alt={vehicle.name}
@@ -218,6 +207,25 @@ _Grazie!_`
                         sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 25vw"
                       />
                     </div>
+                    
+                    {/* Badges - Below Image */}
+                    <div className="flex items-center justify-between gap-2 mb-3 px-1">
+                      <Badge
+                        className={`text-xs ${
+                          vehicle.category === "economica"
+                            ? "bg-green-500 hover:bg-green-600"
+                            : vehicle.category === "suv"
+                              ? "bg-blue-500 hover:bg-blue-600"
+                              : "bg-purple-500 hover:bg-purple-600"
+                        }`}
+                      >
+                        {vehicle.category}
+                      </Badge>
+                      <Badge className="bg-gradient-to-r from-orange-500 to-red-500 text-white font-bold text-xs">
+                        Da €{Math.min(vehicle.pricing.period1.short, vehicle.pricing.period2.short, vehicle.pricing.period3.short, vehicle.pricing.period4.short)}/gg
+                      </Badge>
+                    </div>
+                    
                     <CardTitle className="text-xl">{vehicle.name}</CardTitle>
                   </CardHeader>
                   <CardContent className="text-center space-y-3">

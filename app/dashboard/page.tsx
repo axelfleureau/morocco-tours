@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth } from '@/context/AuthContext';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import ProtectedRoute from '@/components/auth/ProtectedRoute';
 import { Home, Calendar, Heart, User, Settings, LogOut, Menu, X, Shield, Database, MapPin, FileText, Package, Globe, Palette } from 'lucide-react';
 import UserOverview from '@/components/dashboard/UserOverview';
@@ -23,12 +23,21 @@ function UserDashboardContent() {
   const { user, userProfile, signOut, isAdmin } = useAuth();
   const { showSuccess, showInfo } = useNotifications();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [activeTab, setActiveTab] = useState("overview");
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [serviceModalOpen, setServiceModalOpen] = useState(false);
   const [editingService, setEditingService] = useState(null);
   const [experienceModalOpen, setExperienceModalOpen] = useState(false);
   const [editingExperience, setEditingExperience] = useState(null);
+
+  // Read tab from URL query params on mount
+  useEffect(() => {
+    const tabParam = searchParams.get('tab');
+    if (tabParam) {
+      setActiveTab(tabParam);
+    }
+  }, [searchParams]);
 
   const userNavigation = [
     { id: "overview", name: "Panoramica", icon: Home },

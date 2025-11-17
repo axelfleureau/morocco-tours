@@ -1,0 +1,29 @@
+nella dashboard utente:
+-dalle azioni rapide devono funzionare le selezioni, la lista dei desideri deve integrare non solo le macchina ma ogni singola experience quindi le seguenti pagine contenute nelle relative sezioni e gruppi:
+-viaggi, esperienze, servizi, blog.
+-inoltre deve salvare il viaggio su misura che richiediamo su whatsapp.
+
+Inoltre nella homepage la sezione "Viaggi più richiesti" non funziona correttamente, indica errore nel caricamento dei viaggi...quindi o sistemi o togli quella sezione.
+
+-Ogni singola esperienza deve avere la possibilità di ricevere un like per averlo poi nella lista dei desideri, devi integrare nell interfaccia in maniera piacevole questa sezione.
+
+Se clicco prenota su un viaggio o un experience mi deve portare su una pagina di riepilogo che mi chiede i miei dati, conferma e poi indica che lo inserirai nella sezione mie prenotazioni della dashboard utente dove la puoi trovare e da li la puoi condividere agli amici etc, per farli aggiungere o meno alla lista assieme dove ci deve essere una chat condivisa e le info del viaggio date etc...
+
+-Nella sezione Viaggi su Misura, tutti i campi della prima schermata cioè nome e cognome, email, telefono, città di partenza, numero di adulti, numero di bambini, data di partenza preferita e data di ritorno preferita, devono essere tutti campi obbligatori, se premo avanti senza averli compilati non mi deve lasciare andare avanti e mi deve indicare di doverli compilare
+
+-Nella sezione viaggi, in Tour Del Deserto va bene l'impostazione con diverse card delle diverse possibilità.
+
+Però alla base devi dare come scelta disponibile la richiesta se si vuole il deserto del sahara o di agafay e poi dentro ci sono queste varie opzioni.
+Anche questi viaggi bisogna poterli mettere nella lista desideri. Integra foto generate per queste sezioni che attualmente non c'è nulla, ovviamente contestualizza.
+
+Anche nelle esperienze devi dare la possibilità di prenotare e di mettere nella lista dei desideri.
+
+L'integrazione della lista dei desideri delle macchine funziona bene però devi mettere il cuore in maniera opportuna rispetto all'icona economica e prezzo perchè così si sovrappone ed è brutto, così come anche il puntino che indica che veicolo si è selezionato devi far si che non si sovrapponga.
+
+Se prenoto la macchina e ne scelgo una in particolare mi deve chiedere altre info utili che potrei volere e deve permettermi di metterla nella lista desideri o prenotare e prenotare su whatsapp così da averla anche sulla dashboard con tutti i relativi dettagli ovviamente.
+
+Vorrei anche che implementassi un automazione collegata ad instagram che in home page subito priam di "perchè scegliere morocco dreams" va a prendere i video che vengono pubblicati sulla pagina instagram e li inserisce qui con un collegamento o i video direttamente che sono molto belli e spiegano, i video con la descrizione di instagram mettendone magari 3 su una section che mostrano il viaggio e la guida turistica che parla e poi oltre a qui in home costantemente appena vengono caricati su instagram sul blog vengono caricati e fanno appunto da blog.
+
+questa è la pagina alla quale devi far fede:
+
+https://www.instagram.com/omarito_chill/
