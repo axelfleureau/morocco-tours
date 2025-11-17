@@ -54,6 +54,26 @@ This is a Next.js-based travel website for "Morocco Dreams" - a service offering
 - **Data/vehicles.ts**: 950+ righe con tutti i dati reali strutturati in TypeScript
 - ⚠️ **Nota qualità dati**: Dacia Duster automatica period3 ha pricing illogico nel CSV originale (short 42€ < medium 58€) - trascritto fedelmente ma potrebbe richiedere verifica utente
 
+### FASE 5: Sistema Wishlist Universale + Viaggi su Misura ✅ (November 17, 2025)
+- **Sistema Wishlist Universale (15+ pagine):**
+  - ✅ WishlistButton integrato su tutte le 6 pagine esperienze (cucina, trekking, quad-cammelli, surf, artigianato)
+  - ✅ Pagine viaggi: deserto, gruppo, città-imperiali, montagne-atlas, costa-atlantica, [slug] dynamic
+  - ✅ Pagine servizi: noleggio-auto, trasferimenti, guide-private, assicurazioni, [slug] dynamic
+  - ✅ Blog: index list cards + [slug] dynamic (BlogPostHeader client component per SSR compatibility)
+  - ✅ TypeScript: itemType esteso a 'vehicle' | 'experience' | 'travel' | 'city' | 'activity' | 'service' | 'blog'
+  - ✅ Price parsing: regex defensivo /[^0-9]/g per gestire stringhe formattate "€280"
+  - ✅ Design pattern: top-left su cards, top-right in hero sections
+
+- **Sistema Viaggi su Misura Completo:**
+  - ✅ Schema Firestore: CustomTripRequest con 26 campi (info personali, date, destinazioni, preferenze, budget, richieste speciali)
+  - ✅ Form multi-step validato (3 step): Step 1 campi obbligatori, validazione inline, blocco avanzamento
+  - ✅ Guest flow ottimizzato: showInfo notification → redirect WhatsApp immediato (no Firestore save)
+  - ✅ Logged user flow: save Firestore → showSuccess notification → delay 1.5s → redirect WhatsApp
+  - ✅ Dashboard integration: sezione "Richieste Viaggi su Misura" con card espandibili (accordion)
+  - ✅ Card details: nome, date, destinazioni tags, budget, status badge, info contatti, preferenze, button WhatsApp follow-up
+  - ✅ Error handling: fallback WhatsApp se Firestore save fallisce
+  - ✅ NotificationSystem: useNotifications con showSuccess, showError, showWarning, showInfo tutti disponibili
+
 ## Architecture
 - **Frontend**: Next.js 14.2.16 with TypeScript
 - **Backend**: Firebase (Firestore + Auth)
