@@ -86,6 +86,17 @@ export interface Experience {
   updatedAt: Timestamp;
 }
 
+// Booking Participant - For group bookings
+export interface BookingParticipant {
+  userId: string;
+  name: string;
+  email: string;
+  phone?: string;
+  joinedAt: Timestamp;
+  status: 'invited' | 'joined' | 'declined';
+  role: 'organizer' | 'participant';
+}
+
 // Booking Types
 export interface Booking {
   id?: string;
@@ -106,6 +117,16 @@ export interface Booking {
   };
   customRequests?: string;
   totalPrice: number;
+  
+  // Group booking fields
+  groupId?: string;
+  participants?: BookingParticipant[];
+  chatRoomId?: string;
+  shareToken?: string;
+  
+  // Pricing flag (prevents recalculation of confirmed totals)
+  hasConfirmedTotal?: boolean;
+  
   createdAt: Timestamp;
   updatedAt: Timestamp;
 }
