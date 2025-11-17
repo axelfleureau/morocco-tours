@@ -57,13 +57,13 @@ export default function HeroSection() {
         </p>
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
-          <Button asChild variant="cta" size="lg" className="text-base sm:text-lg min-h-[56px] shadow-xl">
+          <Button asChild variant="cta" size="default" className="text-sm sm:text-base min-h-[44px] shadow-lg">
             <Link href="/viaggi/su-misura">Pianifica il Tuo Viaggio</Link>
           </Button>
           <Button
             asChild
-            size="lg"
-            className="text-base sm:text-lg min-h-[56px] backdrop-blur-md bg-white/90 border-2 border-white text-black hover:bg-white hover:text-black shadow-xl hover:border-white transition-all duration-300"
+            size="default"
+            className="text-sm sm:text-base min-h-[44px] backdrop-blur-md bg-white/90 border-2 border-white text-black hover:bg-white hover:text-black shadow-lg hover:border-white transition-all duration-300"
           >
             <Link href="/viaggi/gruppo">Scopri le Offerte</Link>
           </Button>

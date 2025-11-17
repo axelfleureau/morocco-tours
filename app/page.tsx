@@ -438,10 +438,20 @@ export default function Home() {
           <script async src="//www.instagram.com/embed.js"></script>
 
           {/* Note per developer */}
-          <div className="mt-8 p-4 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg">
-            <p className="text-sm text-yellow-800 dark:text-yellow-200">
-              <strong>📝 Developer Note:</strong> Replace placeholder videos with actual Instagram embed codes from @omarito_chill. 
-              Get embed code: Open Instagram post → Click "..." → "Embed" → Copy blockquote code and replace the placeholder divs above.
+          <div className="mt-8 p-4 bg-blue-50 dark:bg-blue-900/20 border-2 border-blue-300 dark:border-blue-700 rounded-lg">
+            <p className="text-sm text-blue-900 dark:text-blue-100 font-semibold mb-3">
+              🎬 <strong>Come aggiungere i tuoi video Instagram:</strong>
+            </p>
+            <ol className="text-sm text-blue-800 dark:text-blue-200 space-y-2 list-decimal list-inside">
+              <li>Vai su <a href="https://www.instagram.com/omarito_chill/" target="_blank" rel="noopener noreferrer" className="underline hover:text-blue-600">instagram.com/omarito_chill</a></li>
+              <li>Scegli 3 post/reel da mostrare (es: deserto, città, costa)</li>
+              <li>Per ogni post: apri il post → click "..." in alto → seleziona "Incorpora" (o "Embed")</li>
+              <li>Copia l'URL del post (es: <code className="bg-blue-100 dark:bg-blue-800 px-1 rounded">https://www.instagram.com/p/ABC123/</code>)</li>
+              <li>In questo file (<code className="bg-blue-100 dark:bg-blue-800 px-1 rounded">app/page.tsx</code>), sostituisci <code className="bg-blue-100 dark:bg-blue-800 px-1 rounded">EXAMPLE1</code>, <code className="bg-blue-100 dark:bg-blue-800 px-1 rounded">EXAMPLE2</code>, <code className="bg-blue-100 dark:bg-blue-800 px-1 rounded">EXAMPLE3</code> con i tuoi URL reali</li>
+              <li>Lo script Instagram caricherà automaticamente i video! 🎉</li>
+            </ol>
+            <p className="text-xs text-blue-700 dark:text-blue-300 mt-3 italic">
+              Cerca "EXAMPLE1" in questo file e sostituisci con l'URL del tuo primo post, poi ripeti per EXAMPLE2 e EXAMPLE3.
             </p>
           </div>
         </div>
