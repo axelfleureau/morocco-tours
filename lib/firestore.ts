@@ -147,6 +147,7 @@ export interface Booking {
   userId: string;
   travelId?: string;
   experienceId?: string;
+  vehicleId?: string; // For vehicle rental bookings
   status: 'pending' | 'confirmed' | 'cancelled' | 'completed';
   personalDetails: {
     name: string;
@@ -161,6 +162,19 @@ export interface Booking {
   };
   customRequests?: string;
   totalPrice: number;
+  
+  // Vehicle rental specific fields
+  vehicleDetails?: {
+    driverLicense: string;
+    insuranceExtra: boolean;
+    gps: boolean;
+    childSeats: number;
+    additionalDriver: boolean;
+    pickupLocation?: string;
+    dropoffLocation?: string;
+    rentalDays?: number;
+    dailyRate?: number;
+  };
   
   // Group booking fields
   groupId?: string;
