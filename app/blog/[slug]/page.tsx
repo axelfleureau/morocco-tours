@@ -2,7 +2,8 @@ import { notFound } from "next/navigation"
 import ContactBanner from "@/components/cta/contact-banner"
 import { BlogPost } from "@/lib/firestore-schema"
 import Link from "next/link"
-import { Calendar, Clock, User, ArrowLeft, Share2, Bookmark } from 'lucide-react'
+import { ArrowLeft, Share2, Bookmark } from 'lucide-react'
+import BlogPostHeader from './BlogPostHeader'
 
 export default async function BlogPostPage({ params }: { params: { slug: string } }) {
   // Use public API for database-driven content with publication system
@@ -23,36 +24,8 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
         subtitle="Contattaci: rispondiamo entro 24 ore con consigli personalizzati." 
       />
 
-      {/* Hero Image */}
-      <header className="relative">
-        <div className="h-[280px] sm:h-[360px] lg:h-[460px] relative overflow-hidden">
-          <img 
-            src={post.cover || "/placeholder.svg?height=460&width=800"} 
-            alt={post.title} 
-            className="w-full h-full object-cover" 
-          />
-          <div className="absolute inset-0 bg-black/40" />
-          <div className="absolute bottom-8 left-8 right-8 text-white">
-            <div className="max-w-4xl">
-              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-4 leading-tight">{post.title}</h1>
-              <div className="flex flex-wrap items-center gap-4 text-sm">
-                <div className="flex items-center gap-2">
-                  <User className="w-4 h-4" />
-                  <span>{post.author}</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Calendar className="w-4 h-4" />
-                  <span>{new Date(post.date).toLocaleDateString("it-IT")}</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Clock className="w-4 h-4" />
-                  <span>{post.readingMinutes} min di lettura</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </header>
+      {/* Hero Image with Wishlist */}
+      <BlogPostHeader post={post} />
 
       {/* Article Content */}
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 lg:py-14">

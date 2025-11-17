@@ -1,8 +1,11 @@
+"use client"
+
 import { Calendar, User, Clock, ArrowRight, Tag, Search, TrendingUp, Eye, MessageCircle, Share2, Bookmark } from 'lucide-react'
 import Link from "next/link"
 import Image from "next/image"
 import ContactBanner from "@/components/cta/contact-banner"
 import { blogPosts } from "@/content/blog-posts"
+import WishlistButton from "@/components/WishlistButton"
 
 export default function BlogPage() {
   const featuredPost = {
@@ -154,6 +157,17 @@ export default function BlogPage() {
                 <div className="absolute top-4 left-4 bg-indigo-500 px-4 py-2 rounded-full">
                   <span className="text-white text-sm font-semibold">✨ In Evidenza</span>
                 </div>
+                
+                {/* Wishlist Button - top right */}
+                <div className="absolute top-4 right-4 z-10">
+                  <WishlistButton
+                    itemId={`blog-${featuredPost.id}`}
+                    itemType="activity"
+                    itemTitle={featuredPost.title}
+                    itemImage={featuredPost.image}
+                    itemDescription={featuredPost.excerpt}
+                  />
+                </div>
                 <div className="absolute bottom-4 left-4 flex items-center space-x-4">
                   <div className="bg-black/50 backdrop-blur-sm px-3 py-1 rounded-full flex items-center space-x-1">
                     <Eye className="w-4 h-4 text-white" />
@@ -239,8 +253,19 @@ export default function BlogPage() {
                     className="bg-white dark:bg-gray-900 rounded-2xl overflow-hidden border border-gray-200/60 dark:border-gray-800 hover:shadow-lg transition"
                   >
                     <Link href={`/blog/${post.slug}`}>
-                      <div className="aspect-[16/9] overflow-hidden">
+                      <div className="relative aspect-[16/9] overflow-hidden">
                         <img src={post.cover || "/placeholder.svg"} alt={post.title} className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
+                        
+                        {/* Wishlist Button - top left */}
+                        <div className="absolute top-2 left-2 z-10" onClick={(e) => e.preventDefault()}>
+                          <WishlistButton
+                            itemId={`blog-${post.slug}`}
+                            itemType="activity"
+                            itemTitle={post.title}
+                            itemImage={post.cover}
+                            itemDescription={post.excerpt}
+                          />
+                        </div>
                       </div>
                     </Link>
                     <div className="p-6">
