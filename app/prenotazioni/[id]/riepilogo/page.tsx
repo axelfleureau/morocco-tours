@@ -2,11 +2,13 @@
 
 import { useState, useEffect } from "react"
 import { useParams, useRouter } from "next/navigation"
-import { doc, getDoc, setDoc, Timestamp } from "firebase/firestore"
+import { doc, getDoc, updateDoc, Timestamp } from "firebase/firestore"
 import { db } from "@/lib/firebase"
-import { COLLECTIONS, type Booking } from "@/lib/firestore"
+import { COLLECTIONS, type Booking, type BookingParticipant } from "@/lib/firestore"
 import { useAuth } from "@/context/AuthContext"
 import { useNotifications } from "@/components/NotificationSystem"
+import { generateShareToken } from "@/lib/utils/booking-utils"
+import ShareInviteButton from "@/components/ShareInviteButton"
 import { ArrowLeft, CheckCircle2, Calendar, Users, MapPin, Phone, Mail, User } from "lucide-react"
 import Link from "next/link"
 
@@ -20,6 +22,7 @@ export default function BookingSummaryPage() {
   const [saving, setSaving] = useState(false)
   const [bookingData, setBookingData] = useState<any>(null)
   const [showSuccessMessage, setShowSuccessMessage] = useState(false)
+  const [generatedShareToken, setGeneratedShareToken] = useState<string | null>(null)
   
   const [formData, setFormData] = useState({
     name: "",
@@ -172,6 +175,30 @@ export default function BookingSummaryPage() {
     try {
       // Update existing booking (preserve travelId/experienceId/userId)
       const bookingRef = doc(db, COLLECTIONS.bookings, bookingId)
+      
+      // Generate group booking fields if not exists
+      const groupFields: any = {}
+      if (!bookingData.shareToken) {
+        const newShareToken = generateShareToken()
+        groupFields.shareToken = newShareToken
+        groupFields.groupId = `group_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+        groupFields.participants = [{
+          userId: user.uid,
+          name: formData.name,
+          email: formData.email,
+          phone: formData.phone,
+          joinedAt: Timestamp.now(),
+          status: 'joined',
+          role: 'organizer'
+        }] as BookingParticipant[]
+        
+        // Stash for success UI
+        setGeneratedShareToken(newShareToken)
+      } else {
+        // Use existing shareToken
+        setGeneratedShareToken(bookingData.shareToken)
+      }
+      
       const updateData = {
         status: 'confirmed' as const,
         personalDetails: {
@@ -187,11 +214,12 @@ export default function BookingSummaryPage() {
         },
         customRequests: formData.customRequests,
         totalPrice: calculatedPrice,
+        ...groupFields,
         updatedAt: Timestamp.now()
       }
 
       // Update booking (merge to preserve existing fields)
-      await setDoc(bookingRef, updateData, { merge: true })
+      await updateDoc(bookingRef, updateData)
 
       setShowSuccessMessage(true)
       showSuccess(
@@ -235,10 +263,24 @@ export default function BookingSummaryPage() {
             Prenotazione Confermata!
           </h1>
           
-          <p className="text-gray-600 mb-8">
+          <p className="text-gray-600 mb-6">
             La tua prenotazione è stata inserita con successo in <strong>Mie Prenotazioni</strong>.
             Ti contatteremo presto per confermare tutti i dettagli del tuo viaggio.
           </p>
+
+          {generatedShareToken && (
+            <div className="mb-6 p-4 bg-orange-50 rounded-lg border border-orange-200">
+              <p className="text-sm text-gray-700 mb-3">
+                Vuoi viaggiare con amici? Invitali a unirti al tuo gruppo!
+              </p>
+              <ShareInviteButton 
+                shareToken={generatedShareToken}
+                bookingId={bookingId}
+                variant="primary"
+                className="w-full"
+              />
+            </div>
+          )}
 
           <Link 
             href="/dashboard?tab=bookings"
