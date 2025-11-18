@@ -91,5 +91,27 @@ service cloud.firestore {
       allow read: if true;
       allow write: if request.auth != null && request.auth.token.admin == true;
     }
+    
+    // Instagram videos - public read, authenticated users can write
+    match /instagram_videos/{document} {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+    
+    // User profiles - user can read/write their own, admin can read/write all
+    match /userProfiles/{userId} {
+      allow read, write: if request.auth != null && (request.auth.uid == userId || request.auth.token.admin == true);
+    }
+    
+    // Custom trip requests - owner can read/write their own, admin can read/write all
+    match /customTripRequests/{document} {
+      allow create: if true; // Allow anonymous requests
+      allow read, write: if request.auth != null && (resource.data.userId == request.auth.uid || request.auth.token.admin == true);
+    }
+    
+    // Admin users collection - admin only
+    match /adminUsers/{document} {
+      allow read, write: if request.auth != null && request.auth.token.admin == true;
+    }
   }
 }
