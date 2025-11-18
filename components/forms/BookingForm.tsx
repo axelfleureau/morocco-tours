@@ -63,6 +63,7 @@ export default function BookingForm({
   const [error, setError] = useState('');
   const [dynamicPrice, setDynamicPrice] = useState(basePrice);
   const [daysDuration, setDaysDuration] = useState(0);
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
 
   useEffect(() => {
     if (formData.departureDate && formData.returnDate) {
@@ -90,6 +91,46 @@ export default function BookingForm({
       ...prev,
       [name]: value
     }));
+    
+    if (fieldErrors[name]) {
+      setFieldErrors(prev => {
+        const newErrors = { ...prev };
+        delete newErrors[name];
+        return newErrors;
+      });
+    }
+  };
+
+  const validateForm = (): boolean => {
+    const errors: Record<string, string> = {};
+
+    if (!formData.name.trim()) {
+      errors.name = 'Inserisci il tuo nome completo';
+    }
+
+    if (!formData.email.trim()) {
+      errors.email = 'Inserisci la tua email';
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      errors.email = 'Inserisci un indirizzo email valido';
+    }
+
+    if (!formData.departureDate) {
+      errors.departureDate = 'Seleziona una data di partenza';
+    }
+
+    setFieldErrors(errors);
+    
+    if (Object.keys(errors).length > 0) {
+      const firstErrorField = Object.keys(errors)[0];
+      const errorElement = document.getElementsByName(firstErrorField)[0];
+      if (errorElement) {
+        errorElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        errorElement.focus();
+      }
+      return false;
+    }
+
+    return true;
   };
 
   const calculateTotalPrice = () => {
@@ -168,18 +209,21 @@ export default function BookingForm({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
     setError('');
 
-    try {
-      // Validate required fields
-      if (!formData.name || !formData.email || !formData.departureDate) {
-        throw new Error('Per favore compila tutti i campi obbligatori');
-      }
+    if (!validateForm()) {
+      setError(`Compila tutti i campi obbligatori (${Object.keys(fieldErrors).length} campi mancanti)`);
+      return;
+    }
 
-      if (!user) {
-        throw new Error('Devi essere loggato per effettuare una prenotazione');
-      }
+    if (!user) {
+      setError('Devi essere loggato per effettuare una prenotazione');
+      return;
+    }
+
+    setLoading(true);
+
+    try {
 
       // Create booking object
       const booking: Omit<Booking, 'id' | 'createdAt' | 'updatedAt'> = {
@@ -268,9 +312,19 @@ export default function BookingForm({
             value={formData.name}
             onChange={handleChange}
             required
-            className="w-full px-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent bg-background text-foreground transition-colors"
+            className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:border-transparent bg-background text-foreground transition-colors ${
+              fieldErrors.name 
+                ? 'border-red-500 focus:ring-red-500' 
+                : 'border-border focus:ring-orange-500'
+            }`}
             placeholder="Il tuo nome completo"
           />
+          {fieldErrors.name && (
+            <p className="mt-1 text-sm text-red-600 dark:text-red-400 flex items-center gap-1">
+              <AlertCircle className="w-4 h-4" />
+              {fieldErrors.name}
+            </p>
+          )}
         </div>
         <div>
           <label className="block text-sm font-medium text-foreground mb-2">
@@ -282,9 +336,19 @@ export default function BookingForm({
             value={formData.email}
             onChange={handleChange}
             required
-            className="w-full px-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent bg-background text-foreground transition-colors"
+            className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:border-transparent bg-background text-foreground transition-colors ${
+              fieldErrors.email 
+                ? 'border-red-500 focus:ring-red-500' 
+                : 'border-border focus:ring-orange-500'
+            }`}
             placeholder="la-tua-email@esempio.com"
           />
+          {fieldErrors.email && (
+            <p className="mt-1 text-sm text-red-600 dark:text-red-400 flex items-center gap-1">
+              <AlertCircle className="w-4 h-4" />
+              {fieldErrors.email}
+            </p>
+          )}
         </div>
       </div>
 
@@ -368,8 +432,18 @@ export default function BookingForm({
             onChange={handleChange}
             required
             min={new Date().toISOString().split('T')[0]}
-            className="w-full px-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent bg-background text-foreground transition-colors"
+            className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:border-transparent bg-background text-foreground transition-colors ${
+              fieldErrors.departureDate 
+                ? 'border-red-500 focus:ring-red-500' 
+                : 'border-border focus:ring-orange-500'
+            }`}
           />
+          {fieldErrors.departureDate && (
+            <p className="mt-1 text-sm text-red-600 dark:text-red-400 flex items-center gap-1">
+              <AlertCircle className="w-4 h-4" />
+              {fieldErrors.departureDate}
+            </p>
+          )}
         </div>
         {itemType === 'travel' && (
           <div>
