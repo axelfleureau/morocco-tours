@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import { collection, getDocs, doc, updateDoc, deleteDoc } from 'firebase/firestore'
 import { db } from '@/lib/firebase'
 import { Search, Edit, Trash2, Plus, Eye, EyeOff, Star, DollarSign } from 'lucide-react'
-import { motion } from 'framer-motion'
+import ExperienceModal from '@/components/admin/ExperienceModal'
 
 interface Experience {
   id: string
@@ -96,6 +96,15 @@ export default function AdminExperiencesPage() {
   const handleEdit = (exp: Experience) => {
     setSelectedExperience(exp)
     setShowModal(true)
+  }
+
+  const handleCloseModal = () => {
+    setShowModal(false)
+    setSelectedExperience(null)
+  }
+
+  const handleSaveSuccess = () => {
+    fetchExperiences()
   }
 
   if (loading) {
@@ -267,6 +276,15 @@ export default function AdminExperiencesPage() {
           </table>
         </div>
       </div>
+
+      {/* Modal */}
+      {showModal && (
+        <ExperienceModal
+          experience={selectedExperience}
+          onClose={handleCloseModal}
+          onSave={handleSaveSuccess}
+        />
+      )}
     </div>
   )
 }

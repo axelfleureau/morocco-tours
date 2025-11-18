@@ -3,21 +3,34 @@ import * as admin from 'firebase-admin';
 let firebaseAdmin: admin.app.App;
 
 function formatPrivateKey(key: string): string {
+  if (!key) return '';
+  
   const header = '-----BEGIN PRIVATE KEY-----';
   const footer = '-----END PRIVATE KEY-----';
   
-  if (key.includes(header) && key.includes(footer)) {
+  // If already properly formatted, return as-is
+  if (key.startsWith(header) && key.endsWith(footer + '\n')) {
     return key;
   }
   
-  if (key.includes('\\n')) {
-    key = key.replace(/\\n/g, '\n');
+  // Replace literal \n strings with actual newlines
+  let cleanKey = key.replace(/\\n/g, '\n');
+  
+  // If already has proper structure, return
+  if (cleanKey.includes(header) && cleanKey.includes(footer)) {
+    return cleanKey;
   }
   
-  const cleanKey = key.replace(/\s/g, '').replace(/\\n/g, '');
+  // Remove header/footer if present for reconstruction
+  cleanKey = cleanKey
+    .replace(header, '')
+    .replace(footer, '')
+    .replace(/\s/g, ''); // Remove all whitespace
   
+  // Split into 64-character lines
   const formatted = cleanKey.match(/.{1,64}/g)?.join('\n') || cleanKey;
-  return `${header}\n${formatted}\n${footer}\n`;
+  
+  return `${header}\n${formatted}\n${footer}`;
 }
 
 export function getFirebaseAdmin() {

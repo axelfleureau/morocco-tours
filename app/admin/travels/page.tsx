@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { collection, getDocs, doc, updateDoc, deleteDoc } from 'firebase/firestore'
 import { db } from '@/lib/firebase'
 import { Search, Edit, Trash2, Plus, Eye, EyeOff, Star, DollarSign, Clock, Award } from 'lucide-react'
+import TravelModal from '@/components/admin/TravelModal'
 
 interface Travel {
   id: string
@@ -110,6 +111,15 @@ export default function AdminTravelsPage() {
   const handleEdit = (travel: Travel) => {
     setSelectedTravel(travel)
     setShowModal(true)
+  }
+
+  const handleCloseModal = () => {
+    setShowModal(false)
+    setSelectedTravel(null)
+  }
+
+  const handleSaveSuccess = () => {
+    fetchTravels()
   }
 
   if (loading) {
@@ -306,6 +316,14 @@ export default function AdminTravelsPage() {
           </table>
         </div>
       </div>
+
+      {showModal && (
+        <TravelModal
+          travel={selectedTravel}
+          onClose={handleCloseModal}
+          onSave={handleSaveSuccess}
+        />
+      )}
     </div>
   )
 }
