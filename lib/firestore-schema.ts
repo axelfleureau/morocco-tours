@@ -57,6 +57,21 @@ export interface CustomTripRequest {
   whatsAppSentAt?: Timestamp
 }
 
+export interface AdminUser {
+  id?: string
+  email: string
+  displayName: string
+  role: 'super_admin' | 'content_editor' | 'viewer'
+  
+  permissions: string[]
+  
+  active: boolean
+  
+  createdAt: Timestamp
+  lastLogin?: Timestamp
+  updatedAt: Timestamp
+}
+
 // Cities - Separate collection for destinations
 export interface City {
   id?: string
