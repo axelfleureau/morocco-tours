@@ -2,6 +2,8 @@
 
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { User } from 'firebase/auth';
+import { doc, getDoc } from 'firebase/firestore';
+import { db } from '@/lib/firebase';
 import { onAuthStateChange, getUserProfile, handleRedirectResult, signIn as authSignIn, signUp as authSignUp, signOutUser, signInWithGoogle as authSignInWithGoogle } from '@/lib/auth';
 import { UserProfile } from '@/lib/auth';
 
@@ -38,6 +40,7 @@ export const useAuth = () => {
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
+  const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -50,13 +53,25 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       
       if (user) {
         try {
-          const profile = await getUserProfile(user.uid);
+          const [profile, adminDoc] = await Promise.all([
+            getUserProfile(user.uid),
+            getDoc(doc(db, "adminUsers", user.uid))
+          ]);
+          
           setUserProfile(profile);
+          
+          if (adminDoc.exists() && adminDoc.data()?.active) {
+            setIsAdmin(true);
+          } else {
+            setIsAdmin(false);
+          }
         } catch (error) {
           console.error('Error loading user profile:', error);
+          setIsAdmin(false);
         }
       } else {
         setUserProfile(null);
+        setIsAdmin(false);
       }
       
       setLoading(false);
@@ -64,8 +79,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     return unsubscribe;
   }, []);
-
-  const isAdmin = userProfile?.role === 'admin';
 
   // Auth functions
   const signIn = async (email: string, password: string) => {

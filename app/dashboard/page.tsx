@@ -214,7 +214,7 @@ function UserDashboardContent() {
               <h2 className="text-lg font-semibold text-card-foreground">Dashboard</h2>
               <button
                 onClick={() => setSidebarOpen(false)}
-                className="p-2 hover:bg-accent/10 rounded-lg">
+                className="p-2 hover:bg-accent/10 rounded-lg"
               >
                 <X className="w-5 h-5" />
               </button>

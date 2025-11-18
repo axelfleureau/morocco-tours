@@ -1,10 +1,12 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { Calendar, Users, Baby, MapPin, CreditCard, Check, AlertCircle, Loader2, Download } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { firestoreService, COLLECTIONS, Booking } from '@/lib/firestore';
+import ConfirmationDialog from '@/components/modals/ConfirmationDialog';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
 
@@ -41,6 +43,7 @@ export default function BookingForm({
   onSuccess 
 }: BookingFormProps) {
   const { user } = useAuth();
+  const router = useRouter();
   const [formData, setFormData] = useState<BookingFormData>({
     name: user?.displayName || '',
     email: user?.email || '',
@@ -56,7 +59,30 @@ export default function BookingForm({
 
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [showConfirmation, setShowConfirmation] = useState(false);
   const [error, setError] = useState('');
+  const [dynamicPrice, setDynamicPrice] = useState(basePrice);
+  const [daysDuration, setDaysDuration] = useState(0);
+
+  useEffect(() => {
+    if (formData.departureDate && formData.returnDate) {
+      const start = new Date(formData.departureDate);
+      const end = new Date(formData.returnDate);
+      const diffTime = Math.abs(end.getTime() - start.getTime());
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      
+      if (diffDays > 0) {
+        setDaysDuration(diffDays);
+        setDynamicPrice(basePrice * diffDays);
+      } else {
+        setDaysDuration(0);
+        setDynamicPrice(basePrice);
+      }
+    } else {
+      setDaysDuration(0);
+      setDynamicPrice(basePrice);
+    }
+  }, [formData.departureDate, formData.returnDate, basePrice]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -67,8 +93,8 @@ export default function BookingForm({
   };
 
   const calculateTotalPrice = () => {
-    const adultPrice = basePrice * formData.travelers;
-    const childPrice = basePrice * 0.7 * formData.children; // 30% discount for children
+    const adultPrice = dynamicPrice * formData.travelers;
+    const childPrice = dynamicPrice * 0.7 * formData.children;
     return Math.round(adultPrice + childPrice);
   };
 
@@ -189,12 +215,8 @@ export default function BookingForm({
       });
 
       setSuccess(true);
+      setShowConfirmation(true);
       if (onSuccess) onSuccess();
-
-      // Hide success message after 8 seconds
-      setTimeout(() => {
-        setSuccess(false);
-      }, 8000);
 
     } catch (err: any) {
       setError(err.message || 'Si è verificato un errore. Riprova più tardi.');
@@ -203,46 +225,14 @@ export default function BookingForm({
     }
   };
 
-  if (success) {
-    return (
-      <motion.div
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        className={`bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-xl p-8 text-center ${className}`}
-      >
-        <motion.div
-          initial={{ scale: 0 }}
-          animate={{ scale: 1 }}
-          transition={{ delay: 0.2, type: "spring" }}
-          className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-4"
-        >
-          <Check className="w-8 h-8 text-white" />
-        </motion.div>
-        <h3 className="text-xl font-bold text-green-800 dark:text-green-200 mb-2">
-          Prenotazione Ricevuta!
-        </h3>
-        <p className="text-green-700 dark:text-green-300 mb-4">
-          La tua richiesta di prenotazione per <strong>{itemTitle}</strong> è stata inviata con successo.
-        </p>
-        <div className="bg-white dark:bg-green-900/40 rounded-lg p-4 mb-4">
-          <p className="text-sm text-green-800 dark:text-green-200">
-            <strong>Totale:</strong> €{calculateTotalPrice()} per {formData.travelers} {formData.travelers === 1 ? 'persona' : 'persone'}
-            {formData.children > 0 && ` + ${formData.children} ${formData.children === 1 ? 'bambino' : 'bambini'}`}
-          </p>
-        </div>
-        <p className="text-sm text-green-600 dark:text-green-400 mb-4">
-          Ti contatteremo entro 24 ore per confermare la disponibilità e finalizzare la prenotazione.
-        </p>
-        <button
-          onClick={generateBookingPDF}
-          className="inline-flex items-center gap-2 px-4 py-2 bg-orange-600 hover:bg-orange-700 text-white rounded-lg font-medium transition-colors"
-        >
-          <Download className="w-4 h-4" />
-          Scarica Conferma PDF
-        </button>
-      </motion.div>
-    );
-  }
+  const handleCloseConfirmation = () => {
+    setShowConfirmation(false);
+  };
+
+  const handleGoToDashboard = () => {
+    setShowConfirmation(false);
+    router.push('/dashboard?tab=bookings');
+  };
 
   return (
     <form onSubmit={handleSubmit} className={`space-y-6 ${className}`}>
@@ -398,6 +388,26 @@ export default function BookingForm({
         )}
       </div>
 
+      {daysDuration > 0 && (
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-xl p-4 flex items-center justify-between shadow-lg"
+        >
+          <div className="flex items-center gap-3">
+            <Calendar className="w-6 h-6" />
+            <div>
+              <p className="text-sm font-medium">Prezzo calcolato per la durata</p>
+              <p className="text-xs opacity-90">{daysDuration} {daysDuration === 1 ? 'giorno' : 'giorni'}</p>
+            </div>
+          </div>
+          <div className="text-right">
+            <p className="text-2xl font-bold">€{dynamicPrice}</p>
+            <p className="text-xs opacity-90">per persona</p>
+          </div>
+        </motion.div>
+      )}
+
       {/* Departure City */}
       <div>
         <label className="block text-sm font-medium text-foreground mb-2">
@@ -477,6 +487,17 @@ export default function BookingForm({
         Cliccando su "Richiedi Prenotazione" invii una richiesta di prenotazione. 
         Ti contatteremo per confermare la disponibilità e finalizzare la prenotazione con il pagamento.
       </p>
+
+      <ConfirmationDialog
+        isOpen={showConfirmation}
+        onClose={handleCloseConfirmation}
+        itemTitle={itemTitle}
+        startDate={formData.departureDate ? new Date(formData.departureDate) : undefined}
+        endDate={formData.returnDate ? new Date(formData.returnDate) : undefined}
+        participants={formData.travelers + formData.children}
+        totalPrice={calculateTotalPrice()}
+        onGoToDashboard={handleGoToDashboard}
+      />
     </form>
   );
 }
