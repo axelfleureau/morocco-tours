@@ -126,7 +126,70 @@ This is a Next.js-based travel website for "Morocco Dreams" - a service offering
 - ✅ Login/Authentication system complete
 - ✅ Layout & Dashboard operational
 - ✅ Demo account active and tested
-- ⏳ CRUD pages pending (Experiences, Travels, Vehicles, Instagram, Users)
+- ✅ CRUD pages implemented (Experiences, Travels, Vehicles, Instagram, Users)
+
+## FASE 7: Admin CRUD + Imperial Cities System ✅ (November 18, 2025)
+
+### Admin CRUD Pages Complete
+- **Admin Experiences** (app/admin/experiences/page.tsx):
+  - Firestore fetch da collection `experiences`
+  - DataTable con search/filter per categoria (surf/cucina/trekking/quad-cammelli/artigianato)
+  - Toggle published con update real-time
+  - Delete con confirmation dialog
+  - **ExperienceModal** (components/admin/ExperienceModal.tsx): Full CRUD con form validato, setDoc merge:true per preservare campi schema completo
+  
+- **Admin Travels** (app/admin/travels/page.tsx):
+  - Firestore fetch da collection `travels`
+  - Toggle published + featured flags
+  - Filtri categoria (desert/city/coast/mountain/group)
+  - **TravelModal** (components/admin/TravelModal.tsx): Edit/create con duration, rating, categoria, merge:true fix
+  
+- **Admin Vehicles** (app/admin/vehicles/page.tsx):
+  - Grid view 19 veicoli da data/vehicles.ts
+  - Search + categoria filter
+  - Pricing display (da period1.short)
+  - Button "Modifica Prezzi" ready per future enhancement
+  
+- **Admin Instagram** (app/admin/instagram/page.tsx):
+  - 3-slot system per video Instagram
+  - URL input con conversione automatica embed URL (regex match /p/[id]/)
+  - Toggle active/inactive per slot
+  - Preview iframe embeds
+  - Local state management (Firestore integration pending)
+  
+- **Admin Users** (app/admin/users/page.tsx):
+  - Fetch adminUsers collection
+  - Role badges (super_admin/content_editor/viewer)
+  - Permissions display (primi 3 + counter)
+  - Toggle active status
+  - Last login formatting
+  - Search + role filter
+
+- **CRITICAL FIX**: Firebase Admin SDK PEM key parsing risolto (lib/firebase-admin.ts) - formatPrivateKey ora gestisce correttamente literal \\n strings e formatta 64-char lines
+
+### Imperial Cities System Complete
+- **9 Città Imperiali** implementate con struttura uniforme:
+  1. **Marrakech** - La Perla del Sud
+  2. **Fès** - La Capitale Spirituale  
+  3. **Meknès** - La Versailles del Marocco
+  4. **Rabat** - La Capitale Moderna
+  5. **Casablanca** - La Metropoli Economica
+  6. **Essaouira** - La Perla dell'Atlantico
+  7. **Chefchaouen** - La Città Blu
+  8. **Tangier** - La Porta d'Africa
+  9. **Agadir** - La Riviera Marocchina
+
+- **Data Structure** (data/cities.ts):
+  - Interface City con 13 campi (id, name, slug, tagline, heroImage, description, history, attractions, bestTime, howToArrive, tourPrices, highlights, location)
+  - Ogni città: 4-6 attrazioni con image/price/duration
+  - Tour prices: halfDay, fullDay, multiDay (se applicabile)
+  - 6 highlights per città
+  - Location data con coordinates GPS
+
+- **Pages Implementation**:
+  - `/citta/[slug]/page.tsx` - Dynamic city page con hero section, storia, attrazioni grid, info pratiche, prezzi tour
+  - `/citta/page.tsx` - Index page con grid 9 città, search capability, CTA viaggi su misura
+  - Responsive design con hover effects, gradients, shadow transitions
 
 ## Architecture
 - **Frontend**: Next.js 14.2.16 with TypeScript
