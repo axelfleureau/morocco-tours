@@ -8,6 +8,7 @@ import WhyChooseUs from "@/components/sections/WhyChooseUs"
 import BlogTeaser from "@/components/sections/blog-teaser"
 import ContactBanner from "@/components/cta/contact-banner"
 import MoroccoMap from "@/components/sections/MoroccoMap"
+import InstagramFeed from "@/components/InstagramFeed"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardTitle } from "@/components/ui/card"
 
@@ -317,143 +318,8 @@ export default function Home() {
             </a>
           </div>
 
-          {/* Video Grid - 3 Instagram video embeds */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {/* Video 1 - Replace data-instgrm-permalink with your @omarito_chill post URL */}
-            <div className="bg-white dark:bg-gray-800 rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300">
-              <blockquote 
-                className="instagram-media" 
-                data-instgrm-permalink="https://www.instagram.com/reel/EXAMPLE1/?utm_source=ig_embed&amp;utm_campaign=loading" 
-                data-instgrm-version="14"
-                style={{
-                  background: '#FFF',
-                  border: 0,
-                  borderRadius: '3px',
-                  boxShadow: '0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15)',
-                  margin: '1px',
-                  maxWidth: '100%',
-                  minWidth: '326px',
-                  padding: 0,
-                  width: 'calc(100% - 2px)'
-                }}
-              >
-                <div style={{ padding: '16px' }}>
-                  <a 
-                    href="https://www.instagram.com/reel/EXAMPLE1/?utm_source=ig_embed&amp;utm_campaign=loading" 
-                    style={{
-                      background: '#FFFFFF',
-                      lineHeight: 0,
-                      padding: '0 0',
-                      textAlign: 'center',
-                      textDecoration: 'none',
-                      width: '100%'
-                    }} 
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    View this post on Instagram
-                  </a>
-                </div>
-              </blockquote>
-            </div>
-
-            {/* Video 2 - Replace data-instgrm-permalink with your @omarito_chill post URL */}
-            <div className="bg-white dark:bg-gray-800 rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300">
-              <blockquote 
-                className="instagram-media" 
-                data-instgrm-permalink="https://www.instagram.com/reel/EXAMPLE2/?utm_source=ig_embed&amp;utm_campaign=loading" 
-                data-instgrm-version="14"
-                style={{
-                  background: '#FFF',
-                  border: 0,
-                  borderRadius: '3px',
-                  boxShadow: '0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15)',
-                  margin: '1px',
-                  maxWidth: '100%',
-                  minWidth: '326px',
-                  padding: 0,
-                  width: 'calc(100% - 2px)'
-                }}
-              >
-                <div style={{ padding: '16px' }}>
-                  <a 
-                    href="https://www.instagram.com/reel/EXAMPLE2/?utm_source=ig_embed&amp;utm_campaign=loading" 
-                    style={{
-                      background: '#FFFFFF',
-                      lineHeight: 0,
-                      padding: '0 0',
-                      textAlign: 'center',
-                      textDecoration: 'none',
-                      width: '100%'
-                    }} 
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    View this post on Instagram
-                  </a>
-                </div>
-              </blockquote>
-            </div>
-
-            {/* Video 3 - Replace data-instgrm-permalink with your @omarito_chill post URL */}
-            <div className="bg-white dark:bg-gray-800 rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300">
-              <blockquote 
-                className="instagram-media" 
-                data-instgrm-permalink="https://www.instagram.com/reel/EXAMPLE3/?utm_source=ig_embed&amp;utm_campaign=loading" 
-                data-instgrm-version="14"
-                style={{
-                  background: '#FFF',
-                  border: 0,
-                  borderRadius: '3px',
-                  boxShadow: '0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15)',
-                  margin: '1px',
-                  maxWidth: '100%',
-                  minWidth: '326px',
-                  padding: 0,
-                  width: 'calc(100% - 2px)'
-                }}
-              >
-                <div style={{ padding: '16px' }}>
-                  <a 
-                    href="https://www.instagram.com/reel/EXAMPLE3/?utm_source=ig_embed&amp;utm_campaign=loading" 
-                    style={{
-                      background: '#FFFFFF',
-                      lineHeight: 0,
-                      padding: '0 0',
-                      textAlign: 'center',
-                      textDecoration: 'none',
-                      width: '100%'
-                    }} 
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    View this post on Instagram
-                  </a>
-                </div>
-              </blockquote>
-            </div>
-          </div>
-          
-          {/* Instagram Embed Script - Loads all Instagram embeds on the page */}
-          <script async src="//www.instagram.com/embed.js"></script>
-
-          {/* Note per developer */}
-          <div className="mt-8 p-4 bg-blue-50 dark:bg-blue-900/20 border-2 border-blue-300 dark:border-blue-700 rounded-lg">
-            <p className="text-sm text-blue-900 dark:text-blue-100 font-semibold mb-3">
-              🎬 <strong>Come aggiungere i tuoi video Instagram:</strong>
-            </p>
-            <ol className="text-sm text-blue-800 dark:text-blue-200 space-y-2 list-decimal list-inside">
-              <li>Vai su <a href="https://www.instagram.com/omarito_chill/" target="_blank" rel="noopener noreferrer" className="underline hover:text-blue-600">instagram.com/omarito_chill</a></li>
-              <li>Scegli 3 post/reel da mostrare (es: deserto, città, costa)</li>
-              <li>Per ogni post: apri il post → click "..." in alto → seleziona "Incorpora" (o "Embed")</li>
-              <li>Copia l'URL del post (es: <code className="bg-blue-100 dark:bg-blue-800 px-1 rounded">https://www.instagram.com/p/ABC123/</code>)</li>
-              <li>In questo file (<code className="bg-blue-100 dark:bg-blue-800 px-1 rounded">app/page.tsx</code>), sostituisci <code className="bg-blue-100 dark:bg-blue-800 px-1 rounded">EXAMPLE1</code>, <code className="bg-blue-100 dark:bg-blue-800 px-1 rounded">EXAMPLE2</code>, <code className="bg-blue-100 dark:bg-blue-800 px-1 rounded">EXAMPLE3</code> con i tuoi URL reali</li>
-              <li>Lo script Instagram caricherà automaticamente i video! 🎉</li>
-            </ol>
-            <p className="text-xs text-blue-700 dark:text-blue-300 mt-3 italic">
-              Cerca "EXAMPLE1" in questo file e sostituisci con l'URL del tuo primo post, poi ripeti per EXAMPLE2 e EXAMPLE3.
-            </p>
-          </div>
+          {/* Video Grid - Dynamic Instagram feed from Firestore */}
+          <InstagramFeed />
         </div>
       </section>
       

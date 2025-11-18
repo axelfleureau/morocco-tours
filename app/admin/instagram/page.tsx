@@ -2,61 +2,155 @@
 
 import { useState, useEffect } from 'react'
 import { Instagram, Plus, Trash2, Eye } from 'lucide-react'
+import { db } from '@/lib/firebase'
+import { collection, doc, setDoc, getDocs, Timestamp, query, orderBy } from 'firebase/firestore'
+import { useNotifications } from '@/components/NotificationSystem'
 
 interface InstagramVideo {
   id: string
   url: string
   embedUrl: string
-  position: number
+  slot: number
   active: boolean
+  order: number
 }
 
 export default function AdminInstagramPage() {
   const [videos, setVideos] = useState<InstagramVideo[]>([
-    { id: '1', url: '', embedUrl: '', position: 1, active: false },
-    { id: '2', url: '', embedUrl: '', position: 2, active: false },
-    { id: '3', url: '', embedUrl: '', position: 3, active: false }
+    { id: 'slot-1', url: '', embedUrl: '', slot: 1, active: false, order: 1 },
+    { id: 'slot-2', url: '', embedUrl: '', slot: 2, active: false, order: 2 },
+    { id: 'slot-3', url: '', embedUrl: '', slot: 3, active: false, order: 3 }
   ])
   const [editingIndex, setEditingIndex] = useState<number | null>(null)
   const [inputUrl, setInputUrl] = useState('')
+  const [loading, setLoading] = useState(true)
+  const { showSuccess, showError } = useNotifications()
+
+  useEffect(() => {
+    fetchVideos()
+  }, [])
+
+  const fetchVideos = async () => {
+    try {
+      const videosRef = collection(db, 'instagram_videos')
+      const q = query(videosRef, orderBy('order', 'asc'))
+      const snapshot = await getDocs(q)
+      
+      if (!snapshot.empty) {
+        const fetchedVideos = snapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        })) as InstagramVideo[]
+        
+        setVideos(prev => prev.map((v, i) => {
+          const fetched = fetchedVideos.find(fv => fv.slot === i + 1)
+          return fetched || v
+        }))
+      }
+    } catch (error) {
+      console.error('Error fetching videos:', error)
+      showError('Errore', 'Impossibile caricare i video')
+    } finally {
+      setLoading(false)
+    }
+  }
 
   const convertToEmbedUrl = (url: string): string => {
-    const match = url.match(/\/p\/([^\/]+)\//)
-    if (match) {
-      return `https://www.instagram.com/p/${match[1]}/embed`
+    // Support both /p/ (posts) and /reel/ (reels)
+    const reelMatch = url.match(/\/reel\/([^\/\?]+)/)
+    if (reelMatch) {
+      return `https://www.instagram.com/reel/${reelMatch[1]}/embed`
     }
+    
+    const postMatch = url.match(/\/p\/([^\/\?]+)/)
+    if (postMatch) {
+      return `https://www.instagram.com/p/${postMatch[1]}/embed`
+    }
+    
     return url
   }
 
-  const handleSaveVideo = (index: number) => {
+  const handleSaveVideo = async (index: number) => {
     if (!inputUrl) return
     
     const embedUrl = convertToEmbedUrl(inputUrl)
+    const video = videos[index]
     
-    setVideos(prev => prev.map((v, i) => 
-      i === index 
-        ? { ...v, url: inputUrl, embedUrl, active: true }
-        : v
-    ))
-    
-    setEditingIndex(null)
-    setInputUrl('')
+    try {
+      const videoRef = doc(db, 'instagram_videos', video.id)
+      await setDoc(videoRef, {
+        slot: video.slot,
+        url: inputUrl,
+        embedUrl,
+        active: true,
+        order: video.order,
+        createdAt: Timestamp.now(),
+        updatedAt: Timestamp.now()
+      }, { merge: true })
+      
+      setVideos(prev => prev.map((v, i) => 
+        i === index 
+          ? { ...v, url: inputUrl, embedUrl, active: true }
+          : v
+      ))
+      
+      showSuccess('Salvato!', 'Video aggiunto con successo')
+      setEditingIndex(null)
+      setInputUrl('')
+    } catch (error) {
+      console.error('Error saving video:', error)
+      showError('Errore', 'Impossibile salvare il video')
+    }
   }
 
-  const handleRemoveVideo = (index: number) => {
-    setVideos(prev => prev.map((v, i) => 
-      i === index 
-        ? { ...v, url: '', embedUrl: '', active: false }
-        : v
-    ))
+  const handleRemoveVideo = async (index: number) => {
+    const video = videos[index]
+    
+    try {
+      const videoRef = doc(db, 'instagram_videos', video.id)
+      await setDoc(videoRef, {
+        slot: video.slot,
+        url: '',
+        embedUrl: '',
+        active: false,
+        order: video.order,
+        updatedAt: Timestamp.now()
+      }, { merge: true })
+      
+      setVideos(prev => prev.map((v, i) => 
+        i === index 
+          ? { ...v, url: '', embedUrl: '', active: false }
+          : v
+      ))
+      
+      showSuccess('Rimosso!', 'Video eliminato con successo')
+    } catch (error) {
+      console.error('Error removing video:', error)
+      showError('Errore', 'Impossibile rimuovere il video')
+    }
   }
 
-  const toggleActive = (index: number) => {
-    setVideos(prev => prev.map((v, i) => 
-      i === index 
-        ? { ...v, active: !v.active }
-        : v
-    ))
+  const toggleActive = async (index: number) => {
+    const video = videos[index]
+    
+    try {
+      const videoRef = doc(db, 'instagram_videos', video.id)
+      await setDoc(videoRef, {
+        active: !video.active,
+        updatedAt: Timestamp.now()
+      }, { merge: true })
+      
+      setVideos(prev => prev.map((v, i) => 
+        i === index 
+          ? { ...v, active: !v.active }
+          : v
+      ))
+      
+      showSuccess('Aggiornato!', video.active ? 'Video disattivato' : 'Video attivato')
+    } catch (error) {
+      console.error('Error toggling video:', error)
+      showError('Errore', 'Impossibile aggiornare lo stato')
+    }
   }
 
   return (

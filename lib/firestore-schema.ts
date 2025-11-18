@@ -72,6 +72,19 @@ export interface AdminUser {
   updatedAt: Timestamp
 }
 
+// Instagram Videos - Social media integration
+export interface InstagramVideo {
+  id?: string
+  slot: number // 1, 2, or 3 for the three video slots
+  url: string // Full Instagram reel URL (e.g., https://www.instagram.com/reel/DPhC4GrjcxQ/)
+  embedUrl: string // Embed URL extracted from the reel URL
+  active: boolean
+  order: number // Display order
+  
+  createdAt: Timestamp
+  updatedAt: Timestamp
+}
+
 // Cities - Separate collection for destinations
 export interface City {
   id?: string
