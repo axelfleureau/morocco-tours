@@ -1,253 +1,49 @@
 # Morocco Dreams - Travel Website
 
-## Overview
-This is a Next.js-based travel website for "Morocco Dreams" - a service offering authentic travel experiences in Morocco. The website features tours of imperial cities, desert adventures, coastal experiences, and more.
+### Overview
+This project is a Next.js-based travel website for "Morocco Dreams," a service offering authentic travel experiences in Morocco. The platform showcases tours of imperial cities, desert adventures, and coastal experiences. The business vision is to provide a comprehensive, interactive, and user-friendly portal for exploring Moroccan travel opportunities, leveraging modern web technologies to deliver a rich user experience.
 
-## Project Structure
-- **Frontend**: Next.js 14.2.16 with TypeScript
-- **Styling**: Tailwind CSS with Radix UI components
-- **Content**: Static content with interactive map using Mapbox
-- **Package Manager**: npm (originally used pnpm)
-
-## Recent Changes (September 21, 2025)
-- ✅ Installed all Node.js dependencies
-- ✅ Configured Next.js for Replit environment (port 5000, hostname 0.0.0.0)
-- ✅ Set up development workflow for frontend server
-- ✅ Fixed critical hydration error from nested button elements in MoroccoMap component
-- ✅ Configured deployment settings for production (autoscale target)
-- ✅ Successfully imported and set up GitHub project in Replit
-
-## Omarito Chill Website Updates - TUTTE LE FASI COMPLETATE (November 14, 2025)
-
-### FASE 1: Aggiornamento Esperienze e Contenuti ✅
-- Semplificata categoria Surf (rimossa sub-navigazione categorie)
-- Rimossa card "Fotografia" dalla sezione esperienze
-- Aggiornato team: solo El Kharroubi Omar e Latifa Abkal
-- Campo "Data Ritorno" ora obbligatorio con indicatore visivo rosso
-
-### FASE 2: Dashboard e Wishlist ✅
-- Fix pulsante "Esplora Viaggi" (ora naviga a /esperienze invece di /viaggi)
-- Sistema Wishlist completo con autenticazione Firebase
-- Persistenza dati in Firestore (collection: userProfiles)
-- Feedback visuale con notifiche toast
-- Pagina esperienze convertita a dinamica con caricamento da Firestore
-- Fix critico: spread order in getPublishedExperiences/getPublishedTravels per garantire ID persistence
-
-### FASE 3: Integrazione Social Media ✅
-- Aggiunto link Instagram: https://www.instagram.com/omarito_chill/
-- Design prominente con gradient Instagram-style
-- Username @omarito_chill visibile
-- Rimossi social inattivi (Facebook, Twitter, Youtube)
-
-### FASE 4: Sezione Noleggio Auto - REDESIGN COMPLETO ✅ (November 15, 2025)
-- **Pagina completamente ridisegnata**: /servizi/noleggio-auto
-- **Layout identico a guide-private/assicurazioni**: Hero section con gradient arancione, grid card veicoli, card dettagli espansa, CTA finale
-- **19 veicoli REALI da CSV** (12 Economiche, 3 SUV, 4 Premium):
-  - Dacia Sandero/Logan, Peugeot 208, Renault Clio 5, Citroen C3/C-Elysee/C4, Kia Picanto, Fiat 500, Hyundai i10/Tucson
-  - Dacia Lodgy/Duster (manuale/automatica), T-roc, Touareg
-- **14 immagini veicoli uniche** generate con AI (stile 3/4 front, sfondo neutro)
-- **Pricing da CSV originali**: 4 periodi stagionali × 3 fasce durata con prezzi esatti
-  - Periodo 1: 10/01 - 15/07 | Periodo 2: 15/07 - 05/09 (Estate)
-  - Periodo 3: 20/12 - 10/01 (Capodanno) | Periodo 4: 05/09 - 20/12
-- **Servizi inclusi e extra** da secondo CSV con prezzi reali
-- **WhatsApp booking automation**: Numero 393292333370, messaggio auto-compilato con veicolo/date/prezzo
-- **Data/vehicles.ts**: 950+ righe con tutti i dati reali strutturati in TypeScript
-- ⚠️ **Nota qualità dati**: Dacia Duster automatica period3 ha pricing illogico nel CSV originale (short 42€ < medium 58€) - trascritto fedelmente ma potrebbe richiedere verifica utente
-
-### FASE 5: Sistema Wishlist Universale + Viaggi su Misura ✅ (November 17, 2025)
-- **Sistema Wishlist Universale (15+ pagine):**
-  - ✅ WishlistButton integrato su tutte le 6 pagine esperienze (cucina, trekking, quad-cammelli, surf, artigianato)
-  - ✅ Pagine viaggi: deserto, gruppo, città-imperiali, montagne-atlas, costa-atlantica, [slug] dynamic
-  - ✅ Pagine servizi: noleggio-auto, trasferimenti, guide-private, assicurazioni, [slug] dynamic
-  - ✅ Blog: index list cards + [slug] dynamic (BlogPostHeader client component per SSR compatibility)
-  - ✅ TypeScript: itemType esteso a 'vehicle' | 'experience' | 'travel' | 'city' | 'activity' | 'service' | 'blog'
-  - ✅ Price parsing: regex defensivo /[^0-9]/g per gestire stringhe formattate "€280"
-  - ✅ Design pattern: top-left su cards, top-right in hero sections
-
-- **Sistema Viaggi su Misura Completo:**
-  - ✅ Schema Firestore: CustomTripRequest con 26 campi (info personali, date, destinazioni, preferenze, budget, richieste speciali)
-  - ✅ Form multi-step validato (3 step): Step 1 campi obbligatori, validazione inline, blocco avanzamento
-  - ✅ Guest flow ottimizzato: showInfo notification → redirect WhatsApp immediato (no Firestore save)
-  - ✅ Logged user flow: save Firestore → showSuccess notification → delay 1.5s → redirect WhatsApp
-  - ✅ Dashboard integration: sezione "Richieste Viaggi su Misura" con card espandibili (accordion)
-  - ✅ Card details: nome, date, destinazioni tags, budget, status badge, info contatti, preferenze, button WhatsApp follow-up
-  - ✅ Error handling: fallback WhatsApp se Firestore save fallisce
-  - ✅ NotificationSystem: useNotifications con showSuccess, showError, showWarning, showInfo tutti disponibili
-
-## FASE 6: Admin UI Foundation + Desert Tours Data ✅ (November 18, 2025)
-
-### Firebase Admin SDK & Backend Infrastructure ✅
-- **Firebase Admin SDK**: Configurato in lib/firebase-admin.ts con credentials da Replit Secrets
-  - FIREBASE_ADMIN_PRIVATE_KEY e FIREBASE_ADMIN_CLIENT_EMAIL stored securely
-  - PEM key formatting function per compatibility
-  - Server-side Firestore operations enabled
-  
-### Desert Tours Firestore Population ✅
-- **7 tour deserto completi** salvati in Firestore collection `travels`:
-  - **4 Sahara Tours**: Deserto Express (€180), Classic Adventure (€320), Grand Journey (€480), Luxury Experience (€750)
-  - **3 Agafay Tours**: Giornata (€50), Notte Standard (€76), Notte Luxury (€230)
-  - Tutti con itinerari dettagliati, includes/notIncludes, highlights, ratings, reviews
-  - IDs: sahara-tour-1/2/3/4, agafay-tour-0/-1/-2
-  - Schema compliant: Travel interface con category='desert', published=true, featured flags
-
-### Admin Panel System ✅
-- **Schema AdminUser** (lib/firestore-schema.ts):
-  - Fields: email, displayName, role (super_admin|content_editor|viewer), permissions[], active, createdAt, lastLogin
-  - Firestore collection: `adminUsers`
-  
-- **Admin Login Page** (app/admin/login/page.tsx):
-  - Dual-layer authentication: Firebase Auth + adminUsers Firestore verification
-  - Security: Auto-logout on unauthorized access (missing doc, inactive account)
-  - Professional UI: gradient background, email/password form, error handling
-  - Access control: redirects unauthorized users to /admin/login
-  
-- **Admin Layout** (app/admin/layout.tsx):
-  - Protected route wrapper con authentication guard
-  - Responsive sidebar navigation: Dashboard, Esperienze, Viaggi, Veicoli, Instagram, Utenti
-  - Features: dark/light mode toggle, logout button, admin profile badge
-  - Security fix: signOut() before redirect per unauthorized users (architect validated)
-  - Mobile: hamburger menu + overlay, Desktop: fixed sidebar (w-72)
-  
-- **Admin Dashboard** (app/admin/page.tsx):
-  - Live statistics from Firestore: total/published experiences, travels, users, vehicles
-  - Average rating calculation (experiences + travels combined)
-  - Wishlist items count across all users
-  - Progress bars: published content percentage
-  - Quick actions links: Gestisci Esperienze, Viaggi, Instagram
-  
-- **Demo Admin Account** (scripts/create-demo-admin.ts):
-  - Email: demo-admin@moroccodreams.com
-  - Password: Nbc*%iBvjoA)mFvn (auto-generated secure 16 chars)
-  - UID: AlxWxeuwXdW6t7NjRVUPnSZSSAb2
-  - Role: super_admin with 7 permissions
-  - Idempotent script: updates if exists, creates if new
-
-### Admin UI Status
-- ✅ Login/Authentication system complete
-- ✅ Layout & Dashboard operational
-- ✅ Demo account active and tested
-- ✅ CRUD pages implemented (Experiences, Travels, Vehicles, Instagram, Users)
-
-## FASE 7: Admin CRUD + Imperial Cities System ✅ (November 18, 2025)
-
-### Admin CRUD Pages Complete
-- **Admin Experiences** (app/admin/experiences/page.tsx):
-  - Firestore fetch da collection `experiences`
-  - DataTable con search/filter per categoria (surf/cucina/trekking/quad-cammelli/artigianato)
-  - Toggle published con update real-time
-  - Delete con confirmation dialog
-  - **ExperienceModal** (components/admin/ExperienceModal.tsx): Full CRUD con form validato, setDoc merge:true per preservare campi schema completo
-  
-- **Admin Travels** (app/admin/travels/page.tsx):
-  - Firestore fetch da collection `travels`
-  - Toggle published + featured flags
-  - Filtri categoria (desert/city/coast/mountain/group)
-  - **TravelModal** (components/admin/TravelModal.tsx): Edit/create con duration, rating, categoria, merge:true fix
-  
-- **Admin Vehicles** (app/admin/vehicles/page.tsx):
-  - Grid view 19 veicoli da data/vehicles.ts
-  - Search + categoria filter
-  - Pricing display (da period1.short)
-  - Button "Modifica Prezzi" ready per future enhancement
-  
-- **Admin Instagram** (app/admin/instagram/page.tsx):
-  - 3-slot system per video Instagram
-  - URL input con conversione automatica embed URL (regex match /p/[id]/)
-  - Toggle active/inactive per slot
-  - Preview iframe embeds
-  - Local state management (Firestore integration pending)
-  
-- **Admin Users** (app/admin/users/page.tsx):
-  - Fetch adminUsers collection
-  - Role badges (super_admin/content_editor/viewer)
-  - Permissions display (primi 3 + counter)
-  - Toggle active status
-  - Last login formatting
-  - Search + role filter
-
-- **CRITICAL FIX**: Firebase Admin SDK PEM key parsing risolto (lib/firebase-admin.ts) - formatPrivateKey ora gestisce correttamente literal \\n strings e formatta 64-char lines
-
-### Imperial Cities System Complete
-- **9 Città Imperiali** implementate con struttura uniforme:
-  1. **Marrakech** - La Perla del Sud
-  2. **Fès** - La Capitale Spirituale  
-  3. **Meknès** - La Versailles del Marocco
-  4. **Rabat** - La Capitale Moderna
-  5. **Casablanca** - La Metropoli Economica
-  6. **Essaouira** - La Perla dell'Atlantico
-  7. **Chefchaouen** - La Città Blu
-  8. **Tangier** - La Porta d'Africa
-  9. **Agadir** - La Riviera Marocchina
-
-- **Data Structure** (data/cities.ts):
-  - Interface City con 13 campi (id, name, slug, tagline, heroImage, description, history, attractions, bestTime, howToArrive, tourPrices, highlights, location)
-  - Ogni città: 4-6 attrazioni con image/price/duration
-  - Tour prices: halfDay, fullDay, multiDay (se applicabile)
-  - 6 highlights per città
-  - Location data con coordinates GPS
-
-- **Pages Implementation**:
-  - `/citta/[slug]/page.tsx` - Dynamic city page con hero section, storia, attrazioni grid, info pratiche, prezzi tour
-  - `/citta/page.tsx` - Index page con grid 9 città, search capability, CTA viaggi su misura
-  - Responsive design con hover effects, gradients, shadow transitions
-  - **Fix**: Conditional rendering multiDay tours per evitare "undefined" display
-
-## FASE 8: Instagram Video Integration ✅ (November 18, 2025)
-
-### Instagram Feed System Complete
-- **Firestore Schema**: InstagramVideo interface con 6 campi (slot, url, embedUrl, active, order, timestamps)
-- **Collection**: `instagram_videos` con 3 slot disponibili
-
-### Admin Instagram Panel Integration
-- **Firestore CRUD**: save/fetch/update/delete video URLs
-- **Dual URL Support**: Regex per /reel/ e /p/ pattern con auto-conversione embed URL
-- **Toggle Active**: Real-time status update per slot visibility
-- **Preview System**: Iframe embed preview nel panel
-- **Notifications**: Toast feedback per tutte le operazioni (save, delete, toggle)
-- **merge:true**: Preserva timestamps su updates
-
-### Frontend InstagramFeed Component
-- **Dynamic Loading**: Fetch da Firestore collection `instagram_videos` con where active=true
-- **Instagram Embed Script**: Next.js Script component con strategy lazyOnload
-- **Auto-refresh**: instgrm.Embeds.process() on mount e dopo fetch
-- **Loading State**: Skeleton loader 3-grid durante fetch
-- **Empty State**: Messaggio quando nessun video disponibile
-- **Homepage Integration**: Sostituito placeholder EXAMPLE1/2/3 con componente dinamico
-
-### Firestore Security Rules Updates
-- **instagram_videos**: Lettura pubblica, scrittura autenticata
-- **userProfiles**: Owner + admin access
-- **customTripRequests**: Owner + admin access  
-- **adminUsers**: Admin-only access
-
-### Video URLs Forniti
-1. Slot 1: https://www.instagram.com/reel/DPhC4GrjcxQ/
-2. Slot 2: https://www.instagram.com/reel/DQuSWaHjZpi/
-3. Slot 3: https://www.instagram.com/reel/DNEMbjKtgY2/
-
-**Azione richiesta**: Inserire i 3 URL tramite Admin panel → Instagram per attivarli sul sito
-
-## Architecture
-- **Frontend**: Next.js 14.2.16 with TypeScript
-- **Backend**: Firebase (Firestore + Auth)
-- **Database**: Firestore collections (experiences, travels, userProfiles)
-- **Interactive Map**: Mapbox integration for exploring Morocco cities
-- **Responsive Design**: Mobile-first approach with Tailwind CSS
-- **Component Structure**: Modular React components with TypeScript
-- **Data Management**: Dynamic content loading from Firestore with real-time updates
-
-## Setup Configuration
-- **Development Server**: Runs on port 5000 with hostname 0.0.0.0 
-- **Replit Environment**: Configured to work with Replit's proxy system
-- **Build Process**: Standard Next.js build with deployment via npm start
-- **Deployment**: Configured for autoscale deployment target
-
-## Known Issues Fixed
-- ❌ Button nesting HTML validation error → ✅ Fixed by replacing nested button with div
-- ❌ LSP type errors → ✅ Fixed by installing dependencies
-- ❌ Replit proxy compatibility → ✅ Fixed with proper hostname configuration
-
-## User Preferences
+### User Preferences
 - Development setup prioritizes Replit environment compatibility
 - Frontend-only architecture maintained as originally designed
 - Existing project structure and dependencies preserved
+
+### System Architecture
+The "Morocco Dreams" website is built with a modern web stack designed for performance, scalability, and maintainability.
+
+**UI/UX Decisions:**
+- **Design System**: Mobile-first approach using Tailwind CSS for utility-first styling.
+- **Component Library**: Radix UI components are integrated for accessible and customizable UI primitives.
+- **Interactive Map**: Mapbox is used to provide an interactive map for exploring Moroccan cities and tour locations.
+- **Visuals**: Prominent use of gradients (e.g., Instagram-style, orange for car rentals) and AI-generated vehicle images for a visually appealing interface.
+- **Theming**: Dark/light mode toggle available in the Admin UI.
+
+**Technical Implementations & Feature Specifications:**
+- **Next.js Framework**: Utilizes Next.js 14.2.16 with TypeScript for a robust and type-safe frontend.
+- **Dynamic Content**: Experiences, travels, and city pages load content dynamically, primarily from Firestore.
+- **Wishlist System**: A universal wishlist system allows users to save various item types (vehicles, experiences, travels, cities, services, blog posts) across 15+ pages, with data persistence via Firestore and visual feedback using toast notifications.
+- **Custom Trip Requests**: A multi-step, validated form captures custom travel requests, saving data to Firestore for logged-in users and offering direct WhatsApp redirection for guests.
+- **Car Rental Redesign**: A dedicated, fully redesigned section for car rentals features 19 real vehicles, dynamic pricing based on seasonal periods and rental duration, and automated WhatsApp booking. Data is structured in `data/vehicles.ts`.
+- **Imperial Cities System**: 9 imperial cities are implemented with a uniform data structure including attractions, history, and tour pricing, accessible via dynamic pages.
+- **Instagram Video Integration**: A system to embed Instagram reels dynamically from Firestore, with an Admin Panel for managing up to 3 video slots.
+- **Admin UI**: A comprehensive Admin Panel provides:
+    - **Authentication**: Dual-layer authentication with Firebase Auth and Firestore `adminUsers` collection.
+    - **Protected Routes**: Secure layout with authentication guards and role-based access control.
+    - **Dashboard**: Live statistics, content progress, and quick action links.
+    - **CRUD Operations**: Full Create, Read, Update, Delete functionality for Experiences, Travels, Vehicles, Instagram videos, and Admin Users.
+    - **Content Management**: Features like toggling published/featured status, category filtering, and real-time updates.
+
+**System Design Choices:**
+- **Modular Architecture**: Components are designed to be modular and reusable, adhering to React best practices.
+- **Server-Side Rendering (SSR) / Static Site Generation (SSG)**: Leverages Next.js capabilities for optimal performance and SEO, with client components used where interactivity is required (e.g., BlogPostHeader).
+- **Data Schemas**: Strongly typed data schemas (e.g., `Travel`, `City`, `CustomTripRequest`, `AdminUser`, `InstagramVideo`) ensure data consistency.
+- **Security**: Firebase security rules are implemented for granular access control to Firestore collections. Firebase Admin SDK is configured for secure server-side operations, with robust private key handling.
+- **Error Handling**: Graceful degradation ensures the application can start even if Firebase Admin credentials are missing, disabling admin-specific features.
+
+### External Dependencies
+- **Firebase**:
+    - **Firestore**: Primary database for dynamic content (experiences, travels, user profiles, custom trip requests, admin users, Instagram videos).
+    - **Firebase Authentication**: User authentication and authorization, particularly for the Admin UI.
+    - **Firebase Admin SDK**: Used for secure server-side interactions with Firestore and user management in the Admin UI.
+- **Mapbox**: Integrated for interactive geographical maps displaying Moroccan cities and tour locations.
+- **npm**: Package manager for all project dependencies.
