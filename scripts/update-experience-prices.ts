@@ -1,14 +1,40 @@
-import { initializeApp } from 'firebase/app';
-import { getFirestore, collection, getDocs, updateDoc, doc, query, where } from 'firebase/firestore';
+import * as admin from 'firebase-admin';
 
-const firebaseConfig = {
-  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
-  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
-  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID
-};
+function formatPrivateKey(key: string): string {
+  const header = '-----BEGIN PRIVATE KEY-----';
+  const footer = '-----END PRIVATE KEY-----';
+  
+  if (key.includes(header) && key.includes(footer)) {
+    return key;
+  }
+  
+  if (key.includes('\\n')) {
+    key = key.replace(/\\n/g, '\n');
+  }
+  
+  const cleanKey = key.replace(/\s/g, '').replace(/\\n/g, '');
+  
+  const formatted = cleanKey.match(/.{1,64}/g)?.join('\n') || cleanKey;
+  return `${header}\n${formatted}\n${footer}\n`;
+}
 
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+const privateKey = formatPrivateKey(process.env.FIREBASE_ADMIN_PRIVATE_KEY || '');
+const clientEmail = process.env.FIREBASE_ADMIN_CLIENT_EMAIL;
+const projectId = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID;
+
+if (!privateKey || !clientEmail || !projectId) {
+  throw new Error('Missing Firebase Admin credentials');
+}
+
+const app = admin.initializeApp({
+  credential: admin.credential.cert({
+    projectId,
+    clientEmail,
+    privateKey,
+  }),
+});
+
+const db = admin.firestore(app);
 
 const priceUpdates: Record<string, number> = {
   'surf-taghazout': 35,
@@ -25,8 +51,8 @@ async function updateExperiencePrices() {
   try {
     console.log('🔄 Inizio aggiornamento prezzi esperienze...\n');
     
-    const experiencesRef = collection(db, 'experiences');
-    const snapshot = await getDocs(experiencesRef);
+    const experiencesRef = db.collection('experiences');
+    const snapshot = await experiencesRef.get();
     
     console.log(`📊 Trovate ${snapshot.docs.length} esperienze in Firestore\n`);
     
@@ -42,10 +68,10 @@ async function updateExperiencePrices() {
         const newPrice = priceUpdates[slug];
         
         if (currentPrice !== newPrice) {
-          await updateDoc(doc(db, 'experiences', docSnapshot.id), {
+          await docSnapshot.ref.update({
             price: newPrice,
             currency: 'EUR',
-            updatedAt: new Date()
+            updatedAt: admin.firestore.FieldValue.serverTimestamp()
           });
           
           console.log(`✅ Aggiornato: ${data.title || slug}`);
