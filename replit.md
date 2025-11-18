@@ -74,6 +74,60 @@ This is a Next.js-based travel website for "Morocco Dreams" - a service offering
   - ✅ Error handling: fallback WhatsApp se Firestore save fallisce
   - ✅ NotificationSystem: useNotifications con showSuccess, showError, showWarning, showInfo tutti disponibili
 
+## FASE 6: Admin UI Foundation + Desert Tours Data ✅ (November 18, 2025)
+
+### Firebase Admin SDK & Backend Infrastructure ✅
+- **Firebase Admin SDK**: Configurato in lib/firebase-admin.ts con credentials da Replit Secrets
+  - FIREBASE_ADMIN_PRIVATE_KEY e FIREBASE_ADMIN_CLIENT_EMAIL stored securely
+  - PEM key formatting function per compatibility
+  - Server-side Firestore operations enabled
+  
+### Desert Tours Firestore Population ✅
+- **7 tour deserto completi** salvati in Firestore collection `travels`:
+  - **4 Sahara Tours**: Deserto Express (€180), Classic Adventure (€320), Grand Journey (€480), Luxury Experience (€750)
+  - **3 Agafay Tours**: Giornata (€50), Notte Standard (€76), Notte Luxury (€230)
+  - Tutti con itinerari dettagliati, includes/notIncludes, highlights, ratings, reviews
+  - IDs: sahara-tour-1/2/3/4, agafay-tour-0/-1/-2
+  - Schema compliant: Travel interface con category='desert', published=true, featured flags
+
+### Admin Panel System ✅
+- **Schema AdminUser** (lib/firestore-schema.ts):
+  - Fields: email, displayName, role (super_admin|content_editor|viewer), permissions[], active, createdAt, lastLogin
+  - Firestore collection: `adminUsers`
+  
+- **Admin Login Page** (app/admin/login/page.tsx):
+  - Dual-layer authentication: Firebase Auth + adminUsers Firestore verification
+  - Security: Auto-logout on unauthorized access (missing doc, inactive account)
+  - Professional UI: gradient background, email/password form, error handling
+  - Access control: redirects unauthorized users to /admin/login
+  
+- **Admin Layout** (app/admin/layout.tsx):
+  - Protected route wrapper con authentication guard
+  - Responsive sidebar navigation: Dashboard, Esperienze, Viaggi, Veicoli, Instagram, Utenti
+  - Features: dark/light mode toggle, logout button, admin profile badge
+  - Security fix: signOut() before redirect per unauthorized users (architect validated)
+  - Mobile: hamburger menu + overlay, Desktop: fixed sidebar (w-72)
+  
+- **Admin Dashboard** (app/admin/page.tsx):
+  - Live statistics from Firestore: total/published experiences, travels, users, vehicles
+  - Average rating calculation (experiences + travels combined)
+  - Wishlist items count across all users
+  - Progress bars: published content percentage
+  - Quick actions links: Gestisci Esperienze, Viaggi, Instagram
+  
+- **Demo Admin Account** (scripts/create-demo-admin.ts):
+  - Email: demo-admin@moroccodreams.com
+  - Password: Nbc*%iBvjoA)mFvn (auto-generated secure 16 chars)
+  - UID: AlxWxeuwXdW6t7NjRVUPnSZSSAb2
+  - Role: super_admin with 7 permissions
+  - Idempotent script: updates if exists, creates if new
+
+### Admin UI Status
+- ✅ Login/Authentication system complete
+- ✅ Layout & Dashboard operational
+- ✅ Demo account active and tested
+- ⏳ CRUD pages pending (Experiences, Travels, Vehicles, Instagram, Users)
+
 ## Architecture
 - **Frontend**: Next.js 14.2.16 with TypeScript
 - **Backend**: Firebase (Firestore + Auth)
