@@ -190,6 +190,42 @@ This is a Next.js-based travel website for "Morocco Dreams" - a service offering
   - `/citta/[slug]/page.tsx` - Dynamic city page con hero section, storia, attrazioni grid, info pratiche, prezzi tour
   - `/citta/page.tsx` - Index page con grid 9 città, search capability, CTA viaggi su misura
   - Responsive design con hover effects, gradients, shadow transitions
+  - **Fix**: Conditional rendering multiDay tours per evitare "undefined" display
+
+## FASE 8: Instagram Video Integration ✅ (November 18, 2025)
+
+### Instagram Feed System Complete
+- **Firestore Schema**: InstagramVideo interface con 6 campi (slot, url, embedUrl, active, order, timestamps)
+- **Collection**: `instagram_videos` con 3 slot disponibili
+
+### Admin Instagram Panel Integration
+- **Firestore CRUD**: save/fetch/update/delete video URLs
+- **Dual URL Support**: Regex per /reel/ e /p/ pattern con auto-conversione embed URL
+- **Toggle Active**: Real-time status update per slot visibility
+- **Preview System**: Iframe embed preview nel panel
+- **Notifications**: Toast feedback per tutte le operazioni (save, delete, toggle)
+- **merge:true**: Preserva timestamps su updates
+
+### Frontend InstagramFeed Component
+- **Dynamic Loading**: Fetch da Firestore collection `instagram_videos` con where active=true
+- **Instagram Embed Script**: Next.js Script component con strategy lazyOnload
+- **Auto-refresh**: instgrm.Embeds.process() on mount e dopo fetch
+- **Loading State**: Skeleton loader 3-grid durante fetch
+- **Empty State**: Messaggio quando nessun video disponibile
+- **Homepage Integration**: Sostituito placeholder EXAMPLE1/2/3 con componente dinamico
+
+### Firestore Security Rules Updates
+- **instagram_videos**: Lettura pubblica, scrittura autenticata
+- **userProfiles**: Owner + admin access
+- **customTripRequests**: Owner + admin access  
+- **adminUsers**: Admin-only access
+
+### Video URLs Forniti
+1. Slot 1: https://www.instagram.com/reel/DPhC4GrjcxQ/
+2. Slot 2: https://www.instagram.com/reel/DQuSWaHjZpi/
+3. Slot 3: https://www.instagram.com/reel/DNEMbjKtgY2/
+
+**Azione richiesta**: Inserire i 3 URL tramite Admin panel → Instagram per attivarli sul sito
 
 ## Architecture
 - **Frontend**: Next.js 14.2.16 with TypeScript

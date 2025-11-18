@@ -2,8 +2,11 @@ import * as admin from 'firebase-admin';
 
 let firebaseAdmin: admin.app.App;
 
-function formatPrivateKey(key: string): string {
-  if (!key) return '';
+export function formatPrivateKey(key: string | undefined): string {
+  if (!key) {
+    console.warn('Firebase Admin private key is not set. Admin SDK will not be available.');
+    return '';
+  }
   
   const header = '-----BEGIN PRIVATE KEY-----';
   const footer = '-----END PRIVATE KEY-----';
@@ -36,12 +39,13 @@ function formatPrivateKey(key: string): string {
 export function getFirebaseAdmin() {
   if (!firebaseAdmin) {
     try {
-      const privateKey = formatPrivateKey(process.env.FIREBASE_ADMIN_PRIVATE_KEY || '');
+      const privateKey = formatPrivateKey(process.env.FIREBASE_ADMIN_PRIVATE_KEY);
       const clientEmail = process.env.FIREBASE_ADMIN_CLIENT_EMAIL;
       const projectId = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID;
 
       if (!privateKey || !clientEmail || !projectId) {
-        throw new Error('Missing Firebase Admin credentials in environment variables');
+        console.warn('Firebase Admin SDK credentials missing. Some features may not work.');
+        return null as any;
       }
 
       firebaseAdmin = admin.initializeApp({

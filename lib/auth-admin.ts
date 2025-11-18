@@ -4,26 +4,35 @@
 import { initializeApp, cert, getApps } from 'firebase-admin/app'
 import { getAuth } from 'firebase-admin/auth'
 import { getFirestore } from 'firebase-admin/firestore'
+import { formatPrivateKey } from './firebase-admin'
 
 // Initialize Firebase Admin (server-side only)
 function initializeFirebaseAdmin() {
   if (getApps().length === 0) {
-    // Initialize with service account credentials
-    // In production, use environment variables
+    const privateKey = formatPrivateKey(process.env.FIREBASE_ADMIN_PRIVATE_KEY)
+    const clientEmail = process.env.FIREBASE_ADMIN_CLIENT_EMAIL
+    const projectId = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID
+
+    if (!privateKey || !clientEmail || !projectId) {
+      console.warn('Firebase Admin SDK credentials missing in auth-admin.ts. Admin auth will not be available.')
+      // Return null instead of throwing to allow app to continue
+      return null
+    }
+
     const adminConfig = {
       credential: cert({
-        projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
-        clientEmail: process.env.FIREBASE_ADMIN_CLIENT_EMAIL,
-        privateKey: process.env.FIREBASE_ADMIN_PRIVATE_KEY?.replace(/\\n/g, '\n'),
+        projectId,
+        clientEmail,
+        privateKey,
       }),
-      databaseURL: `https://${process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID}.firebaseio.com`
+      databaseURL: `https://${projectId}.firebaseio.com`
     }
     
     try {
       return initializeApp(adminConfig, 'admin')
     } catch (error) {
       console.error('Failed to initialize Firebase Admin:', error)
-      throw error
+      return null
     }
   }
   
@@ -143,7 +152,7 @@ export class AdminAuthService {
       }
       
       const listUsersResult = await adminAuth.listUsers(maxResults)
-      return listUsersResult.users.map(user => ({
+      return listUsersResult.users.map((user: any) => ({
         uid: user.uid,
         email: user.email,
         displayName: user.displayName,
