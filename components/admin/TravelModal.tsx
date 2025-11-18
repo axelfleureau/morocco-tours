@@ -52,8 +52,8 @@ export default function TravelModal({ travel, onClose, onSave }: TravelModalProp
 
     try {
       if (travel?.id) {
-        // Update existing
-        await setDoc(doc(db, 'travels', travel.id), formData)
+        // Update existing - use merge to preserve other fields
+        await setDoc(doc(db, 'travels', travel.id), formData, { merge: true })
       } else {
         // Create new
         await addDoc(collection(db, 'travels'), formData)

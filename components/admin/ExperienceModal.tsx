@@ -48,8 +48,8 @@ export default function ExperienceModal({ experience, onClose, onSave }: Experie
 
     try {
       if (experience?.id) {
-        // Update existing
-        await setDoc(doc(db, 'experiences', experience.id), formData)
+        // Update existing - use merge to preserve other fields
+        await setDoc(doc(db, 'experiences', experience.id), formData, { merge: true })
       } else {
         // Create new
         await addDoc(collection(db, 'experiences'), formData)
