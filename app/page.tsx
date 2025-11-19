@@ -1,7 +1,7 @@
 "use client"
 
-import { useState, Suspense } from "react"
-import { Users, Heart, Mountain } from "lucide-react"
+import { useState, useEffect, Suspense } from "react"
+import { Users, Heart, Mountain, Loader2 } from "lucide-react"
 import Link from "next/link"
 import HeroSection from "@/components/sections/HeroSection"
 import WhyChooseUs from "@/components/sections/WhyChooseUs"
@@ -11,9 +11,49 @@ import MoroccoMap from "@/components/sections/MoroccoMap"
 import InstagramFeed from "@/components/InstagramFeed"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardTitle } from "@/components/ui/card"
+import { getPublishedExperiences, getPublishedTravels } from "@/lib/public-data"
+import { Experience, Travel } from "@/lib/firestore-schema"
 
-// Authentic Experiences Component
+// Icon mapping for categories
+const getIconForCategory = (category?: string) => {
+  switch (category?.toLowerCase()) {
+    case 'adventure':
+    case 'trekking':
+      return Mountain
+    case 'wellness':
+    case 'relaxation':
+      return Heart
+    case 'culture':
+    case 'cooking':
+      return Users
+    default:
+      return Mountain
+  }
+}
+
+// Authentic Experiences Component - Now Dynamic
 const AuthenticExperiences = () => {
+  const [experiences, setExperiences] = useState<Experience[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const loadExperiences = async () => {
+      try {
+        const data = await getPublishedExperiences({ 
+          featured: true, 
+          limit: 4 
+        })
+        setExperiences(data)
+      } catch (error) {
+        console.error('Error loading experiences:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    loadExperiences()
+  }, [])
+
   return (
     <section className="py-16 lg:py-24 bg-background" data-slot="authentic-experiences">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -26,99 +66,228 @@ const AuthenticExperiences = () => {
           </p>
         </div>
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {[
-            {
-              icon: Mountain,
-              title: "Notte nel Deserto",
-              description: "Dormi sotto le stelle nel cuore del Sahara",
-              price: "€120",
-              image: "/images/desert-night.png",
-              duration: "1 notte",
-              href: "/esperienze/trekking",
-            },
-            {
-              icon: Mountain,
-              title: "Quad e Cammelli",
-              description: "L'avventura perfetta nel deserto di Agafay",
-              price: "€50",
-              image: "/images/sahara-sunset.png",
-              duration: "4 ore",
-              href: "/esperienze/quad-cammelli",
-            },
-            {
-              icon: Heart,
-              title: "Hammam Tradizionale",
-              description: "Rilassati con un autentico bagno turco marocchino",
-              price: "€45",
-              image: "/images/traditional-hammam.png",
-              duration: "2 ore",
-              href: "/esperienze/hammam",
-            },
-            {
-              icon: Users,
-              title: "Lezione di Cucina",
-              description: "Impara a cucinare i piatti tipici marocchini",
-              price: "€65",
-              image: "/images/cooking-class.png",
-              duration: "4 ore",
-              href: "/esperienze/cucina",
-            },
-          ].map((experience, idx) => (
-            <Card
-              key={idx}
-              className="group overflow-hidden hover:shadow-xl transition-all duration-500 hover:scale-105 active:scale-95 touch-manipulation cursor-pointer"
-              onTouchStart={(e) => {
-                e.currentTarget.style.transform = "scale(0.98)"
-              }}
-              onTouchEnd={(e) => {
-                e.currentTarget.style.transform = ""
-              }}
-            >
-              <div className="relative h-40 sm:h-48 overflow-hidden">
-                <img
-                  src={
-                    experience.image ||
-                    `/placeholder.svg?height=200&width=300&query=${encodeURIComponent("esperienza marocco " + experience.title)}`
-                  }
-                  alt={experience.title}
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                />
-                <div className="absolute top-4 right-4 bg-card/90 backdrop-blur-sm text-card-foreground px-3 py-1 rounded-full text-sm font-bold">
-                  {experience.price}
-                </div>
-                <div className="absolute bottom-4 left-4 bg-foreground/50 backdrop-blur-sm text-primary-foreground px-3 py-1 rounded-full text-sm">
-                  {experience.duration}
-                </div>
-              </div>
+        {loading ? (
+          <div className="flex items-center justify-center py-12">
+            <Loader2 className="w-8 h-8 animate-spin text-primary" />
+            <span className="ml-3 text-muted-foreground">Caricamento esperienze...</span>
+          </div>
+        ) : experiences.length === 0 ? (
+          <div className="text-center py-12">
+            <p className="text-muted-foreground">Nessuna esperienza disponibile al momento.</p>
+          </div>
+        ) : (
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {experiences.map((experience) => {
+              const IconComponent = getIconForCategory(experience.category)
+              const priceDisplay = experience.price ? `€${experience.price}` : 'Da definire'
+              const durationDisplay = experience.duration || 'Durata variabile'
+              
+              return (
+                <Card
+                  key={experience.id}
+                  className="group overflow-hidden hover:shadow-xl transition-all duration-500 hover:scale-105 active:scale-95 touch-manipulation cursor-pointer"
+                  onTouchStart={(e) => {
+                    e.currentTarget.style.transform = "scale(0.98)"
+                  }}
+                  onTouchEnd={(e) => {
+                    e.currentTarget.style.transform = ""
+                  }}
+                >
+                  <div className="relative h-40 sm:h-48 overflow-hidden">
+                    <img
+                      src={
+                        (experience.images && experience.images[0]) ||
+                        `/placeholder.svg?height=200&width=300&query=${encodeURIComponent("esperienza marocco " + experience.title)}`
+                      }
+                      alt={experience.title}
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                    />
+                    <div className="absolute top-4 right-4 bg-card/90 backdrop-blur-sm text-card-foreground px-3 py-1 rounded-full text-sm font-bold">
+                      {priceDisplay}
+                    </div>
+                    <div className="absolute bottom-4 left-4 bg-foreground/50 backdrop-blur-sm text-primary-foreground px-3 py-1 rounded-full text-sm">
+                      {durationDisplay}
+                    </div>
+                  </div>
 
-              <CardContent className="text-center bg-card p-6">
-                <div className="w-12 h-12 bg-accent/20 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
-                  <experience.icon className="w-6 h-6 text-primary" />
+                  <CardContent className="text-center bg-card p-6">
+                    <div className="w-12 h-12 bg-accent/20 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
+                      <IconComponent className="w-6 h-6 text-primary" />
+                    </div>
+                    <CardTitle className="text-lg mb-2 text-card-foreground">{experience.title}</CardTitle>
+                    <p className="text-muted-foreground text-sm mb-4 text-pretty line-clamp-2">
+                      {experience.description}
+                    </p>
+                    <div className="flex gap-2">
+                      <Button
+                        asChild
+                        variant="ghost"
+                        size="sm"
+                        className="flex-1 hover:scale-105 active:scale-95 touch-manipulation"
+                      >
+                        <Link href={`/esperienze/${experience.id}`}>Dettagli</Link>
+                      </Button>
+                      <Button
+                        asChild
+                        variant="cta"
+                        size="sm"
+                        className="flex-1 hover:scale-105 active:scale-95 touch-manipulation"
+                      >
+                        <Link href="/contatti">Prenota</Link>
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              )
+            })}
+          </div>
+        )}
+      </div>
+    </section>
+  )
+}
+
+// Featured Travels Component - Now Dynamic
+const FeaturedTravels = () => {
+  const [travels, setTravels] = useState<Travel[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const loadTravels = async () => {
+      try {
+        const data = await getPublishedTravels({ 
+          featured: true, 
+          limit: 6 
+        })
+        setTravels(data)
+      } catch (error) {
+        console.error('Error loading travels:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    loadTravels()
+  }, [])
+
+  if (loading) {
+    return (
+      <section className="py-16 lg:py-24 bg-muted/50" data-slot="featured-travels">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-center py-12">
+            <Loader2 className="w-8 h-8 animate-spin text-primary" />
+            <span className="ml-3 text-muted-foreground">Caricamento viaggi...</span>
+          </div>
+        </div>
+      </section>
+    )
+  }
+
+  if (travels.length === 0) {
+    return null
+  }
+
+  return (
+    <section className="py-16 lg:py-24 bg-muted/50" data-slot="featured-travels">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-12 lg:mb-16">
+          <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-4 lg:mb-6 text-balance">
+            Viaggi in Evidenza
+          </h2>
+          <p className="text-lg lg:text-xl text-muted-foreground max-w-2xl mx-auto text-pretty leading-relaxed">
+            Scopri i nostri tour più popolari attraverso il Marocco
+          </p>
+        </div>
+
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+          {travels.map((travel) => {
+            const priceDisplay = travel.price ? `€${travel.price}` : 'Da definire'
+            const durationDisplay = travel.duration || 'Durata variabile'
+            
+            return (
+              <Card
+                key={travel.id}
+                className="group overflow-hidden hover:shadow-2xl transition-all duration-500 hover:scale-105 active:scale-95 touch-manipulation"
+              >
+                <div className="relative h-56 overflow-hidden">
+                  <img
+                    src={
+                      (travel.images && travel.images[0]) ||
+                      `/placeholder.svg?height=300&width=400&query=${encodeURIComponent("viaggio marocco " + travel.title)}`
+                    }
+                    alt={travel.title}
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                  />
+                  <div className="absolute top-4 right-4 bg-card/95 backdrop-blur-sm text-card-foreground px-4 py-2 rounded-full text-base font-bold shadow-lg">
+                    {priceDisplay}
+                  </div>
+                  <div className="absolute bottom-4 left-4 bg-foreground/60 backdrop-blur-sm text-primary-foreground px-4 py-2 rounded-full text-sm font-medium">
+                    {durationDisplay}
+                  </div>
+                  {travel.originalPrice && travel.originalPrice > travel.price && (
+                    <div className="absolute top-4 left-4 bg-red-500 text-white px-3 py-1 rounded-full text-sm font-bold">
+                      Offerta
+                    </div>
+                  )}
                 </div>
-                <CardTitle className="text-lg mb-2 text-card-foreground">{experience.title}</CardTitle>
-                <p className="text-muted-foreground text-sm mb-4 text-pretty">{experience.description}</p>
-                <div className="flex gap-2">
-                  <Button
-                    asChild
-                    variant="ghost"
-                    size="sm"
-                    className="flex-1 hover:scale-105 active:scale-95 touch-manipulation"
-                  >
-                    <Link href={experience.href}>Dettagli</Link>
-                  </Button>
-                  <Button
-                    asChild
-                    variant="cta"
-                    size="sm"
-                    className="flex-1 hover:scale-105 active:scale-95 touch-manipulation"
-                  >
-                    <Link href="/contatti">Prenota</Link>
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
+
+                <CardContent className="p-6">
+                  <div className="mb-3">
+                    <span className="inline-block px-3 py-1 bg-primary/10 text-primary rounded-full text-xs font-semibold uppercase tracking-wider">
+                      {travel.category?.replace('-', ' ')}
+                    </span>
+                  </div>
+                  <CardTitle className="text-xl mb-3 text-card-foreground group-hover:text-primary transition-colors">
+                    {travel.title}
+                  </CardTitle>
+                  <p className="text-muted-foreground text-sm mb-4 text-pretty line-clamp-3 leading-relaxed">
+                    {travel.description}
+                  </p>
+                  
+                  {travel.highlights && travel.highlights.length > 0 && (
+                    <div className="mb-4 space-y-1">
+                      {travel.highlights.slice(0, 3).map((highlight, idx) => (
+                        <div key={idx} className="flex items-start gap-2 text-sm text-muted-foreground">
+                          <span className="text-primary mt-0.5">✓</span>
+                          <span className="line-clamp-1">{highlight}</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  <div className="flex gap-2">
+                    <Button
+                      asChild
+                      variant="ghost"
+                      size="sm"
+                      className="flex-1 hover:scale-105 active:scale-95 touch-manipulation"
+                    >
+                      <Link href={`/viaggi/${travel.id}`}>Dettagli</Link>
+                    </Button>
+                    <Button
+                      asChild
+                      variant="cta"
+                      size="sm"
+                      className="flex-1 hover:scale-105 active:scale-95 touch-manipulation"
+                    >
+                      <Link href="/contatti">Prenota</Link>
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            )
+          })}
+        </div>
+
+        <div className="text-center mt-12">
+          <Button
+            asChild
+            variant="outline"
+            size="lg"
+            className="hover:scale-105 active:scale-95 touch-manipulation"
+          >
+            <Link href="/viaggi">Vedi Tutti i Viaggi</Link>
+          </Button>
         </div>
       </div>
     </section>
@@ -340,6 +509,7 @@ export default function Home() {
         <MoroccoMap />
       </Suspense>
       <AuthenticExperiences />
+      <FeaturedTravels />
       <TestimonialsSection />
       <FAQSection />
       <BlogTeaser />
