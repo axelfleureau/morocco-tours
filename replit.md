@@ -20,18 +20,19 @@ The "Morocco Dreams" website is built with a modern web stack designed for perfo
 
 **Technical Implementations & Feature Specifications:**
 - **Next.js Framework**: Utilizes Next.js 14.2.16 with TypeScript for a robust and type-safe frontend.
-- **Dynamic Content**: Experiences, travels, and city pages load content dynamically, primarily from Firestore.
+- **Dynamic Content System**: ALL primary content (experiences, travels, vehicles, blog posts) loads dynamically from Firestore collections. Public pages use helper functions in `lib/public-data.ts` that filter for published content with proper loading states and error handling.
 - **Wishlist System**: A universal wishlist system allows users to save various item types (vehicles, experiences, travels, cities, services, blog posts) across 15+ pages, with data persistence via Firestore and visual feedback using toast notifications.
 - **Custom Trip Requests**: A multi-step, validated form captures custom travel requests, saving data to Firestore for logged-in users and offering direct WhatsApp redirection for guests.
-- **Car Rental Redesign**: A dedicated, fully redesigned section for car rentals features 19 real vehicles, dynamic pricing based on seasonal periods and rental duration, and automated WhatsApp booking. Data is structured in `data/vehicles.ts`.
+- **Car Rental System**: 19 vehicles migrated to Firestore with dynamic pricing based on seasonal periods and rental duration, automated WhatsApp booking, and real-time availability. Public page (`app/servizi/noleggio-auto/`) loads from Firestore using `getPublishedVehicles()`.
+- **Blog System**: 6 blog posts migrated to Firestore with sections, tags, author metadata. Homepage BlogTeaser component dynamically loads latest 3 published posts using `getPublishedBlogPosts()`.
 - **Imperial Cities System**: 9 imperial cities are implemented with a uniform data structure including attractions, history, and tour pricing, accessible via dynamic pages.
 - **Instagram Video Integration**: A system to embed Instagram reels dynamically from Firestore, with an Admin Panel for managing up to 3 video slots.
 - **Admin UI**: A comprehensive Admin Panel provides:
     - **Authentication**: Dual-layer authentication with Firebase Auth and Firestore `adminUsers` collection.
     - **Protected Routes**: Secure layout with authentication guards and role-based access control.
     - **Dashboard**: Live statistics, content progress, and quick action links.
-    - **CRUD Operations**: Full Create, Read, Update, Delete functionality for Experiences, Travels, Vehicles, Instagram videos, and Admin Users.
-    - **Content Management**: Features like toggling published/featured status, category filtering, and real-time updates.
+    - **CRUD Operations**: Full Create, Read, Update, Delete functionality for Experiences, Travels, Vehicles, Blog posts, Instagram videos, and Admin Users.
+    - **Content Management**: Features like toggling published/featured status, category filtering, real-time updates, and complex pricing editor for vehicles.
 
 **System Design Choices:**
 - **Modular Architecture**: Components are designed to be modular and reusable, adhering to React best practices.
@@ -42,8 +43,16 @@ The "Morocco Dreams" website is built with a modern web stack designed for perfo
 
 ### External Dependencies
 - **Firebase**:
-    - **Firestore**: Primary database for dynamic content (experiences, travels, user profiles, custom trip requests, admin users, Instagram videos).
+    - **Firestore**: Primary database for ALL dynamic content (experiences, travels, vehicles, blog posts, user profiles, custom trip requests, admin users, Instagram videos).
     - **Firebase Authentication**: User authentication and authorization, particularly for the Admin UI.
     - **Firebase Admin SDK**: Used for secure server-side interactions with Firestore and user management in the Admin UI.
+    - **⚠️ CRITICAL SETUP**: Firestore security rules MUST be manually deployed via Firebase Console (Firestore → Rules) using the `firestore.rules` file. Without this, public pages cannot read data.
 - **Mapbox**: Integrated for interactive geographical maps displaying Moroccan cities and tour locations.
 - **npm**: Package manager for all project dependencies.
+
+### Recent Changes (November 20, 2025)
+- **Vehicles Migration**: All 19 vehicles migrated from `data/vehicles.ts` to Firestore collection 'vehicles' with published/featured/status fields. Car rental page updated to load dynamically.
+- **Blog Migration**: All 6 blog posts migrated from `content/blog-posts.ts` to Firestore collection 'blog' with sections, tags, timestamps. Homepage BlogTeaser updated to load dynamically.
+- **Admin Vehicles Panel**: Created `app/admin/vehicles/page.tsx` with complete CRUD operations, VehicleModal for editing complex pricing periods, toggle published/featured status.
+- **Public Data Helpers**: Added `getPublishedVehicles()` and `getPublishedBlogPosts()` in `lib/public-data.ts` following same pattern as existing helpers with proper error handling.
+- **Firestore Rules**: Updated `firestore.rules` with public read/admin write for vehicles and blog collections. **MUST BE DEPLOYED VIA FIREBASE CONSOLE**.

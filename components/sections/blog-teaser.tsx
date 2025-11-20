@@ -1,39 +1,56 @@
 "use client"
 
+import { useState, useEffect } from "react"
 import Link from "next/link"
-import { Calendar, ArrowRight, Clock } from "lucide-react"
+import { Calendar, ArrowRight, Clock, Loader2 } from "lucide-react"
+import { getPublishedBlogPosts, type BlogPost } from "@/lib/public-data"
 
 export default function BlogTeaser() {
-  const blogPosts = [
-    {
-      slug: "cucina-marocchina-guida-completa",
-      title: "Cucina Marocchina: Guida Completa ai Sapori Autentici",
-      excerpt: "Scopri i segreti della cucina marocchina: dal tagine al couscous, dalle spezie ai dolci tradizionali.",
-      image: "/images/blog/moroccan-tagine-cooking.png",
-      date: "15 Gennaio 2024",
-      readTime: "8 min",
-      category: "Gastronomia",
-    },
-    {
-      slug: "hammam-tradizionale-esperienza-autentica",
-      title: "Hammam Tradizionale: Un'Esperienza di Benessere Autentica",
-      excerpt:
-        "Tutto quello che devi sapere sull'hammam marocchino: rituali, benefici e dove vivere questa esperienza unica.",
-      image: "/images/blog/hammam-traditional-spa.png",
-      date: "12 Gennaio 2024",
-      readTime: "6 min",
-      category: "Benessere",
-    },
-    {
-      slug: "deserto-sahara-guida-viaggio",
-      title: "Deserto del Sahara: Guida Completa per il Tuo Viaggio",
-      excerpt: "Consigli pratici, cosa portare e come vivere al meglio l'esperienza nel deserto più grande del mondo.",
-      image: "/images/blog/sahara-desert-camping.png",
-      date: "8 Gennaio 2024",
-      readTime: "10 min",
-      category: "Viaggi",
-    },
-  ]
+  const [blogPosts, setBlogPosts] = useState<BlogPost[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const loadBlogPosts = async () => {
+      try {
+        setLoading(true)
+        const data = await getPublishedBlogPosts({ limit: 3 })
+        setBlogPosts(data)
+      } catch (error) {
+        console.error('Error loading blog posts:', error)
+        setBlogPosts([])
+      } finally {
+        setLoading(false)
+      }
+    }
+    
+    loadBlogPosts()
+  }, [])
+
+  if (loading) {
+    return (
+      <div className="py-16 lg:py-24 bg-background">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-center py-12">
+            <Loader2 className="w-8 h-8 animate-spin text-orange-500" />
+            <span className="ml-3 text-muted-foreground">Caricamento articoli...</span>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  if (blogPosts.length === 0) {
+    return null
+  }
+
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString)
+    return date.toLocaleDateString('it-IT', { year: 'numeric', month: 'long', day: 'numeric' })
+  }
+
+  const getCategory = (tags: string[]) => {
+    return tags[0] || 'Blog'
+  }
 
   return (
     <div className="py-16 lg:py-24 bg-background">
@@ -46,19 +63,19 @@ export default function BlogTeaser() {
         </div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {blogPosts.map((post, idx) => (
+          {blogPosts.map((post) => (
             <article
               key={post.slug}
               className="group bg-card rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-500 hover:scale-105"
             >
               <div className="relative h-48 overflow-hidden">
                 <img
-                  src={post.image || "/placeholder.svg?height=300&width=400"}
+                  src={post.cover || "/placeholder.svg?height=300&width=400"}
                   alt={post.title}
                   className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                 />
                 <div className="absolute top-4 left-4 bg-orange-500 text-white px-3 py-1 rounded-full text-sm font-medium">
-                  {post.category}
+                  {getCategory(post.tags)}
                 </div>
               </div>
 
@@ -66,11 +83,11 @@ export default function BlogTeaser() {
                 <div className="flex items-center space-x-4 text-sm text-muted-foreground mb-3">
                   <div className="flex items-center space-x-1">
                     <Calendar className="w-4 h-4" />
-                    <span>{post.date}</span>
+                    <span>{formatDate(post.date)}</span>
                   </div>
                   <div className="flex items-center space-x-1">
                     <Clock className="w-4 h-4" />
-                    <span>{post.readTime}</span>
+                    <span>{post.readingMinutes} min</span>
                   </div>
                 </div>
 

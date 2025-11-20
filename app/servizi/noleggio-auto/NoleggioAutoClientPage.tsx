@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useMemo } from "react"
+import { useState, useMemo, useEffect } from "react"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -17,8 +17,10 @@ import {
   Euro,
   Calendar,
   Shield,
+  Loader2,
 } from "lucide-react"
-import { vehicles, includedServices, extraServices, type Vehicle, calculateRentalPrice, periodNames } from "@/data/vehicles"
+import { includedServices, extraServices, calculateRentalPrice, periodNames } from "@/data/vehicles"
+import { getPublishedVehicles, type Vehicle } from "@/lib/public-data"
 import WishlistButton from "@/components/WishlistButton"
 
 const structuredData = {
@@ -36,29 +38,75 @@ const structuredData = {
 const WHATSAPP_NUMBER = "393292333370"
 
 export default function NoleggioAutoClientPage() {
-  const [selectedVehicle, setSelectedVehicle] = useState<Vehicle>(vehicles[0])
+  const [vehicles, setVehicles] = useState<Vehicle[]>([])
+  const [loading, setLoading] = useState(true)
+  const [selectedVehicle, setSelectedVehicle] = useState<Vehicle | null>(null)
   const [categoryFilter, setCategoryFilter] = useState<"all" | "economica" | "suv" | "Premium">("all")
   const [startDate, setStartDate] = useState<string>("")
   const [endDate, setEndDate] = useState<string>("")
   const [customerName, setCustomerName] = useState<string>("")
   const [customerPhone, setCustomerPhone] = useState<string>("")
 
+  useEffect(() => {
+    const loadVehicles = async () => {
+      try {
+        setLoading(true)
+        const data = await getPublishedVehicles()
+        setVehicles(data)
+        if (data.length > 0) {
+          setSelectedVehicle(data[0])
+        }
+      } catch (error) {
+        console.error('Error loading vehicles:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+    
+    loadVehicles()
+  }, [])
+
   const filteredVehicles = useMemo(() => {
     if (categoryFilter === "all") return vehicles
     return vehicles.filter((v) => v.category === categoryFilter)
-  }, [categoryFilter])
+  }, [categoryFilter, vehicles])
 
   const priceInfo = useMemo(() => {
-    if (!startDate || !endDate) return null
+    if (!startDate || !endDate || !selectedVehicle) return null
     return calculateRentalPrice(selectedVehicle, new Date(startDate), new Date(endDate))
   }, [selectedVehicle, startDate, endDate])
 
-  const categories = [
+  const categories = useMemo(() => [
     { value: "all", label: "Tutte", icon: Car, count: vehicles.length },
     { value: "economica", label: "Economica", icon: Euro, count: vehicles.filter((v) => v.category === "economica").length },
     { value: "suv", label: "SUV", icon: Car, count: vehicles.filter((v) => v.category === "suv").length },
     { value: "Premium", label: "Premium", icon: Shield, count: vehicles.filter((v) => v.category === "Premium").length },
-  ]
+  ], [vehicles])
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <Loader2 className="w-16 h-16 animate-spin text-orange-500 mx-auto mb-4" />
+          <p className="text-muted-foreground">Caricamento veicoli...</p>
+        </div>
+      </div>
+    )
+  }
+
+  if (vehicles.length === 0 || !selectedVehicle) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center max-w-md">
+          <Car className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
+          <h2 className="text-2xl font-bold text-foreground mb-2">Nessun veicolo disponibile</h2>
+          <p className="text-muted-foreground">
+            Al momento non ci sono veicoli pubblicati. Torna più tardi o contattaci su WhatsApp.
+          </p>
+        </div>
+      </div>
+    )
+  }
 
   const composeWhatsappMessage = () => {
     const priceText = priceInfo
