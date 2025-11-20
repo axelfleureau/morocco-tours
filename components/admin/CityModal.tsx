@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { X, Save, Loader2 } from 'lucide-react'
 import { doc, setDoc, Timestamp } from 'firebase/firestore'
 import { db } from '@/lib/firebase'
+import { useNotifications } from '../NotificationSystem'
 
 interface City {
   id?: string
@@ -24,6 +25,7 @@ interface CityModalProps {
 }
 
 export default function CityModal({ city, isOpen, onClose, onSaveSuccess }: CityModalProps) {
+  const { showSuccess, showError } = useNotifications()
   const [formData, setFormData] = useState<City>({
     name: '',
     title: '',
@@ -78,10 +80,13 @@ export default function CityModal({ city, isOpen, onClose, onSaveSuccess }: City
 
       await setDoc(doc(db, 'cities', slug), dataToSave, { merge: true })
       
+      showSuccess('Città Salvata', `"${formData.name}" è stata salvata con successo.`)
       onSaveSuccess()
       onClose()
     } catch (err: any) {
-      setError(err.message || 'Errore durante il salvataggio')
+      const errorMessage = err.message || 'Errore durante il salvataggio'
+      setError(errorMessage)
+      showError('Errore Salvataggio', errorMessage)
     } finally {
       setSaving(false)
     }

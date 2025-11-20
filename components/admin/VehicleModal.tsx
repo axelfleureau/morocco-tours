@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { X, Save, Loader2 } from 'lucide-react'
 import { doc, setDoc, addDoc, collection } from 'firebase/firestore'
 import { db } from '@/lib/firebase'
+import { useNotifications } from '../NotificationSystem'
 
 interface Vehicle {
   id?: string
@@ -33,6 +34,7 @@ interface VehicleModalProps {
 }
 
 export default function VehicleModal({ vehicle, onClose, onSave }: VehicleModalProps) {
+  const { showSuccess, showError } = useNotifications()
   const [formData, setFormData] = useState<Vehicle>({
     name: '',
     category: 'economica',
@@ -80,10 +82,13 @@ export default function VehicleModal({ vehicle, onClose, onSave }: VehicleModalP
           createdAt: new Date().toISOString()
         })
       }
+      showSuccess('Veicolo Salvato', `"${formData.name}" è stato salvato con successo.`)
       onSave()
       onClose()
     } catch (err: any) {
-      setError(err.message || 'Errore durante il salvataggio')
+      const errorMessage = err.message || 'Errore durante il salvataggio'
+      setError(errorMessage)
+      showError('Errore Salvataggio', errorMessage)
     } finally {
       setSaving(false)
     }

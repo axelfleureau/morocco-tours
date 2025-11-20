@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { X, Save, Loader2, Plus, Trash2 } from 'lucide-react'
 import { doc, setDoc, Timestamp } from 'firebase/firestore'
 import { db } from '@/lib/firebase'
+import { useNotifications } from '../NotificationSystem'
 
 interface BlogPost {
   id?: string
@@ -34,6 +35,7 @@ interface BlogModalProps {
 }
 
 export default function BlogModal({ post, isOpen, onClose, onSaveSuccess }: BlogModalProps) {
+  const { showSuccess, showError } = useNotifications()
   const [formData, setFormData] = useState<BlogPost>({
     title: '',
     excerpt: '',
@@ -136,10 +138,13 @@ export default function BlogModal({ post, isOpen, onClose, onSaveSuccess }: Blog
 
       await setDoc(doc(db, 'blog', slug), dataToSave, { merge: true })
       
+      showSuccess('Post Salvato', `"${formData.title}" è stato salvato con successo.`)
       onSaveSuccess()
       onClose()
     } catch (err: any) {
-      setError(err.message || 'Errore durante il salvataggio')
+      const errorMessage = err.message || 'Errore durante il salvataggio'
+      setError(errorMessage)
+      showError('Errore Salvataggio', errorMessage)
     } finally {
       setSaving(false)
     }

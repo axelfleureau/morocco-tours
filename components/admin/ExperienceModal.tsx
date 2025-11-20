@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { X, Save, Loader2 } from 'lucide-react'
 import { doc, setDoc, addDoc, collection } from 'firebase/firestore'
 import { db } from '@/lib/firebase'
+import { useNotifications } from '../NotificationSystem'
 
 interface Experience {
   id?: string
@@ -23,6 +24,7 @@ interface ExperienceModalProps {
 }
 
 export default function ExperienceModal({ experience, onClose, onSave }: ExperienceModalProps) {
+  const { showSuccess, showError } = useNotifications()
   const [formData, setFormData] = useState<Experience>({
     title: '',
     category: 'surf',
@@ -54,10 +56,13 @@ export default function ExperienceModal({ experience, onClose, onSave }: Experie
         // Create new
         await addDoc(collection(db, 'experiences'), formData)
       }
+      showSuccess('Esperienza Salvata', `"${formData.title}" è stata salvata con successo.`)
       onSave()
       onClose()
     } catch (err: any) {
-      setError(err.message || 'Errore durante il salvataggio')
+      const errorMessage = err.message || 'Errore durante il salvataggio'
+      setError(errorMessage)
+      showError('Errore Salvataggio', errorMessage)
     } finally {
       setSaving(false)
     }

@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { X, Save, Loader2 } from 'lucide-react'
 import { doc, setDoc, addDoc, collection } from 'firebase/firestore'
 import { db } from '@/lib/firebase'
+import { useNotifications } from '../NotificationSystem'
 
 interface Travel {
   id?: string
@@ -25,6 +26,7 @@ interface TravelModalProps {
 }
 
 export default function TravelModal({ travel, onClose, onSave }: TravelModalProps) {
+  const { showSuccess, showError } = useNotifications()
   const [formData, setFormData] = useState<Travel>({
     title: '',
     category: 'desert',
@@ -58,10 +60,13 @@ export default function TravelModal({ travel, onClose, onSave }: TravelModalProp
         // Create new
         await addDoc(collection(db, 'travels'), formData)
       }
+      showSuccess('Viaggio Salvato', `"${formData.title}" è stato salvato con successo.`)
       onSave()
       onClose()
     } catch (err: any) {
-      setError(err.message || 'Errore durante il salvataggio')
+      const errorMessage = err.message || 'Errore durante il salvataggio'
+      setError(errorMessage)
+      showError('Errore Salvataggio', errorMessage)
     } finally {
       setSaving(false)
     }
