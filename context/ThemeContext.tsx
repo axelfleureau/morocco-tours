@@ -87,14 +87,22 @@ export function MoroccoThemeProvider({ children }: ThemeProviderProps) {
   const loadActiveTheme = async () => {
     try {
       setIsLoading(true)
-      const response = await fetch('/api/public/content?collection=site_theme&published=true')
+      const response = await fetch('/api/site-settings')
       
       if (response.ok) {
         const data = await response.json()
-        if (data.items && data.items.length > 0) {
-          const activeTheme = data.items.find((theme: SiteTheme) => theme.isActive) || data.items[0]
-          setCurrentTheme(activeTheme)
-          applyTheme(activeTheme)
+        if (data.theme && typeof data.theme === 'object') {
+          const themeData: SiteTheme = {
+            name: data.theme.name || 'Morocco Dreams Default',
+            isActive: true,
+            colors: data.theme.colors || defaultTheme.colors,
+            typography: data.theme.typography || defaultTheme.typography,
+            layout: data.theme.layout || defaultTheme.layout,
+            createdAt: new Date() as any,
+            updatedAt: new Date() as any
+          }
+          setCurrentTheme(themeData)
+          applyTheme(themeData)
         } else {
           // No theme in database, use default
           setCurrentTheme(defaultTheme)

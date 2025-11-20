@@ -1,131 +1,58 @@
-// Public-facing data queries (only published content)
-// This replaces all hardcoded static data with database queries
+// Public-facing data queries using PostgreSQL API
+// This replaces all Firestore queries with REST API calls
 
-import { 
-  collection, 
-  getDocs, 
-  query, 
-  where, 
-  orderBy, 
-  limit 
-} from 'firebase/firestore';
-import { db } from './firebase';
-import { COLLECTIONS } from './firestore-schema';
-import { Travel, Experience, Service } from './firestore-schema';
+// Base API URL
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || '';
 
-// Get published travels for public display
-export async function getPublishedTravels(filters?: {
-  category?: string;
-  featured?: boolean;
-  limit?: number;
-}): Promise<Travel[]> {
-  try {
-    let queryConstraints: any[] = [
-      where('status', '==', 'published'),
-      where('published', '==', true)
-    ];
-    
-    if (filters?.category) {
-      queryConstraints.push(where('category', '==', filters.category));
-    }
-    
-    if (filters?.featured !== undefined) {
-      queryConstraints.push(where('featured', '==', filters.featured));
-    }
-    
-    queryConstraints.push(orderBy('createdAt', 'desc'));
-    
-    if (filters?.limit) {
-      queryConstraints.push(limit(filters.limit));
-    }
-    
-    const q = query(collection(db, COLLECTIONS.travels), ...queryConstraints);
-    const snapshot = await getDocs(q);
-    
-    return snapshot.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data()
-    })) as Travel[];
-  } catch (error) {
-    console.error('Error fetching published travels:', error);
-    // Throw error instead of returning empty array to expose Firestore issues
-    throw new Error(`Database error: ${error instanceof Error ? error.message : 'Unknown error'}`);
-  }
+// Travel interface
+export interface Travel {
+  id: string;
+  title: string;
+  slug: string;
+  category: string;
+  description: string;
+  image?: string;
+  duration: string;
+  price: number;
+  itinerary?: any[];
+  includes?: string[];
+  excludes?: string[];
+  published: boolean;
+  featured: boolean;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
-// Get published experiences for public display
-export async function getPublishedExperiences(filters?: {
-  category?: string;
-  featured?: boolean;
-  limit?: number;
-}): Promise<Experience[]> {
-  try {
-    let queryConstraints: any[] = [
-      where('status', '==', 'published'),
-      where('published', '==', true)
-    ];
-    
-    if (filters?.category) {
-      queryConstraints.push(where('category', '==', filters.category));
-    }
-    
-    if (filters?.featured !== undefined) {
-      queryConstraints.push(where('featured', '==', filters.featured));
-    }
-    
-    queryConstraints.push(orderBy('createdAt', 'desc'));
-    
-    if (filters?.limit) {
-      queryConstraints.push(limit(filters.limit));
-    }
-    
-    const q = query(collection(db, COLLECTIONS.experiences), ...queryConstraints);
-    const snapshot = await getDocs(q);
-    
-    return snapshot.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data()
-    })) as Experience[];
-  } catch (error) {
-    console.error('Error fetching published experiences:', error);
-    // Throw error instead of returning empty array to expose Firestore issues
-    throw new Error(`Database error: ${error instanceof Error ? error.message : 'Unknown error'}`);
-  }
+// Experience interface
+export interface Experience {
+  id: string;
+  title: string;
+  slug: string;
+  category: string;
+  description: string;
+  image?: string;
+  duration: string;
+  price: number;
+  highlights?: string[];
+  itinerary?: any[];
+  published: boolean;
+  featured: boolean;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
-// Get published services for public display
-export async function getPublishedServices(filters?: {
-  category?: string;
-  limit?: number;
-}): Promise<Service[]> {
-  try {
-    let queryConstraints: any[] = [
-      where('status', '==', 'published'),
-      where('published', '==', true)
-    ];
-    
-    if (filters?.category) {
-      queryConstraints.push(where('category', '==', filters.category));
-    }
-    
-    queryConstraints.push(orderBy('createdAt', 'desc'));
-    
-    if (filters?.limit) {
-      queryConstraints.push(limit(filters.limit));
-    }
-    
-    const q = query(collection(db, COLLECTIONS.services), ...queryConstraints);
-    const snapshot = await getDocs(q);
-    
-    return snapshot.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data()
-    })) as Service[];
-  } catch (error) {
-    console.error('Error fetching published services:', error);
-    // Throw error instead of returning empty array to expose Firestore issues  
-    throw new Error(`Database error: ${error instanceof Error ? error.message : 'Unknown error'}`);
-  }
+// Service interface
+export interface Service {
+  id: string;
+  name: string;
+  slug: string;
+  category: string;
+  description: string;
+  icon?: string;
+  features?: string[];
+  published: boolean;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 // Vehicle interface
@@ -135,12 +62,23 @@ export interface Vehicle {
   category: "economica" | "suv" | "Premium";
   transmission: "manuale" | "automatica";
   fuel: "benzina" | "diesel";
+  fuelType?: string;
   hasAC: boolean;
   doors: number;
   seats: number;
+  luggage?: number;
   dailyDeductible: number;
   image: string;
-  pricing: {
+  features?: string[];
+  pricingPeriods?: {
+    name: string;
+    startDate: string;
+    endDate: string;
+    shortTerm: number;
+    mediumTerm: number;
+    longTerm: number;
+  }[];
+  pricing?: {
     period1: { short: number; medium: number; long: number };
     period2: { short: number; medium: number; long: number };
     period3: { short: number; medium: number; long: number };
@@ -150,51 +88,15 @@ export interface Vehicle {
   featured: boolean;
 }
 
-// Get published vehicles for car rental page
-export async function getPublishedVehicles(filters?: {
-  category?: string;
-  featured?: boolean;
-  limit?: number;
-}): Promise<Vehicle[]> {
-  try {
-    let queryConstraints: any[] = [
-      where('published', '==', true)
-    ];
-    
-    if (filters?.category) {
-      queryConstraints.push(where('category', '==', filters.category));
-    }
-    
-    if (filters?.featured !== undefined) {
-      queryConstraints.push(where('featured', '==', filters.featured));
-    }
-    
-    queryConstraints.push(orderBy('category', 'asc'));
-    
-    if (filters?.limit) {
-      queryConstraints.push(limit(filters.limit));
-    }
-    
-    const q = query(collection(db, 'vehicles'), ...queryConstraints);
-    const snapshot = await getDocs(q);
-    
-    return snapshot.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data()
-    })) as Vehicle[];
-  } catch (error) {
-    console.error('Error fetching published vehicles:', error);
-    throw new Error(`Database error: ${error instanceof Error ? error.message : 'Unknown error'}`);
-  }
-}
-
 // Blog post interface
 export interface BlogPost {
+  id: string;
   slug: string;
   title: string;
   excerpt: string;
   cover: string;
   author: string;
+  authorRole?: string;
   date: string;
   readingMinutes: number;
   tags: string[];
@@ -207,6 +109,136 @@ export interface BlogPost {
   featured: boolean;
 }
 
+// City interface
+export interface City {
+  id: string;
+  name: string;
+  slug: string;
+  type: string;
+  description: string;
+  image?: string;
+  attractions?: string[];
+  history?: string;
+  tourPrice?: number;
+  published: boolean;
+  createdAt?: Date;
+  updatedAt?: Date;
+}
+
+// Get published travels for public display
+export async function getPublishedTravels(filters?: {
+  category?: string;
+  featured?: boolean;
+  limit?: number;
+}): Promise<Travel[]> {
+  try {
+    const params = new URLSearchParams();
+    if (filters?.category) params.append('category', filters.category);
+    if (filters?.featured !== undefined) params.append('featured', String(filters.featured));
+    if (filters?.limit) params.append('limit', String(filters.limit));
+    
+    const url = `${API_BASE}/api/travels${params.toString() ? `?${params}` : ''}`;
+    const response = await fetch(url, {
+      next: { tags: ['travels'] }
+    });
+    
+    if (!response.ok) {
+      throw new Error(`API error: ${response.status}`);
+    }
+    
+    const data = await response.json();
+    return data.travels || [];
+  } catch (error) {
+    console.error('Error fetching published travels:', error);
+    throw new Error(`Database error: ${error instanceof Error ? error.message : 'Unknown error'}`);
+  }
+}
+
+// Get published experiences for public display
+export async function getPublishedExperiences(filters?: {
+  category?: string;
+  featured?: boolean;
+  limit?: number;
+}): Promise<Experience[]> {
+  try {
+    const params = new URLSearchParams();
+    if (filters?.category) params.append('category', filters.category);
+    if (filters?.featured !== undefined) params.append('featured', String(filters.featured));
+    if (filters?.limit) params.append('limit', String(filters.limit));
+    
+    const url = `${API_BASE}/api/experiences${params.toString() ? `?${params}` : ''}`;
+    const response = await fetch(url, {
+      next: { tags: ['experiences'] }
+    });
+    
+    if (!response.ok) {
+      throw new Error(`API error: ${response.status}`);
+    }
+    
+    const data = await response.json();
+    return data.experiences || [];
+  } catch (error) {
+    console.error('Error fetching published experiences:', error);
+    throw new Error(`Database error: ${error instanceof Error ? error.message : 'Unknown error'}`);
+  }
+}
+
+// Get published services for public display
+export async function getPublishedServices(filters?: {
+  category?: string;
+  limit?: number;
+}): Promise<Service[]> {
+  try {
+    const params = new URLSearchParams();
+    if (filters?.category) params.append('category', filters.category);
+    if (filters?.limit) params.append('limit', String(filters.limit));
+    
+    const url = `${API_BASE}/api/services${params.toString() ? `?${params}` : ''}`;
+    const response = await fetch(url, {
+      next: { tags: ['services'] }
+    });
+    
+    if (!response.ok) {
+      throw new Error(`API error: ${response.status}`);
+    }
+    
+    const data = await response.json();
+    return data.services || [];
+  } catch (error) {
+    console.error('Error fetching published services:', error);
+    throw new Error(`Database error: ${error instanceof Error ? error.message : 'Unknown error'}`);
+  }
+}
+
+// Get published vehicles for car rental page
+export async function getPublishedVehicles(filters?: {
+  category?: string;
+  featured?: boolean;
+  limit?: number;
+}): Promise<Vehicle[]> {
+  try {
+    const params = new URLSearchParams();
+    if (filters?.category) params.append('category', filters.category);
+    if (filters?.featured !== undefined) params.append('featured', String(filters.featured));
+    if (filters?.limit) params.append('limit', String(filters.limit));
+    
+    const url = `${API_BASE}/api/vehicles${params.toString() ? `?${params}` : ''}`;
+    const response = await fetch(url, {
+      next: { tags: ['vehicles'] }
+    });
+    
+    if (!response.ok) {
+      throw new Error(`API error: ${response.status}`);
+    }
+    
+    const data = await response.json();
+    return data.vehicles || [];
+  } catch (error) {
+    console.error('Error fetching published vehicles:', error);
+    throw new Error(`Database error: ${error instanceof Error ? error.message : 'Unknown error'}`);
+  }
+}
+
 // Get published blog posts
 export async function getPublishedBlogPosts(filters?: {
   tag?: string;
@@ -214,33 +246,51 @@ export async function getPublishedBlogPosts(filters?: {
   limit?: number;
 }): Promise<BlogPost[]> {
   try {
-    let queryConstraints: any[] = [
-      where('published', '==', true)
-    ];
+    const params = new URLSearchParams();
+    if (filters?.tag) params.append('tag', filters.tag);
+    if (filters?.featured !== undefined) params.append('featured', String(filters.featured));
+    if (filters?.limit) params.append('limit', String(filters.limit));
     
-    if (filters?.tag) {
-      queryConstraints.push(where('tags', 'array-contains', filters.tag));
+    const url = `${API_BASE}/api/blog${params.toString() ? `?${params}` : ''}`;
+    const response = await fetch(url, {
+      next: { tags: ['blog'] }
+    });
+    
+    if (!response.ok) {
+      throw new Error(`API error: ${response.status}`);
     }
     
-    if (filters?.featured !== undefined) {
-      queryConstraints.push(where('featured', '==', filters.featured));
-    }
-    
-    queryConstraints.push(orderBy('createdAt', 'desc'));
-    
-    if (filters?.limit) {
-      queryConstraints.push(limit(filters.limit));
-    }
-    
-    const q = query(collection(db, 'blog'), ...queryConstraints);
-    const snapshot = await getDocs(q);
-    
-    return snapshot.docs.map(doc => ({
-      slug: doc.id,
-      ...doc.data()
-    })) as BlogPost[];
+    const data = await response.json();
+    return data.posts || [];
   } catch (error) {
     console.error('Error fetching published blog posts:', error);
+    throw new Error(`Database error: ${error instanceof Error ? error.message : 'Unknown error'}`);
+  }
+}
+
+// Get published cities
+export async function getPublishedCities(filters?: {
+  type?: string;
+  limit?: number;
+}): Promise<City[]> {
+  try {
+    const params = new URLSearchParams();
+    if (filters?.type) params.append('type', filters.type);
+    if (filters?.limit) params.append('limit', String(filters.limit));
+    
+    const url = `${API_BASE}/api/cities${params.toString() ? `?${params}` : ''}`;
+    const response = await fetch(url, {
+      next: { tags: ['cities'] }
+    });
+    
+    if (!response.ok) {
+      throw new Error(`API error: ${response.status}`);
+    }
+    
+    const data = await response.json();
+    return data.cities || [];
+  } catch (error) {
+    console.error('Error fetching published cities:', error);
     throw new Error(`Database error: ${error instanceof Error ? error.message : 'Unknown error'}`);
   }
 }

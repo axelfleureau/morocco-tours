@@ -133,15 +133,14 @@ export default function ThemeCustomizer() {
 
   const loadCurrentTheme = async () => {
     try {
-      const response = await fetch('/api/public/content?collection=site_theme&featured=true')
+      const response = await fetch('/api/site-settings')
       if (response.ok) {
         const data = await response.json()
-        if (data.items && data.items.length > 0) {
-          const currentTheme = data.items[0]
+        if (data.theme && typeof data.theme === 'object') {
           setTheme({
-            colors: currentTheme.colors || defaultTheme.colors,
-            typography: currentTheme.typography || defaultTheme.typography,
-            layout: currentTheme.layout || defaultTheme.layout
+            colors: data.theme.colors || defaultTheme.colors,
+            typography: data.theme.typography || defaultTheme.typography,
+            layout: data.theme.layout || defaultTheme.layout
           })
         }
       }
@@ -154,28 +153,27 @@ export default function ThemeCustomizer() {
   const saveTheme = async () => {
     try {
       setIsLoading(true)
-      const token = user ? await user.getIdToken() : null
       
-      if (!token) {
-        alert('Token di autenticazione necessario')
+      const adminToken = process.env.NEXT_PUBLIC_ADMIN_TOKEN || localStorage.getItem('admin_token')
+      
+      if (!adminToken) {
+        alert('Token di autenticazione admin necessario')
         return
       }
 
-      const response = await fetch('/api/admin/content', {
-        method: 'POST',
+      const response = await fetch('/api/site-settings', {
+        method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          'Authorization': `Bearer ${adminToken}`
         },
         body: JSON.stringify({
-          collection: 'site_theme',
-          data: {
+          theme: {
             name: 'Default Theme',
             isActive: true,
             colors: theme.colors,
             typography: theme.typography,
-            layout: theme.layout,
-            published: true
+            layout: theme.layout
           }
         })
       })

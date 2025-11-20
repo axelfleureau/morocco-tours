@@ -10,7 +10,7 @@ export async function GET() {
       where: { published: true },
       orderBy: { publishedAt: "desc" }
     })
-    return Response.json(posts, {
+    return Response.json({ posts }, {
       headers: { "Cache-Control": "no-store" }
     })
   } catch (error) {

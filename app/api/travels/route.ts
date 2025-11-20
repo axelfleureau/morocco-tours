@@ -10,7 +10,7 @@ export async function GET() {
       where: { published: true },
       orderBy: { updatedAt: "desc" }
     })
-    return Response.json(travels, {
+    return Response.json({ travels }, {
       headers: { "Cache-Control": "no-store" }
     })
   } catch (error) {

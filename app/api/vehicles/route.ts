@@ -10,7 +10,59 @@ export async function GET() {
       where: { published: true },
       orderBy: { updatedAt: "desc" }
     })
-    return Response.json(vehicles, {
+    
+    const transformedVehicles = vehicles.map(vehicle => {
+      const pricingPeriods = vehicle.pricingPeriods as any[] || []
+      
+      const pricing = {
+        period1: pricingPeriods[0] ? { 
+          short: pricingPeriods[0].shortTerm, 
+          medium: pricingPeriods[0].mediumTerm, 
+          long: pricingPeriods[0].longTerm 
+        } : { short: 0, medium: 0, long: 0 },
+        period2: pricingPeriods[1] ? { 
+          short: pricingPeriods[1].shortTerm, 
+          medium: pricingPeriods[1].mediumTerm, 
+          long: pricingPeriods[1].longTerm 
+        } : { short: 0, medium: 0, long: 0 },
+        period3: pricingPeriods[2] ? { 
+          short: pricingPeriods[2].shortTerm, 
+          medium: pricingPeriods[2].mediumTerm, 
+          long: pricingPeriods[2].longTerm 
+        } : { short: 0, medium: 0, long: 0 },
+        period4: pricingPeriods[3] ? { 
+          short: pricingPeriods[3].shortTerm, 
+          medium: pricingPeriods[3].mediumTerm, 
+          long: pricingPeriods[3].longTerm 
+        } : { short: 0, medium: 0, long: 0 }
+      }
+      
+      const dailyDeductible = 
+        vehicle.category === 'economica' ? 6 :
+        vehicle.category === 'suv' ? 8 :
+        vehicle.category === 'Premium' ? 10 : 6
+      
+      return {
+        id: vehicle.id,
+        name: vehicle.name,
+        category: vehicle.category,
+        transmission: vehicle.transmission,
+        fuel: vehicle.fuelType || 'benzina',
+        hasAC: true,
+        doors: vehicle.doors,
+        seats: vehicle.seats,
+        dailyDeductible,
+        image: vehicle.image || '',
+        pricing,
+        pricingPeriods: vehicle.pricingPeriods,
+        features: vehicle.features,
+        luggage: vehicle.luggage,
+        published: vehicle.published,
+        featured: vehicle.featured
+      }
+    })
+    
+    return Response.json({ vehicles: transformedVehicles }, {
       headers: { "Cache-Control": "no-store" }
     })
   } catch (error) {
