@@ -24,6 +24,7 @@ import {
 } from "lucide-react"
 import Link from "next/link"
 import { useTheme } from "next-themes"
+import FirestoreRulesBanner from "@/components/admin/FirestoreRulesBanner"
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter()
@@ -130,7 +131,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       )}
 
       <aside
-        className={`fixed top-0 left-0 h-screen w-72 bg-card border-r border-border z-50 transform transition-transform duration-300 lg:translate-x-0 ${
+        className={`fixed top-0 left-0 h-screen w-72 bg-card border-r border-border z-40 transform transition-transform duration-300 lg:translate-x-0 ${
           isSidebarOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
@@ -245,7 +246,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         </header>
 
         <main className="p-4 lg:p-8">
-          {children}
+          <FirestoreRulesBanner />
+          <div className="mt-6">
+            {children}
+          </div>
         </main>
       </div>
     </div>
