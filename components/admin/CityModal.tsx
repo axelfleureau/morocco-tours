@@ -67,8 +67,8 @@ export default function CityModal({ city, isOpen, onClose, onSaveSuccess }: City
 
   const handleUrlChange = (url: string) => {
     setFormData({ ...formData, image: url })
-    if (url) {
-      const validation = validateUrl(url)
+    if (url && url.trim()) {
+      const validation = validateUrl(url, true)
       setUrlError(validation.valid ? '' : validation.error || '')
     } else {
       setUrlError('')
@@ -78,11 +78,13 @@ export default function CityModal({ city, isOpen, onClose, onSaveSuccess }: City
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     
-    const urlValidation = validateUrl(formData.image)
-    if (!urlValidation.valid) {
-      setUrlError(urlValidation.error || 'URL non valido')
-      showError('Errore Validazione', urlValidation.error || 'URL immagine non valido')
-      return
+    if (formData.image && formData.image.trim()) {
+      const urlValidation = validateUrl(formData.image, true)
+      if (!urlValidation.valid) {
+        setUrlError(urlValidation.error || 'URL non valido')
+        showError('Errore Validazione', urlValidation.error || 'URL immagine non valido')
+        return
+      }
     }
     
     setSaving(true)

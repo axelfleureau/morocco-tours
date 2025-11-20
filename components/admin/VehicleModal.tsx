@@ -67,7 +67,7 @@ export default function VehicleModal({ vehicle, onClose, onSave }: VehicleModalP
 
   const handleUrlChange = (url: string) => {
     setFormData({ ...formData, image: url })
-    if (url) {
+    if (url && url.trim()) {
       const validation = validateUrl(url, false)
       setUrlError(validation.valid ? '' : validation.error || '')
     } else {
@@ -78,7 +78,7 @@ export default function VehicleModal({ vehicle, onClose, onSave }: VehicleModalP
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     
-    if (formData.image) {
+    if (formData.image && formData.image.trim()) {
       const urlValidation = validateUrl(formData.image, false)
       if (!urlValidation.valid) {
         setUrlError(urlValidation.error || 'URL non valido')

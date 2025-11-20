@@ -125,8 +125,8 @@ export default function BlogModal({ post, isOpen, onClose, onSaveSuccess }: Blog
 
   const handleCoverUrlChange = (url: string) => {
     setFormData({ ...formData, cover: url })
-    if (url) {
-      const validation = validateUrl(url)
+    if (url && url.trim()) {
+      const validation = validateUrl(url, true)
       setCoverUrlError(validation.valid ? '' : validation.error || '')
     } else {
       setCoverUrlError('')
@@ -138,7 +138,7 @@ export default function BlogModal({ post, isOpen, onClose, onSaveSuccess }: Blog
     newSections[index] = { ...newSections[index], image: url }
     setFormData({ ...formData, sections: newSections })
     
-    if (url) {
+    if (url && url.trim()) {
       const validation = validateUrl(url, false)
       setSectionUrlErrors({
         ...sectionUrlErrors,
@@ -154,17 +154,19 @@ export default function BlogModal({ post, isOpen, onClose, onSaveSuccess }: Blog
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     
-    const coverValidation = validateUrl(formData.cover)
-    if (!coverValidation.valid) {
-      setCoverUrlError(coverValidation.error || 'URL non valido')
-      showError('Errore Validazione', coverValidation.error || 'URL copertina non valido')
-      return
+    if (formData.cover && formData.cover.trim()) {
+      const coverValidation = validateUrl(formData.cover, true)
+      if (!coverValidation.valid) {
+        setCoverUrlError(coverValidation.error || 'URL non valido')
+        showError('Errore Validazione', coverValidation.error || 'URL copertina non valido')
+        return
+      }
     }
     
     const newSectionErrors: {[key: number]: string} = {}
     for (let i = 0; i < formData.sections.length; i++) {
       const section = formData.sections[i]
-      if (section.image) {
+      if (section.image && section.image.trim()) {
         const validation = validateUrl(section.image, false)
         if (!validation.valid) {
           newSectionErrors[i] = validation.error || 'URL non valido'
