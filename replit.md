@@ -27,12 +27,21 @@ The "Morocco Dreams" website is built with a modern web stack designed for perfo
 - **Blog System**: 6 blog posts migrated to Firestore with sections, tags, author metadata. Homepage BlogTeaser component dynamically loads latest 3 published posts using `getPublishedBlogPosts()`.
 - **Imperial Cities System**: 9 imperial cities are implemented with a uniform data structure including attractions, history, and tour pricing, accessible via dynamic pages.
 - **Instagram Video Integration**: A system to embed Instagram reels dynamically from Firestore, with an Admin Panel for managing up to 3 video slots.
-- **Admin UI**: A comprehensive Admin Panel provides:
+- **Admin UI**: A unified Admin Panel at `/admin` provides:
     - **Authentication**: Dual-layer authentication with Firebase Auth and Firestore `adminUsers` collection.
-    - **Protected Routes**: Secure layout with authentication guards and role-based access control.
+    - **Protected Routes**: Secure layout with authentication guards and role-based access control. Admin users are automatically redirected from `/dashboard` to `/admin`.
     - **Dashboard**: Live statistics, content progress, and quick action links.
-    - **CRUD Operations**: Full Create, Read, Update, Delete functionality for Experiences, Travels, Vehicles, Blog posts, Instagram videos, and Admin Users.
-    - **Content Management**: Features like toggling published/featured status, category filtering, real-time updates, and complex pricing editor for vehicles.
+    - **CRUD Operations**: Full Create, Read, Update, Delete functionality for ALL content types via modal-driven interfaces:
+        - **Experiences**: ExperienceModal with itinerary editor, highlights, pricing
+        - **Travels**: TravelModal with complete travel package management
+        - **Vehicles**: VehicleModal with complex seasonal pricing periods
+        - **Blog**: BlogModal with sections editor, tags, SEO metadata
+        - **Cities**: CityModal for managing imperial/coastal/desert cities
+        - **Services**: ServiceModalNew for transport, guides, accommodation
+        - **Instagram**: Video slot management for homepage reels
+        - **Admin Users**: User role and access management
+    - **Content Management**: Features like toggling published/featured status, category filtering, real-time updates, and Firestore auto-propagation to public pages.
+    - **Consistent Patterns**: All modals follow same design with Firestore setDoc/merge, Timestamp auditing, refetch-on-save pattern.
 
 **System Design Choices:**
 - **Modular Architecture**: Components are designed to be modular and reusable, adhering to React best practices.
@@ -51,8 +60,14 @@ The "Morocco Dreams" website is built with a modern web stack designed for perfo
 - **npm**: Package manager for all project dependencies.
 
 ### Recent Changes (November 20, 2025)
+- **Dashboard Unification**: Consolidated two separate admin interfaces (`/admin` and `/dashboard` admin tabs) into single unified dashboard at `/admin`.
+    - Created `app/admin/blog/page.tsx`, `app/admin/cities/page.tsx`, `app/admin/services/page.tsx` with full CRUD operations
+    - Built modal components: `BlogModal`, `CityModal`, `ServiceModalNew` following existing patterns
+    - Updated `app/admin/layout.tsx` sidebar to include all 8 management sections: Experiences, Travels, Vehicles, Blog, Cities, Services, Instagram, Users
+    - Configured `/dashboard` to redirect admin users to `/admin`, keeping only user sections (bookings, wishlist, profile) for regular users
 - **Vehicles Migration**: All 19 vehicles migrated from `data/vehicles.ts` to Firestore collection 'vehicles' with published/featured/status fields. Car rental page updated to load dynamically.
 - **Blog Migration**: All 6 blog posts migrated from `content/blog-posts.ts` to Firestore collection 'blog' with sections, tags, timestamps. Homepage BlogTeaser updated to load dynamically.
 - **Admin Vehicles Panel**: Created `app/admin/vehicles/page.tsx` with complete CRUD operations, VehicleModal for editing complex pricing periods, toggle published/featured status.
 - **Public Data Helpers**: Added `getPublishedVehicles()` and `getPublishedBlogPosts()` in `lib/public-data.ts` following same pattern as existing helpers with proper error handling.
-- **Firestore Rules**: Updated `firestore.rules` with public read/admin write for vehicles and blog collections. **MUST BE DEPLOYED VIA FIREBASE CONSOLE**.
+- **Firestore Rules**: Updated `firestore.rules` with public read/admin write for vehicles, blog, cities, and services collections. **MUST BE DEPLOYED VIA FIREBASE CONSOLE**.
+- **CRUD Parity**: All admin panels now have complete Create/Read/Update/Delete functionality with consistent modal-driven UX and automatic Firestore propagation to public pages.
