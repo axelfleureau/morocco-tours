@@ -1,0 +1,299 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Experience {
+  id          String   @id @default(cuid())
+  title       String
+  slug        String   @unique
+  shortDesc   String?
+  description String?
+  image       String?
+  category    String   @default("adventure")
+  
+  duration    String?
+  difficulty  String   @default("moderate")
+  groupSize   String?
+  
+  itinerary   Json?
+  highlights  Json?
+  included    Json?
+  notIncluded Json?
+  
+  price       Float?
+  priceNote   String?
+  
+  published   Boolean  @default(true)
+  featured    Boolean  @default(false)
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  @@index([published, featured])
+  @@index([category])
+}
+
+model Travel {
+  id          String   @id @default(cuid())
+  title       String
+  slug        String   @unique
+  description String?
+  image       String?
+  category    String   @default("tour")
+  
+  duration    String?
+  cities      Json?
+  
+  itinerary   Json?
+  highlights  Json?
+  included    Json?
+  notIncluded Json?
+  
+  price       Float?
+  priceNote   String?
+  
+  published   Boolean  @default(true)
+  featured    Boolean  @default(false)
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  @@index([published, featured])
+  @@index([category])
+}
+
+model Vehicle {
+  id              String   @id @default(cuid())
+  name            String
+  slug            String   @unique
+  category        String
+  transmission    String
+  fuelType        String
+  seats           Int
+  doors           Int
+  luggage         Int
+  image           String?
+  
+  features        Json?
+  pricingPeriods  Json?
+  
+  published       Boolean  @default(true)
+  featured        Boolean  @default(false)
+  available       Boolean  @default(true)
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  @@index([published, featured])
+  @@index([category])
+}
+
+model BlogPost {
+  id          String   @id @default(cuid())
+  title       String
+  slug        String   @unique
+  excerpt     String?
+  coverImage  String?
+  
+  sections    Json?
+  tags        Json?
+  
+  author      Json?
+  
+  readTime    Int?
+  
+  published   Boolean  @default(true)
+  featured    Boolean  @default(false)
+  
+  publishedAt DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  @@index([published, featured])
+  @@index([publishedAt])
+}
+
+model City {
+  id          String   @id @default(cuid())
+  name        String
+  slug        String   @unique
+  type        String   @default("imperial")
+  region      String?
+  description String?
+  image       String?
+  
+  history     String?
+  attractions Json?
+  
+  tourPrice   Float?
+  tourDuration String?
+  
+  coordinates Json?
+  
+  published   Boolean  @default(true)
+  featured    Boolean  @default(false)
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  @@index([published, type])
+  @@index([slug])
+}
+
+model Service {
+  id          String   @id @default(cuid())
+  name        String
+  slug        String   @unique
+  category    String
+  description String?
+  icon        String?
+  
+  features    Json?
+  pricing     Json?
+  
+  published   Boolean  @default(true)
+  featured    Boolean  @default(false)
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  @@index([published, category])
+}
+
+model InstagramVideo {
+  id        String   @id @default(cuid())
+  slot      Int      @unique
+  videoUrl  String
+  active    Boolean  @default(true)
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  @@index([active])
+}
+
+model SiteSettings {
+  id        String   @id @default("site_settings")
+  
+  hero      Json?
+  contact   Json?
+  social    Json?
+  footer    Json?
+  seo       Json?
+  theme     Json?
+  
+  updatedAt DateTime @updatedAt
+  updatedBy String?
+}
+
+model User {
+  id              String   @id @default(cuid())
+  email           String   @unique
+  name            String?
+  photoURL        String?
+  
+  createdAt       DateTime @default(now())
+  lastLogin       DateTime?
+  
+  wishlists       Wishlist[]
+  customRequests  CustomTripRequest[]
+  bookings        Booking[]
+  
+  @@index([email])
+}
+
+model AdminUser {
+  id        String   @id @default(cuid())
+  uid       String   @unique
+  email     String   @unique
+  role      String   @default("admin")
+  active    Boolean  @default(true)
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  @@index([email, active])
+}
+
+model Wishlist {
+  id        String   @id @default(cuid())
+  userId    String
+  itemType  String
+  itemId    String
+  
+  itemData  Json?
+  
+  createdAt DateTime @default(now())
+  
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@unique([userId, itemType, itemId])
+  @@index([userId])
+}
+
+model CustomTripRequest {
+  id              String   @id @default(cuid())
+  userId          String?
+  
+  destination     String
+  startDate       DateTime?
+  endDate         DateTime?
+  travelers       Int?
+  budget          String?
+  interests       Json?
+  accommodation   String?
+  transportation  String?
+  
+  email           String?
+  phone           String?
+  message         String?
+  
+  status          String   @default("pending")
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  user            User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  
+  @@index([userId])
+  @@index([status])
+  @@index([createdAt])
+}
+
+model Booking {
+  id            String   @id @default(cuid())
+  userId        String
+  
+  bookingType   String
+  itemId        String
+  itemData      Json?
+  
+  startDate     DateTime?
+  endDate       DateTime?
+  travelers     Int?
+  
+  totalPrice    Float?
+  currency      String   @default("EUR")
+  
+  customerInfo  Json?
+  
+  status        String   @default("pending")
+  paymentStatus String   @default("pending")
+  
+  notes         String?
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@index([userId])
+  @@index([bookingType])
+  @@index([status])
+  @@index([createdAt])
+}
