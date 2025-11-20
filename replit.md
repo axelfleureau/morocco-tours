@@ -78,11 +78,20 @@ The "Morocco Dreams" website is built with a modern web stack designed for perfo
         - Real-time onChange validation with visual feedback (red borders, inline errors)
         - Pre-submit validation blocking invalid URLs
         - User-friendly error messages via toast notifications
+        - **CRITICAL FIX**: Optional URL fields now allow empty values - validation triggers ONLY if user enters text
         - Integrated in ALL modals with URL fields:
-            * CityModal (image - required)
-            * TravelModal (image - optional)
-            * ExperienceModal (image - optional)
-            * VehicleModal (image - optional)
-            * BlogModal (cover - required, sections[].image - optional, multi-field validation)
+            * CityModal (image - validates if filled)
+            * TravelModal (image - optional, validates if filled)
+            * ExperienceModal (image - optional, validates if filled)
+            * VehicleModal (image - optional, validates if filled)
+            * BlogModal (cover - validates if filled, sections[].image - optional with validation if filled)
             * ServiceModal (no URL fields - correctly excluded)
-    - **Pattern Consistency**: All admin modals now follow unified architecture: useNotifications for user feedback, validateUrl for URL inputs, consistent error handling and success messages
+    - **Pattern Consistency**: All admin modals follow unified architecture: useNotifications for user feedback, validateUrl for URL inputs, consistent error handling and success messages
+    - **Admin Layout Isolation**: Created `app/conditional-layout.tsx` to exclude public navbar/footer from `/admin` routes - admin now has clean, dedicated UI without public site interference
+    - **Firestore Rules Detection**: Created `components/admin/FirestoreRulesBanner.tsx` - smart banner that:
+        - Automatically detects if Firestore security rules are deployed
+        - Shows green success message when rules are active
+        - Shows red warning banner with step-by-step Firebase Console instructions when rules are NOT deployed
+        - Explains clearly that admin changes won't appear on public site until rules are deployed
+        - Integrated in all admin pages via admin layout
+    - **Z-index Fix**: Admin sidebar set to z-40, modals remain z-50 - prevents UI overlap issues
