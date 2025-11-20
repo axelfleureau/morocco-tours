@@ -10,7 +10,7 @@ export async function GET() {
       where: { active: true },
       orderBy: { slot: "asc" }
     })
-    return Response.json(videos, {
+    return Response.json({ videos }, {
       headers: { "Cache-Control": "no-store" }
     })
   } catch (error) {

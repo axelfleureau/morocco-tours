@@ -1,17 +1,15 @@
 "use client"
 
 import { useEffect, useState } from 'react'
-import { db } from '@/lib/firebase'
-import { collection, getDocs, query, where, orderBy } from 'firebase/firestore'
 import Script from 'next/script'
 
 interface InstagramVideo {
   id: string
   url: string
-  embedUrl: string
-  slot: number
+  embedUrl?: string
+  slot?: number
   active: boolean
-  order: number
+  order?: number
 }
 
 export default function InstagramFeed() {
@@ -30,21 +28,12 @@ export default function InstagramFeed() {
 
   const fetchVideos = async () => {
     try {
-      const videosRef = collection(db, 'instagram_videos')
-      const q = query(
-        videosRef,
-        where('active', '==', true),
-        orderBy('order', 'asc')
-      )
-      const snapshot = await getDocs(q)
+      const response = await fetch('/api/instagram')
       
-      if (!snapshot.empty) {
-        const fetchedVideos = snapshot.docs.map(doc => ({
-          id: doc.id,
-          ...doc.data()
-        })) as InstagramVideo[]
-        
-        setVideos(fetchedVideos)
+      if (response.ok) {
+        const data = await response.json()
+        const activeVideos = (data.videos || []).filter((v: InstagramVideo) => v.active)
+        setVideos(activeVideos)
       }
     } catch (error) {
       console.error('Error fetching Instagram videos:', error)

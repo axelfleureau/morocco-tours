@@ -1,8 +1,15 @@
 // Public-facing data queries using PostgreSQL API
 // This replaces all Firestore queries with REST API calls
 
-// Base API URL
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || '';
+// Base API URL - works on both server and client
+function getAPIBase() {
+  if (typeof window !== 'undefined') {
+    // Client-side: use relative URLs
+    return '';
+  }
+  // Server-side: use absolute URLs
+  return process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:5000';
+}
 
 // Travel interface
 export interface Travel {
@@ -137,7 +144,7 @@ export async function getPublishedTravels(filters?: {
     if (filters?.featured !== undefined) params.append('featured', String(filters.featured));
     if (filters?.limit) params.append('limit', String(filters.limit));
     
-    const url = `${API_BASE}/api/travels${params.toString() ? `?${params}` : ''}`;
+    const url = `${getAPIBase()}/api/travels${params.toString() ? `?${params}` : ''}`;
     const response = await fetch(url, {
       next: { tags: ['travels'] }
     });
@@ -166,7 +173,7 @@ export async function getPublishedExperiences(filters?: {
     if (filters?.featured !== undefined) params.append('featured', String(filters.featured));
     if (filters?.limit) params.append('limit', String(filters.limit));
     
-    const url = `${API_BASE}/api/experiences${params.toString() ? `?${params}` : ''}`;
+    const url = `${getAPIBase()}/api/experiences${params.toString() ? `?${params}` : ''}`;
     const response = await fetch(url, {
       next: { tags: ['experiences'] }
     });
@@ -193,7 +200,7 @@ export async function getPublishedServices(filters?: {
     if (filters?.category) params.append('category', filters.category);
     if (filters?.limit) params.append('limit', String(filters.limit));
     
-    const url = `${API_BASE}/api/services${params.toString() ? `?${params}` : ''}`;
+    const url = `${getAPIBase()}/api/services${params.toString() ? `?${params}` : ''}`;
     const response = await fetch(url, {
       next: { tags: ['services'] }
     });
@@ -222,7 +229,7 @@ export async function getPublishedVehicles(filters?: {
     if (filters?.featured !== undefined) params.append('featured', String(filters.featured));
     if (filters?.limit) params.append('limit', String(filters.limit));
     
-    const url = `${API_BASE}/api/vehicles${params.toString() ? `?${params}` : ''}`;
+    const url = `${getAPIBase()}/api/vehicles${params.toString() ? `?${params}` : ''}`;
     const response = await fetch(url, {
       next: { tags: ['vehicles'] }
     });
@@ -251,7 +258,7 @@ export async function getPublishedBlogPosts(filters?: {
     if (filters?.featured !== undefined) params.append('featured', String(filters.featured));
     if (filters?.limit) params.append('limit', String(filters.limit));
     
-    const url = `${API_BASE}/api/blog${params.toString() ? `?${params}` : ''}`;
+    const url = `${getAPIBase()}/api/blog${params.toString() ? `?${params}` : ''}`;
     const response = await fetch(url, {
       next: { tags: ['blog'] }
     });
@@ -278,7 +285,7 @@ export async function getPublishedCities(filters?: {
     if (filters?.type) params.append('type', filters.type);
     if (filters?.limit) params.append('limit', String(filters.limit));
     
-    const url = `${API_BASE}/api/cities${params.toString() ? `?${params}` : ''}`;
+    const url = `${getAPIBase()}/api/cities${params.toString() ? `?${params}` : ''}`;
     const response = await fetch(url, {
       next: { tags: ['cities'] }
     });
