@@ -18,7 +18,9 @@ import {
   X,
   LogOut,
   Sun,
-  Moon
+  Moon,
+  FileText,
+  Settings
 } from "lucide-react"
 import Link from "next/link"
 import { useTheme } from "next-themes"
@@ -111,6 +113,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     { href: "/admin/experiences", icon: Compass, label: "Esperienze" },
     { href: "/admin/travels", icon: MapPin, label: "Viaggi" },
     { href: "/admin/vehicles", icon: Car, label: "Veicoli" },
+    { href: "/admin/blog", icon: FileText, label: "Blog" },
+    { href: "/admin/cities", icon: MapPin, label: "Città" },
+    { href: "/admin/services", icon: Settings, label: "Servizi" },
     { href: "/admin/instagram", icon: Instagram, label: "Instagram" },
     { href: "/admin/users", icon: Users, label: "Utenti Admin" },
   ]
