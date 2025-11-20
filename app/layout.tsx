@@ -2,7 +2,7 @@ import type React from "react"
 import type { Metadata } from "next"
 import { Inter } from "next/font/google"
 import "./globals.css"
-import ClientLayout from "./client-layout"
+import ConditionalLayout from "./conditional-layout"
 import { ThemeProvider } from "@/components/theme-provider"
 import { MoroccoThemeProvider } from "@/context/ThemeContext"
 import { AuthProvider } from "@/context/AuthContext"
@@ -91,7 +91,7 @@ export default function RootLayout({
                 >
                   Salta al contenuto principale
                 </a>
-                <ClientLayout>{children}</ClientLayout>
+                <ConditionalLayout>{children}</ConditionalLayout>
                 <ChatBot />
               </NotificationProvider>
             </AuthProvider>
