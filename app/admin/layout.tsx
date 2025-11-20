@@ -118,6 +118,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     { href: "/admin/cities", icon: MapPin, label: "Città" },
     { href: "/admin/services", icon: Settings, label: "Servizi" },
     { href: "/admin/instagram", icon: Instagram, label: "Instagram" },
+    { href: "/admin/settings", icon: Settings, label: "Impostazioni Sito" },
     { href: "/admin/users", icon: Users, label: "Utenti Admin" },
   ]
 
