@@ -187,13 +187,12 @@ export default function CityModal({ city, isOpen, onClose, onSaveSuccess }: City
 
           <div>
             <label className="block text-sm font-medium text-foreground mb-2">
-              URL Immagine *
+              URL Immagine (opzionale)
             </label>
             <input
               type="url"
               value={formData.image}
               onChange={(e) => handleUrlChange(e.target.value)}
-              required
               placeholder="https://esempio.com/immagine.jpg"
               className={`w-full px-4 py-2 border rounded-lg bg-background text-foreground focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-colors ${
                 urlError ? 'border-red-500 dark:border-red-400' : 'border-border'
