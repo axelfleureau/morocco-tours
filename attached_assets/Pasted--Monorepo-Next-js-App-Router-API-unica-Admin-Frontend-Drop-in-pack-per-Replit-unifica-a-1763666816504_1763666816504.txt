@@ -1,0 +1,361 @@
+# Monorepo Next.js (App Router) — API unica + Admin + Frontend
+
+> Drop‑in pack per Replit: unifica admin e frontend su **un’unica fonte dati** (Postgres via Prisma) e **unico layer API**. Include invalidazione cache/tag per riflettere subito le modifiche.
+
+---
+
+## package.json
+```json
+{
+  "name": "replit-unify-admin-frontend",
+  "private": true,
+  "scripts": {
+    "dev": "next dev -p 3000",
+    "build": "prisma generate && next build",
+    "start": "next start -p 3000",
+    "migrate": "prisma migrate deploy",
+    "db:push": "prisma db push",
+    "db:studio": "prisma studio",
+    "seed": "node scripts/migrate.js"
+  },
+  "dependencies": {
+    "next": "14.2.4",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "@prisma/client": "5.19.1"
+  },
+  "devDependencies": {
+    "prisma": "5.19.1",
+    "typescript": "5.6.3"
+  }
+}
+```
+
+---
+
+## prisma/schema.prisma
+```prisma
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Item {
+  id        String   @id @default(cuid())
+  title     String
+  slug      String   @unique
+  content   String?
+  imageUrl  String?
+  published Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+```
+
+---
+
+## lib/db.ts
+```ts
+import { PrismaClient } from "@prisma/client";
+
+// Singleton per hot-reload su Replit/Next.js dev
+const globalForPrisma = global as unknown as { prisma: PrismaClient | undefined };
+
+export const db = globalForPrisma.prisma ?? new PrismaClient();
+if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = db;
+```
+
+---
+
+## app/layout.tsx
+```tsx
+export const metadata = { title: "Unified Admin/Frontend" };
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <html lang="it">
+      <body>{children}</body>
+    </html>
+  );
+}
+```
+
+---
+
+## app/page.tsx (homepage di esempio)
+```tsx
+import Link from "next/link";
+export default function Home() {
+  return (
+    <main style={{ padding: 24 }}>
+      <h1>Demo Unificazione Dati</h1>
+      <p>Admin e Frontend consumano la stessa API/DB.</p>
+      <ul>
+        <li><Link href="/items">Vedi frontend (lista items)</Link></li>
+        <li><Link href="/admin/items">Dashboard admin (CRUD)</Link></li>
+      </ul>
+    </main>
+  );
+}
+```
+
+---
+
+## app/api/items/route.ts (GET lista, POST create)
+```ts
+import { db } from "@/lib/db";
+import { revalidateTag } from "next/cache";
+
+export const dynamic = "force-dynamic"; // niente cache per la lista raw
+
+export async function GET() {
+  const rows = await db.item.findMany({
+    where: { published: true },
+    orderBy: { updatedAt: "desc" }
+  });
+  return Response.json(rows, {
+    headers: { "Cache-Control": "no-store" }
+  });
+}
+
+function isAuthorized(req: Request) {
+  const auth = req.headers.get("authorization") || "";
+  const token = auth.replace("Bearer ", "").trim();
+  return process.env.JWT_SECRET && token === process.env.JWT_SECRET;
+}
+
+export async function POST(req: Request) {
+  if (!isAuthorized(req)) return new Response("Unauthorized", { status: 401 });
+  const body = await req.json();
+  const { title, slug, content, imageUrl, published = true } = body ?? {};
+  if (!title || !slug) return new Response("title e slug sono obbligatori", { status: 400 });
+
+  const created = await db.item.create({
+    data: { title, slug, content, imageUrl, published }
+  });
+  revalidateTag("items");
+  return Response.json(created, { status: 201 });
+}
+```
+
+---
+
+## app/api/items/[id]/route.ts (GET uno, PUT, DELETE)
+```ts
+import { db } from "@/lib/db";
+import { revalidateTag } from "next/cache";
+
+function isAuthorized(req: Request) {
+  const auth = req.headers.get("authorization") || "";
+  const token = auth.replace("Bearer ", "").trim();
+  return process.env.JWT_SECRET && token === process.env.JWT_SECRET;
+}
+
+export const dynamic = "force-dynamic";
+
+export async function GET(_req: Request, { params }: { params: { id: string } }) {
+  const row = await db.item.findUnique({ where: { id: params.id } });
+  if (!row) return new Response("Not Found", { status: 404 });
+  return Response.json(row, { headers: { "Cache-Control": "no-store" } });
+}
+
+export async function PUT(req: Request, { params }: { params: { id: string } }) {
+  if (!isAuthorized(req)) return new Response("Unauthorized", { status: 401 });
+  const patch = await req.json();
+  const updated = await db.item.update({ where: { id: params.id }, data: patch });
+  revalidateTag("items");
+  revalidateTag(`item-${params.id}`);
+  return Response.json(updated);
+}
+
+export async function DELETE(req: Request, { params }: { params: { id: string } }) {
+  if (!isAuthorized(req)) return new Response("Unauthorized", { status: 401 });
+  await db.item.delete({ where: { id: params.id } });
+  revalidateTag("items");
+  revalidateTag(`item-${params.id}`);
+  return new Response(null, { status: 204 });
+}
+```
+
+---
+
+## app/items/page.tsx (Frontend: legge SEMPRE dall’API unica)
+```tsx
+export const revalidate = 0; // oppure usa tag-based revalidation
+
+async function getItems() {
+  const res = await fetch("/api/items", { next: { tags: ["items"] } });
+  if (!res.ok) throw new Error("Errore fetch items");
+  return res.json();
+}
+
+export default async function ItemsPage() {
+  const items = await getItems();
+  return (
+    <main style={{ padding: 24 }}>
+      <h2>Catalogo (frontend)</h2>
+      <ul>
+        {items.map((it: any) => (
+          <li key={it.id}>
+            <b>{it.title}</b> — {it.slug}
+          </li>
+        ))}
+      </ul>
+    </main>
+  );
+}
+```
+
+---
+
+## app/admin/items/page.tsx (Admin minimale CRUD, stesso backend)
+```tsx
+"use client";
+import { useEffect, useState } from "react";
+
+export default function AdminItems() {
+  const [items, setItems] = useState<any[]>([]);
+  const [form, setForm] = useState({ title: "", slug: "", content: "", imageUrl: "", published: true });
+  const token = process.env.NEXT_PUBLIC_ADMIN_TOKEN; // impostalo = JWT_SECRET
+
+  const headers = token ? { Authorization: `Bearer ${token}`, "Content-Type": "application/json" } : { "Content-Type": "application/json" };
+
+  async function load() {
+    const res = await fetch("/api/items", { cache: "no-store" });
+    setItems(await res.json());
+  }
+
+  useEffect(() => { load(); }, []);
+
+  async function createItem(e: React.FormEvent) {
+    e.preventDefault();
+    const res = await fetch("/api/items", { method: "POST", headers, body: JSON.stringify(form) });
+    if (res.ok) { setForm({ title: "", slug: "", content: "", imageUrl: "", published: true }); load(); }
+  }
+
+  async function togglePublish(id: string, published: boolean) {
+    await fetch(`/api/items/${id}`, { method: "PUT", headers, body: JSON.stringify({ published }) });
+    load();
+  }
+
+  async function remove(id: string) {
+    await fetch(`/api/items/${id}`, { method: "DELETE", headers });
+    load();
+  }
+
+  return (
+    <main style={{ padding: 24 }}>
+      <h2>Admin (stessa API / stesso DB)</h2>
+
+      <form onSubmit={createItem} style={{ display: "grid", gap: 8, maxWidth: 480 }}>
+        <input placeholder="Titolo" value={form.title} onChange={e => setForm({ ...form, title: e.target.value })} required />
+        <input placeholder="Slug" value={form.slug} onChange={e => setForm({ ...form, slug: e.target.value })} required />
+        <input placeholder="Image URL" value={form.imageUrl} onChange={e => setForm({ ...form, imageUrl: e.target.value })} />
+        <textarea placeholder="Contenuto" value={form.content} onChange={e => setForm({ ...form, content: e.target.value })} />
+        <label><input type="checkbox" checked={form.published} onChange={e => setForm({ ...form, published: e.target.checked })} /> Published</label>
+        <button type="submit">Crea</button>
+      </form>
+
+      <hr style={{ margin: "24px 0" }} />
+
+      <ul>
+        {items.map((it) => (
+          <li key={it.id} style={{ marginBottom: 12 }}>
+            <b>{it.title}</b> <small>({it.slug})</small>
+            <div style={{ display: "flex", gap: 8, marginTop: 6 }}>
+              <button onClick={() => togglePublish(it.id, !it.published)}>
+                {it.published ? "Nascondi" : "Pubblica"}
+              </button>
+              <button onClick={() => remove(it.id)} style={{ color: "crimson" }}>Elimina</button>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </main>
+  );
+}
+```
+
+---
+
+## scripts/migrate.js (migrazione da /data/items.json → DB unico)
+```js
+// Esegui con: npm run seed
+// Copia prima i tuoi dati reali in data/items.json (array di oggetti)
+const { PrismaClient } = require("@prisma/client");
+const fs = require("fs");
+const path = require("path");
+
+const prisma = new PrismaClient();
+
+async function main() {
+  const file = path.join(process.cwd(), "data", "items.json");
+  if (!fs.existsSync(file)) {
+    console.log("Nessun data/items.json trovato. Nulla da migrare.");
+    return;
+  }
+  const raw = JSON.parse(fs.readFileSync(file, "utf8"));
+  if (!Array.isArray(raw)) throw new Error("items.json deve essere un array");
+
+  let created = 0, updated = 0;
+  for (const r of raw) {
+    const { title, slug, content, imageUrl, published = true } = r;
+    if (!slug) continue;
+    const exists = await prisma.item.findUnique({ where: { slug } });
+    if (exists) {
+      await prisma.item.update({ where: { slug }, data: { title, content, imageUrl, published } });
+      updated++;
+    } else {
+      await prisma.item.create({ data: { title: title || slug, slug, content, imageUrl, published } });
+      created++;
+    }
+  }
+  console.log(`Migrazione completata. Creati: ${created}, Aggiornati: ${updated}`);
+}
+
+main().catch((e) => {
+  console.error(e);
+  process.exit(1);
+}).finally(async () => {
+  await prisma.$disconnect();
+});
+```
+
+---
+
+## .env.example (imposta questi Secret su Replit)
+```dotenv
+# Postgres (Neon/Supabase/Render). Formato es.:
+# postgres://user:password@host:5432/dbname?sslmode=require
+DATABASE_URL=
+
+# Semplice bearer per abilitare le rotte write dell'admin
+JWT_SECRET=metti-qui-un-token-lungo
+
+# Per il client admin (usa lo stesso del JWT_SECRET)
+NEXT_PUBLIC_ADMIN_TOKEN=metti-qui-un-token-lungo
+```
+
+---
+
+## README (setup rapido)
+```md
+1) Imposta i Secret su Replit: `DATABASE_URL`, `JWT_SECRET`, `NEXT_PUBLIC_ADMIN_TOKEN` (stesso valore).
+2) `npm i`
+3) Inizializza DB: `npm run db:push` (oppure `npx prisma migrate dev --name init` se vuoi migrazioni versionate)
+4) (Opzionale) Metti i vecchi dati in `data/items.json` e lancia `npm run seed`.
+5) Avvia: `npm run dev`.
+
+Verifiche:
+- Frontend: /items legge dalla stessa API/DB.
+- Admin: /admin/items crea/modifica/elimina con header Bearer automatico lato client.
+- Dopo una modifica admin, la lista /items si aggiorna subito (revalidateTag `items`).
+
+Note:
+- Rimuovi eventuali file statici legacy (`/data/*.json`) usati dal vecchio frontend.
+- Se avevi Service Worker/old cache, disabilita o incrementa versione per evitare dati stantii.
+- Per ambienti prod, sostituisci il check bearer con una vera auth (NextAuth/Clerk) e ruoli.
+```
