@@ -1,21 +1,11 @@
 "use client"
 
 import { useState, useEffect } from 'react'
-import { collection, getDocs, doc, updateDoc, deleteDoc } from 'firebase/firestore'
+import { collection, getDocs, doc, updateDoc, deleteDoc, setDoc, Timestamp } from 'firebase/firestore'
 import { db } from '@/lib/firebase'
 import { Search, Edit, Trash2, Plus, DollarSign } from 'lucide-react'
-import ServiceModalNew from '@/components/admin/ServiceModalNew'
-
-interface Service {
-  id: string
-  name: string
-  category: string
-  type: string
-  price: number
-  priceType: string
-  locations: string[]
-  description: string
-}
+import ServiceModal from '@/components/admin/ServiceModal'
+import { Service } from '@/lib/firestore-schema'
 
 export default function AdminServicesPage() {
   const [services, setServices] = useState<Service[]>([])
@@ -90,8 +80,27 @@ export default function AdminServicesPage() {
     setSelectedService(null)
   }
 
-  const handleSaveSuccess = () => {
-    fetchServices()
+  const handleSave = async (serviceData: Partial<Service>) => {
+    const slug = selectedService?.slug || serviceData.slug || generateSlug(serviceData.name || '')
+    const now = Timestamp.now()
+    
+    const dataToSave = {
+      ...serviceData,
+      updatedAt: now,
+      ...(!selectedService && { createdAt: now })
+    }
+
+    await setDoc(doc(db, 'services', slug), dataToSave, { merge: true })
+    await fetchServices()
+  }
+
+  const generateSlug = (name: string) => {
+    return name
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '')
   }
 
   if (loading) {
@@ -202,14 +211,14 @@ export default function AdminServicesPage() {
                     </td>
                     <td className="px-6 py-4">
                       <div className="flex flex-wrap gap-1">
-                        {service.locations.slice(0, 2).map((loc, idx) => (
+                        {service.locations?.slice(0, 2).map((loc, idx) => (
                           <span key={idx} className="px-2 py-1 bg-muted text-muted-foreground rounded text-xs">
                             {loc}
                           </span>
                         ))}
-                        {service.locations.length > 2 && (
+                        {(service.locations?.length || 0) > 2 && (
                           <span className="px-2 py-1 bg-muted text-muted-foreground rounded text-xs">
-                            +{service.locations.length - 2}
+                            +{(service.locations?.length || 0) - 2}
                           </span>
                         )}
                       </div>
@@ -240,11 +249,11 @@ export default function AdminServicesPage() {
         </div>
       </div>
 
-      <ServiceModalNew
+      <ServiceModal
         service={selectedService}
         isOpen={showModal}
         onClose={handleCloseModal}
-        onSaveSuccess={handleSaveSuccess}
+        onSave={handleSave}
       />
     </div>
   )
