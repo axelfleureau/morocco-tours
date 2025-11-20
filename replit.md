@@ -59,7 +59,31 @@ The "Morocco Dreams" website is built with a modern web stack designed for perfo
 - **Mapbox**: Integrated for interactive geographical maps displaying Moroccan cities and tour locations.
 - **npm**: Package manager for all project dependencies.
 
-### Recent Changes (November 20, 2025)
+### Recent Changes
+
+**OPZIONE A - Migrazione a Postgres con Prisma (November 20, 2025)**:
+- **Database Postgres**: Creato database Neon Postgres via Replit (schema con 13 models: Experience, Travel, Vehicle, BlogPost, City, Service, InstagramVideo, SiteSettings, User, AdminUser, Wishlist, CustomTripRequest, Booking)
+- **Prisma ORM**: Installato Prisma 5.19.1 con schema completo in `prisma/schema.prisma`, client singleton in `lib/db.ts`
+- **API Routes Unificate**: Create 8 API routes complete (`/api/experiences`, `/api/travels`, `/api/vehicles`, `/api/blog`, `/api/cities`, `/api/services`, `/api/instagram`, `/api/site-settings`) con:
+    - GET pubblico (published=true) per frontend
+    - POST/PUT/DELETE protetti con ADMIN_TOKEN per admin panel
+    - Invalidazione cache via `revalidateTag` per aggiornamenti real-time
+- **Migrazione Dati Completa**: Script `scripts/migrate-from-firestore.js` eseguito con successo:
+    - ✅ 16 Experiences migrate
+    - ✅ 9 Travels migrate
+    - ✅ 19 Vehicles migrate
+    - ✅ 8 Blog Posts migrate
+    - ✅ 7 Cities migrate (1 skip per slug duplicato)
+    - ✅ 3 Instagram Videos migrate
+- **Admin Panel Refactored**:
+    - `app/admin/vehicles/page.tsx` completamente riscritta per usare API Postgres (fetch invece Firestore)
+    - `components/admin/VehicleModal.tsx` aggiornato con nuovo schema (pricingPeriods, features array, fuelType, luggage)
+    - Pattern unificato: useNotifications + fetch con Authorization Bearer token
+- **Package.json**: Aggiunti script `db:push`, `db:studio`, `migrate`, `seed` per gestione database
+- **Architettura Unificata**: Admin e frontend ora consumano STESSA API/DB Postgres (no più duplicazione logica Firestore)
+- **Prossimi Step**: Completare refactor degli altri pannelli admin (experiences, travels, blog, cities, services, instagram, settings) e pagine pubbliche per usare API Postgres
+
+**Dashboard Unification (Earlier November 20, 2025)**:
 - **Dashboard Unification**: Consolidated two separate admin interfaces (`/admin` and `/dashboard` admin tabs) into single unified dashboard at `/admin`.
     - Created `app/admin/blog/page.tsx`, `app/admin/cities/page.tsx`, `app/admin/services/page.tsx` with full CRUD operations
     - Built modal components: `BlogModal`, `CityModal`, `ServiceModal` following existing patterns

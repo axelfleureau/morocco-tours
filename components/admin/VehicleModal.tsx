@@ -1,31 +1,37 @@
 "use client"
 
 import { useState, useEffect } from 'react'
-import { X, Save, Loader2 } from 'lucide-react'
-import { doc, setDoc, addDoc, collection } from 'firebase/firestore'
-import { db } from '@/lib/firebase'
+import { X, Save, Loader2, Plus, Trash2 } from 'lucide-react'
 import { useNotifications } from '../NotificationSystem'
 import { validateUrl } from '@/lib/url-validation'
+
+interface PricingPeriod {
+  name: string
+  startDate: string
+  endDate: string
+  prices: {
+    short: number
+    medium: number
+    long: number
+  }
+}
 
 interface Vehicle {
   id?: string
   name: string
-  category: "economica" | "suv" | "Premium"
-  transmission: "manuale" | "automatica"
-  fuel: "benzina" | "diesel"
-  hasAC: boolean
-  doors: number
+  slug: string
+  category: string
+  transmission: string
+  fuelType: string
   seats: number
-  dailyDeductible: number
-  image: string
-  pricing: {
-    period1: { short: number; medium: number; long: number }
-    period2: { short: number; medium: number; long: number }
-    period3: { short: number; medium: number; long: number }
-    period4: { short: number; medium: number; long: number }
-  }
+  doors: number
+  luggage: number
+  image?: string
+  features?: string[]
+  pricingPeriods?: PricingPeriod[]
   published: boolean
   featured: boolean
+  available: boolean
 }
 
 interface VehicleModalProps {
@@ -38,30 +44,50 @@ export default function VehicleModal({ vehicle, onClose, onSave }: VehicleModalP
   const { showSuccess, showError } = useNotifications()
   const [formData, setFormData] = useState<Vehicle>({
     name: '',
+    slug: '',
     category: 'economica',
     transmission: 'manuale',
-    fuel: 'benzina',
-    hasAC: true,
-    doors: 5,
+    fuelType: 'benzina',
     seats: 5,
-    dailyDeductible: 6,
+    doors: 4,
+    luggage: 2,
     image: '',
-    pricing: {
-      period1: { short: 40, medium: 38, long: 35 },
-      period2: { short: 45, medium: 43, long: 40 },
-      period3: { short: 42, medium: 40, long: 37 },
-      period4: { short: 40, medium: 37, long: 34 }
-    },
-    published: false,
-    featured: false
+    features: [],
+    pricingPeriods: [
+      {
+        name: 'Bassa Stagione',
+        startDate: '2025-01-01',
+        endDate: '2025-06-30',
+        prices: { short: 40, medium: 38, long: 35 }
+      }
+    ],
+    published: true,
+    featured: false,
+    available: true
   })
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
   const [urlError, setUrlError] = useState('')
 
+  const headers = {
+    'Authorization': `Bearer ${process.env.NEXT_PUBLIC_ADMIN_TOKEN || process.env.ADMIN_TOKEN}`,
+    'Content-Type': 'application/json'
+  }
+
   useEffect(() => {
     if (vehicle) {
-      setFormData(vehicle)
+      setFormData({
+        ...vehicle,
+        features: vehicle.features || [],
+        pricingPeriods: vehicle.pricingPeriods || [
+          {
+            name: 'Bassa Stagione',
+            startDate: '2025-01-01',
+            endDate: '2025-06-30',
+            prices: { short: 40, medium: 38, long: 35 }
+          }
+        ]
+      })
     }
   }, [vehicle])
 
@@ -73,6 +99,83 @@ export default function VehicleModal({ vehicle, onClose, onSave }: VehicleModalP
     } else {
       setUrlError('')
     }
+  }
+
+  const generateSlug = (name: string) => {
+    return name
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/(^-|-$)/g, '')
+  }
+
+  const handleNameChange = (name: string) => {
+    setFormData({
+      ...formData,
+      name,
+      slug: vehicle?.id ? formData.slug : generateSlug(name)
+    })
+  }
+
+  const addFeature = () => {
+    setFormData({
+      ...formData,
+      features: [...(formData.features || []), '']
+    })
+  }
+
+  const updateFeature = (index: number, value: string) => {
+    const newFeatures = [...(formData.features || [])]
+    newFeatures[index] = value
+    setFormData({ ...formData, features: newFeatures })
+  }
+
+  const removeFeature = (index: number) => {
+    setFormData({
+      ...formData,
+      features: (formData.features || []).filter((_, i) => i !== index)
+    })
+  }
+
+  const addPricingPeriod = () => {
+    setFormData({
+      ...formData,
+      pricingPeriods: [
+        ...(formData.pricingPeriods || []),
+        {
+          name: '',
+          startDate: '',
+          endDate: '',
+          prices: { short: 40, medium: 38, long: 35 }
+        }
+      ]
+    })
+  }
+
+  const updatePricingPeriod = (index: number, field: string, value: any) => {
+    const newPeriods = [...(formData.pricingPeriods || [])]
+    if (field.startsWith('prices.')) {
+      const priceType = field.split('.')[1]
+      newPeriods[index] = {
+        ...newPeriods[index],
+        prices: {
+          ...newPeriods[index].prices,
+          [priceType]: parseFloat(value) || 0
+        }
+      }
+    } else {
+      newPeriods[index] = {
+        ...newPeriods[index],
+        [field]: value
+      }
+    }
+    setFormData({ ...formData, pricingPeriods: newPeriods })
+  }
+
+  const removePricingPeriod = (index: number) => {
+    setFormData({
+      ...formData,
+      pricingPeriods: (formData.pricingPeriods || []).filter((_, i) => i !== index)
+    })
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -93,18 +196,36 @@ export default function VehicleModal({ vehicle, onClose, onSave }: VehicleModalP
 
     try {
       const dataToSave = {
-        ...formData,
-        updatedAt: new Date().toISOString()
+        name: formData.name,
+        slug: formData.slug,
+        category: formData.category,
+        transmission: formData.transmission,
+        fuelType: formData.fuelType,
+        seats: parseInt(formData.seats as any) || 5,
+        doors: parseInt(formData.doors as any) || 4,
+        luggage: parseInt(formData.luggage as any) || 2,
+        image: formData.image || null,
+        features: (formData.features || []).filter(f => f.trim() !== ''),
+        pricingPeriods: formData.pricingPeriods,
+        published: formData.published,
+        featured: formData.featured,
+        available: formData.available
       }
 
-      if (vehicle?.id) {
-        await setDoc(doc(db, 'vehicles', vehicle.id), dataToSave, { merge: true })
-      } else {
-        await addDoc(collection(db, 'vehicles'), {
-          ...dataToSave,
-          createdAt: new Date().toISOString()
-        })
+      const url = vehicle?.id ? `/api/vehicles/${vehicle.id}` : '/api/vehicles'
+      const method = vehicle?.id ? 'PUT' : 'POST'
+
+      const response = await fetch(url, {
+        method,
+        headers,
+        body: JSON.stringify(dataToSave)
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.error || 'Failed to save vehicle')
       }
+
       showSuccess('Veicolo Salvato', `"${formData.name}" è stato salvato con successo.`)
       onSave()
       onClose()
@@ -117,410 +238,366 @@ export default function VehicleModal({ vehicle, onClose, onSave }: VehicleModalP
     }
   }
 
-  const updatePricing = (period: 'period1' | 'period2' | 'period3' | 'period4', duration: 'short' | 'medium' | 'long', value: number) => {
-    setFormData({
-      ...formData,
-      pricing: {
-        ...formData.pricing,
-        [period]: {
-          ...formData.pricing[period],
-          [duration]: value
-        }
-      }
-    })
-  }
-
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 overflow-y-auto">
-      <div className="bg-card border border-border rounded-xl max-w-4xl w-full my-8">
-        <div className="sticky top-0 bg-card border-b border-border px-6 py-4 flex items-center justify-between rounded-t-xl">
-          <h2 className="text-2xl font-bold text-foreground">
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+      <div className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+        <div className="sticky top-0 bg-white border-b px-6 py-4 flex items-center justify-between">
+          <h2 className="text-2xl font-bold">
             {vehicle ? 'Modifica Veicolo' : 'Nuovo Veicolo'}
           </h2>
           <button
             onClick={onClose}
-            className="p-2 hover:bg-muted rounded-lg transition-colors"
+            className="text-gray-400 hover:text-gray-600"
           >
-            <X className="w-5 h-5" />
+            <X className="w-6 h-6" />
           </button>
         </div>
 
         <form onSubmit={handleSubmit} className="p-6 space-y-6">
           {error && (
-            <div className="p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg text-red-700 dark:text-red-300">
+            <div className="bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded-lg">
               {error}
             </div>
           )}
 
-          {/* Info Base */}
-          <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-foreground border-b border-border pb-2">Informazioni Base</h3>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-foreground mb-2">
-                  Nome Veicolo *
-                </label>
-                <input
-                  type="text"
-                  value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  required
-                  placeholder="es. Dacia Sandero"
-                  className="w-full px-4 py-2 border border-border rounded-lg bg-background text-foreground focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-foreground mb-2">
-                  Categoria *
-                </label>
-                <select
-                  value={formData.category}
-                  onChange={(e) => setFormData({ ...formData, category: e.target.value as any })}
-                  required
-                  className="w-full px-4 py-2 border border-border rounded-lg bg-background text-foreground focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-                >
-                  <option value="economica">Economica</option>
-                  <option value="suv">SUV</option>
-                  <option value="Premium">Premium</option>
-                </select>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-foreground mb-2">
-                  Trasmissione *
-                </label>
-                <select
-                  value={formData.transmission}
-                  onChange={(e) => setFormData({ ...formData, transmission: e.target.value as any })}
-                  required
-                  className="w-full px-4 py-2 border border-border rounded-lg bg-background text-foreground focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-                >
-                  <option value="manuale">Manuale</option>
-                  <option value="automatica">Automatica</option>
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-foreground mb-2">
-                  Carburante *
-                </label>
-                <select
-                  value={formData.fuel}
-                  onChange={(e) => setFormData({ ...formData, fuel: e.target.value as any })}
-                  required
-                  className="w-full px-4 py-2 border border-border rounded-lg bg-background text-foreground focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-                >
-                  <option value="benzina">Benzina</option>
-                  <option value="diesel">Diesel</option>
-                </select>
-              </div>
-
-              <div className="flex items-center gap-3 pt-6">
-                <input
-                  type="checkbox"
-                  id="hasAC"
-                  checked={formData.hasAC}
-                  onChange={(e) => setFormData({ ...formData, hasAC: e.target.checked })}
-                  className="w-4 h-4 text-orange-500 rounded focus:ring-2 focus:ring-orange-500"
-                />
-                <label htmlFor="hasAC" className="text-sm font-medium text-foreground">
-                  Aria Condizionata
-                </label>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-foreground mb-2">
-                  Posti *
-                </label>
-                <input
-                  type="number"
-                  value={formData.seats}
-                  onChange={(e) => setFormData({ ...formData, seats: parseInt(e.target.value) })}
-                  required
-                  min="2"
-                  max="9"
-                  className="w-full px-4 py-2 border border-border rounded-lg bg-background text-foreground focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-foreground mb-2">
-                  Porte *
-                </label>
-                <input
-                  type="number"
-                  value={formData.doors}
-                  onChange={(e) => setFormData({ ...formData, doors: parseInt(e.target.value) })}
-                  required
-                  min="2"
-                  max="5"
-                  className="w-full px-4 py-2 border border-border rounded-lg bg-background text-foreground focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-foreground mb-2">
-                  Franchigia Giornaliera (€)
-                </label>
-                <input
-                  type="number"
-                  value={formData.dailyDeductible}
-                  onChange={(e) => setFormData({ ...formData, dailyDeductible: parseInt(e.target.value) })}
-                  min="0"
-                  className="w-full px-4 py-2 border border-border rounded-lg bg-background text-foreground focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-                />
-              </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Nome Veicolo *
+              </label>
+              <input
+                type="text"
+                value={formData.name}
+                onChange={(e) => handleNameChange(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                required
+              />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-foreground mb-2">
-                URL Immagine
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Slug *
               </label>
               <input
-                type="url"
-                value={formData.image}
-                onChange={(e) => handleUrlChange(e.target.value)}
-                placeholder="/images/vehicles/nome-veicolo.png"
-                className={`w-full px-4 py-2 border rounded-lg bg-background text-foreground focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-colors ${
-                  urlError ? 'border-red-500 dark:border-red-400' : 'border-border'
-                }`}
+                type="text"
+                value={formData.slug}
+                onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                required
               />
-              {urlError && (
-                <p className="mt-1 text-sm text-red-600 dark:text-red-400">
-                  {urlError}
-                </p>
-              )}
-              {formData.image && !urlError && (
-                <div className="mt-2">
-                  <img src={formData.image} alt="Preview" className="h-24 rounded-lg object-cover" />
-                </div>
-              )}
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Categoria *
+              </label>
+              <select
+                value={formData.category}
+                onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                required
+              >
+                <option value="economica">Economica</option>
+                <option value="suv">SUV</option>
+                <option value="Premium">Premium</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Trasmissione *
+              </label>
+              <select
+                value={formData.transmission}
+                onChange={(e) => setFormData({ ...formData, transmission: e.target.value })}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                required
+              >
+                <option value="manuale">Manuale</option>
+                <option value="automatica">Automatica</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Carburante *
+              </label>
+              <select
+                value={formData.fuelType}
+                onChange={(e) => setFormData({ ...formData, fuelType: e.target.value })}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                required
+              >
+                <option value="benzina">Benzina</option>
+                <option value="diesel">Diesel</option>
+                <option value="ibrida">Ibrida</option>
+                <option value="elettrica">Elettrica</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Posti *
+              </label>
+              <input
+                type="number"
+                value={formData.seats}
+                onChange={(e) => setFormData({ ...formData, seats: parseInt(e.target.value) || 5 })}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                min="2"
+                max="9"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Porte *
+              </label>
+              <input
+                type="number"
+                value={formData.doors}
+                onChange={(e) => setFormData({ ...formData, doors: parseInt(e.target.value) || 4 })}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                min="2"
+                max="5"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Bagagli *
+              </label>
+              <input
+                type="number"
+                value={formData.luggage}
+                onChange={(e) => setFormData({ ...formData, luggage: parseInt(e.target.value) || 2 })}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                min="1"
+                max="10"
+                required
+              />
             </div>
           </div>
 
-          {/* Prezzi */}
-          <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-foreground border-b border-border pb-2">Prezzi Stagionali</h3>
-            <p className="text-sm text-muted-foreground">
-              Imposta i prezzi per giornata in base alla stagione e alla durata del noleggio
-            </p>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {/* Period 1 */}
-              <div className="bg-muted/30 border border-border rounded-lg p-4 space-y-3">
-                <h4 className="font-semibold text-foreground">Periodo 1 (Bassa Stagione)</h4>
-                <div className="grid grid-cols-3 gap-2">
-                  <div>
-                    <label className="block text-xs text-muted-foreground mb-1">1-6 gg</label>
-                    <input
-                      type="number"
-                      value={formData.pricing.period1.short}
-                      onChange={(e) => updatePricing('period1', 'short', parseInt(e.target.value))}
-                      min="0"
-                      className="w-full px-2 py-1.5 text-sm border border-border rounded bg-background text-foreground focus:ring-2 focus:ring-orange-500"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs text-muted-foreground mb-1">7-20 gg</label>
-                    <input
-                      type="number"
-                      value={formData.pricing.period1.medium}
-                      onChange={(e) => updatePricing('period1', 'medium', parseInt(e.target.value))}
-                      min="0"
-                      className="w-full px-2 py-1.5 text-sm border border-border rounded bg-background text-foreground focus:ring-2 focus:ring-orange-500"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs text-muted-foreground mb-1">21+ gg</label>
-                    <input
-                      type="number"
-                      value={formData.pricing.period1.long}
-                      onChange={(e) => updatePricing('period1', 'long', parseInt(e.target.value))}
-                      min="0"
-                      className="w-full px-2 py-1.5 text-sm border border-border rounded bg-background text-foreground focus:ring-2 focus:ring-orange-500"
-                    />
-                  </div>
-                </div>
-              </div>
-
-              {/* Period 2 */}
-              <div className="bg-muted/30 border border-border rounded-lg p-4 space-y-3">
-                <h4 className="font-semibold text-foreground">Periodo 2 (Media Stagione)</h4>
-                <div className="grid grid-cols-3 gap-2">
-                  <div>
-                    <label className="block text-xs text-muted-foreground mb-1">1-6 gg</label>
-                    <input
-                      type="number"
-                      value={formData.pricing.period2.short}
-                      onChange={(e) => updatePricing('period2', 'short', parseInt(e.target.value))}
-                      min="0"
-                      className="w-full px-2 py-1.5 text-sm border border-border rounded bg-background text-foreground focus:ring-2 focus:ring-orange-500"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs text-muted-foreground mb-1">7-20 gg</label>
-                    <input
-                      type="number"
-                      value={formData.pricing.period2.medium}
-                      onChange={(e) => updatePricing('period2', 'medium', parseInt(e.target.value))}
-                      min="0"
-                      className="w-full px-2 py-1.5 text-sm border border-border rounded bg-background text-foreground focus:ring-2 focus:ring-orange-500"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs text-muted-foreground mb-1">21+ gg</label>
-                    <input
-                      type="number"
-                      value={formData.pricing.period2.long}
-                      onChange={(e) => updatePricing('period2', 'long', parseInt(e.target.value))}
-                      min="0"
-                      className="w-full px-2 py-1.5 text-sm border border-border rounded bg-background text-foreground focus:ring-2 focus:ring-orange-500"
-                    />
-                  </div>
-                </div>
-              </div>
-
-              {/* Period 3 */}
-              <div className="bg-muted/30 border border-border rounded-lg p-4 space-y-3">
-                <h4 className="font-semibold text-foreground">Periodo 3 (Alta Stagione)</h4>
-                <div className="grid grid-cols-3 gap-2">
-                  <div>
-                    <label className="block text-xs text-muted-foreground mb-1">1-6 gg</label>
-                    <input
-                      type="number"
-                      value={formData.pricing.period3.short}
-                      onChange={(e) => updatePricing('period3', 'short', parseInt(e.target.value))}
-                      min="0"
-                      className="w-full px-2 py-1.5 text-sm border border-border rounded bg-background text-foreground focus:ring-2 focus:ring-orange-500"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs text-muted-foreground mb-1">7-20 gg</label>
-                    <input
-                      type="number"
-                      value={formData.pricing.period3.medium}
-                      onChange={(e) => updatePricing('period3', 'medium', parseInt(e.target.value))}
-                      min="0"
-                      className="w-full px-2 py-1.5 text-sm border border-border rounded bg-background text-foreground focus:ring-2 focus:ring-orange-500"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs text-muted-foreground mb-1">21+ gg</label>
-                    <input
-                      type="number"
-                      value={formData.pricing.period3.long}
-                      onChange={(e) => updatePricing('period3', 'long', parseInt(e.target.value))}
-                      min="0"
-                      className="w-full px-2 py-1.5 text-sm border border-border rounded bg-background text-foreground focus:ring-2 focus:ring-orange-500"
-                    />
-                  </div>
-                </div>
-              </div>
-
-              {/* Period 4 */}
-              <div className="bg-muted/30 border border-border rounded-lg p-4 space-y-3">
-                <h4 className="font-semibold text-foreground">Periodo 4 (Estiva)</h4>
-                <div className="grid grid-cols-3 gap-2">
-                  <div>
-                    <label className="block text-xs text-muted-foreground mb-1">1-6 gg</label>
-                    <input
-                      type="number"
-                      value={formData.pricing.period4.short}
-                      onChange={(e) => updatePricing('period4', 'short', parseInt(e.target.value))}
-                      min="0"
-                      className="w-full px-2 py-1.5 text-sm border border-border rounded bg-background text-foreground focus:ring-2 focus:ring-orange-500"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs text-muted-foreground mb-1">7-20 gg</label>
-                    <input
-                      type="number"
-                      value={formData.pricing.period4.medium}
-                      onChange={(e) => updatePricing('period4', 'medium', parseInt(e.target.value))}
-                      min="0"
-                      className="w-full px-2 py-1.5 text-sm border border-border rounded bg-background text-foreground focus:ring-2 focus:ring-orange-500"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs text-muted-foreground mb-1">21+ gg</label>
-                    <input
-                      type="number"
-                      value={formData.pricing.period4.long}
-                      onChange={(e) => updatePricing('period4', 'long', parseInt(e.target.value))}
-                      min="0"
-                      className="w-full px-2 py-1.5 text-sm border border-border rounded bg-background text-foreground focus:ring-2 focus:ring-orange-500"
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              URL Immagine (opzionale)
+            </label>
+            <input
+              type="text"
+              value={formData.image || ''}
+              onChange={(e) => handleUrlChange(e.target.value)}
+              className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent ${
+                urlError ? 'border-red-500' : 'border-gray-300'
+              }`}
+              placeholder="https://example.com/vehicle.jpg"
+            />
+            {urlError && (
+              <p className="text-red-600 text-sm mt-1">{urlError}</p>
+            )}
           </div>
 
-          {/* Pubblicazione */}
-          <div className="space-y-3">
-            <h3 className="text-lg font-semibold text-foreground border-b border-border pb-2">Stato Pubblicazione</h3>
-            
-            <div className="flex items-center gap-6">
-              <div className="flex items-center gap-3">
+          <div>
+            <div className="flex items-center justify-between mb-2">
+              <label className="block text-sm font-medium text-gray-700">
+                Caratteristiche
+              </label>
+              <button
+                type="button"
+                onClick={addFeature}
+                className="text-sm text-orange-600 hover:text-orange-700 flex items-center gap-1"
+              >
+                <Plus className="w-4 h-4" />
+                Aggiungi
+              </button>
+            </div>
+            {(formData.features || []).map((feature, index) => (
+              <div key={index} className="flex gap-2 mb-2">
                 <input
-                  type="checkbox"
-                  id="published"
-                  checked={formData.published}
-                  onChange={(e) => setFormData({ ...formData, published: e.target.checked })}
-                  className="w-4 h-4 text-orange-500 rounded focus:ring-2 focus:ring-orange-500"
+                  type="text"
+                  value={feature}
+                  onChange={(e) => updateFeature(index, e.target.value)}
+                  className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                  placeholder="Es: Aria condizionata"
                 />
-                <label htmlFor="published" className="text-sm font-medium text-foreground">
-                  Pubblica sul sito
-                </label>
+                <button
+                  type="button"
+                  onClick={() => removeFeature(index)}
+                  className="text-red-600 hover:text-red-700"
+                >
+                  <Trash2 className="w-5 h-5" />
+                </button>
               </div>
-
-              <div className="flex items-center gap-3">
-                <input
-                  type="checkbox"
-                  id="featured"
-                  checked={formData.featured}
-                  onChange={(e) => setFormData({ ...formData, featured: e.target.checked })}
-                  className="w-4 h-4 text-orange-500 rounded focus:ring-2 focus:ring-orange-500"
-                />
-                <label htmlFor="featured" className="text-sm font-medium text-foreground">
-                  In evidenza (homepage)
-                </label>
-              </div>
-            </div>
+            ))}
           </div>
 
-          {/* Actions */}
-          <div className="flex justify-end gap-3 pt-4 border-t border-border">
-            <button
-              type="button"
-              onClick={onClose}
-              disabled={saving}
-              className="px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors disabled:opacity-50"
-            >
-              Annulla
-            </button>
+          <div>
+            <div className="flex items-center justify-between mb-2">
+              <label className="block text-sm font-medium text-gray-700">
+                Periodi di Prezzo
+              </label>
+              <button
+                type="button"
+                onClick={addPricingPeriod}
+                className="text-sm text-orange-600 hover:text-orange-700 flex items-center gap-1"
+              >
+                <Plus className="w-4 h-4" />
+                Aggiungi Periodo
+              </button>
+            </div>
+            {(formData.pricingPeriods || []).map((period, index) => (
+              <div key={index} className="border border-gray-200 rounded-lg p-4 mb-4">
+                <div className="flex justify-between items-start mb-3">
+                  <h4 className="font-medium text-gray-900">Periodo {index + 1}</h4>
+                  {(formData.pricingPeriods || []).length > 1 && (
+                    <button
+                      type="button"
+                      onClick={() => removePricingPeriod(index)}
+                      className="text-red-600 hover:text-red-700"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  )}
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                  <div>
+                    <label className="block text-xs font-medium text-gray-600 mb-1">
+                      Nome
+                    </label>
+                    <input
+                      type="text"
+                      value={period.name}
+                      onChange={(e) => updatePricingPeriod(index, 'name', e.target.value)}
+                      className="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:ring-1 focus:ring-orange-500"
+                      placeholder="Es: Alta Stagione"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium text-gray-600 mb-1">
+                      Data Inizio
+                    </label>
+                    <input
+                      type="date"
+                      value={period.startDate}
+                      onChange={(e) => updatePricingPeriod(index, 'startDate', e.target.value)}
+                      className="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:ring-1 focus:ring-orange-500"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium text-gray-600 mb-1">
+                      Data Fine
+                    </label>
+                    <input
+                      type="date"
+                      value={period.endDate}
+                      onChange={(e) => updatePricingPeriod(index, 'endDate', e.target.value)}
+                      className="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:ring-1 focus:ring-orange-500"
+                    />
+                  </div>
+                </div>
+                <div className="grid grid-cols-3 gap-3 mt-3">
+                  <div>
+                    <label className="block text-xs font-medium text-gray-600 mb-1">
+                      1-3 giorni (€)
+                    </label>
+                    <input
+                      type="number"
+                      value={period.prices.short}
+                      onChange={(e) => updatePricingPeriod(index, 'prices.short', e.target.value)}
+                      className="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:ring-1 focus:ring-orange-500"
+                      min="0"
+                      step="0.01"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium text-gray-600 mb-1">
+                      4-7 giorni (€)
+                    </label>
+                    <input
+                      type="number"
+                      value={period.prices.medium}
+                      onChange={(e) => updatePricingPeriod(index, 'prices.medium', e.target.value)}
+                      className="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:ring-1 focus:ring-orange-500"
+                      min="0"
+                      step="0.01"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium text-gray-600 mb-1">
+                      8+ giorni (€)
+                    </label>
+                    <input
+                      type="number"
+                      value={period.prices.long}
+                      onChange={(e) => updatePricingPeriod(index, 'prices.long', e.target.value)}
+                      className="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:ring-1 focus:ring-orange-500"
+                      min="0"
+                      step="0.01"
+                    />
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="flex gap-4">
+            <label className="flex items-center gap-2">
+              <input
+                type="checkbox"
+                checked={formData.published}
+                onChange={(e) => setFormData({ ...formData, published: e.target.checked })}
+                className="w-4 h-4 text-orange-600 border-gray-300 rounded focus:ring-orange-500"
+              />
+              <span className="text-sm font-medium text-gray-700">Pubblicato</span>
+            </label>
+
+            <label className="flex items-center gap-2">
+              <input
+                type="checkbox"
+                checked={formData.featured}
+                onChange={(e) => setFormData({ ...formData, featured: e.target.checked })}
+                className="w-4 h-4 text-orange-600 border-gray-300 rounded focus:ring-orange-500"
+              />
+              <span className="text-sm font-medium text-gray-700">In Evidenza</span>
+            </label>
+
+            <label className="flex items-center gap-2">
+              <input
+                type="checkbox"
+                checked={formData.available}
+                onChange={(e) => setFormData({ ...formData, available: e.target.checked })}
+                className="w-4 h-4 text-orange-600 border-gray-300 rounded focus:ring-orange-500"
+              />
+              <span className="text-sm font-medium text-gray-700">Disponibile</span>
+            </label>
+          </div>
+
+          <div className="flex gap-3 pt-4">
             <button
               type="submit"
               disabled={saving}
-              className="px-4 py-2 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-lg hover:from-orange-600 hover:to-red-600 transition-all flex items-center gap-2 disabled:opacity-50"
+              className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors disabled:bg-gray-300"
             >
               {saving ? (
                 <>
-                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <Loader2 className="w-5 h-5 animate-spin" />
                   Salvataggio...
                 </>
               ) : (
                 <>
-                  <Save className="w-4 h-4" />
+                  <Save className="w-5 h-5" />
                   Salva Veicolo
                 </>
               )}
+            </button>
+            <button
+              type="button"
+              onClick={onClose}
+              className="px-6 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+            >
+              Annulla
             </button>
           </div>
         </form>
