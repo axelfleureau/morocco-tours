@@ -62,7 +62,7 @@ The "Morocco Dreams" website is built with a modern web stack designed for perfo
 ### Recent Changes (November 20, 2025)
 - **Dashboard Unification**: Consolidated two separate admin interfaces (`/admin` and `/dashboard` admin tabs) into single unified dashboard at `/admin`.
     - Created `app/admin/blog/page.tsx`, `app/admin/cities/page.tsx`, `app/admin/services/page.tsx` with full CRUD operations
-    - Built modal components: `BlogModal`, `CityModal`, `ServiceModalNew` following existing patterns
+    - Built modal components: `BlogModal`, `CityModal`, `ServiceModal` following existing patterns
     - Updated `app/admin/layout.tsx` sidebar to include all 8 management sections: Experiences, Travels, Vehicles, Blog, Cities, Services, Instagram, Users
     - Configured `/dashboard` to redirect admin users to `/admin`, keeping only user sections (bookings, wishlist, profile) for regular users
 - **Vehicles Migration**: All 19 vehicles migrated from `data/vehicles.ts` to Firestore collection 'vehicles' with published/featured/status fields. Car rental page updated to load dynamically.
@@ -71,3 +71,18 @@ The "Morocco Dreams" website is built with a modern web stack designed for perfo
 - **Public Data Helpers**: Added `getPublishedVehicles()` and `getPublishedBlogPosts()` in `lib/public-data.ts` following same pattern as existing helpers with proper error handling.
 - **Firestore Rules**: Updated `firestore.rules` with public read/admin write for vehicles, blog, cities, and services collections. **MUST BE DEPLOYED VIA FIREBASE CONSOLE**.
 - **CRUD Parity**: All admin panels now have complete Create/Read/Update/Delete functionality with consistent modal-driven UX and automatic Firestore propagation to public pages.
+- **Admin System Cleanup & URL Validation (November 20, 2025)**:
+    - **Deprecated Code Removal**: Eliminated GoogleAuthButton.tsx, app/admin/setup/page.tsx, app/admin/real/page.tsx, ServiceModalNew.tsx (duplicates/unused files)
+    - **Error Handling Unification**: Integrated useNotifications hook across all admin modals (City, Travel, Experience, Vehicle, Blog, Service) with consistent toast notifications (showSuccess/showError)
+    - **URL Validation System**: Created `lib/url-validation.ts` with reusable validateUrl helper for robust URL input validation
+        - Real-time onChange validation with visual feedback (red borders, inline errors)
+        - Pre-submit validation blocking invalid URLs
+        - User-friendly error messages via toast notifications
+        - Integrated in ALL modals with URL fields:
+            * CityModal (image - required)
+            * TravelModal (image - optional)
+            * ExperienceModal (image - optional)
+            * VehicleModal (image - optional)
+            * BlogModal (cover - required, sections[].image - optional, multi-field validation)
+            * ServiceModal (no URL fields - correctly excluded)
+    - **Pattern Consistency**: All admin modals now follow unified architecture: useNotifications for user feedback, validateUrl for URL inputs, consistent error handling and success messages
