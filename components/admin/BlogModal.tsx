@@ -5,6 +5,7 @@ import { X, Save, Loader2, Plus, Trash2 } from 'lucide-react'
 import { doc, setDoc, Timestamp } from 'firebase/firestore'
 import { db } from '@/lib/firebase'
 import { useNotifications } from '../NotificationSystem'
+import { validateUrl } from '@/lib/url-validation'
 
 interface BlogPost {
   id?: string
@@ -51,6 +52,8 @@ export default function BlogModal({ post, isOpen, onClose, onSaveSuccess }: Blog
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
   const [newTag, setNewTag] = useState('')
+  const [coverUrlError, setCoverUrlError] = useState('')
+  const [sectionUrlErrors, setSectionUrlErrors] = useState<{[key: number]: string}>({})
 
   useEffect(() => {
     if (post) {
@@ -120,10 +123,65 @@ export default function BlogModal({ post, isOpen, onClose, onSaveSuccess }: Blog
       .replace(/^-+|-+$/g, '')
   }
 
+  const handleCoverUrlChange = (url: string) => {
+    setFormData({ ...formData, cover: url })
+    if (url) {
+      const validation = validateUrl(url)
+      setCoverUrlError(validation.valid ? '' : validation.error || '')
+    } else {
+      setCoverUrlError('')
+    }
+  }
+
+  const handleSectionUrlChange = (index: number, url: string) => {
+    const newSections = [...formData.sections]
+    newSections[index] = { ...newSections[index], image: url }
+    setFormData({ ...formData, sections: newSections })
+    
+    if (url) {
+      const validation = validateUrl(url, false)
+      setSectionUrlErrors({
+        ...sectionUrlErrors,
+        [index]: validation.valid ? '' : validation.error || ''
+      })
+    } else {
+      const newErrors = { ...sectionUrlErrors }
+      delete newErrors[index]
+      setSectionUrlErrors(newErrors)
+    }
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    
+    const coverValidation = validateUrl(formData.cover)
+    if (!coverValidation.valid) {
+      setCoverUrlError(coverValidation.error || 'URL non valido')
+      showError('Errore Validazione', coverValidation.error || 'URL copertina non valido')
+      return
+    }
+    
+    const newSectionErrors: {[key: number]: string} = {}
+    for (let i = 0; i < formData.sections.length; i++) {
+      const section = formData.sections[i]
+      if (section.image) {
+        const validation = validateUrl(section.image, false)
+        if (!validation.valid) {
+          newSectionErrors[i] = validation.error || 'URL non valido'
+        }
+      }
+    }
+    
+    if (Object.keys(newSectionErrors).length > 0) {
+      setSectionUrlErrors(newSectionErrors)
+      showError('Errore Validazione', 'Alcuni URL delle sezioni non sono validi')
+      return
+    }
+    
     setSaving(true)
     setError('')
+    setCoverUrlError('')
+    setSectionUrlErrors({})
 
     try {
       const slug = post?.slug || generateSlug(formData.title)
@@ -224,11 +282,18 @@ export default function BlogModal({ post, isOpen, onClose, onSaveSuccess }: Blog
               <input
                 type="url"
                 value={formData.cover}
-                onChange={(e) => setFormData({ ...formData, cover: e.target.value })}
+                onChange={(e) => handleCoverUrlChange(e.target.value)}
                 required
                 placeholder="https://..."
-                className="w-full px-4 py-2 border border-border rounded-lg bg-background text-foreground focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                className={`w-full px-4 py-2 border rounded-lg bg-background text-foreground focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-colors ${
+                  coverUrlError ? 'border-red-500 dark:border-red-400' : 'border-border'
+                }`}
               />
+              {coverUrlError && (
+                <p className="mt-1 text-sm text-red-600 dark:text-red-400">
+                  {coverUrlError}
+                </p>
+              )}
             </div>
 
             <div>
@@ -344,13 +409,22 @@ export default function BlogModal({ post, isOpen, onClose, onSaveSuccess }: Blog
                     className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                   />
                   
-                  <input
-                    type="url"
-                    value={section.image || ''}
-                    onChange={(e) => handleSectionChange(idx, 'image', e.target.value)}
-                    placeholder="URL Immagine (opzionale)..."
-                    className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-                  />
+                  <div>
+                    <input
+                      type="url"
+                      value={section.image || ''}
+                      onChange={(e) => handleSectionUrlChange(idx, e.target.value)}
+                      placeholder="URL Immagine (opzionale)..."
+                      className={`w-full px-3 py-2 border rounded-lg bg-background text-foreground focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-colors ${
+                        sectionUrlErrors[idx] ? 'border-red-500 dark:border-red-400' : 'border-border'
+                      }`}
+                    />
+                    {sectionUrlErrors[idx] && (
+                      <p className="mt-1 text-sm text-red-600 dark:text-red-400">
+                        {sectionUrlErrors[idx]}
+                      </p>
+                    )}
+                  </div>
                 </div>
               ))}
             </div>

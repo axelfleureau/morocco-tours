@@ -5,6 +5,7 @@ import { X, Save, Loader2 } from 'lucide-react'
 import { doc, setDoc, addDoc, collection } from 'firebase/firestore'
 import { db } from '@/lib/firebase'
 import { useNotifications } from '../NotificationSystem'
+import { validateUrl } from '@/lib/url-validation'
 
 interface Experience {
   id?: string
@@ -36,6 +37,7 @@ export default function ExperienceModal({ experience, onClose, onSave }: Experie
   })
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
+  const [urlError, setUrlError] = useState('')
 
   useEffect(() => {
     if (experience) {
@@ -43,10 +45,31 @@ export default function ExperienceModal({ experience, onClose, onSave }: Experie
     }
   }, [experience])
 
+  const handleUrlChange = (url: string) => {
+    setFormData({ ...formData, image: url })
+    if (url) {
+      const validation = validateUrl(url, false)
+      setUrlError(validation.valid ? '' : validation.error || '')
+    } else {
+      setUrlError('')
+    }
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    
+    if (formData.image) {
+      const urlValidation = validateUrl(formData.image, false)
+      if (!urlValidation.valid) {
+        setUrlError(urlValidation.error || 'URL non valido')
+        showError('Errore Validazione', urlValidation.error || 'URL immagine non valido')
+        return
+      }
+    }
+    
     setSaving(true)
     setError('')
+    setUrlError('')
 
     try {
       if (experience?.id) {
@@ -160,10 +183,17 @@ export default function ExperienceModal({ experience, onClose, onSave }: Experie
             <input
               type="url"
               value={formData.image}
-              onChange={(e) => setFormData({ ...formData, image: e.target.value })}
+              onChange={(e) => handleUrlChange(e.target.value)}
               placeholder="https://..."
-              className="w-full px-4 py-2 border border-border rounded-lg bg-background text-foreground focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+              className={`w-full px-4 py-2 border rounded-lg bg-background text-foreground focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-colors ${
+                urlError ? 'border-red-500 dark:border-red-400' : 'border-border'
+              }`}
             />
+            {urlError && (
+              <p className="mt-1 text-sm text-red-600 dark:text-red-400">
+                {urlError}
+              </p>
+            )}
           </div>
 
           <div>
