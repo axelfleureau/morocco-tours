@@ -84,8 +84,8 @@ export default function AdminVehiclesPage() {
       }
 
       const data = await response.json()
-      setVehicles(data)
-      setFilteredVehicles(data)
+      setVehicles(data.vehicles || [])
+      setFilteredVehicles(data.vehicles || [])
     } catch (error) {
       console.error('Error fetching vehicles:', error)
       showError('Errore', 'Impossibile caricare i veicoli')
