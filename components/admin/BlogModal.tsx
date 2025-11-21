@@ -125,12 +125,8 @@ export default function BlogModal({ post, isOpen, onClose, onSaveSuccess }: Blog
 
   const handleCoverUrlChange = (url: string) => {
     setFormData({ ...formData, cover: url })
-    if (url && url.trim()) {
-      const validation = validateUrl(url, true)
-      setCoverUrlError(validation.valid ? '' : validation.error || '')
-    } else {
-      setCoverUrlError('')
-    }
+    // Rimuovi errore onChange per campo opzionale - validazione solo al submit
+    setCoverUrlError('')
   }
 
   const handleSectionUrlChange = (index: number, url: string) => {
@@ -138,17 +134,10 @@ export default function BlogModal({ post, isOpen, onClose, onSaveSuccess }: Blog
     newSections[index] = { ...newSections[index], image: url }
     setFormData({ ...formData, sections: newSections })
     
-    if (url && url.trim()) {
-      const validation = validateUrl(url, false)
-      setSectionUrlErrors({
-        ...sectionUrlErrors,
-        [index]: validation.valid ? '' : validation.error || ''
-      })
-    } else {
-      const newErrors = { ...sectionUrlErrors }
-      delete newErrors[index]
-      setSectionUrlErrors(newErrors)
-    }
+    // Rimuovi errore onChange per campo opzionale - validazione solo al submit
+    const newErrors = { ...sectionUrlErrors }
+    delete newErrors[index]
+    setSectionUrlErrors(newErrors)
   }
 
   const handleSubmit = async (e: React.FormEvent) => {

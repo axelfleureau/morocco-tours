@@ -51,12 +51,8 @@ export default function TravelModal({ travel, onClose, onSave }: TravelModalProp
 
   const handleUrlChange = (url: string) => {
     setFormData({ ...formData, image: url })
-    if (url) {
-      const validation = validateUrl(url, false)
-      setUrlError(validation.valid ? '' : validation.error || '')
-    } else {
-      setUrlError('')
-    }
+    // Rimuovi errore onChange per campo opzionale - validazione solo al submit
+    setUrlError('')
   }
 
   const handleSubmit = async (e: React.FormEvent) => {

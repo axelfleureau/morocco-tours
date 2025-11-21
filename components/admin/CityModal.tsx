@@ -67,12 +67,8 @@ export default function CityModal({ city, isOpen, onClose, onSaveSuccess }: City
 
   const handleUrlChange = (url: string) => {
     setFormData({ ...formData, image: url })
-    if (url && url.trim()) {
-      const validation = validateUrl(url, true)
-      setUrlError(validation.valid ? '' : validation.error || '')
-    } else {
-      setUrlError('')
-    }
+    // Rimuovi errore onChange per campo opzionale - validazione solo al submit
+    setUrlError('')
   }
 
   const handleSubmit = async (e: React.FormEvent) => {

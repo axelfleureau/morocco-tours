@@ -93,12 +93,8 @@ export default function VehicleModal({ vehicle, onClose, onSave }: VehicleModalP
 
   const handleUrlChange = (url: string) => {
     setFormData({ ...formData, image: url })
-    if (url && url.trim()) {
-      const validation = validateUrl(url, false)
-      setUrlError(validation.valid ? '' : validation.error || '')
-    } else {
-      setUrlError('')
-    }
+    // Rimuovi errore onChange per campo opzionale - validazione solo al submit
+    setUrlError('')
   }
 
   const generateSlug = (name: string) => {
