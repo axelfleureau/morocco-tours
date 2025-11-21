@@ -1,23 +1,24 @@
 "use client"
 
 import { useState, useEffect } from 'react'
-import { collection, getDocs, doc, updateDoc, deleteDoc } from 'firebase/firestore'
-import { db } from '@/lib/firebase'
-import { Search, Edit, Trash2, Plus, Eye, EyeOff, Star, DollarSign } from 'lucide-react'
+import { Search, Edit, Trash2, Plus, Eye, EyeOff } from 'lucide-react'
 import ExperienceModal from '@/components/admin/ExperienceModal'
+import { useNotifications } from '@/components/NotificationSystem'
 
 interface Experience {
   id: string
   title: string
   category: string
-  price: number
-  rating: number
+  price?: number
   published: boolean
+  featured: boolean
   image?: string
   description?: string
+  slug: string
 }
 
 export default function AdminExperiencesPage() {
+  const { showSuccess, showError } = useNotifications()
   const [experiences, setExperiences] = useState<Experience[]>([])
   const [filteredExperiences, setFilteredExperiences] = useState<Experience[]>([])
   const [loading, setLoading] = useState(true)
@@ -26,7 +27,12 @@ export default function AdminExperiencesPage() {
   const [selectedExperience, setSelectedExperience] = useState<Experience | null>(null)
   const [showModal, setShowModal] = useState(false)
 
-  const categories = ['surf', 'cucina', 'trekking', 'quad-cammelli', 'artigianato']
+  const categories = ['adventure', 'wellness', 'culture', 'food', 'sports']
+
+  const headers = {
+    'Authorization': `Bearer ${process.env.NEXT_PUBLIC_ADMIN_TOKEN || process.env.ADMIN_TOKEN}`,
+    'Content-Type': 'application/json'
+  }
 
   useEffect(() => {
     fetchExperiences()
@@ -52,17 +58,16 @@ export default function AdminExperiencesPage() {
   const fetchExperiences = async () => {
     try {
       setLoading(true)
-      const querySnapshot = await getDocs(collection(db, 'experiences'))
-      const exps: Experience[] = []
+      const response = await fetch('/api/experiences', { cache: 'no-store' })
       
-      querySnapshot.forEach((doc) => {
-        exps.push({ id: doc.id, ...doc.data() } as Experience)
-      })
-      
-      setExperiences(exps)
-      setFilteredExperiences(exps)
+      if (!response.ok) throw new Error('Failed to fetch')
+
+      const data = await response.json()
+      setExperiences(data.experiences || [])
+      setFilteredExperiences(data.experiences || [])
     } catch (error) {
-      console.error('Error fetching experiences:', error)
+      console.error('Error:', error)
+      showError('Errore nel caricamento esperienze')
     } finally {
       setLoading(false)
     }
@@ -70,219 +75,137 @@ export default function AdminExperiencesPage() {
 
   const togglePublished = async (exp: Experience) => {
     try {
-      const expRef = doc(db, 'experiences', exp.id)
-      await updateDoc(expRef, { published: !exp.published })
-      
-      setExperiences(prev => prev.map(e => 
-        e.id === exp.id ? { ...e, published: !e.published } : e
-      ))
+      const response = await fetch(`/api/experiences/${exp.id}`, {
+        method: 'PUT',
+        headers,
+        body: JSON.stringify({ published: !exp.published })
+      })
+
+      if (!response.ok) throw new Error('Failed to update')
+
+      showSuccess(exp.published ? 'Nascosta' : 'Pubblicata')
+      fetchExperiences()
     } catch (error) {
-      console.error('Error toggling published:', error)
+      showError('Errore nell\'aggiornamento')
     }
   }
 
-  const deleteExperience = async (exp: Experience) => {
-    if (!confirm(`Sei sicuro di voler eliminare "${exp.title}"?`)) return
+  const toggleFeatured = async (exp: Experience) => {
+    try {
+      const response = await fetch(`/api/experiences/${exp.id}`, {
+        method: 'PUT',
+        headers,
+        body: JSON.stringify({ featured: !exp.featured })
+      })
+
+      if (!response.ok) throw new Error('Failed to update')
+
+      showSuccess(exp.featured ? 'Rimosso da in evidenza' : 'Aggiunto a in evidenza')
+      fetchExperiences()
+    } catch (error) {
+      showError('Errore nell\'aggiornamento')
+    }
+  }
+
+  const handleDelete = async (id: string) => {
+    if (!confirm('Eliminare questa esperienza?')) return
 
     try {
-      await deleteDoc(doc(db, 'experiences', exp.id))
-      setExperiences(prev => prev.filter(e => e.id !== exp.id))
+      const response = await fetch(`/api/experiences/${id}`, {
+        method: 'DELETE',
+        headers
+      })
+
+      if (!response.ok) throw new Error('Failed to delete')
+
+      showSuccess('Esperienza eliminata')
+      fetchExperiences()
     } catch (error) {
-      console.error('Error deleting experience:', error)
-      alert('Errore durante l\'eliminazione')
+      showError('Errore nell\'eliminazione')
     }
-  }
-
-  const handleEdit = (exp: Experience) => {
-    setSelectedExperience(exp)
-    setShowModal(true)
-  }
-
-  const handleCloseModal = () => {
-    setShowModal(false)
-    setSelectedExperience(null)
-  }
-
-  const handleSaveSuccess = () => {
-    fetchExperiences()
   }
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-[50vh]">
-        <div className="text-center">
-          <div className="w-16 h-16 border-4 border-orange-500 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-muted-foreground">Caricamento esperienze...</p>
-        </div>
-      </div>
-    )
+    return <div className="text-center py-8">Caricamento...</div>
   }
 
   return (
-    <div className="p-6 space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-foreground">Gestione Esperienze</h1>
-          <p className="text-muted-foreground mt-1">
-            {experiences.length} esperienze totali, {experiences.filter(e => e.published).length} pubblicate
-          </p>
-        </div>
-        <button
-          onClick={() => {
-            setSelectedExperience(null)
-            setShowModal(true)
-          }}
-          className="px-4 py-2 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-lg hover:from-orange-600 hover:to-red-600 transition-all flex items-center gap-2 shadow-lg"
+    <div className="space-y-6">
+      <div className="flex justify-between items-center">
+        <h1 className="text-3xl font-bold">Esperienze</h1>
+        <button 
+          onClick={() => { setSelectedExperience(null); setShowModal(true) }}
+          className="bg-primary text-primary-foreground px-4 py-2 rounded-lg flex items-center gap-2"
         >
-          <Plus className="w-5 h-5" />
-          Nuova Esperienza
+          <Plus className="w-4 h-4" />
+          Nuova
         </button>
       </div>
 
-      {/* Filters */}
-      <div className="bg-card border border-border rounded-xl p-4 space-y-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-            <input
-              type="text"
-              placeholder="Cerca per titolo o categoria..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 border border-border rounded-lg bg-background text-foreground focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-            />
+      <div className="flex gap-4 mb-6">
+        <input
+          type="text"
+          placeholder="Cerca..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="flex-1 px-4 py-2 border rounded-lg"
+        />
+        <select
+          value={categoryFilter}
+          onChange={(e) => setCategoryFilter(e.target.value)}
+          className="px-4 py-2 border rounded-lg"
+        >
+          <option value="">Tutte le categorie</option>
+          {categories.map(cat => (
+            <option key={cat} value={cat}>{cat}</option>
+          ))}
+        </select>
+      </div>
+
+      <div className="grid gap-4">
+        {filteredExperiences.map((exp) => (
+          <div key={exp.id} className="border rounded-lg p-4 flex items-center justify-between">
+            <div>
+              <h3 className="font-semibold">{exp.title}</h3>
+              <p className="text-sm text-muted-foreground">{exp.category}</p>
+            </div>
+            <div className="flex gap-2">
+              <button
+                onClick={() => togglePublished(exp)}
+                className="p-2 hover:bg-gray-100 rounded"
+                title={exp.published ? 'Nascondi' : 'Pubblica'}
+              >
+                {exp.published ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
+              </button>
+              <button
+                onClick={() => { setSelectedExperience(exp); setShowModal(true) }}
+                className="p-2 hover:bg-gray-100 rounded"
+              >
+                <Edit className="w-4 h-4" />
+              </button>
+              <button
+                onClick={() => handleDelete(exp.id)}
+                className="p-2 hover:bg-red-100 rounded text-red-600"
+              >
+                <Trash2 className="w-4 h-4" />
+              </button>
+            </div>
           </div>
-          
-          <select
-            value={categoryFilter}
-            onChange={(e) => setCategoryFilter(e.target.value)}
-            className="px-4 py-2 border border-border rounded-lg bg-background text-foreground focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-          >
-            <option value="">Tutte le categorie</option>
-            {categories.map(cat => (
-              <option key={cat} value={cat}>
-                {cat.charAt(0).toUpperCase() + cat.slice(1)}
-              </option>
-            ))}
-          </select>
-        </div>
+        ))}
       </div>
 
-      {/* Table */}
-      <div className="bg-card border border-border rounded-xl overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead className="bg-muted">
-              <tr>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">Esperienza</th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">Categoria</th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">Prezzo</th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">Rating</th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">Stato</th>
-                <th className="px-6 py-4 text-right text-sm font-semibold text-foreground">Azioni</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-border">
-              {filteredExperiences.length === 0 ? (
-                <tr>
-                  <td colSpan={6} className="px-6 py-12 text-center text-muted-foreground">
-                    Nessuna esperienza trovata
-                  </td>
-                </tr>
-              ) : (
-                filteredExperiences.map((exp) => (
-                  <tr key={exp.id} className="hover:bg-muted/50 transition-colors">
-                    <td className="px-6 py-4">
-                      <div className="flex items-center gap-3">
-                        {exp.image && (
-                          <img
-                            src={exp.image}
-                            alt={exp.title}
-                            className="w-12 h-12 rounded-lg object-cover"
-                          />
-                        )}
-                        <div>
-                          <p className="font-medium text-foreground">{exp.title}</p>
-                          {exp.description && (
-                            <p className="text-sm text-muted-foreground line-clamp-1">
-                              {exp.description}
-                            </p>
-                          )}
-                        </div>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4">
-                      <span className="px-2 py-1 bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300 rounded text-sm">
-                        {exp.category}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="flex items-center gap-1 text-foreground font-medium">
-                        <DollarSign className="w-4 h-4" />
-                        {exp.price}
-                      </div>
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="flex items-center gap-1 text-foreground">
-                        <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                        {exp.rating || 'N/A'}
-                      </div>
-                    </td>
-                    <td className="px-6 py-4">
-                      <button
-                        onClick={() => togglePublished(exp)}
-                        className={`flex items-center gap-2 px-3 py-1 rounded-full text-sm font-medium transition-colors ${
-                          exp.published
-                            ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300'
-                            : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400'
-                        }`}
-                      >
-                        {exp.published ? (
-                          <>
-                            <Eye className="w-4 h-4" />
-                            Pubblicata
-                          </>
-                        ) : (
-                          <>
-                            <EyeOff className="w-4 h-4" />
-                            Bozza
-                          </>
-                        )}
-                      </button>
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="flex items-center justify-end gap-2">
-                        <button
-                          onClick={() => handleEdit(exp)}
-                          className="p-2 hover:bg-muted rounded-lg transition-colors text-blue-600"
-                          title="Modifica"
-                        >
-                          <Edit className="w-4 h-4" />
-                        </button>
-                        <button
-                          onClick={() => deleteExperience(exp)}
-                          className="p-2 hover:bg-muted rounded-lg transition-colors text-red-600"
-                          title="Elimina"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      {/* Modal */}
       {showModal && (
         <ExperienceModal
           experience={selectedExperience}
-          onClose={handleCloseModal}
-          onSave={handleSaveSuccess}
+          isOpen={showModal}
+          onClose={() => {
+            setShowModal(false)
+            fetchExperiences()
+          }}
+          onSaveSuccess={() => {
+            setShowModal(false)
+            fetchExperiences()
+          }}
         />
       )}
     </div>

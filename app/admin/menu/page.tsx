@@ -1,19 +1,12 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { useNotifications } from "@/hooks/useNotifications"
+import { useNotifications } from "@/components/NotificationSystem"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog"
 import { Plus, Edit, Trash2 } from "lucide-react"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 
 export default function MenuManagement() {
   const [items, setItems] = useState<any[]>([])
