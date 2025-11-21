@@ -11,8 +11,7 @@ import MoroccoMap from "@/components/sections/MoroccoMap"
 import InstagramFeed from "@/components/InstagramFeed"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardTitle } from "@/components/ui/card"
-import { getPublishedExperiences, getPublishedTravels } from "@/lib/public-data"
-import { Experience, Travel } from "@/lib/firestore-schema"
+import { getPublishedExperiences, getPublishedTravels, Experience, Travel } from "@/lib/public-data"
 
 // Icon mapping for categories
 const getIconForCategory = (category?: string) => {
@@ -96,7 +95,7 @@ const AuthenticExperiences = () => {
                   <div className="relative h-40 sm:h-48 overflow-hidden">
                     <img
                       src={
-                        (experience.images && experience.images[0]) ||
+                        experience.image ||
                         `/placeholder.svg?height=200&width=300&query=${encodeURIComponent("esperienza marocco " + experience.title)}`
                       }
                       alt={experience.title}
@@ -212,7 +211,7 @@ const FeaturedTravels = () => {
                 <div className="relative h-56 overflow-hidden">
                   <img
                     src={
-                      (travel.images && travel.images[0]) ||
+                      travel.image ||
                       `/placeholder.svg?height=300&width=400&query=${encodeURIComponent("viaggio marocco " + travel.title)}`
                     }
                     alt={travel.title}
@@ -244,9 +243,9 @@ const FeaturedTravels = () => {
                     {travel.description}
                   </p>
                   
-                  {travel.highlights && travel.highlights.length > 0 && (
+                  {travel.itinerary && travel.itinerary.length > 0 && (
                     <div className="mb-4 space-y-1">
-                      {travel.highlights.slice(0, 3).map((highlight, idx) => (
+                      {travel.itinerary.slice(0, 3).map((highlight, idx) => (
                         <div key={idx} className="flex items-start gap-2 text-sm text-muted-foreground">
                           <span className="text-primary mt-0.5">✓</span>
                           <span className="line-clamp-1">{highlight}</span>
