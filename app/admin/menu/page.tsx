@@ -6,12 +6,12 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Plus, Edit, Trash2 } from "lucide-react"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 
 export default function MenuManagement() {
   const [items, setItems] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const [editingId, setEditingId] = useState<string | null>(null)
+  const [showModal, setShowModal] = useState(false)
   const [formData, setFormData] = useState({ label: "", href: "", description: "", order: 0 })
   const { showSuccess, showError } = useNotifications()
 
@@ -25,7 +25,7 @@ export default function MenuManagement() {
       const data = await res.json()
       setItems(data.items || [])
     } catch (error) {
-      showError("Errore nel caricamento menu")
+      showError("Errore", "Errore nel caricamento menu")
     } finally {
       setLoading(false)
     }
@@ -33,7 +33,7 @@ export default function MenuManagement() {
 
   const handleSave = async () => {
     if (!formData.label || !formData.href) {
-      showError("Riempire i campi obbligatori")
+      showError("Validazione", "Riempire i campi obbligatori")
       return
     }
 
@@ -52,12 +52,13 @@ export default function MenuManagement() {
 
       if (!res.ok) throw new Error("Failed to save")
 
-      showSuccess(editingId ? "Voce aggiornata" : "Voce creata")
+      showSuccess(editingId ? "Aggiornata" : "Creata", editingId ? "Voce aggiornata con successo" : "Voce creata con successo")
       setFormData({ label: "", href: "", description: "", order: 0 })
       setEditingId(null)
+      setShowModal(false)
       loadItems()
     } catch (error) {
-      showError("Errore nel salvataggio")
+      showError("Errore", "Errore nel salvataggio della voce")
     }
   }
 
@@ -74,11 +75,16 @@ export default function MenuManagement() {
 
       if (!res.ok) throw new Error("Failed to delete")
 
-      showSuccess("Voce eliminata")
+      showSuccess("Eliminata", "Voce eliminata con successo")
       loadItems()
     } catch (error) {
-      showError("Errore nell'eliminazione")
+      showError("Errore", "Errore nell'eliminazione della voce")
     }
+  }
+
+  const resetForm = () => {
+    setFormData({ label: "", href: "", description: "", order: 0 })
+    setEditingId(null)
   }
 
   if (loading) {
@@ -89,26 +95,17 @@ export default function MenuManagement() {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h1 className="text-3xl font-bold">Gestione Menu</h1>
-        <Dialog
-          open={editingId === null && formData.label !== ""}
-          onOpenChange={(open) => {
-            if (!open) {
-              setFormData({ label: "", href: "", description: "", order: 0 })
-              setEditingId(null)
-            }
-          }}
-        >
-          <DialogTrigger asChild>
-            <Button onClick={() => setFormData({ label: "", href: "", description: "", order: 0 })}>
-              <Plus className="w-4 h-4 mr-2" />
-              Nuova Voce
-            </Button>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>{editingId ? "Modifica Voce" : "Nuova Voce"}</DialogTitle>
-            </DialogHeader>
-            <div className="space-y-4">
+        <Button onClick={() => { resetForm(); setShowModal(true) }}>
+          <Plus className="w-4 h-4 mr-2" />
+          Nuova Voce
+        </Button>
+      </div>
+
+      {showModal && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+          <div className="bg-card border border-border rounded-lg w-full max-w-2xl p-6">
+            <h2 className="text-2xl font-bold mb-4">{editingId ? "Modifica Voce" : "Nuova Voce"}</h2>
+            <div className="space-y-4 max-h-[60vh] overflow-y-auto">
               <Input
                 placeholder="Etichetta"
                 value={formData.label}
@@ -119,7 +116,7 @@ export default function MenuManagement() {
                 value={formData.href}
                 onChange={(e) => setFormData({ ...formData, href: e.target.value })}
               />
-              <Textarea
+              <Input
                 placeholder="Descrizione (opzionale)"
                 value={formData.description}
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
@@ -130,13 +127,14 @@ export default function MenuManagement() {
                 value={formData.order}
                 onChange={(e) => setFormData({ ...formData, order: parseInt(e.target.value) })}
               />
-              <Button onClick={handleSave} className="w-full">
-                Salva
-              </Button>
+              <div className="flex gap-3 justify-end pt-4 border-t">
+                <Button variant="outline" onClick={() => { setShowModal(false); resetForm() }}>Annulla</Button>
+                <Button onClick={handleSave}>Salva</Button>
+              </div>
             </div>
-          </DialogContent>
-        </Dialog>
-      </div>
+          </div>
+        </div>
+      )}
 
       <div className="grid gap-4">
         {items.map((item) => (

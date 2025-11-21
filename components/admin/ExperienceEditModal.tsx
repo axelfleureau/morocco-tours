@@ -56,13 +56,13 @@ export default function ExperienceEditModal({
       }
 
       // Success feedback
-      showSuccess('Esperienza salvata con successo!')
+      showSuccess('Salvata', 'Esperienza salvata con successo!')
       onSave?.()
       onRefreshData && onRefreshData()
       onClose()
     } catch (error) {
       console.error('Error saving experience:', error)
-      showError('Errore nel salvataggio dell\'esperienza')
+      showError('Errore', 'Errore nel salvataggio dell\'esperienza')
     } finally {
       setSaving(false)
     }
