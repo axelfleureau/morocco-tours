@@ -67,7 +67,7 @@ export default function FAQManagement() {
 
       if (!res.ok) throw new Error("Failed to save")
 
-      showSuccess(editingId ? "Domanda aggiornata" : "Domanda creata")
+      showSuccess(editingId ? "Aggiornata" : "Creata", editingId ? "Domanda aggiornata con successo" : "Domanda creata con successo")
       resetForm()
       loadFAQs()
     } catch (error) {
@@ -88,10 +88,10 @@ export default function FAQManagement() {
 
       if (!res.ok) throw new Error("Failed to delete")
 
-      showSuccess("Domanda eliminata")
+      showSuccess("Eliminata", "Domanda eliminata con successo")
       loadFAQs()
     } catch (error) {
-      showError("Errore nell'eliminazione")
+      showError("Errore", "Errore nell'eliminazione della domanda")
     }
   }
 
@@ -105,6 +105,8 @@ export default function FAQManagement() {
     })
     setEditingId(null)
   }
+
+  const [showModal, setShowModal] = useState(false)
 
   if (loading) return <div className="text-center py-8">Caricamento...</div>
 

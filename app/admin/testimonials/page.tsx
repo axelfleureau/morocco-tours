@@ -60,7 +60,7 @@ export default function TestimonialsManagement() {
 
       if (!res.ok) throw new Error("Failed to save")
 
-      showSuccess(editingId ? "Testimonianza aggiornata" : "Testimonianza creata")
+      showSuccess(editingId ? "Aggiornata" : "Creata", editingId ? "Testimonianza aggiornata con successo" : "Testimonianza creata con successo")
       resetForm()
       loadTestimonials()
     } catch (error) {
@@ -81,10 +81,10 @@ export default function TestimonialsManagement() {
 
       if (!res.ok) throw new Error("Failed to delete")
 
-      showSuccess("Testimonianza eliminata")
+      showSuccess("Eliminata", "Testimonianza eliminata con successo")
       loadTestimonials()
     } catch (error) {
-      showError("Errore nell'eliminazione")
+      showError("Errore", "Errore nell'eliminazione della testimonianza")
     }
   }
 
@@ -101,9 +101,9 @@ export default function TestimonialsManagement() {
     setEditingId(null)
   }
 
-  if (loading) return <div className="text-center py-8">Caricamento...</div>
-
   const [showModal, setShowModal] = useState(false)
+
+  if (loading) return <div className="text-center py-8">Caricamento...</div>
 
   return (
     <div className="space-y-6">
@@ -156,7 +156,7 @@ export default function TestimonialsManagement() {
               <Textarea
                 placeholder="Commento"
                 value={formData.comment}
-                onChange={(e) => setFormData({ ...formData, comment: e.target.value })}
+                onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setFormData({ ...formData, comment: e.target.value })}
                 rows={4}
               />
               <div className="flex gap-3 justify-end pt-4 border-t">
