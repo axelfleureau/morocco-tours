@@ -48,7 +48,7 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
           
           <div className="flex flex-wrap items-center justify-between gap-4">
             <div className="flex flex-wrap gap-2">
-              {post.tags.map((tag) => (
+              {(post.tags || []).map((tag) => (
                 <span 
                   key={tag} 
                   className="px-3 py-1 bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300 rounded-full text-sm font-medium"

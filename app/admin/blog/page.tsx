@@ -52,7 +52,7 @@ export default function AdminBlogPage() {
     }
 
     if (tagFilter) {
-      filtered = filtered.filter(post => post.tags.includes(tagFilter))
+      filtered = filtered.filter(post => post.tags?.includes(tagFilter) || false)
     }
 
     setFilteredPosts(filtered)
@@ -233,14 +233,14 @@ export default function AdminBlogPage() {
                     </td>
                     <td className="px-6 py-4">
                       <div className="flex flex-wrap gap-1">
-                        {post.tags.slice(0, 2).map((tag, idx) => (
+                        {(post.tags || []).slice(0, 2).map((tag, idx) => (
                           <span key={idx} className="px-2 py-1 bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300 rounded text-xs">
                             {tag}
                           </span>
                         ))}
-                        {post.tags.length > 2 && (
+                        {(post.tags || []).length > 2 && (
                           <span className="px-2 py-1 bg-muted text-muted-foreground rounded text-xs">
-                            +{post.tags.length - 2}
+                            +{(post.tags || []).length - 2}
                           </span>
                         )}
                       </div>

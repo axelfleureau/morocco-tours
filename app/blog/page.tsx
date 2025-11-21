@@ -277,7 +277,7 @@ export default function BlogPage() {
                       </h2>
                       <p className="text-gray-600 dark:text-gray-300 mb-4">{post.excerpt}</p>
                       <div className="flex gap-2 flex-wrap">
-                        {post.tags.map((t) => (
+                        {(post.tags || []).map((t) => (
                           <span key={t} className="text-xs px-2 py-1 rounded-full bg-orange-100 text-orange-700 dark:bg-orange-900/20 dark:text-orange-300">
                             {t}
                           </span>
