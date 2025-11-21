@@ -223,11 +223,6 @@ const FeaturedTravels = () => {
                   <div className="absolute bottom-4 left-4 bg-foreground/60 backdrop-blur-sm text-primary-foreground px-4 py-2 rounded-full text-sm font-medium">
                     {durationDisplay}
                   </div>
-                  {travel.originalPrice && travel.originalPrice > travel.price && (
-                    <div className="absolute top-4 left-4 bg-red-500 text-white px-3 py-1 rounded-full text-sm font-bold">
-                      Offerta
-                    </div>
-                  )}
                 </div>
 
                 <CardContent className="p-6">
