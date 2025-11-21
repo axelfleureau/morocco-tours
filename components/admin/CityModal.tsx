@@ -2,8 +2,6 @@
 
 import { useState, useEffect } from 'react'
 import { X, Save, Loader2 } from 'lucide-react'
-import { doc, setDoc, Timestamp } from 'firebase/firestore'
-import { db } from '@/lib/firebase'
 import { useNotifications } from '../NotificationSystem'
 import { validateUrl } from '@/lib/url-validation'
 
@@ -88,16 +86,21 @@ export default function CityModal({ city, isOpen, onClose, onSaveSuccess }: City
     setUrlError('')
 
     try {
-      const slug = city?.id || generateSlug(formData.name)
-      const now = Timestamp.now()
-      
-      const dataToSave = {
-        ...formData,
-        updatedAt: now,
-        ...(!city && { createdAt: now })
+      const headers = {
+        'Authorization': `Bearer ${process.env.NEXT_PUBLIC_ADMIN_TOKEN || process.env.ADMIN_TOKEN}`,
+        'Content-Type': 'application/json'
       }
+      
+      const method = city?.id ? 'PUT' : 'POST'
+      const url = city?.id ? `/api/cities/${city.id}` : '/api/cities'
+      
+      const response = await fetch(url, {
+        method,
+        headers,
+        body: JSON.stringify(formData)
+      })
 
-      await setDoc(doc(db, 'cities', slug), dataToSave, { merge: true })
+      if (!response.ok) throw new Error('Failed to save city')
       
       showSuccess('Città Salvata', `"${formData.name}" è stata salvata con successo.`)
       onSaveSuccess()

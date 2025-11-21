@@ -2,8 +2,6 @@
 
 import { useState, useEffect } from 'react'
 import { X, Save, Loader2 } from 'lucide-react'
-import { doc, setDoc, addDoc, collection } from 'firebase/firestore'
-import { db } from '@/lib/firebase'
 import { useNotifications } from '../NotificationSystem'
 import { validateUrl } from '@/lib/url-validation'
 
@@ -72,13 +70,22 @@ export default function TravelModal({ travel, onClose, onSave }: TravelModalProp
     setUrlError('')
 
     try {
-      if (travel?.id) {
-        // Update existing - use merge to preserve other fields
-        await setDoc(doc(db, 'travels', travel.id), formData, { merge: true })
-      } else {
-        // Create new
-        await addDoc(collection(db, 'travels'), formData)
+      const headers = {
+        'Authorization': `Bearer ${process.env.NEXT_PUBLIC_ADMIN_TOKEN || process.env.ADMIN_TOKEN}`,
+        'Content-Type': 'application/json'
       }
+      
+      const method = travel?.id ? 'PUT' : 'POST'
+      const url = travel?.id ? `/api/travels/${travel.id}` : '/api/travels'
+      
+      const response = await fetch(url, {
+        method,
+        headers,
+        body: JSON.stringify(formData)
+      })
+
+      if (!response.ok) throw new Error('Failed to save travel')
+      
       showSuccess('Viaggio Salvato', `"${formData.title}" è stato salvato con successo.`)
       onSave()
       onClose()
