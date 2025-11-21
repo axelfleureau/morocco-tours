@@ -291,8 +291,28 @@ const FeaturedTravels = () => {
   )
 }
 
-// Testimonials Component
+// Testimonials Component - Dynamic from API
 const TestimonialsSection = () => {
+  const [testimonials, setTestimonials] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const loadTestimonials = async () => {
+      try {
+        const res = await fetch('/api/testimonials')
+        if (!res.ok) throw new Error('Failed to fetch')
+        const data = await res.json()
+        setTestimonials(data.testimonials || [])
+      } catch (error) {
+        console.error('Error loading testimonials:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    loadTestimonials()
+  }, [])
+
   return (
     <section className="py-16 lg:py-24 bg-gradient-to-b from-card to-muted" data-slot="testimonials">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -305,111 +325,84 @@ const TestimonialsSection = () => {
           </p>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-6 lg:gap-8">
-          {[
-            {
-              name: "Marco & Giulia",
-              location: "Milano, Italia",
-              rating: 5,
-              text: "Un viaggio incredibile! Le guide locali ci hanno fatto scoprire il vero Marocco, lontano dai percorsi turistici. Il deserto è stato magico.",
-              image: "/images/testimonial-1.png",
-              trip: "Tour Imperiali + Deserto",
-            },
-            {
-              name: "Sarah Johnson",
-              location: "London, UK",
-              rating: 5,
-              text: "Morocco Dreams ha organizzato tutto perfettamente. Dall'hammam tradizionale alle notti nel deserto, ogni momento è stato autentico.",
-              image: "/images/testimonial-2.png",
-              trip: "Viaggio su Misura",
-            },
-            {
-              name: "Pierre & Marie",
-              location: "Paris, France",
-              rating: 5,
-              text: "L'esperienza culinaria è stata fantastica! Abbiamo imparato a cucinare il tagine e il couscous con una famiglia berbera.",
-              image: "/images/testimonial-3.png",
-              trip: "Tour Gastronomico",
-            },
-          ].map((testimonial, idx) => (
-            <Card
-              key={idx}
-              className="hover:shadow-xl transition-all duration-300 hover:scale-105 active:scale-95 touch-manipulation bg-card"
-            >
-              <CardContent className="p-6">
-                <div className="flex items-center mb-4">
-                  <img
-                    src={
-                      testimonial.image ||
-                      `/placeholder.svg?height=50&width=50&query=${encodeURIComponent("testimonial avatar " + testimonial.name)}`
-                    }
-                    alt={testimonial.name}
-                    className="w-12 h-12 rounded-full object-cover mr-4"
-                  />
-                  <div>
-                    <h4 className="font-bold text-card-foreground">{testimonial.name}</h4>
-                    <p className="text-sm text-muted-foreground">{testimonial.location}</p>
-                  </div>
-                </div>
-
-                <div className="flex mb-4">
-                  {[...Array(testimonial.rating)].map((_, i) => (
-                    <div key={i} className="w-5 h-5 text-yellow-400 fill-current">
-                      ⭐
+        {loading ? (
+          <div className="flex items-center justify-center py-12">
+            <Loader2 className="w-8 h-8 animate-spin text-primary" />
+          </div>
+        ) : testimonials.length === 0 ? (
+          <div className="text-center py-12">
+            <p className="text-muted-foreground">Testimonianze non disponibili al momento</p>
+          </div>
+        ) : (
+          <div className="grid md:grid-cols-3 gap-6 lg:gap-8">
+            {testimonials.map((testimonial) => (
+              <Card
+                key={testimonial.id}
+                className="hover:shadow-xl transition-all duration-300 hover:scale-105 active:scale-95 touch-manipulation bg-card"
+              >
+                <CardContent className="p-6">
+                  <div className="flex items-center mb-4">
+                    <img
+                      src={
+                        testimonial.image ||
+                        `/placeholder.svg?height=50&width=50&query=${encodeURIComponent("testimonial " + testimonial.name)}`
+                      }
+                      alt={testimonial.name}
+                      className="w-12 h-12 rounded-full object-cover mr-4"
+                    />
+                    <div>
+                      <h4 className="font-bold text-card-foreground">{testimonial.name}</h4>
+                      <p className="text-sm text-muted-foreground">{testimonial.location}</p>
                     </div>
-                  ))}
-                </div>
+                  </div>
 
-                <p className="text-muted-foreground mb-4 italic text-pretty leading-relaxed">
-                  "{testimonial.text}"
-                </p>
+                  <div className="flex mb-4">
+                    {[...Array(testimonial.rating || 5)].map((_, i) => (
+                      <div key={i} className="w-5 h-5 text-yellow-400 fill-current">
+                        ⭐
+                      </div>
+                    ))}
+                  </div>
 
-                <div className="text-sm text-primary font-semibold">{testimonial.trip}</div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+                  <p className="text-muted-foreground mb-4 italic text-pretty leading-relaxed">
+                    "{testimonial.comment}"
+                  </p>
+
+                  {testimonial.service && (
+                    <div className="text-sm text-primary font-semibold">{testimonial.service}</div>
+                  )}
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        )}
       </div>
     </section>
   )
 }
 
-// FAQ Section Component
+// FAQ Section Component - Dynamic from API
 const FAQSection = () => {
-  const [openFAQ, setOpenFAQ] = useState<number | null>(null)
+  const [faqs, setFaqs] = useState<any[]>([])
+  const [openFAQ, setOpenFAQ] = useState<string | null>(null)
+  const [loading, setLoading] = useState(true)
 
-  const faqs = [
-    {
-      question: "Ho bisogno di un visto per visitare il Marocco?",
-      answer:
-        "I cittadini italiani non hanno bisogno di visto per soggiorni turistici fino a 90 giorni. È sufficiente un passaporto valido con almeno 6 mesi di validità residua.",
-    },
-    {
-      question: "Il Marocco è sicuro per i turisti?",
-      answer:
-        "Sì, il Marocco è generalmente molto sicuro per i turisti. Le nostre guide locali ti accompagneranno sempre e forniamo assistenza 24/7 durante tutto il viaggio.",
-    },
-    {
-      question: "Che tipo di alloggi offrite?",
-      answer:
-        "Offriamo una vasta gamma di alloggi: dai riad tradizionali nella medina agli hotel di lusso, dai campi nel deserto alle guesthouse berbere in montagna.",
-    },
-    {
-      question: "Posso personalizzare il mio viaggio?",
-      answer:
-        "Assolutamente! Tutti i nostri viaggi sono completamente personalizzabili. Puoi modificare l'itinerario, la durata, gli alloggi e le attività secondo le tue preferenze.",
-    },
-    {
-      question: "Qual è il periodo migliore per visitare il Marocco?",
-      answer:
-        "Il Marocco si può visitare tutto l'anno. Primavera (marzo-maggio) e autunno (settembre-novembre) sono ideali per il clima mite. L'inverno è perfetto per il deserto, l'estate per la costa.",
-    },
-    {
-      question: "Cosa include il prezzo del viaggio?",
-      answer:
-        "I nostre prezzi includono alloggi, trasporti privati, guide locali, alcune attività e assistenza 24/7. Voli internazionali, pasti non specificati e spese personali sono esclusi.",
-    },
-  ]
+  useEffect(() => {
+    const loadFAQs = async () => {
+      try {
+        const res = await fetch('/api/faq')
+        if (!res.ok) throw new Error('Failed to fetch')
+        const data = await res.json()
+        setFaqs(data.faqs || [])
+      } catch (error) {
+        console.error('Error loading FAQs:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    loadFAQs()
+  }, [])
 
   return (
     <section className="py-16 lg:py-24 bg-background" data-slot="faq">
@@ -423,33 +416,43 @@ const FAQSection = () => {
           </p>
         </div>
 
-        <div className="space-y-4">
-          {faqs.map((faq, idx) => (
-            <Card
-              key={idx}
-              className="overflow-hidden transition-all duration-300 hover:shadow-lg hover:scale-105 active:scale-95 touch-manipulation bg-card"
-            >
-              <button
-                onClick={() => setOpenFAQ(openFAQ === idx ? null : idx)}
-                className="w-full px-6 py-4 text-left flex items-center justify-between hover:bg-accent/10 transition-colors duration-200 min-h-[44px] touch-manipulation"
+        {loading ? (
+          <div className="flex items-center justify-center py-12">
+            <Loader2 className="w-8 h-8 animate-spin text-primary" />
+          </div>
+        ) : faqs.length === 0 ? (
+          <div className="text-center py-12">
+            <p className="text-muted-foreground">Domande frequenti non disponibili al momento</p>
+          </div>
+        ) : (
+          <div className="space-y-4">
+            {faqs.map((faq) => (
+              <Card
+                key={faq.id}
+                className="overflow-hidden transition-all duration-300 hover:shadow-lg hover:scale-105 active:scale-95 touch-manipulation bg-card"
               >
-                <span className="font-semibold text-card-foreground pr-4 text-balance">{faq.question}</span>
-                {openFAQ === idx ? (
-                  <span className="text-primary text-xl">−</span>
-                ) : (
-                  <span className="text-primary text-xl">+</span>
-                )}
-              </button>
-              <div
-                className={`px-6 overflow-hidden transition-all duration-300 ${
-                  openFAQ === idx ? "max-h-96 pb-4" : "max-h-0"
-                }`}
-              >
-                <p className="text-muted-foreground leading-relaxed text-pretty">{faq.answer}</p>
-              </div>
-            </Card>
-          ))}
-        </div>
+                <button
+                  onClick={() => setOpenFAQ(openFAQ === faq.id ? null : faq.id)}
+                  className="w-full px-6 py-4 text-left flex items-center justify-between hover:bg-accent/10 transition-colors duration-200 min-h-[44px] touch-manipulation"
+                >
+                  <span className="font-semibold text-card-foreground pr-4 text-balance">{faq.question}</span>
+                  {openFAQ === faq.id ? (
+                    <span className="text-primary text-xl">−</span>
+                  ) : (
+                    <span className="text-primary text-xl">+</span>
+                  )}
+                </button>
+                <div
+                  className={`px-6 overflow-hidden transition-all duration-300 ${
+                    openFAQ === faq.id ? "max-h-96 pb-4" : "max-h-0"
+                  }`}
+                >
+                  <p className="text-muted-foreground leading-relaxed text-pretty">{faq.answer}</p>
+                </div>
+              </Card>
+            ))}
+          </div>
+        )}
       </div>
     </section>
   )
