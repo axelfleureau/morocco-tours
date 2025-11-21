@@ -1,22 +1,34 @@
 "use client"
 
 import { useState, useEffect } from 'react'
-import { collection, getDocs, doc, updateDoc, deleteDoc, setDoc, Timestamp } from 'firebase/firestore'
-import { db } from '@/lib/firebase'
 import { Search, Edit, Trash2, Plus, DollarSign } from 'lucide-react'
-import ServiceModal from '@/components/admin/ServiceModal'
-import { Service } from '@/lib/firestore-schema'
+import { useNotifications } from '@/components/NotificationSystem'
+
+interface Service {
+  id: string
+  name: string
+  category: string
+  price?: number
+  published: boolean
+  description?: string
+}
 
 export default function AdminServicesPage() {
+  const { showSuccess, showError } = useNotifications()
   const [services, setServices] = useState<Service[]>([])
   const [filteredServices, setFilteredServices] = useState<Service[]>([])
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState('')
   const [categoryFilter, setCategoryFilter] = useState('')
-  const [selectedService, setSelectedService] = useState<Service | null>(null)
-  const [showModal, setShowModal] = useState(false)
+  const [editingId, setEditingId] = useState<string | null>(null)
+  const [formData, setFormData] = useState({ name: '', category: '', price: 0, description: '', published: true })
 
   const categories = ['transport', 'guide', 'experience', 'accommodation']
+
+  const headers = {
+    'Authorization': `Bearer ${process.env.NEXT_PUBLIC_ADMIN_TOKEN || process.env.ADMIN_TOKEN}`,
+    'Content-Type': 'application/json'
+  }
 
   useEffect(() => {
     fetchServices()
@@ -24,237 +36,104 @@ export default function AdminServicesPage() {
 
   useEffect(() => {
     let filtered = services
-
     if (searchTerm) {
-      filtered = filtered.filter(service => 
-        service.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        service.category.toLowerCase().includes(searchTerm.toLowerCase())
-      )
+      filtered = filtered.filter(s => s.name.toLowerCase().includes(searchTerm.toLowerCase()))
     }
-
     if (categoryFilter) {
-      filtered = filtered.filter(service => service.category === categoryFilter)
+      filtered = filtered.filter(s => s.category === categoryFilter)
     }
-
     setFilteredServices(filtered)
   }, [searchTerm, categoryFilter, services])
 
   const fetchServices = async () => {
     try {
       setLoading(true)
-      const querySnapshot = await getDocs(collection(db, 'services'))
-      const servicesData: Service[] = []
-      
-      querySnapshot.forEach((doc) => {
-        servicesData.push({ id: doc.id, ...doc.data() } as Service)
-      })
-      
-      setServices(servicesData)
-      setFilteredServices(servicesData)
+      const response = await fetch('/api/services', { cache: 'no-store' })
+      if (!response.ok) throw new Error('Failed to fetch')
+      const data = await response.json()
+      setServices(data.services || [])
+      setFilteredServices(data.services || [])
     } catch (error) {
-      console.error('Error fetching services:', error)
+      console.error('Error:', error)
+      showError('Errore', 'Nel caricamento servizi')
     } finally {
       setLoading(false)
     }
   }
 
-  const deleteService = async (service: Service) => {
-    if (!confirm(`Sei sicuro di voler eliminare "${service.name}"?`)) return
-
+  const handleSave = async () => {
+    if (!formData.name || !formData.category) {
+      showError('Errore', 'Riempire i campi obbligatori')
+      return
+    }
     try {
-      await deleteDoc(doc(db, 'services', service.id))
-      setServices(prev => prev.filter(s => s.id !== service.id))
+      const method = editingId ? 'PUT' : 'POST'
+      const url = editingId ? `/api/services/${editingId}` : '/api/services'
+      const response = await fetch(url, { method, headers, body: JSON.stringify(formData) })
+      if (!response.ok) throw new Error('Failed to save')
+      showSuccess('Successo', editingId ? 'Servizio aggiornato' : 'Servizio creato')
+      setFormData({ name: '', category: '', price: 0, description: '', published: true })
+      setEditingId(null)
+      fetchServices()
     } catch (error) {
-      console.error('Error deleting service:', error)
-      alert('Errore durante l\'eliminazione')
+      showError('Errore', 'Nel salvataggio')
     }
   }
 
-  const handleEdit = (service: Service) => {
-    setSelectedService(service)
-    setShowModal(true)
-  }
-
-  const handleCloseModal = () => {
-    setShowModal(false)
-    setSelectedService(null)
-  }
-
-  const handleSave = async (serviceData: Partial<Service>) => {
-    const slug = selectedService?.slug || serviceData.slug || generateSlug(serviceData.name || '')
-    const now = Timestamp.now()
-    
-    const dataToSave = {
-      ...serviceData,
-      updatedAt: now,
-      ...(!selectedService && { createdAt: now })
+  const handleDelete = async (id: string) => {
+    if (!confirm('Eliminare questo servizio?')) return
+    try {
+      const response = await fetch(`/api/services/${id}`, { method: 'DELETE', headers })
+      if (!response.ok) throw new Error('Failed to delete')
+      showSuccess('Successo', 'Servizio eliminato')
+      fetchServices()
+    } catch (error) {
+      showError('Errore', 'Nell\'eliminazione')
     }
-
-    await setDoc(doc(db, 'services', slug), dataToSave, { merge: true })
-    await fetchServices()
   }
 
-  const generateSlug = (name: string) => {
-    return name
-      .toLowerCase()
-      .normalize('NFD')
-      .replace(/[\u0300-\u036f]/g, '')
-      .replace(/[^a-z0-9]+/g, '-')
-      .replace(/^-+|-+$/g, '')
-  }
-
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-[50vh]">
-        <div className="text-center">
-          <div className="w-16 h-16 border-4 border-orange-500 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-muted-foreground">Caricamento servizi...</p>
-        </div>
-      </div>
-    )
-  }
+  if (loading) return <div className="text-center py-8">Caricamento...</div>
 
   return (
-    <div className="p-6 space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-foreground">Gestione Servizi</h1>
-          <p className="text-muted-foreground mt-1">
-            {services.length} servizi totali
-          </p>
-        </div>
-        <button
-          onClick={() => {
-            setSelectedService(null)
-            setShowModal(true)
-          }}
-          className="px-4 py-2 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-lg hover:from-orange-600 hover:to-red-600 transition-all flex items-center gap-2 shadow-lg"
-        >
-          <Plus className="w-5 h-5" />
-          Nuovo Servizio
-        </button>
+    <div className="space-y-6 p-6">
+      <div className="flex justify-between items-center">
+        <h1 className="text-3xl font-bold">Servizi ({services.length})</h1>
       </div>
 
-      <div className="bg-card border border-border rounded-xl p-4 space-y-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-            <input
-              type="text"
-              placeholder="Cerca per nome o categoria..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 border border-border rounded-lg bg-background text-foreground focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-            />
-          </div>
-          
-          <select
-            value={categoryFilter}
-            onChange={(e) => setCategoryFilter(e.target.value)}
-            className="px-4 py-2 border border-border rounded-lg bg-background text-foreground focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-          >
-            <option value="">Tutte le categorie</option>
-            {categories.map(cat => (
-              <option key={cat} value={cat}>
-                {cat.charAt(0).toUpperCase() + cat.slice(1)}
-              </option>
-            ))}
+      <div className="bg-white p-6 rounded-lg border">
+        <h2 className="font-semibold mb-4">{editingId ? 'Modifica' : 'Nuovo'} Servizio</h2>
+        <div className="space-y-4">
+          <input type="text" placeholder="Nome" value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} className="w-full px-3 py-2 border rounded-lg" />
+          <select value={formData.category} onChange={(e) => setFormData({ ...formData, category: e.target.value })} className="w-full px-3 py-2 border rounded-lg">
+            <option value="">Seleziona categoria</option>
+            {categories.map(cat => (<option key={cat} value={cat}>{cat}</option>))}
           </select>
+          <input type="number" placeholder="Prezzo" value={formData.price} onChange={(e) => setFormData({ ...formData, price: parseFloat(e.target.value) })} className="w-full px-3 py-2 border rounded-lg" />
+          <textarea placeholder="Descrizione" value={formData.description} onChange={(e) => setFormData({ ...formData, description: e.target.value })} rows={3} className="w-full px-3 py-2 border rounded-lg" />
+          <button onClick={handleSave} className="w-full bg-primary text-primary-foreground py-2 rounded-lg">Salva</button>
+          {editingId && <button onClick={() => { setEditingId(null); setFormData({ name: '', category: '', price: 0, description: '', published: true }); }} className="w-full bg-gray-200 py-2 rounded-lg">Annulla</button>}
         </div>
       </div>
 
-      <div className="bg-card border border-border rounded-xl overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead className="bg-muted">
-              <tr>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">Servizio</th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">Categoria</th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">Tipo</th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">Prezzo</th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">Località</th>
-                <th className="px-6 py-4 text-right text-sm font-semibold text-foreground">Azioni</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-border">
-              {filteredServices.length === 0 ? (
-                <tr>
-                  <td colSpan={6} className="px-6 py-12 text-center text-muted-foreground">
-                    Nessun servizio trovato
-                  </td>
-                </tr>
-              ) : (
-                filteredServices.map((service) => (
-                  <tr key={service.id} className="hover:bg-muted/50 transition-colors">
-                    <td className="px-6 py-4">
-                      <p className="font-medium text-foreground">{service.name}</p>
-                      {service.description && (
-                        <p className="text-sm text-muted-foreground line-clamp-1 mt-1">
-                          {service.description}
-                        </p>
-                      )}
-                    </td>
-                    <td className="px-6 py-4">
-                      <span className="px-2 py-1 bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300 rounded text-sm capitalize">
-                        {service.category}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4">
-                      <span className="text-sm text-muted-foreground capitalize">{service.type}</span>
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="flex items-center gap-1 text-foreground font-medium">
-                        <DollarSign className="w-4 h-4" />
-                        {service.price}
-                        <span className="text-xs text-muted-foreground ml-1">/ {service.priceType}</span>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="flex flex-wrap gap-1">
-                        {service.locations?.slice(0, 2).map((loc, idx) => (
-                          <span key={idx} className="px-2 py-1 bg-muted text-muted-foreground rounded text-xs">
-                            {loc}
-                          </span>
-                        ))}
-                        {(service.locations?.length || 0) > 2 && (
-                          <span className="px-2 py-1 bg-muted text-muted-foreground rounded text-xs">
-                            +{(service.locations?.length || 0) - 2}
-                          </span>
-                        )}
-                      </div>
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="flex items-center justify-end gap-2">
-                        <button
-                          onClick={() => handleEdit(service)}
-                          className="p-2 hover:bg-blue-100 dark:hover:bg-blue-900/30 rounded-lg transition-colors group"
-                          title="Modifica"
-                        >
-                          <Edit className="w-4 h-4 text-blue-600 dark:text-blue-400" />
-                        </button>
-                        <button
-                          onClick={() => deleteService(service)}
-                          className="p-2 hover:bg-red-100 dark:hover:bg-red-900/30 rounded-lg transition-colors group"
-                          title="Elimina"
-                        >
-                          <Trash2 className="w-4 h-4 text-red-600 dark:text-red-400" />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
+      <div className="flex gap-4">
+        <input type="text" placeholder="Cerca..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} className="flex-1 px-4 py-2 border rounded-lg" />
+        <select value={categoryFilter} onChange={(e) => setCategoryFilter(e.target.value)} className="px-4 py-2 border rounded-lg">
+          <option value="">Tutte le categorie</option>
+          {categories.map(cat => (<option key={cat} value={cat}>{cat}</option>))}
+        </select>
       </div>
 
-      <ServiceModal
-        service={selectedService}
-        isOpen={showModal}
-        onClose={handleCloseModal}
-        onSave={handleSave}
-      />
+      <div className="grid gap-4">
+        {filteredServices.map((service) => (
+          <div key={service.id} className="border rounded-lg p-4 flex items-center justify-between">
+            <div><h3 className="font-semibold">{service.name}</h3><p className="text-sm text-muted-foreground">{service.category}</p></div>
+            <div className="flex gap-2">
+              <button onClick={() => { setFormData({ name: service.name, category: service.category, price: service.price || 0, description: service.description || '', published: service.published }); setEditingId(service.id); }} className="p-2 hover:bg-gray-100 rounded"><Edit className="w-4 h-4" /></button>
+              <button onClick={() => handleDelete(service.id)} className="p-2 hover:bg-red-100 rounded text-red-600"><Trash2 className="w-4 h-4" /></button>
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   )
 }

@@ -1,32 +1,33 @@
 "use client"
 
 import { useState, useEffect } from 'react'
-import { collection, getDocs, doc, updateDoc, deleteDoc } from 'firebase/firestore'
-import { db } from '@/lib/firebase'
-import { Search, Edit, Trash2, Plus, Star } from 'lucide-react'
-import CityModal from '@/components/admin/CityModal'
+import { Search, Edit, Trash2, Plus } from 'lucide-react'
+import { useNotifications } from '@/components/NotificationSystem'
 
 interface City {
   id: string
   name: string
-  title: string
-  category: string
-  image: string
-  rating: number
-  reviews: number
-  description: string
+  type: string
+  published: boolean
+  description?: string
 }
 
 export default function AdminCitiesPage() {
+  const { showSuccess, showError } = useNotifications()
   const [cities, setCities] = useState<City[]>([])
   const [filteredCities, setFilteredCities] = useState<City[]>([])
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState('')
   const [categoryFilter, setCategoryFilter] = useState('')
-  const [selectedCity, setSelectedCity] = useState<City | null>(null)
-  const [showModal, setShowModal] = useState(false)
+  const [editingId, setEditingId] = useState<string | null>(null)
+  const [formData, setFormData] = useState({ name: '', type: 'imperial', published: true })
 
   const categories = ['imperial', 'coastal', 'desert', 'mountain']
+
+  const headers = {
+    'Authorization': `Bearer ${process.env.NEXT_PUBLIC_ADMIN_TOKEN || process.env.ADMIN_TOKEN}`,
+    'Content-Type': 'application/json'
+  }
 
   useEffect(() => {
     fetchCities()
@@ -34,209 +35,85 @@ export default function AdminCitiesPage() {
 
   useEffect(() => {
     let filtered = cities
-
     if (searchTerm) {
-      filtered = filtered.filter(city => 
-        city.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        city.title.toLowerCase().includes(searchTerm.toLowerCase())
-      )
+      filtered = filtered.filter(c => c.name.toLowerCase().includes(searchTerm.toLowerCase()))
     }
-
     if (categoryFilter) {
-      filtered = filtered.filter(city => city.category === categoryFilter)
+      filtered = filtered.filter(c => c.type === categoryFilter)
     }
-
     setFilteredCities(filtered)
   }, [searchTerm, categoryFilter, cities])
 
   const fetchCities = async () => {
     try {
       setLoading(true)
-      const querySnapshot = await getDocs(collection(db, 'cities'))
-      const citiesData: City[] = []
-      
-      querySnapshot.forEach((doc) => {
-        citiesData.push({ id: doc.id, ...doc.data() } as City)
-      })
-      
-      setCities(citiesData)
-      setFilteredCities(citiesData)
+      const response = await fetch('/api/cities', { cache: 'no-store' })
+      if (!response.ok) throw new Error('Failed to fetch')
+      const data = await response.json()
+      setCities(data.cities || [])
+      setFilteredCities(data.cities || [])
     } catch (error) {
-      console.error('Error fetching cities:', error)
+      console.error('Error:', error)
+      showError('Errore', 'Nel caricamento città')
     } finally {
       setLoading(false)
     }
   }
 
-  const deleteCity = async (city: City) => {
-    if (!confirm(`Sei sicuro di voler eliminare "${city.name}"?`)) return
-
+  const handleSave = async () => {
+    if (!formData.name || !formData.type) {
+      showError('Errore', 'Riempire i campi obbligatori')
+      return
+    }
     try {
-      await deleteDoc(doc(db, 'cities', city.id))
-      setCities(prev => prev.filter(c => c.id !== city.id))
+      const method = editingId ? 'PUT' : 'POST'
+      const url = editingId ? `/api/cities/${editingId}` : '/api/cities'
+      const response = await fetch(url, { method, headers, body: JSON.stringify(formData) })
+      if (!response.ok) throw new Error('Failed to save')
+      showSuccess('Successo', editingId ? 'Città aggiornata' : 'Città creata')
+      setFormData({ name: '', type: 'imperial', published: true })
+      setEditingId(null)
+      fetchCities()
     } catch (error) {
-      console.error('Error deleting city:', error)
-      alert('Errore durante l\'eliminazione')
+      showError('Errore', 'Nel salvataggio')
     }
   }
 
-  const handleEdit = (city: City) => {
-    setSelectedCity(city)
-    setShowModal(true)
+  const handleDelete = async (id: string) => {
+    if (!confirm('Eliminare questa città?')) return
+    try {
+      const response = await fetch(`/api/cities/${id}`, { method: 'DELETE', headers })
+      if (!response.ok) throw new Error('Failed to delete')
+      showSuccess('Successo', 'Città eliminata')
+      fetchCities()
+    } catch (error) {
+      showError('Errore', 'nell\'eliminazione')
+    }
   }
 
-  const handleCloseModal = () => {
-    setShowModal(false)
-    setSelectedCity(null)
-  }
-
-  const handleSaveSuccess = () => {
-    fetchCities()
-  }
-
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-[50vh]">
-        <div className="text-center">
-          <div className="w-16 h-16 border-4 border-orange-500 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-muted-foreground">Caricamento città...</p>
-        </div>
-      </div>
-    )
-  }
+  if (loading) return <div className="text-center py-8">Caricamento...</div>
 
   return (
-    <div className="p-6 space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-foreground">Gestione Città</h1>
-          <p className="text-muted-foreground mt-1">
-            {cities.length} città totali
-          </p>
-        </div>
-        <button
-          onClick={() => {
-            setSelectedCity(null)
-            setShowModal(true)
-          }}
-          className="px-4 py-2 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-lg hover:from-orange-600 hover:to-red-600 transition-all flex items-center gap-2 shadow-lg"
-        >
-          <Plus className="w-5 h-5" />
-          Nuova Città
-        </button>
+    <div className="space-y-6 p-6">
+      <h1 className="text-3xl font-bold">Città ({cities.length})</h1>
+      <div className="flex gap-4">
+        <input type="text" placeholder="Cerca..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} className="flex-1 px-4 py-2 border rounded-lg" />
+        <select value={categoryFilter} onChange={(e) => setCategoryFilter(e.target.value)} className="px-4 py-2 border rounded-lg">
+          <option value="">Tutte le categorie</option>
+          {categories.map(cat => (<option key={cat} value={cat}>{cat}</option>))}
+        </select>
       </div>
-
-      <div className="bg-card border border-border rounded-xl p-4 space-y-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-            <input
-              type="text"
-              placeholder="Cerca per nome o titolo..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 border border-border rounded-lg bg-background text-foreground focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-            />
+      <div className="grid gap-4">
+        {filteredCities.map((city) => (
+          <div key={city.id} className="border rounded-lg p-4 flex items-center justify-between">
+            <div><h3 className="font-semibold">{city.name}</h3><p className="text-sm text-muted-foreground">{city.type}</p></div>
+            <div className="flex gap-2">
+              <button onClick={() => { setFormData(city); setEditingId(city.id); }} className="p-2 hover:bg-gray-100 rounded"><Edit className="w-4 h-4" /></button>
+              <button onClick={() => handleDelete(city.id)} className="p-2 hover:bg-red-100 rounded text-red-600"><Trash2 className="w-4 h-4" /></button>
+            </div>
           </div>
-          
-          <select
-            value={categoryFilter}
-            onChange={(e) => setCategoryFilter(e.target.value)}
-            className="px-4 py-2 border border-border rounded-lg bg-background text-foreground focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-          >
-            <option value="">Tutte le categorie</option>
-            {categories.map(cat => (
-              <option key={cat} value={cat}>
-                {cat.charAt(0).toUpperCase() + cat.slice(1)}
-              </option>
-            ))}
-          </select>
-        </div>
+        ))}
       </div>
-
-      <div className="bg-card border border-border rounded-xl overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead className="bg-muted">
-              <tr>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">Città</th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">Categoria</th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">Rating</th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">Recensioni</th>
-                <th className="px-6 py-4 text-right text-sm font-semibold text-foreground">Azioni</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-border">
-              {filteredCities.length === 0 ? (
-                <tr>
-                  <td colSpan={5} className="px-6 py-12 text-center text-muted-foreground">
-                    Nessuna città trovata
-                  </td>
-                </tr>
-              ) : (
-                filteredCities.map((city) => (
-                  <tr key={city.id} className="hover:bg-muted/50 transition-colors">
-                    <td className="px-6 py-4">
-                      <div className="flex items-center gap-3">
-                        {city.image && (
-                          <img
-                            src={city.image}
-                            alt={city.name}
-                            className="w-16 h-16 rounded-lg object-cover"
-                          />
-                        )}
-                        <div>
-                          <p className="font-medium text-foreground">{city.name}</p>
-                          <p className="text-sm text-muted-foreground">{city.title}</p>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4">
-                      <span className="px-2 py-1 bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300 rounded text-sm capitalize">
-                        {city.category}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="flex items-center gap-1 text-foreground">
-                        <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                        <span className="font-medium">{city.rating}</span>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4">
-                      <span className="text-sm text-muted-foreground">{city.reviews} recensioni</span>
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="flex items-center justify-end gap-2">
-                        <button
-                          onClick={() => handleEdit(city)}
-                          className="p-2 hover:bg-blue-100 dark:hover:bg-blue-900/30 rounded-lg transition-colors group"
-                          title="Modifica"
-                        >
-                          <Edit className="w-4 h-4 text-blue-600 dark:text-blue-400" />
-                        </button>
-                        <button
-                          onClick={() => deleteCity(city)}
-                          className="p-2 hover:bg-red-100 dark:hover:bg-red-900/30 rounded-lg transition-colors group"
-                          title="Elimina"
-                        >
-                          <Trash2 className="w-4 h-4 text-red-600 dark:text-red-400" />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <CityModal
-        city={selectedCity}
-        isOpen={showModal}
-        onClose={handleCloseModal}
-        onSaveSuccess={handleSaveSuccess}
-      />
     </div>
   )
 }
