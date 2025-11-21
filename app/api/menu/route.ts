@@ -1,4 +1,3 @@
-"use client"
 import { NextRequest } from "next/server"
 import { db } from "@/lib/db"
 
