@@ -1,0 +1,21 @@
+**OGGETTO: Richiesta di Ristrutturazione Architetturale del Progetto (ASP.NET Web Forms) e Priorità sulla Stabilità del Backend.**
+
+**PRIORITÀ CRITICA: STABILITÀ E ARCHITETTURA GESTIONALE**
+
+**Contesto del Problema:**
+Il recente tentativo di modificare la navigazione (rimozione della sezione 'News') ha causato errori fatali e non risolvibili in fase di runtime (Errore HTTP 500 con Modulo IdeaWebUrlRewrite), bloccando l'intero sito. Questo dimostra una grave mancanza di stabilità e integrazione architetturale.
+
+**Obiettivo Funzionale Richiesto (Architettura Gestionale):**
+Il backend del sito deve essere trattato come un **Gestionale Serio**, non come un sito vetrina statico. Questo significa:
+
+1.  **Architettura a Livelli Chiari (Layered Architecture):** Separare rigorosamente la Presentazione (i file .aspx e .master), la Business Logic (logica C#) e l'Accesso ai Dati (SQL, OleDb o ORM).
+2.  **Gestione dei Dati Coerente:** Qualsiasi informazione mostrata nel frontend (es. voci di menu, prodotti, categorie) deve essere gestita attraverso un'unica fonte di dati centrale (Database o un layer di servizi C# dedicato), **non** hard-codificata nel file .master o .cs.
+3.  **Visualizzazione Dinamica nel Frontend:** Le modifiche fatte nel "gestionale" (backend) devono riflettersi in modo prevedibile e **serio** nel frontend. Se una voce di menu viene disattivata/rimossa dal DB o da una costante C#, il menu deve rendersi correttamente senza causare errori di compilazione/runtime.
+
+**Azione Richiesta Immediata e Linee Guida per il Futuro:**
+
+1.  **Risoluzione dell'Errore Attuale:** L'attuale errore **HTTP 500.0 (IdeaWebUrlRewrite)** deve essere risolto **prima di qualsiasi altra modifica**. L'ultima causa è il file `web.config` o i permessi. Deve essere fornita la soluzione esatta per superare questo blocco di routing.
+2.  **Refactoring del Menu:** La navigazione deve essere caricata dinamicamente (es. da un `Repeater` o una `List<string>`) gestita nel code-behind, non come elementi `<li>` hard-coded nel `.master` con logica di selezione dispersa.
+3.  **Zero Errori di Compilazione/Runtime:** Qualsiasi modifica architetturale deve essere testata per garantire che non introduca nuovi errori 500. Se un controllo viene rimosso dal `.master`, i riferimenti in `.master.cs` e `.designer.cs` devono essere rimossi simultaneamente e in modo pulito.
+
+**Chiedo che tutte le future modifiche rispettino questi standard di robustezza e coerenza architetturale.**
