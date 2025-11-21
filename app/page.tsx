@@ -238,14 +238,17 @@ const FeaturedTravels = () => {
                     {travel.description}
                   </p>
                   
-                  {travel.itinerary && travel.itinerary.length > 0 && (
+                  {travel.itinerary && Array.isArray(travel.itinerary) && travel.itinerary.length > 0 && (
                     <div className="mb-4 space-y-1">
-                      {travel.itinerary.slice(0, 3).map((highlight, idx) => (
-                        <div key={idx} className="flex items-start gap-2 text-sm text-muted-foreground">
-                          <span className="text-primary mt-0.5">✓</span>
-                          <span className="line-clamp-1">{highlight}</span>
-                        </div>
-                      ))}
+                      {travel.itinerary.slice(0, 3).map((item, idx) => {
+                        const itemText = typeof item === 'string' ? item : (item as any).title || (item as any).description || 'Giorno ' + ((item as any).day || idx + 1);
+                        return (
+                          <div key={idx} className="flex items-start gap-2 text-sm text-muted-foreground">
+                            <span className="text-primary mt-0.5">✓</span>
+                            <span className="line-clamp-1">{itemText}</span>
+                          </div>
+                        );
+                      })}
                     </div>
                   )}
 
