@@ -48,8 +48,8 @@ export default function BlogTeaser() {
     return date.toLocaleDateString('it-IT', { year: 'numeric', month: 'long', day: 'numeric' })
   }
 
-  const getCategory = (tags: string[]) => {
-    return tags[0] || 'Blog'
+  const getCategory = (tags: string[] | null) => {
+    return tags?.[0] || 'Blog'
   }
 
   return (
