@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Plus, Edit, Trash2 } from "lucide-react"
 
 export default function TestimonialsManagement() {
@@ -104,22 +103,23 @@ export default function TestimonialsManagement() {
 
   if (loading) return <div className="text-center py-8">Caricamento...</div>
 
+  const [showModal, setShowModal] = useState(false)
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h1 className="text-3xl font-bold">Testimonianze</h1>
-        <Dialog>
-          <DialogTrigger asChild>
-            <Button onClick={resetForm}>
-              <Plus className="w-4 h-4 mr-2" />
-              Nuova Testimonianza
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="max-w-2xl">
-            <DialogHeader>
-              <DialogTitle>{editingId ? "Modifica" : "Nuova"} Testimonianza</DialogTitle>
-            </DialogHeader>
-            <div className="space-y-4">
+        <Button onClick={() => { resetForm(); setShowModal(true) }}>
+          <Plus className="w-4 h-4 mr-2" />
+          Nuova Testimonianza
+        </Button>
+      </div>
+
+      {showModal && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+          <div className="bg-card border border-border rounded-lg w-full max-w-2xl p-6">
+            <h2 className="text-2xl font-bold mb-4">{editingId ? "Modifica" : "Nuova"} Testimonianza</h2>
+            <div className="space-y-4 max-h-[60vh] overflow-y-auto">
               <div className="grid grid-cols-2 gap-4">
                 <Input
                   placeholder="Nome"
@@ -159,13 +159,14 @@ export default function TestimonialsManagement() {
                 onChange={(e) => setFormData({ ...formData, comment: e.target.value })}
                 rows={4}
               />
-              <Button onClick={handleSave} className="w-full">
-                Salva
-              </Button>
+              <div className="flex gap-3 justify-end pt-4 border-t">
+                <Button variant="outline" onClick={() => { setShowModal(false); resetForm() }}>Annulla</Button>
+                <Button onClick={() => { handleSave(); setShowModal(false) }}>Salva</Button>
+              </div>
             </div>
-          </DialogContent>
-        </Dialog>
-      </div>
+          </div>
+        </div>
+      )}
 
       <div className="grid gap-4">
         {testimonials.map((t) => (

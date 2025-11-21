@@ -3,7 +3,6 @@
 import React, { useState, useEffect } from 'react'
 import { X, Save, Loader2 } from 'lucide-react'
 import VisualEditor from './VisualEditor'
-import { useAuth } from '@/context/AuthContext'
 import { useNotifications } from '../NotificationSystem'
 
 interface ExperienceEditModalProps {
@@ -21,7 +20,6 @@ export default function ExperienceEditModal({
   onSave,
   onRefreshData 
 }: ExperienceEditModalProps) {
-  const { user } = useAuth()
   const { showSuccess, showError } = useNotifications()
   const [saving, setSaving] = useState(false)
   const [editingBlocks, setEditingBlocks] = useState<any[]>([])
@@ -34,26 +32,22 @@ export default function ExperienceEditModal({
   }, [experience, isOpen])
 
   const handleSave = async (blocks: any[]) => {
-    if (!experience || !user) return
+    if (!experience) return
 
     setSaving(true)
     try {
-      const token = await user.getIdToken()
+      const headers = {
+        'Authorization': `Bearer ${process.env.NEXT_PUBLIC_ADMIN_TOKEN || process.env.ADMIN_TOKEN}`,
+        'Content-Type': 'application/json'
+      }
       
-      const response = await fetch('/api/admin/content', {
+      const response = await fetch(`/api/experiences/${experience.id}`, {
         method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
+        headers,
         body: JSON.stringify({
-          collection: 'experiences',
-          id: experience.id,
-          data: {
-            ...experience,
-            content: blocks,
-            updatedAt: new Date().toISOString()
-          }
+          ...experience,
+          content: blocks,
+          updatedAt: new Date().toISOString()
         })
       })
 
