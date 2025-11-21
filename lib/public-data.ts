@@ -106,7 +106,7 @@ export interface BlogPost {
   authorRole?: string;
   date: string;
   readingMinutes: number;
-  tags: string[];
+  tags: string[] | null;
   sections: {
     heading: string;
     body: string;
