@@ -177,6 +177,58 @@ model InstagramVideo {
   @@index([active])
 }
 
+model MenuItem {
+  id          String   @id @default(cuid())
+  label       String
+  href        String
+  icon        String?
+  order       Int      @default(0)
+  
+  parent      String?
+  description String?
+  
+  active      Boolean  @default(true)
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  @@index([active, order])
+}
+
+model Testimonial {
+  id          String   @id @default(cuid())
+  name        String
+  location    String?
+  service     String?
+  rating      Int      @default(5)
+  comment     String
+  image       String?
+  
+  date        DateTime @default(now())
+  published   Boolean  @default(true)
+  order       Int      @default(0)
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  @@index([published, order])
+}
+
+model FAQ {
+  id          String   @id @default(cuid())
+  category    String   @default("general")
+  question    String
+  answer      String
+  order       Int      @default(0)
+  
+  published   Boolean  @default(true)
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  @@index([published, category, order])
+}
+
 model SiteSettings {
   id        String   @id @default("site_settings")
   
