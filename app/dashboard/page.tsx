@@ -4,12 +4,18 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { useRouter, useSearchParams } from 'next/navigation';
 import ProtectedRoute from '@/components/auth/ProtectedRoute';
-import { Home, Calendar, Heart, User, LogOut, Menu, X } from 'lucide-react';
+import { Home, Calendar, Heart, User, LogOut, Menu, X, Users, Share2 } from 'lucide-react';
 import UserOverview from '@/components/dashboard/UserOverview';
 import UserBookings from '@/components/dashboard/UserBookings';
 import UserWishlist from '@/components/dashboard/UserWishlist';
 import UserProfile from '@/components/dashboard/UserProfile';
 import { NotificationCenter } from '@/components/NotificationSystem';
+import FriendCodeCard from '@/components/dashboard/FriendCodeCard';
+import AddFriendForm from '@/components/dashboard/AddFriendForm';
+import FriendRequests from '@/components/dashboard/FriendRequests';
+import FriendsList from '@/components/dashboard/FriendsList';
+import SharedCollections from '@/components/dashboard/SharedCollections';
+import FriendNotifications from '@/components/dashboard/FriendNotifications';
 
 function UserDashboardContent() {
   const { user, userProfile, signOut, isAdmin } = useAuth();
@@ -35,8 +41,10 @@ function UserDashboardContent() {
 
   const navigation = [
     { id: "overview", name: "Panoramica", icon: Home },
-    { id: "bookings", name: "Le Mie Prenotazioni", icon: Calendar },
     { id: "wishlist", name: "Lista Desideri", icon: Heart },
+    { id: "friends", name: "Amici", icon: Users },
+    { id: "shared", name: "Condivisioni", icon: Share2 },
+    { id: "bookings", name: "Le Mie Prenotazioni", icon: Calendar },
     { id: "profile", name: "Il Mio Profilo", icon: User },
   ];
 
@@ -49,14 +57,29 @@ function UserDashboardContent() {
     }
   };
 
+  const handleViewWishlist = (friendId: string, friendName: string) => {
+    setActiveTab("shared");
+  };
+
   const renderActiveComponent = () => {
     switch (activeTab) {
       case "overview":
         return <UserOverview />;
-      case "bookings":
-        return <UserBookings />;
       case "wishlist":
         return <UserWishlist />;
+      case "friends":
+        return (
+          <div className="space-y-8">
+            <FriendCodeCard />
+            <AddFriendForm />
+            <FriendRequests />
+            <FriendsList onViewWishlist={handleViewWishlist} />
+          </div>
+        );
+      case "shared":
+        return <SharedCollections />;
+      case "bookings":
+        return <UserBookings />;
       case "profile":
         return <UserProfile />;
       default:

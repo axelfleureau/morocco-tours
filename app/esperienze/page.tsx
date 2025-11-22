@@ -3,9 +3,9 @@
 import { useState, useEffect } from 'react';
 import Link from "next/link"
 import ContactBanner from "@/components/cta/contact-banner"
-import WishlistButton from "@/components/WishlistButton"
 import { Mountain, Waves, Hammer, Loader2 } from "lucide-react"
 import { firestoreService } from "@/lib/firestore"
+import { ExperienceCard } from "@/components/cards/ExperienceCard"
 
 const iconMap: Record<string, any> = {
   'trekking': Mountain,
@@ -65,64 +65,36 @@ export default function EsperienzeIndexPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-10">
             {experiences.map((exp) => {
               const IconComponent = iconMap[exp.slug] || Mountain;
-              const displayPrice = exp.price ? `da €${exp.price}` : 'Prezzo su richiesta';
-              const displayDuration = exp.duration || 'Varia';
               
               return (
-                <article
+                <ExperienceCard
                   key={exp.id}
-                  className="group bg-white dark:bg-gray-900 rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 border border-gray-200/60 dark:border-gray-800"
-                >
-                  <div className="relative aspect-[16/10] overflow-hidden">
-                    <img
-                      src={exp.images?.[0] || exp.image || "/placeholder.svg?height=400&width=600"}
-                      alt={exp.title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                    />
-                    <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full">
-                      <span className="text-sm font-semibold text-gray-900">{displayPrice}</span>
-                    </div>
-                    <div className="absolute top-4 right-4 bg-black/50 backdrop-blur-sm px-3 py-1 rounded-full">
-                      <span className="text-sm text-white">{displayDuration}</span>
-                    </div>
-                    <div className="absolute bottom-4 right-4">
-                      <WishlistButton 
-                        itemId={exp.id || exp.slug}
-                        itemType="experience"
-                        itemTitle={exp.title}
-                        itemImage={exp.images?.[0] || exp.image}
-                        itemPrice={exp.price}
-                        itemDescription={exp.description}
-                      />
-                    </div>
-                  </div>
-
-                  <div className="p-6 lg:p-8">
-                    <div className="flex items-center gap-3 mb-4">
-                      <div className="w-12 h-12 bg-orange-100 dark:bg-orange-900/30 rounded-full flex items-center justify-center">
-                        <IconComponent className="w-6 h-6 text-orange-600 dark:text-orange-400" />
-                      </div>
-                      <h2 className="text-2xl font-bold text-gray-900 dark:text-white">{exp.title}</h2>
-                    </div>
-
-                    <p className="text-gray-600 dark:text-gray-300 mb-6 leading-relaxed">{exp.description}</p>
-
-                    <div className="flex gap-3">
-                      <Link
-                        href={`/esperienze/${exp.slug}`}
-                        className="flex-1 inline-flex justify-center items-center px-5 py-3 rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white font-semibold hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
-                      >
-                        Scopri i dettagli
-                      </Link>
-                      <Link
-                        href="/contatti"
-                        className="flex-1 inline-flex justify-center items-center px-5 py-3 rounded-xl bg-gradient-to-r from-orange-500 to-red-500 text-white font-semibold hover:from-orange-600 hover:to-red-600 transition-all duration-300"
-                      >
-                        Prenota ora
-                      </Link>
-                    </div>
-                  </div>
-                </article>
+                  id={exp.id || exp.slug}
+                  image={exp.images?.[0] || exp.image || "/placeholder.svg?height=400&width=600"}
+                  title={exp.title}
+                  description={exp.description}
+                  price={exp.price}
+                  duration={exp.duration || 'Varia'}
+                  quickInfo={[
+                    {
+                      icon: IconComponent,
+                      label: exp.category || 'Esperienza',
+                      value: exp.category || ''
+                    }
+                  ]}
+                  ctas={[
+                    { 
+                      label: 'Scopri i dettagli', 
+                      href: `/esperienze/${exp.slug}`, 
+                      variant: 'secondary' 
+                    },
+                    { 
+                      label: 'Prenota ora', 
+                      href: '/contatti', 
+                      variant: 'primary' 
+                    }
+                  ]}
+                />
               );
             })}
           </div>

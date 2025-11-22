@@ -2,15 +2,16 @@
 
 import { useState, useEffect } from "react"
 import Link from "next/link"
-import { Clock, Users, Star, ArrowRight, Filter } from "lucide-react"
+import { ArrowRight, Filter } from "lucide-react"
 import { getPublishedTravels } from "@/lib/public-data"
 import { Travel } from "@/lib/firestore-schema"
+import { TravelCard } from "@/components/cards/TravelCard"
 
 export default function PopularTrips() {
   const [activeTrip, setActiveTrip] = useState(0)
   const [selectedCategory, setSelectedCategory] = useState("Tutti")
   const [selectedStyle, setSelectedStyle] = useState("Tutti")
-  const [trips, setTrips] = useState<Travel[]>([])
+  const [trips, setTrips] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState("")
 
@@ -23,7 +24,7 @@ export default function PopularTrips() {
           featured: true, 
           limit: 6 
         })
-        setTrips(publishedTrips)
+        setTrips(publishedTrips as any[])
         setError("")
       } catch (err) {
         console.error('Error loading trips:', err)
@@ -131,95 +132,36 @@ export default function PopularTrips() {
         <div className="overflow-x-auto pb-4 -mx-4 px-4 sm:mx-0 sm:px-0 sm:overflow-visible">
           <div className="grid lg:grid-cols-3 gap-6 lg:gap-8 min-w-full lg:min-w-0">
             {filteredTrips.map((trip, idx) => (
-              <div
+              <TravelCard
                 key={trip.id}
-                className={`group cursor-pointer transition-all duration-500 min-w-[280px] lg:min-w-0 ${
-                  activeTrip === idx ? "lg:scale-105" : "hover:scale-102"
+                id={trip.id || trip.slug || ''}
+                image={trip.images?.[0] || `/placeholder.svg?height=400&width=600&query=${encodeURIComponent(trip.title + " marocco viaggio")}`}
+                title={trip.title}
+                description={trip.description}
+                price={trip.price}
+                originalPrice={trip.originalPrice}
+                duration={trip.duration}
+                rating={trip.rating}
+                reviews={trip.reviews}
+                highlights={trip.highlights || []}
+                badges={trip.category ? [{ label: trip.category, variant: 'default' }] : []}
+                ctas={[
+                  { 
+                    label: 'Scopri di Più', 
+                    href: `/viaggi/${trip.slug || trip.id}`, 
+                    variant: 'primary' 
+                  },
+                  { 
+                    label: 'Prenota', 
+                    href: '/contatti', 
+                    variant: 'secondary' 
+                  }
+                ]}
+                className={`min-w-[280px] lg:min-w-0 ${
+                  activeTrip === idx ? "lg:scale-105" : ""
                 }`}
                 onMouseEnter={() => setActiveTrip(idx)}
-                onTouchStart={(e) => {
-                  e.currentTarget.style.transform = "scale(0.98)"
-                }}
-                onTouchEnd={(e) => {
-                  e.currentTarget.style.transform = ""
-                  setActiveTrip(idx)
-                }}
-              >
-                <div className="bg-white dark:bg-gray-900 rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:scale-105 active:scale-95">
-                  <div className="relative h-64 lg:h-80 overflow-hidden">
-                    <img
-                      src={
-                        trip.images?.[0] ||
-                        `/placeholder.svg?height=400&width=600&query=${encodeURIComponent(trip.title + " marocco viaggio")}`
-                      }
-                      alt={trip.title}
-                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                    <div className="absolute top-4 right-4 bg-white dark:bg-gray-800 rounded-full px-4 py-2 shadow-lg">
-                      <div className="flex items-center space-x-2">
-                        <span className="font-bold text-lg text-gray-900 dark:text-gray-100">€{trip.price}</span>
-                        {trip.originalPrice && (
-                          <span className="text-sm line-through text-gray-500 dark:text-gray-400">
-                            €{trip.originalPrice}
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                    <div className="absolute bottom-4 right-4 flex items-center space-x-1 bg-black/70 backdrop-blur-sm px-3 py-2 rounded-full">
-                      <Star className="w-4 h-4 text-yellow-400 fill-current" />
-                      <span className="text-white text-sm font-semibold">{trip.rating}</span>
-                      <span className="text-white/70 text-sm">({trip.reviews})</span>
-                    </div>
-                    <div className="absolute bottom-6 left-6 text-white">
-                      <h3 className="text-2xl lg:text-3xl font-bold mb-2 text-balance">{trip.title}</h3>
-                      <p className="text-gray-200 text-sm lg:text-base text-pretty">{trip.category}</p>
-                    </div>
-                  </div>
-                  <div className="p-6 lg:p-8">
-                    <div className="grid grid-cols-2 gap-4 mb-6">
-                      <div className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-400">
-                        <Clock className="w-4 h-4 text-orange-500" />
-                        <span>{trip.duration}</span>
-                      </div>
-                      <div className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-400">
-                        <Users className="w-4 h-4 text-orange-500" />
-                        <span>Max 12 persone</span>
-                      </div>
-                    </div>
-                    <p className="text-gray-600 dark:text-gray-400 mb-6 leading-relaxed text-pretty">
-                      {trip.description}
-                    </p>
-                    <div className="mb-6">
-                      <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-3">Highlights:</h4>
-                      <div className="flex flex-wrap gap-2">
-                        {trip.highlights.map((highlight, hidx) => (
-                          <span
-                            key={hidx}
-                            className="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-gradient-to-r from-orange-500 to-red-500 text-white dark:bg-orange-900/40 dark:text-orange-200 shadow-sm transition-colors"
-                          >
-                            {highlight}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                    <div className="flex flex-col sm:flex-row gap-3">
-                      <Link
-                        href={`/viaggi/${trip.slug || trip.id}`}
-                        className="flex-1 bg-gradient-to-r from-orange-500 to-red-500 text-white py-4 px-4 rounded-xl hover:from-orange-600 hover:to-red-600 transition-all duration-300 font-semibold text-center min-h-[48px] flex items-center justify-center transform hover:scale-105 active:scale-95 touch-manipulation"
-                      >
-                        Scopri di Più
-                      </Link>
-                      <Link
-                        href="/contatti"
-                        className="px-6 py-4 border-2 border-orange-500 text-orange-500 dark:text-orange-400 rounded-xl hover:bg-orange-500 hover:text-white dark:hover:text-white transition-all duration-300 font-semibold min-h-[48px] flex items-center justify-center transform hover:scale-105 active:scale-95 touch-manipulation"
-                      >
-                        Prenota
-                      </Link>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              />
             ))}
           </div>
         </div>

@@ -2,12 +2,12 @@
 
 import { useState, useEffect } from "react"
 import Link from "next/link"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { Car, Users, Shield, MapPin, Phone, Star, CheckCircle, ArrowRight, Clock, UserCheck } from "lucide-react"
+import { Car, Users, Shield, MapPin, Phone, Star, CheckCircle, Clock, UserCheck } from "lucide-react"
 import { getPublishedServices } from "@/lib/public-data"
 import { Service } from "@/lib/firestore-schema"
+import { ServiceCard } from "@/components/cards/ServiceCard"
 
 const testimonials = [
   {
@@ -63,7 +63,7 @@ const advantages = [
 ]
 
 export default function ServiziPage() {
-  const [services, setServices] = useState<Service[]>([])
+  const [services, setServices] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState("")
 
@@ -73,7 +73,7 @@ export default function ServiziPage() {
       try {
         setLoading(true)
         const publishedServices = await getPublishedServices({ limit: 20 })
-        setServices(publishedServices)
+        setServices(publishedServices as any[])
         setError("")
       } catch (err) {
         console.error('Error loading services:', err)
@@ -200,70 +200,29 @@ export default function ServiziPage() {
           <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
             {services.map((service) => {
               const Icon = getServiceIcon(service.category)
-              const color = getServiceColor(service.category)
               
               return (
-                <Card key={service.id} className="group hover:shadow-2xl transition-all duration-300 border-border hover:border-orange-200 dark:hover:border-orange-800">
-                  <CardHeader className="pb-4">
-                    <div className={`w-12 h-12 rounded-xl bg-${color}-100 dark:bg-${color}-900/20 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
-                      <Icon className={`w-6 h-6 text-${color}-600 dark:text-${color}-400`} />
-                    </div>
-                    <CardTitle className="text-xl font-bold text-foreground group-hover:text-orange-600 transition-colors">
-                      {service.name}
-                    </CardTitle>
-                    <CardDescription className="text-muted-foreground">
-                      {service.description}
-                    </CardDescription>
-                  </CardHeader>
-                  
-                  <CardContent className="pt-0">
-                    <div className="mb-4">
-                      <div className="flex items-center justify-between mb-2">
-                        <span className="text-2xl font-bold text-foreground">
-                          €{service.price}
-                        </span>
-                        <Badge variant="secondary" className="text-xs">
-                          {service.priceType.replace('_', ' ')}
-                        </Badge>
-                      </div>
-                      <p className="text-sm text-muted-foreground">
-                        {service.category} • {service.type}
-                      </p>
-                    </div>
-
-                    {/* Locations */}
-                    {service.locations && service.locations.length > 0 && (
-                      <div className="mb-4">
-                        <div className="flex items-center mb-2">
-                          <MapPin className="w-4 h-4 mr-2 text-muted-foreground" />
-                          <span className="text-sm font-medium text-foreground">Disponibile in:</span>
-                        </div>
-                        <div className="flex flex-wrap gap-1">
-                          {service.locations.slice(0, 3).map((location, idx) => (
-                            <Badge key={idx} variant="outline" className="text-xs">
-                              {location}
-                            </Badge>
-                          ))}
-                          {service.locations.length > 3 && (
-                            <Badge variant="outline" className="text-xs">
-                              +{service.locations.length - 3}
-                            </Badge>
-                          )}
-                        </div>
-                      </div>
-                    )}
-
-                    <Button 
-                      asChild 
-                      className="w-full bg-orange-500 hover:bg-orange-600 text-white"
-                    >
-                      <Link href={`/servizi/${service.slug || service.id}`}>
-                        <span>Scopri di più</span>
-                        <ArrowRight className="w-4 h-4 ml-2" />
-                      </Link>
-                    </Button>
-                  </CardContent>
-                </Card>
+                <ServiceCard
+                  key={service.id}
+                  id={service.id || service.slug || ''}
+                  title={service.name}
+                  description={service.description}
+                  icon={Icon}
+                  price={service.price}
+                  priceType={service.priceType as 'per_person' | 'per_day' | 'per_trip' | 'fixed'}
+                  locations={service.locations || []}
+                  badges={[
+                    { label: service.category, variant: 'default' },
+                    { label: service.type, variant: 'default' }
+                  ]}
+                  ctas={[
+                    { 
+                      label: 'Scopri di più', 
+                      href: `/servizi/${service.slug || service.id}`, 
+                      variant: 'primary' 
+                    }
+                  ]}
+                />
               )
             })}
           </div>

@@ -2,6 +2,7 @@
 
 import Link from "next/link"
 import { ArrowRight, Sun, Mountain, Star, Clock } from "lucide-react"
+import { TravelCard } from "@/components/cards/TravelCard"
 
 export default function DesertChoicePage() {
   const desertTypes = [
@@ -88,94 +89,28 @@ export default function DesertChoicePage() {
             {desertTypes.map((desert) => {
               const IconComponent = desert.icon
               return (
-                <div
+                <TravelCard
                   key={desert.id}
-                  className="group bg-card rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 border border-border"
-                >
-                  {/* Image Hero */}
-                  <div className="relative h-80 overflow-hidden">
-                    <img
-                      src={desert.image}
-                      alt={desert.name}
-                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
-                    
-                    {/* Icon Badge */}
-                    <div className="absolute top-6 right-6 w-16 h-16 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center">
-                      <IconComponent className="w-8 h-8 text-white" />
-                    </div>
-
-                    {/* Title Overlay */}
-                    <div className="absolute bottom-6 left-6 right-6">
-                      <h3 className="text-3xl md:text-4xl font-bold text-white mb-2">
-                        {desert.name}
-                      </h3>
-                      <p className="text-white/90 text-lg">
-                        {desert.subtitle}
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Content */}
-                  <div className="p-8 space-y-6">
-                    {/* Description */}
-                    <p className="text-muted-foreground leading-relaxed">
-                      {desert.description}
-                    </p>
-
-                    {/* Quick Info */}
-                    <div className="grid grid-cols-2 gap-4">
-                      <div className="bg-muted rounded-lg p-4">
-                        <div className="flex items-center space-x-2 text-orange-600 dark:text-orange-400 mb-1">
-                          <Clock className="w-4 h-4" />
-                          <span className="text-xs font-semibold uppercase">Durata</span>
-                        </div>
-                        <p className="text-sm font-bold text-foreground">{desert.duration}</p>
-                      </div>
-                      <div className="bg-muted rounded-lg p-4">
-                        <div className="flex items-center space-x-2 text-orange-600 dark:text-orange-400 mb-1">
-                          <Star className="w-4 h-4" />
-                          <span className="text-xs font-semibold uppercase">Tour</span>
-                        </div>
-                        <p className="text-sm font-bold text-foreground">{desert.tours}</p>
-                      </div>
-                    </div>
-
-                    {/* Highlights */}
-                    <div>
-                      <h4 className="font-semibold text-foreground mb-3">Highlights:</h4>
-                      <div className="grid grid-cols-2 gap-2">
-                        {desert.highlights.map((highlight, idx) => (
-                          <div key={idx} className="flex items-center space-x-2">
-                            <div className="w-1.5 h-1.5 bg-orange-500 rounded-full" />
-                            <span className="text-sm text-muted-foreground">{highlight}</span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Info Grid */}
-                    <div className="grid grid-cols-2 gap-4 pt-4 border-t border-border">
-                      <div>
-                        <p className="text-xs text-muted-foreground mb-1">Distanza</p>
-                        <p className="text-sm font-semibold text-foreground">{desert.distance}</p>
-                      </div>
-                      <div>
-                        <p className="text-xs text-muted-foreground mb-1">Periodo migliore</p>
-                        <p className="text-sm font-semibold text-foreground">{desert.bestSeason}</p>
-                      </div>
-                    </div>
-
-                    {/* CTA Button */}
-                    <Link href={desert.slug}>
-                      <button className={`w-full bg-gradient-to-r ${desert.gradient} ${desert.darkGradient} text-white py-4 px-6 rounded-xl hover:shadow-xl transition-all duration-300 font-semibold text-lg flex items-center justify-center space-x-2 group`}>
-                        <span>Esplora {desert.id === 'sahara' ? 'Sahara' : 'Agafay'}</span>
-                        <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                      </button>
-                    </Link>
-                  </div>
-                </div>
+                  id={desert.id}
+                  image={desert.image}
+                  title={desert.name}
+                  description={`${desert.subtitle}. ${desert.description}`}
+                  duration={desert.duration}
+                  location={desert.distance}
+                  highlights={desert.highlights}
+                  badges={[
+                    { label: desert.tours, variant: 'default' },
+                    { label: desert.bestSeason, variant: 'default' }
+                  ]}
+                  ctas={[
+                    { 
+                      label: `Esplora ${desert.id === 'sahara' ? 'Sahara' : 'Agafay'}`,
+                      href: desert.slug,
+                      variant: 'primary',
+                      icon: ArrowRight
+                    }
+                  ]}
+                />
               )
             })}
           </div>

@@ -10,7 +10,9 @@ import ContactBanner from "@/components/cta/contact-banner"
 import MoroccoMap from "@/components/sections/MoroccoMap"
 import InstagramFeed from "@/components/InstagramFeed"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardTitle } from "@/components/ui/card"
+import { Card, CardContent } from "@/components/ui/card"
+import { ExperienceCard } from "@/components/cards/ExperienceCard"
+import { TravelCard } from "@/components/cards/TravelCard"
 import { getPublishedExperiences, getPublishedTravels, Experience, Travel } from "@/lib/public-data"
 
 // Icon mapping for categories
@@ -78,65 +80,36 @@ const AuthenticExperiences = () => {
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {experiences.map((experience) => {
               const IconComponent = getIconForCategory(experience.category)
-              const priceDisplay = experience.price ? `€${experience.price}` : 'Da definire'
-              const durationDisplay = experience.duration || 'Durata variabile'
               
               return (
-                <Card
+                <ExperienceCard
                   key={experience.id}
-                  className="group overflow-hidden hover:shadow-xl transition-all duration-500 hover:scale-105 active:scale-95 touch-manipulation cursor-pointer"
-                  onTouchStart={(e) => {
-                    e.currentTarget.style.transform = "scale(0.98)"
-                  }}
-                  onTouchEnd={(e) => {
-                    e.currentTarget.style.transform = ""
-                  }}
-                >
-                  <div className="relative h-40 sm:h-48 overflow-hidden">
-                    <img
-                      src={
-                        experience.image ||
-                        `/placeholder.svg?height=200&width=300&query=${encodeURIComponent("esperienza marocco " + experience.title)}`
-                      }
-                      alt={experience.title}
-                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                    />
-                    <div className="absolute top-4 right-4 bg-card/90 backdrop-blur-sm text-card-foreground px-3 py-1 rounded-full text-sm font-bold">
-                      {priceDisplay}
-                    </div>
-                    <div className="absolute bottom-4 left-4 bg-foreground/50 backdrop-blur-sm text-primary-foreground px-3 py-1 rounded-full text-sm">
-                      {durationDisplay}
-                    </div>
-                  </div>
-
-                  <CardContent className="text-center bg-card p-6">
-                    <div className="w-12 h-12 bg-accent/20 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
-                      <IconComponent className="w-6 h-6 text-primary" />
-                    </div>
-                    <CardTitle className="text-lg mb-2 text-card-foreground">{experience.title}</CardTitle>
-                    <p className="text-muted-foreground text-sm mb-4 text-pretty line-clamp-2">
-                      {experience.description}
-                    </p>
-                    <div className="flex gap-2">
-                      <Button
-                        asChild
-                        variant="ghost"
-                        size="sm"
-                        className="flex-1 hover:scale-105 active:scale-95 touch-manipulation"
-                      >
-                        <Link href={`/esperienze/${experience.id}`}>Dettagli</Link>
-                      </Button>
-                      <Button
-                        asChild
-                        variant="cta"
-                        size="sm"
-                        className="flex-1 hover:scale-105 active:scale-95 touch-manipulation"
-                      >
-                        <Link href="/contatti">Prenota</Link>
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
+                  id={experience.id}
+                  image={experience.image || `/placeholder.svg?height=200&width=300&query=${encodeURIComponent("esperienza marocco " + experience.title)}`}
+                  title={experience.title}
+                  description={experience.description}
+                  price={experience.price}
+                  duration={experience.duration || 'Durata variabile'}
+                  quickInfo={[
+                    {
+                      icon: IconComponent,
+                      label: experience.category || 'Esperienza',
+                      value: experience.category || ''
+                    }
+                  ]}
+                  ctas={[
+                    { 
+                      label: 'Dettagli', 
+                      href: `/esperienze/${experience.id}`, 
+                      variant: 'secondary' 
+                    },
+                    { 
+                      label: 'Prenota', 
+                      href: '/contatti', 
+                      variant: 'primary' 
+                    }
+                  ]}
+                />
               )
             })}
           </div>
@@ -200,78 +173,36 @@ const FeaturedTravels = () => {
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
           {travels.map((travel) => {
-            const priceDisplay = travel.price ? `€${travel.price}` : 'Da definire'
-            const durationDisplay = travel.duration || 'Durata variabile'
+            const highlights = travel.itinerary && Array.isArray(travel.itinerary) && travel.itinerary.length > 0 
+              ? travel.itinerary.slice(0, 3).map((item, idx) => {
+                  return typeof item === 'string' ? item : (item as any).title || (item as any).description || 'Giorno ' + ((item as any).day || idx + 1);
+                })
+              : [];
             
             return (
-              <Card
+              <TravelCard
                 key={travel.id}
-                className="group overflow-hidden hover:shadow-2xl transition-all duration-500 hover:scale-105 active:scale-95 touch-manipulation"
-              >
-                <div className="relative h-56 overflow-hidden">
-                  <img
-                    src={
-                      travel.image ||
-                      `/placeholder.svg?height=300&width=400&query=${encodeURIComponent("viaggio marocco " + travel.title)}`
-                    }
-                    alt={travel.title}
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                  />
-                  <div className="absolute top-4 right-4 bg-card/95 backdrop-blur-sm text-card-foreground px-4 py-2 rounded-full text-base font-bold shadow-lg">
-                    {priceDisplay}
-                  </div>
-                  <div className="absolute bottom-4 left-4 bg-foreground/60 backdrop-blur-sm text-primary-foreground px-4 py-2 rounded-full text-sm font-medium">
-                    {durationDisplay}
-                  </div>
-                </div>
-
-                <CardContent className="p-6">
-                  <div className="mb-3">
-                    <span className="inline-block px-3 py-1 bg-primary/10 text-primary rounded-full text-xs font-semibold uppercase tracking-wider">
-                      {travel.category?.replace('-', ' ')}
-                    </span>
-                  </div>
-                  <CardTitle className="text-xl mb-3 text-card-foreground group-hover:text-primary transition-colors">
-                    {travel.title}
-                  </CardTitle>
-                  <p className="text-muted-foreground text-sm mb-4 text-pretty line-clamp-3 leading-relaxed">
-                    {travel.description}
-                  </p>
-                  
-                  {travel.itinerary && Array.isArray(travel.itinerary) && travel.itinerary.length > 0 && (
-                    <div className="mb-4 space-y-1">
-                      {travel.itinerary.slice(0, 3).map((item, idx) => {
-                        const itemText = typeof item === 'string' ? item : (item as any).title || (item as any).description || 'Giorno ' + ((item as any).day || idx + 1);
-                        return (
-                          <div key={idx} className="flex items-start gap-2 text-sm text-muted-foreground">
-                            <span className="text-primary mt-0.5">✓</span>
-                            <span className="line-clamp-1">{itemText}</span>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  )}
-
-                  <div className="flex gap-2">
-                    <Button
-                      asChild
-                      variant="ghost"
-                      size="sm"
-                      className="flex-1 hover:scale-105 active:scale-95 touch-manipulation"
-                    >
-                      <Link href={`/viaggi/${travel.id}`}>Dettagli</Link>
-                    </Button>
-                    <Button
-                      asChild
-                      variant="cta"
-                      size="sm"
-                      className="flex-1 hover:scale-105 active:scale-95 touch-manipulation"
-                    >
-                      <Link href="/contatti">Prenota</Link>
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
+                id={travel.id}
+                image={travel.image || `/placeholder.svg?height=300&width=400&query=${encodeURIComponent("viaggio marocco " + travel.title)}`}
+                title={travel.title}
+                description={travel.description}
+                price={travel.price}
+                duration={travel.duration || 'Durata variabile'}
+                highlights={highlights}
+                badges={travel.category ? [{ label: travel.category.replace('-', ' '), variant: 'default' }] : []}
+                ctas={[
+                  { 
+                    label: 'Dettagli', 
+                    href: `/viaggi/${travel.id}`, 
+                    variant: 'secondary' 
+                  },
+                  { 
+                    label: 'Prenota', 
+                    href: '/contatti', 
+                    variant: 'primary' 
+                  }
+                ]}
+              />
             )
           })}
         </div>
