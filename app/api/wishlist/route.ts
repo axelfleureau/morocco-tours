@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
-import { AdminAuthService } from '@/lib/auth-admin'
+import { verifyFirebaseToken } from '@/lib/user-auth-server'
 
 export const dynamic = 'force-dynamic'
 
@@ -9,14 +9,23 @@ async function verifyAuth(request: NextRequest): Promise<{ uid: string } | null>
   try {
     const authHeader = request.headers.get('authorization')
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      console.log('[WISHLIST AUTH] No auth header or invalid format')
       return null
     }
 
     const idToken = authHeader.replace('Bearer ', '')
-    const verification = await AdminAuthService.verifyAdminToken(idToken)
-    return { uid: verification.uid }
+    console.log('[WISHLIST AUTH] Verifying token...')
+    const verification = await verifyFirebaseToken(idToken)
+    
+    if (!verification) {
+      console.error('[WISHLIST AUTH] Token verification returned null')
+    } else {
+      console.log('[WISHLIST AUTH] Token verified for user:', verification.uid)
+    }
+    
+    return verification
   } catch (error) {
-    console.error('Auth verification error:', error)
+    console.error('[WISHLIST AUTH] Auth verification error:', error)
     return null
   }
 }

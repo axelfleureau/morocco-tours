@@ -37,19 +37,20 @@ export default function WishlistButton({
     }
   }, [user, itemId, itemType]);
 
-  const getAuthHeaders = async () => {
-    if (!user) return {};
+  const getAuthHeaders = async (): Promise<HeadersInit> => {
+    const headers = new Headers();
+    headers.set('Content-Type', 'application/json');
+    
+    if (!user) return headers;
     
     try {
       const token = await (user as any).getIdToken();
-      return {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json'
-      };
+      headers.set('Authorization', `Bearer ${token}`);
     } catch (error) {
       console.error('Error getting auth token:', error);
-      return { 'Content-Type': 'application/json' };
     }
+    
+    return headers;
   };
 
   const checkWishlistStatus = async () => {
