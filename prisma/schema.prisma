@@ -165,6 +165,37 @@ model Service {
   @@index([published, category])
 }
 
+model ContentItem {
+  id          String   @id @default(cuid())
+  type        String
+  
+  title       String
+  slug        String   @unique
+  description String?
+  image       String?
+  category    String?
+  
+  published   Boolean  @default(true)
+  featured    Boolean  @default(false)
+  bookable    Boolean  @default(false)
+  
+  price       Float?
+  priceNote   String?
+  
+  duration    String?
+  
+  metadata    Json?
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  publishedAt DateTime?
+  
+  @@index([type, published, featured])
+  @@index([type, category])
+  @@index([slug])
+  @@index([bookable])
+}
+
 model InstagramVideo {
   id        String   @id @default(cuid())
   slot      Int      @unique
