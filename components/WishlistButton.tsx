@@ -4,8 +4,6 @@ import { useState, useEffect } from 'react';
 import { Heart } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { useNotifications } from '@/components/NotificationSystem';
-import { firestoreService } from '@/lib/firestore';
-import { WishlistItem } from '@/lib/auth';
 
 interface WishlistButtonProps {
   itemId: string;
@@ -26,23 +24,51 @@ export default function WishlistButton({
   itemDescription,
   className = '' 
 }: WishlistButtonProps) {
-  const { user, userProfile } = useAuth();
+  const { user } = useAuth();
   const { showSuccess, showInfo, showWarning } = useNotifications();
   const [isInWishlist, setIsInWishlist] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    if (userProfile?.profile?.wishlistItems) {
-      const found = userProfile.profile.wishlistItems.some(
-        (item: WishlistItem) => item.id === itemId && item.type === itemType
-      );
-      setIsInWishlist(found);
-    } else if (userProfile?.profile?.wishlist) {
-      setIsInWishlist(userProfile.profile.wishlist.includes(itemId));
+    if (user) {
+      checkWishlistStatus();
     } else {
       setIsInWishlist(false);
     }
-  }, [userProfile, itemId, itemType]);
+  }, [user, itemId, itemType]);
+
+  const getAuthHeaders = async () => {
+    if (!user) return {};
+    
+    try {
+      const token = await (user as any).getIdToken();
+      return {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      };
+    } catch (error) {
+      console.error('Error getting auth token:', error);
+      return { 'Content-Type': 'application/json' };
+    }
+  };
+
+  const checkWishlistStatus = async () => {
+    if (!user) return;
+
+    try {
+      const headers = await getAuthHeaders();
+      const response = await fetch(`/api/wishlist`, { headers });
+      if (!response.ok) return;
+
+      const data = await response.json();
+      const found = data.wishlist.some(
+        (item: any) => item.itemId === itemId && item.itemType === itemType
+      );
+      setIsInWishlist(found);
+    } catch (error) {
+      console.error('Error checking wishlist status:', error);
+    }
+  };
 
   const handleToggleWishlist = async (e: React.MouseEvent) => {
     e.preventDefault();
@@ -77,21 +103,16 @@ export default function WishlistButton({
     setIsLoading(true);
 
     try {
-      const currentWishlistItems = userProfile?.profile?.wishlistItems || [];
-      const currentWishlist = userProfile?.profile?.wishlist || [];
-      let updatedWishlistItems: WishlistItem[];
-      let updatedWishlist: string[];
+      const headers = await getAuthHeaders();
 
       if (isInWishlist) {
-        updatedWishlistItems = currentWishlistItems.filter(
-          (item: WishlistItem) => !(item.id === itemId && item.type === itemType)
+        // Remove from wishlist
+        const response = await fetch(
+          `/api/wishlist?itemType=${itemType}&itemId=${itemId}`,
+          { method: 'DELETE', headers }
         );
-        updatedWishlist = currentWishlist.filter((id: string) => id !== itemId);
-        
-        await firestoreService.update('users', user.uid, {
-          'profile.wishlistItems': updatedWishlistItems,
-          'profile.wishlist': updatedWishlist
-        });
+
+        if (!response.ok) throw new Error('Failed to remove from wishlist');
 
         setIsInWishlist(false);
         showInfo(
@@ -99,22 +120,23 @@ export default function WishlistButton({
           `"${itemTitle}" è stato rimosso dalla tua lista desideri`
         );
       } else {
-        const newItem: WishlistItem = {
-          id: itemId,
-          type: itemType,
-          title: itemTitle,
-          image: itemImage,
-          price: itemPrice,
-          description: itemDescription
-        };
-        
-        updatedWishlistItems = [...currentWishlistItems, newItem];
-        updatedWishlist = [...currentWishlist, itemId];
-        
-        await firestoreService.update('users', user.uid, {
-          'profile.wishlistItems': updatedWishlistItems,
-          'profile.wishlist': updatedWishlist
+        // Add to wishlist
+        const response = await fetch('/api/wishlist', {
+          method: 'POST',
+          headers,
+          body: JSON.stringify({
+            itemType,
+            itemId,
+            itemData: {
+              title: itemTitle,
+              image: itemImage,
+              price: itemPrice,
+              description: itemDescription
+            }
+          })
         });
+
+        if (!response.ok) throw new Error('Failed to add to wishlist');
 
         setIsInWishlist(true);
         showSuccess(
