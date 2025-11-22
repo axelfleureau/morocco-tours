@@ -40,7 +40,7 @@ export default function FAQManagement() {
       const data = await res.json()
       setFaqs(data.faqs || [])
     } catch (error) {
-      showError("Errore nel caricamento")
+      showError("Errore", "Errore nel caricamento delle domande")
     } finally {
       setLoading(false)
     }
@@ -48,7 +48,7 @@ export default function FAQManagement() {
 
   const handleSave = async () => {
     if (!formData.question || !formData.answer) {
-      showError("Riempire i campi obbligatori")
+      showError("Campi mancanti", "Riempire i campi obbligatori")
       return
     }
 
@@ -71,7 +71,7 @@ export default function FAQManagement() {
       resetForm()
       loadFAQs()
     } catch (error) {
-      showError("Errore nel salvataggio")
+      showError("Errore", "Errore nel salvataggio della domanda")
     }
   }
 

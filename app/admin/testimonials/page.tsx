@@ -33,7 +33,7 @@ export default function TestimonialsManagement() {
       const data = await res.json()
       setTestimonials(data.testimonials || [])
     } catch (error) {
-      showError("Errore nel caricamento")
+      showError("Errore", "Errore nel caricamento delle testimonianze")
     } finally {
       setLoading(false)
     }
@@ -41,7 +41,7 @@ export default function TestimonialsManagement() {
 
   const handleSave = async () => {
     if (!formData.name || !formData.comment) {
-      showError("Riempire i campi obbligatori")
+      showError("Campi mancanti", "Riempire i campi obbligatori")
       return
     }
 
@@ -64,7 +64,7 @@ export default function TestimonialsManagement() {
       resetForm()
       loadTestimonials()
     } catch (error) {
-      showError("Errore nel salvataggio")
+      showError("Errore", "Errore nel salvataggio della testimonianza")
     }
   }
 
