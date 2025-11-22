@@ -30,29 +30,61 @@ async function verifyAuth(request: NextRequest): Promise<{ uid: string } | null>
   }
 }
 
+// Helper to check if user is admin
+function isAdmin(request: NextRequest): boolean {
+  const auth = request.headers.get("authorization") || ""
+  const token = auth.replace("Bearer ", "").trim()
+  return Boolean(process.env.ADMIN_TOKEN && token === process.env.ADMIN_TOKEN)
+}
+
 // GET - Get user's bookings list (authenticated)
 export async function GET(request: NextRequest) {
   try {
-    const authUser = await verifyAuth(request)
-    if (!authUser) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    const { searchParams } = new URL(request.url)
+    const adminAccess = isAdmin(request)
+
+    if (!adminAccess) {
+      const authUser = await verifyAuth(request)
+      if (!authUser) {
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+      }
+
+      const status = searchParams.get('status')
+      const limit = searchParams.get('limit')
+      const offset = searchParams.get('offset')
+
+      // Build where clause - CRITICAL: Use userId from verified token
+      const where: any = { userId: authUser.uid }
+      if (status) {
+        where.status = status
+      }
+
+      // Get total count
+      const total = await db.booking.count({ where })
+
+      // Get bookings with pagination
+      const bookings = await db.booking.findMany({
+        where,
+        orderBy: { createdAt: 'desc' },
+        take: limit ? parseInt(limit) : undefined,
+        skip: offset ? parseInt(offset) : undefined
+      })
+
+      return NextResponse.json({ bookings, total }, { status: 200 })
     }
 
-    const { searchParams } = new URL(request.url)
+    // Admin access - get all bookings
     const status = searchParams.get('status')
     const limit = searchParams.get('limit')
     const offset = searchParams.get('offset')
 
-    // Build where clause - CRITICAL: Use userId from verified token
-    const where: any = { userId: authUser.uid }
+    const where: any = {}
     if (status) {
       where.status = status
     }
 
-    // Get total count
     const total = await db.booking.count({ where })
 
-    // Get bookings with pagination
     const bookings = await db.booking.findMany({
       where,
       orderBy: { createdAt: 'desc' },

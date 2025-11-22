@@ -32,8 +32,9 @@ async function verifyAuth(request: NextRequest): Promise<{ uid: string } | null>
 
 // Helper to check if user is admin
 async function isAdmin(request: NextRequest): Promise<boolean> {
-  const adminToken = request.headers.get('x-admin-token')
-  return adminToken === process.env.ADMIN_TOKEN
+  const auth = request.headers.get("authorization") || ""
+  const token = auth.replace("Bearer ", "").trim()
+  return Boolean(process.env.ADMIN_TOKEN && token === process.env.ADMIN_TOKEN)
 }
 
 // GET - Get single booking details (authenticated, owner only)

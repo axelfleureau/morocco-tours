@@ -20,7 +20,8 @@ import {
   Sun,
   Moon,
   FileText,
-  Settings
+  Settings,
+  Calendar
 } from "lucide-react"
 import Link from "next/link"
 import { useTheme } from "next-themes"
@@ -111,6 +112,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   const navItems = [
     { href: "/admin", icon: LayoutDashboard, label: "Dashboard" },
+    { href: "/admin/content", icon: FileText, label: "Content Manager" },
+    { href: "/admin/bookings", icon: Calendar, label: "Bookings" },
     { href: "/admin/experiences", icon: Compass, label: "Esperienze" },
     { href: "/admin/travels", icon: MapPin, label: "Viaggi" },
     { href: "/admin/vehicles", icon: Car, label: "Veicoli" },

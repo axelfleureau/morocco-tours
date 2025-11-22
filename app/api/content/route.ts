@@ -44,8 +44,11 @@ export async function GET(req: NextRequest) {
     const offset = parseInt(searchParams.get("offset") || "0", 10)
 
     const where: any = {
-      type,
-      published
+      type
+    }
+
+    if (publishedParam !== "false") {
+      where.published = published
     }
 
     if (featured !== undefined) {
