@@ -1,0 +1,1113 @@
+{
+  "timestamp": "2025-11-22T18:30:18.384Z",
+  "experiences": [
+    {
+      "id": "8XV2IeZNsKYIWhO9AAFl",
+      "title": "Workshop Fotografia Deserto",
+      "slug": "8XV2IeZNsKYIWhO9AAFl",
+      "shortDesc": null,
+      "description": "Cattura la magia del deserto con fotografi professionisti",
+      "image": null,
+      "category": "artigianato",
+      "duration": "1-2 giorni",
+      "difficulty": "moderate",
+      "groupSize": null,
+      "itinerary": null,
+      "highlights": null,
+      "included": null,
+      "notIncluded": null,
+      "price": 200,
+      "priceNote": null,
+      "published": true,
+      "featured": false,
+      "createdAt": "2025-11-20T20:02:31.996Z",
+      "updatedAt": "2025-11-20T20:02:31.996Z"
+    },
+    {
+      "id": "CRpyyaIi9wkqcJjN2Pa1",
+      "title": "Tessitura Berbera",
+      "slug": "CRpyyaIi9wkqcJjN2Pa1",
+      "shortDesc": null,
+      "description": "Tappeti e tessuti su telai tradizionali con lane naturali",
+      "image": null,
+      "category": "crafts",
+      "duration": "4-6 ore",
+      "difficulty": "moderate",
+      "groupSize": null,
+      "itinerary": null,
+      "highlights": null,
+      "included": null,
+      "notIncluded": null,
+      "price": 65,
+      "priceNote": null,
+      "published": true,
+      "featured": false,
+      "createdAt": "2025-11-20T20:02:34.291Z",
+      "updatedAt": "2025-11-20T20:02:34.291Z"
+    },
+    {
+      "id": "FtEZoOfCSlvKVQZNRbyG",
+      "title": "Surf Taghazout Principianti",
+      "slug": "FtEZoOfCSlvKVQZNRbyG",
+      "shortDesc": null,
+      "description": "Lezioni di surf per principianti nelle acque di Taghazout",
+      "image": null,
+      "category": "surf",
+      "duration": "4-7 giorni",
+      "difficulty": "moderate",
+      "groupSize": null,
+      "itinerary": null,
+      "highlights": null,
+      "included": null,
+      "notIncluded": null,
+      "price": 220,
+      "priceNote": null,
+      "published": true,
+      "featured": false,
+      "createdAt": "2025-11-20T20:02:34.340Z",
+      "updatedAt": "2025-11-20T20:02:34.340Z"
+    },
+    {
+      "id": "I8X654DNbe5LRr75djZ0",
+      "title": "Lavorazione Pelle",
+      "slug": "I8X654DNbe5LRr75djZ0",
+      "shortDesc": null,
+      "description": "Tecniche di concia naturale e cuciture artigianali",
+      "image": null,
+      "category": "crafts",
+      "duration": "3-5 ore",
+      "difficulty": "moderate",
+      "groupSize": null,
+      "itinerary": null,
+      "highlights": null,
+      "included": null,
+      "notIncluded": null,
+      "price": 55,
+      "priceNote": null,
+      "published": true,
+      "featured": false,
+      "createdAt": "2025-11-20T20:02:34.385Z",
+      "updatedAt": "2025-11-20T20:02:34.385Z"
+    },
+    {
+      "id": "LQSYwW3g9mcFwaNfOwWx",
+      "title": "Hammam di Coppia",
+      "slug": "LQSYwW3g9mcFwaNfOwWx",
+      "shortDesc": null,
+      "description": "Esperienza intima per due persone in ambiente riservato",
+      "image": null,
+      "category": "hammam",
+      "duration": "2.5 ore",
+      "difficulty": "moderate",
+      "groupSize": null,
+      "itinerary": null,
+      "highlights": null,
+      "included": null,
+      "notIncluded": null,
+      "price": 190,
+      "priceNote": null,
+      "published": true,
+      "featured": false,
+      "createdAt": "2025-11-20T20:02:34.428Z",
+      "updatedAt": "2025-11-20T20:02:34.428Z"
+    },
+    {
+      "id": "Xh5XUEWlDW17u9YawxCh",
+      "title": "Hammam di Lusso",
+      "slug": "Xh5XUEWlDW17u9YawxCh",
+      "shortDesc": null,
+      "description": "Trattamento esclusivo in ambiente raffinato con prodotti premium",
+      "image": null,
+      "category": "hammam",
+      "duration": "3-4 ore",
+      "difficulty": "moderate",
+      "groupSize": null,
+      "itinerary": null,
+      "highlights": null,
+      "included": null,
+      "notIncluded": null,
+      "price": 120,
+      "priceNote": null,
+      "published": true,
+      "featured": false,
+      "createdAt": "2025-11-20T20:02:34.472Z",
+      "updatedAt": "2025-11-20T20:02:34.472Z"
+    },
+    {
+      "id": "YCwA2BKvr0rkn7T83Ipo",
+      "title": "Laboratorio Ceramica",
+      "slug": "YCwA2BKvr0rkn7T83Ipo",
+      "shortDesc": null,
+      "description": "Dalla lavorazione dell'argilla alla smaltatura con maestri ceramisti",
+      "image": null,
+      "category": "crafts",
+      "duration": "2-4 ore",
+      "difficulty": "moderate",
+      "groupSize": null,
+      "itinerary": null,
+      "highlights": null,
+      "included": null,
+      "notIncluded": null,
+      "price": 45,
+      "priceNote": null,
+      "published": true,
+      "featured": false,
+      "createdAt": "2025-11-20T20:02:34.517Z",
+      "updatedAt": "2025-11-20T20:02:34.517Z"
+    },
+    {
+      "id": "cooking-class",
+      "title": "Untitled",
+      "slug": "cooking-class",
+      "shortDesc": null,
+      "description": null,
+      "image": null,
+      "category": "adventure",
+      "duration": null,
+      "difficulty": "moderate",
+      "groupSize": null,
+      "itinerary": null,
+      "highlights": null,
+      "included": null,
+      "notIncluded": null,
+      "price": null,
+      "priceNote": null,
+      "published": true,
+      "featured": false,
+      "createdAt": "2025-11-20T20:02:34.563Z",
+      "updatedAt": "2025-11-20T20:02:34.563Z"
+    },
+    {
+      "id": "dNuSud7TQ8JvpTXh2MRN",
+      "title": "Surf Camp Avanzato",
+      "slug": "dNuSud7TQ8JvpTXh2MRN",
+      "shortDesc": null,
+      "description": "Perfeziona la tua tecnica negli spot leggendari di Anchor Point",
+      "image": null,
+      "category": "surf",
+      "duration": "5-7 giorni",
+      "difficulty": "moderate",
+      "groupSize": null,
+      "itinerary": null,
+      "highlights": null,
+      "included": null,
+      "notIncluded": null,
+      "price": 280,
+      "priceNote": null,
+      "published": true,
+      "featured": false,
+      "createdAt": "2025-11-20T20:02:34.610Z",
+      "updatedAt": "2025-11-20T20:02:34.610Z"
+    },
+    {
+      "id": "esfQLUZVNt7RQY81OKJl",
+      "title": "Cucina Vegetariana",
+      "slug": "esfQLUZVNt7RQY81OKJl",
+      "shortDesc": null,
+      "description": "Scopri la ricchezza della cucina vegetariana marocchina",
+      "image": null,
+      "category": "cooking",
+      "duration": "3.5 ore",
+      "difficulty": "moderate",
+      "groupSize": null,
+      "itinerary": null,
+      "highlights": null,
+      "included": null,
+      "notIncluded": null,
+      "price": 55,
+      "priceNote": null,
+      "published": true,
+      "featured": false,
+      "createdAt": "2025-11-20T20:02:34.657Z",
+      "updatedAt": "2025-11-20T20:02:34.657Z"
+    },
+    {
+      "id": "fVL7sFtYNEYooz46s8OH",
+      "title": "Hammam Tradizionale",
+      "slug": "fVL7sFtYNEYooz46s8OH",
+      "shortDesc": null,
+      "description": "Rituale completo secondo le antiche tradizioni marocchine",
+      "image": null,
+      "category": "hammam",
+      "duration": "2-3 ore",
+      "difficulty": "moderate",
+      "groupSize": null,
+      "itinerary": null,
+      "highlights": null,
+      "included": null,
+      "notIncluded": null,
+      "price": 45,
+      "priceNote": null,
+      "published": false,
+      "featured": false,
+      "createdAt": "2025-11-20T20:02:34.704Z",
+      "updatedAt": "2025-09-22T08:50:34.394Z"
+    },
+    {
+      "id": "iF0yXX5pjvB959AzF6sW",
+      "title": "Street Photography Medina",
+      "slug": "iF0yXX5pjvB959AzF6sW",
+      "shortDesc": null,
+      "description": "Immortala la vita quotidiana nelle medine storiche",
+      "image": null,
+      "category": "photography",
+      "duration": "Mezza giornata",
+      "difficulty": "moderate",
+      "groupSize": null,
+      "itinerary": null,
+      "highlights": null,
+      "included": null,
+      "notIncluded": null,
+      "price": 80,
+      "priceNote": null,
+      "published": true,
+      "featured": false,
+      "createdAt": "2025-11-20T20:02:34.750Z",
+      "updatedAt": "2025-11-20T20:02:34.750Z"
+    },
+    {
+      "id": "lwEeb6tTNEgLyfHft9ni",
+      "title": "Cucina Avanzata",
+      "slug": "lwEeb6tTNEgLyfHft9ni",
+      "shortDesc": null,
+      "description": "Perfeziona le tue abilità con tecniche avanzate da chef",
+      "image": null,
+      "category": "cooking",
+      "duration": "6 ore",
+      "difficulty": "moderate",
+      "groupSize": null,
+      "itinerary": null,
+      "highlights": null,
+      "included": null,
+      "notIncluded": null,
+      "price": 120,
+      "priceNote": null,
+      "published": true,
+      "featured": true,
+      "createdAt": "2025-11-20T20:02:34.795Z",
+      "updatedAt": "2025-11-20T20:02:34.795Z"
+    },
+    {
+      "id": "mqpnhfK4iAwQColX0ggV",
+      "title": "Trekking Toubkal",
+      "slug": "mqpnhfK4iAwQColX0ggV",
+      "shortDesc": null,
+      "description": "Conquista la vetta più alta del Nord Africa a 4.167m",
+      "image": null,
+      "category": "trekking",
+      "duration": "2 giorni",
+      "difficulty": "moderate",
+      "groupSize": null,
+      "itinerary": null,
+      "highlights": null,
+      "included": null,
+      "notIncluded": null,
+      "price": 220,
+      "priceNote": null,
+      "published": true,
+      "featured": true,
+      "createdAt": "2025-11-20T20:02:34.839Z",
+      "updatedAt": "2025-11-20T20:02:34.839Z"
+    },
+    {
+      "id": "nIKlKtLYi8dW0va5jhOQ",
+      "title": "Trekking Atlante Alto",
+      "slug": "nIKlKtLYi8dW0va5jhOQ",
+      "shortDesc": null,
+      "description": "Attraversa villaggi berberi e valli mozzafiato nel cuore dell'Alto Atlante",
+      "image": null,
+      "category": "trekking",
+      "duration": "3-7 giorni",
+      "difficulty": "moderate",
+      "groupSize": null,
+      "itinerary": null,
+      "highlights": null,
+      "included": null,
+      "notIncluded": null,
+      "price": 180,
+      "priceNote": null,
+      "published": true,
+      "featured": true,
+      "createdAt": "2025-11-20T20:02:34.883Z",
+      "updatedAt": "2025-11-20T20:02:34.883Z"
+    },
+    {
+      "id": "wDeRTh3q6Xsgr1uqP3CT",
+      "title": "Cucina Tradizionale",
+      "slug": "wDeRTh3q6Xsgr1uqP3CT",
+      "shortDesc": null,
+      "description": "Impara a preparare i piatti iconici della cucina marocchina con chef locali",
+      "image": null,
+      "category": "cooking",
+      "duration": "4 ore",
+      "difficulty": "moderate",
+      "groupSize": null,
+      "itinerary": null,
+      "highlights": null,
+      "included": null,
+      "notIncluded": null,
+      "price": 65,
+      "priceNote": null,
+      "published": true,
+      "featured": true,
+      "createdAt": "2025-11-20T20:02:34.928Z",
+      "updatedAt": "2025-11-20T20:02:34.928Z"
+    }
+  ],
+  "travels": [
+    {
+      "id": "7lkQKClNAC0c7qcxWlO6",
+      "title": "Tour delle Città Imperiali",
+      "slug": "7lkQKClNAC0c7qcxWlO6",
+      "description": "Scopri le quattro città imperiali del Marocco: Fez, Meknes, Rabat e Marrakech.",
+      "image": null,
+      "category": "cultural",
+      "duration": "8 giorni",
+      "cities": null,
+      "itinerary": [
+        "Giorno 1: Arrivo a Casablanca",
+        "Giorno 2-3: Fez",
+        "Giorno 4-5: Meknes e Rabat",
+        "Giorno 6-8: Marrakech"
+      ],
+      "highlights": null,
+      "included": null,
+      "notIncluded": null,
+      "price": 1200,
+      "priceNote": null,
+      "published": true,
+      "featured": true,
+      "createdAt": "2025-11-20T20:02:35.071Z",
+      "updatedAt": "2025-11-20T20:02:35.071Z"
+    },
+    {
+      "id": "agafay-tour--1",
+      "title": "Deserto di Agafay con Notte in Tenda - Standard",
+      "slug": "agafay-notte-standard",
+      "description": "Esperienza autentica nel deserto roccioso",
+      "image": null,
+      "category": "desert",
+      "duration": "1 giorno / 1 notte",
+      "cities": null,
+      "itinerary": [
+        {
+          "day": 1,
+          "meals": [
+            "Cena"
+          ],
+          "title": "Marrakech → Agafay",
+          "activities": [
+            "Arrivo campo",
+            "Tramonto",
+            "Cena berbera",
+            "Musica live"
+          ],
+          "description": "Partenza pomeridiana, arrivo al campo, tè di benvenuto, tramonto, cena tradizionale, musica",
+          "accommodation": "Campo tendato standard"
+        },
+        {
+          "day": 2,
+          "meals": [
+            "Colazione"
+          ],
+          "title": "Alba → Marrakech",
+          "activities": [
+            "Alba deserto",
+            "Rientro"
+          ],
+          "description": "Sveglia per l'alba, colazione, rientro a Marrakech",
+          "accommodation": ""
+        }
+      ],
+      "highlights": [
+        "Notte in campo tendato standard",
+        "Tramonto e alba nel deserto",
+        "Cena e colazione berbere",
+        "Musica tradizionale attorno al fuoco",
+        "Vista spettacolare sull'Atlante"
+      ],
+      "included": null,
+      "notIncluded": null,
+      "price": 76,
+      "priceNote": null,
+      "published": true,
+      "featured": false,
+      "createdAt": "2025-11-18T10:00:37.656Z",
+      "updatedAt": "2025-11-18T10:00:37.656Z"
+    },
+    {
+      "id": "agafay-tour--2",
+      "title": "Deserto di Agafay con Notte in Tenda - Luxury",
+      "slug": "agafay-luxury",
+      "description": "Glamping esclusivo con vista sull'Atlante",
+      "image": null,
+      "category": "desert",
+      "duration": "1 giorno / 1 notte",
+      "cities": null,
+      "itinerary": [
+        {
+          "day": 1,
+          "meals": [
+            "Cena gourmet"
+          ],
+          "title": "Marrakech → Agafay Luxury",
+          "activities": [
+            "Transfer luxury",
+            "Aperitivo panoramico",
+            "Cena gourmet"
+          ],
+          "description": "Transfer privato, check-in luxury camp, aperitivo panoramico, cena gourmet, intrattenimento",
+          "accommodation": "Campo luxury con bagno privato"
+        },
+        {
+          "day": 2,
+          "meals": [
+            "Colazione"
+          ],
+          "title": "Relax → Marrakech",
+          "activities": [
+            "Relax",
+            "Soste panoramiche"
+          ],
+          "description": "Colazione gourmet, tempo libero, rientro con soste panoramiche",
+          "accommodation": ""
+        }
+      ],
+      "highlights": [
+        "Tenda luxury con bagno privato",
+        "Cena gourmet sotto le stelle",
+        "Piscina panoramica (alcuni campi)",
+        "Servizio premium",
+        "Spa e massaggi (opzionali)"
+      ],
+      "included": null,
+      "notIncluded": null,
+      "price": 230,
+      "priceNote": null,
+      "published": true,
+      "featured": true,
+      "createdAt": "2025-11-18T10:00:37.821Z",
+      "updatedAt": "2025-11-18T10:00:37.821Z"
+    },
+    {
+      "id": "agafay-tour-0",
+      "title": "Deserto di Agafay - Giornata",
+      "slug": "agafay-giornata",
+      "description": "Fuga dal caos cittadino a 40 minuti da Marrakech",
+      "image": null,
+      "category": "desert",
+      "duration": "1 giorno (8 ore)",
+      "cities": null,
+      "itinerary": [
+        {
+          "day": 1,
+          "meals": [
+            "Pranzo"
+          ],
+          "title": "Marrakech → Agafay → Marrakech",
+          "activities": [
+            "Esplorazione Agafay",
+            "Pranzo berbero",
+            "Attività opzionali",
+            "Vista Atlante"
+          ],
+          "description": "Partenza mattutina, esplorazione del deserto di Agafay, pranzo tradizionale, attività opzionali, rientro al tramonto",
+          "accommodation": ""
+        }
+      ],
+      "highlights": [
+        "Deserto roccioso di Agafay",
+        "Pranzo berbero incluso",
+        "Quad o cammelli (opzionale)",
+        "Vista sull'Atlante",
+        "Trasporto da/per Marrakech"
+      ],
+      "included": null,
+      "notIncluded": null,
+      "price": 50,
+      "priceNote": null,
+      "published": true,
+      "featured": false,
+      "createdAt": "2025-11-18T10:00:37.524Z",
+      "updatedAt": "2025-11-18T10:00:37.524Z"
+    },
+    {
+      "id": "imperial-cities-tour",
+      "title": "Tour delle Città Imperiali",
+      "slug": "imperial-cities-tour",
+      "description": "Scopri le quattro città imperiali del Marocco: Fez, Meknes, Rabat e Marrakech.",
+      "image": null,
+      "category": "cultural",
+      "duration": "9 giorni",
+      "cities": null,
+      "itinerary": [
+        "Giorno 1: Arrivo a Casablanca",
+        "Giorno 2-3: Fez",
+        "Giorno 4-5: Meknes e Rabat",
+        "Giorno 6-8: Marrakech"
+      ],
+      "highlights": null,
+      "included": null,
+      "notIncluded": null,
+      "price": 1300,
+      "priceNote": null,
+      "published": true,
+      "featured": true,
+      "createdAt": "2025-11-20T20:02:35.303Z",
+      "updatedAt": "2025-11-20T20:02:35.303Z"
+    },
+    {
+      "id": "sahara-tour-1",
+      "title": "Deserto Express",
+      "slug": "sahara-deserto-express",
+      "description": "L'essenza del Sahara in 48 ore",
+      "image": null,
+      "category": "desert",
+      "duration": "2 giorni / 1 notte",
+      "cities": null,
+      "itinerary": [
+        {
+          "day": 1,
+          "meals": [
+            "Cena"
+          ],
+          "title": "Marrakech → Merzouga",
+          "activities": [
+            "Attraversamento Atlante",
+            "Escursione cammello",
+            "Tramonto dune"
+          ],
+          "description": "Partenza mattutina, attraversamento dell'Atlante, arrivo al tramonto per l'escursione in cammello",
+          "accommodation": "Campo tendato standard"
+        },
+        {
+          "day": 2,
+          "meals": [
+            "Colazione"
+          ],
+          "title": "Alba nel deserto → Marrakech",
+          "activities": [
+            "Alba deserto",
+            "Rientro Marrakech"
+          ],
+          "description": "Sveglia per l'alba, colazione berbera, rientro a Marrakech nel pomeriggio",
+          "accommodation": ""
+        }
+      ],
+      "highlights": [
+        "Tramonto sulle dune di Erg Chebbi",
+        "Notte in campo tendato tradizionale",
+        "Escursione in cammello",
+        "Alba nel deserto",
+        "Trasporto da/per Marrakech"
+      ],
+      "included": null,
+      "notIncluded": null,
+      "price": 180,
+      "priceNote": null,
+      "published": true,
+      "featured": true,
+      "createdAt": "2025-11-18T10:00:36.962Z",
+      "updatedAt": "2025-11-18T10:00:36.962Z"
+    },
+    {
+      "id": "sahara-tour-2",
+      "title": "Classic Desert Adventure",
+      "slug": "sahara-classic-adventure",
+      "description": "Il tour del deserto più completo",
+      "image": null,
+      "category": "desert",
+      "duration": "3 giorni / 2 notti",
+      "cities": null,
+      "itinerary": [
+        {
+          "day": 1,
+          "meals": [
+            "Cena"
+          ],
+          "title": "Marrakech → Ouarzazate",
+          "activities": [
+            "Atlante",
+            "Ait Benhaddou UNESCO",
+            "Ouarzazate"
+          ],
+          "description": "Attraversamento dell'Atlante, visita Ait Benhaddou, pernottamento a Ouarzazate",
+          "accommodation": "Hotel Ouarzazate"
+        },
+        {
+          "day": 2,
+          "meals": [
+            "Colazione",
+            "Cena"
+          ],
+          "title": "Ouarzazate → Merzouga",
+          "activities": [
+            "Gole Todra",
+            "Escursione cammello",
+            "Musica berbera"
+          ],
+          "description": "Gole del Todra, arrivo nel deserto, escursione in cammello, notte in campo",
+          "accommodation": "Campo tendato"
+        },
+        {
+          "day": 3,
+          "meals": [
+            "Colazione"
+          ],
+          "title": "Merzouga → Fes",
+          "activities": [
+            "Alba deserto",
+            "Valle Ziz",
+            "Fes"
+          ],
+          "description": "Alba nel deserto, viaggio verso Fes attraverso la valle dello Ziz",
+          "accommodation": ""
+        }
+      ],
+      "highlights": [
+        "Kasbah di Ait Benhaddou (UNESCO)",
+        "Gole del Todra",
+        "2 notti nel deserto",
+        "Musica berbera attorno al fuoco",
+        "Visita a famiglia nomade"
+      ],
+      "included": null,
+      "notIncluded": null,
+      "price": 320,
+      "priceNote": null,
+      "published": true,
+      "featured": true,
+      "createdAt": "2025-11-18T10:00:37.107Z",
+      "updatedAt": "2025-11-18T10:00:37.107Z"
+    },
+    {
+      "id": "sahara-tour-3",
+      "title": "Grand Desert Journey",
+      "slug": "sahara-grand-journey",
+      "description": "Immersione totale nel Sahara",
+      "image": null,
+      "category": "desert",
+      "duration": "4 giorni / 3 notti",
+      "cities": null,
+      "itinerary": [
+        {
+          "day": 1,
+          "meals": [
+            "Cena"
+          ],
+          "title": "Marrakech → Valle del Draa",
+          "activities": [
+            "Kasbah Telouet",
+            "Valle Draa"
+          ],
+          "description": "Kasbah Telouet, valle del Draa, pernottamento in kasbah tradizionale",
+          "accommodation": "Kasbah tradizionale"
+        },
+        {
+          "day": 2,
+          "meals": [
+            "Colazione",
+            "Cena"
+          ],
+          "title": "Valle del Draa → Erg Chebbi",
+          "activities": [
+            "Viaggio deserto",
+            "Campo fisso"
+          ],
+          "description": "Arrivo nel deserto, prima notte in campo fisso",
+          "accommodation": "Campo fisso"
+        },
+        {
+          "day": 3,
+          "meals": [
+            "Colazione",
+            "Pranzo",
+            "Cena"
+          ],
+          "title": "Giornata nel deserto",
+          "activities": [
+            "Trekking dune",
+            "Sandboarding",
+            "Nomadi",
+            "Stelle telescopio"
+          ],
+          "description": "Trekking, sandboarding, visita nomadi, notte in campo mobile",
+          "accommodation": "Campo mobile"
+        },
+        {
+          "day": 4,
+          "meals": [
+            "Colazione"
+          ],
+          "title": "Deserto → Marrakech",
+          "activities": [
+            "Alba finale",
+            "Rientro"
+          ],
+          "description": "Alba finale, rientro via Ouarzazate",
+          "accommodation": ""
+        }
+      ],
+      "highlights": [
+        "3 notti nel deserto",
+        "Trekking sulle dune",
+        "Incontro con nomadi",
+        "Sandboarding",
+        "Osservazione stelle con telescopio"
+      ],
+      "included": null,
+      "notIncluded": null,
+      "price": 480,
+      "priceNote": null,
+      "published": true,
+      "featured": true,
+      "createdAt": "2025-11-18T10:00:37.252Z",
+      "updatedAt": "2025-11-18T10:00:37.252Z"
+    },
+    {
+      "id": "sahara-tour-4",
+      "title": "Luxury Desert Experience",
+      "slug": "sahara-luxury-experience",
+      "description": "Il deserto con tutti i comfort",
+      "image": null,
+      "category": "desert",
+      "duration": "3 giorni / 2 notti",
+      "cities": null,
+      "itinerary": [
+        {
+          "day": 1,
+          "meals": [
+            "Cena gourmet"
+          ],
+          "title": "Marrakech → Deserto VIP",
+          "activities": [
+            "Transfer luxury",
+            "Aperitivo tramonto"
+          ],
+          "description": "Trasferimento in veicolo di lusso, arrivo al campo deluxe, aperitivo al tramonto",
+          "accommodation": "Campo luxury 5 stelle"
+        },
+        {
+          "day": 2,
+          "meals": [
+            "Colazione",
+            "Pranzo",
+            "Cena gourmet"
+          ],
+          "title": "Giornata di relax nel deserto",
+          "activities": [
+            "Relax",
+            "Spa",
+            "Escursioni opzionali"
+          ],
+          "description": "Escursioni opzionali, trattamenti spa, cena sotto le stelle",
+          "accommodation": "Campo luxury 5 stelle"
+        },
+        {
+          "day": 3,
+          "meals": [
+            "Colazione"
+          ],
+          "title": "Deserto → Marrakech",
+          "activities": [
+            "Soste panoramiche",
+            "Rientro"
+          ],
+          "description": "Colazione gourmet, rientro con soste panoramiche",
+          "accommodation": ""
+        }
+      ],
+      "highlights": [
+        "Campo tendato 5 stelle",
+        "Bagno privato in tenda",
+        "Cena gourmet nel deserto",
+        "Massaggio berbero",
+        "Trasporto di lusso"
+      ],
+      "included": null,
+      "notIncluded": null,
+      "price": 750,
+      "priceNote": null,
+      "published": true,
+      "featured": true,
+      "createdAt": "2025-11-18T10:00:37.389Z",
+      "updatedAt": "2025-11-18T10:00:37.389Z"
+    }
+  ],
+  "services": [],
+  "blogPosts": [
+    {
+      "id": "guida-completa-marocco-2024",
+      "title": "Guida Completa al Viaggio in Marocco: Tutto quello che Devi Sapere nel 2024",
+      "slug": "guida-completa-marocco-2024",
+      "excerpt": "Una guida dettagliata e aggiornata per pianificare il tuo primo viaggio in Marocco, con consigli pratici, itinerari consigliati e informazioni essenziali.",
+      "coverImage": null,
+      "sections": [
+        {
+          "body": "Il Marocco si può visitare tutto l'anno, ma ogni stagione ha le sue caratteristiche. La primavera (marzo-maggio) e l'autunno (settembre-novembre) offrono temperature ideali per esplorare le città imperiali e fare trekking nell'Atlante. L'inverno è perfetto per il deserto del Sahara, mentre l'estate è ideale per la costa atlantica.",
+          "image": "/images/blog/morocco-seasons.png",
+          "heading": "Quando andare in Marocco"
+        },
+        {
+          "body": "I cittadini italiani non hanno bisogno di visto per soggiorni turistici fino a 90 giorni. È sufficiente un passaporto valido con almeno 6 mesi di validità residua dalla data di ingresso. All'arrivo riceverete un timbro di ingresso che dovrete conservare per l'uscita dal paese.",
+          "heading": "Documenti necessari"
+        },
+        {
+          "body": "Per un primo viaggio, consigliamo almeno 7-10 giorni. Un itinerario classico include Marrakech (2-3 giorni), Fes (2 giorni), il deserto del Sahara (2 giorni) e una città costiera come Essaouira (1-2 giorni). Per chi ha più tempo, vale la pena aggiungere Chefchaouen e l'Alto Atlante.",
+          "image": "/images/blog/morocco-itinerary-map.png",
+          "heading": "Itinerari consigliati"
+        },
+        {
+          "body": "La moneta locale è il dirham marocchino (MAD). È consigliabile portare contanti in euro da cambiare localmente. La contrattazione nei souks è normale e fa parte della cultura. Rispettate le tradizioni locali nell'abbigliamento, soprattutto nei luoghi sacri. Imparate qualche parola in arabo o francese: sarà molto apprezzato.",
+          "heading": "Consigli pratici"
+        }
+      ],
+      "tags": [
+        "Marocco",
+        "Guida",
+        "Consigli",
+        "Pianificazione"
+      ],
+      "author": "Ahmed El Fassi",
+      "readTime": null,
+      "published": true,
+      "featured": false,
+      "publishedAt": null,
+      "createdAt": "2024-01-15T00:00:00.000Z",
+      "updatedAt": "2025-11-20T07:36:19.167Z"
+    },
+    {
+      "id": "guida-marocco",
+      "title": "Untitled",
+      "slug": "guida-marocco",
+      "excerpt": null,
+      "coverImage": null,
+      "sections": null,
+      "tags": null,
+      "author": null,
+      "readTime": null,
+      "published": true,
+      "featured": false,
+      "publishedAt": null,
+      "createdAt": "2025-11-20T20:02:36.778Z",
+      "updatedAt": "2025-11-20T20:02:36.778Z"
+    },
+    {
+      "id": "hU6vnYxPfSigNTWS8lbK",
+      "title": "Guida Completa al Viaggio in Marocco",
+      "slug": "guida-completa-viaggio-marocco",
+      "excerpt": "Tutto quello che devi sapere per organizzare il tuo primo viaggio in Marocco.",
+      "coverImage": null,
+      "sections": null,
+      "tags": [
+        "viaggio",
+        "consigli",
+        "cultura"
+      ],
+      "author": "Morocco Dreams Team",
+      "readTime": 8,
+      "published": true,
+      "featured": true,
+      "publishedAt": "2025-11-20T20:02:36.822Z",
+      "createdAt": "2025-11-20T20:02:36.822Z",
+      "updatedAt": "2025-11-20T20:02:36.822Z"
+    },
+    {
+      "id": "hammam-tradizionale-guida",
+      "title": "Hammam Tradizionale: Guida Completa al Rituale di Benessere Marocchino",
+      "slug": "hammam-tradizionale-guida",
+      "excerpt": "Tutto quello che devi sapere sull'hammam tradizionale: come funziona, cosa aspettarsi e dove vivere l'esperienza migliore.",
+      "coverImage": null,
+      "sections": [
+        {
+          "body": "L'hammam è molto più di un semplice bagno: è un rituale sociale e di purificazione che risale all'epoca romana. In Marocco, ogni quartiere ha il suo hammam pubblico dove le famiglie si recano settimanalmente. L'esperienza combina vapore, esfoliazione e massaggio in un ambiente di marmo e vapore.",
+          "image": "/images/blog/hammam-interior.png",
+          "heading": "Cos'è l'hammam tradizionale"
+        },
+        {
+          "body": "Il rituale inizia nella sala tiepida dove ci si abitua gradualmente al calore. Si passa poi alla sala calda dove il vapore apre i pori. Qui avviene l'esfoliazione con il guanto kessa e il sapone nero (savon noir) a base di olive. Infine, ci si rilassa nella sala fresca con tè alla menta e dolci.",
+          "heading": "Come funziona il rituale"
+        },
+        {
+          "body": "Portate un costume da bagno, ciabatte antiscivolo e un asciugamano. Molti hammam forniscono il guanto kessa e il sapone nero. L'esperienza dura 2-3 ore e può essere intensa per chi non è abituato al calore. È normale sentirsi stanchi dopo: è segno che il corpo si sta disintossicando.",
+          "heading": "Cosa portare e aspettarsi"
+        },
+        {
+          "body": "A Marrakech, l'Hammam de la Rose nella medina offre un'esperienza autentica a prezzi locali. A Fes, provate l'Hammam Sidi Harazem, frequentato dalle famiglie del posto. Per un'esperienza di lusso, La Mamounia a Marrakech ha uno dei più bei hammam del mondo, ma a prezzi decisamente più alti.",
+          "heading": "I migliori hammam autentici"
+        }
+      ],
+      "tags": [
+        "Hammam",
+        "Tradizioni",
+        "Relax",
+        "Spa"
+      ],
+      "author": "Youssef Alami",
+      "readTime": null,
+      "published": true,
+      "featured": false,
+      "publishedAt": null,
+      "createdAt": "2024-01-10T00:00:00.000Z",
+      "updatedAt": "2025-11-20T07:36:20.720Z"
+    },
+    {
+      "id": "marrakech-vs-fes-confronto",
+      "title": "Marrakech vs Fes: Quale Città Imperiale Scegliere per il Tuo Primo Viaggio?",
+      "slug": "marrakech-vs-fes-confronto",
+      "excerpt": "Un confronto dettagliato tra le due città imperiali più famose del Marocco per aiutarti a scegliere la destinazione perfetta.",
+      "coverImage": null,
+      "sections": [
+        {
+          "body": "Marrakech è la città del glamour e del turismo internazionale, con una medina vivace e colorata dominata dalla famosa piazza Jemaa el-Fnaa. Fes è più autentica e tradizionale, considerata la capitale spirituale e culturale del Marocco, con la medina medievale meglio conservata al mondo. Marrakech è più cosmopolita, Fes più genuina.",
+          "image": "/images/blog/marrakech-vs-fes-atmosphere.png",
+          "heading": "Atmosfera e carattere"
+        },
+        {
+          "body": "Marrakech offre i Giardini Majorelle, il Palazzo Bahia, la Moschea Koutoubia e i souks colorati. Fes vanta l'Università Al Quaraouiyine (la più antica del mondo), le concerie tradizionali, la Madrasa Bou Inania e una medina labirintica di 9.000 vicoli. Entrambe hanno souks incredibili, ma quelli di Fes sono più autentici.",
+          "heading": "Attrazioni principali"
+        },
+        {
+          "body": "Marrakech è più facile per i primi viaggi: più turistica, con più persone che parlano inglese/francese e infrastrutture moderne. Fes richiede più spirito di avventura: la medina è più complessa da navigare e l'esperienza è più immersiva ma anche più impegnativa. Marrakech ha più opzioni di alloggio di lusso.",
+          "heading": "Facilità di visita"
+        },
+        {
+          "body": "Per un primo viaggio in Marocco, Marrakech è più accessibile e offre un buon mix di tradizione e comfort moderno. Se cercate autenticità e non temete di perdervi in vicoli medievali, scegliete Fes. L'ideale sarebbe visitare entrambe: sono complementari e offrono facce diverse dello stesso affascinante paese.",
+          "heading": "Il nostro consiglio"
+        }
+      ],
+      "tags": [
+        "Marrakech",
+        "Fes",
+        "Città Imperiali",
+        "Confronto"
+      ],
+      "author": "Aicha Mansouri",
+      "readTime": null,
+      "published": true,
+      "featured": false,
+      "publishedAt": null,
+      "createdAt": "2024-01-05T00:00:00.000Z",
+      "updatedAt": "2025-11-20T07:36:21.008Z"
+    },
+    {
+      "id": "piatti-marocchini-da-provare",
+      "title": "I 15 Piatti Marocchini che Devi Assolutamente Provare",
+      "slug": "piatti-marocchini-da-provare",
+      "excerpt": "Scopri i sapori autentici del Marocco attraverso i suoi piatti più iconici e dove trovarli nelle città imperiali.",
+      "coverImage": null,
+      "sections": [
+        {
+          "body": "Il tagine non è solo un piatto, ma anche il recipiente di terracotta in cui viene cucinato. Questo metodo di cottura lenta concentra i sapori e mantiene la carne tenerissima. I tagine più famosi sono quello di pollo con olive e limone conservato, quello di agnello con prugne e mandorle, e quello vegetariano con verdure di stagione.",
+          "image": "/images/blog/tagine-varieties.png",
+          "heading": "Tagine: il piatto simbolo"
+        },
+        {
+          "body": "Tradizionalmente servito il venerdì dopo la preghiera, il couscous è considerato il piatto nazionale. La semola viene cotta al vapore in una couscoussiera speciale e servita con verdure, carne o pesce. Ogni regione ha la sua variante: quello di Fes con sette verdure, quello berbero dell'Atlante con carne secca.",
+          "heading": "Couscous: il re del venerdì"
+        },
+        {
+          "body": "Nelle strade del Marocco troverete delizie come la harira (zuppa di lenticchie e pomodoro), i msemen (crepes sfogliate), i chebakia (dolci fritti al miele) e il famoso tè alla menta servito in piccoli bicchieri decorati. Non perdete i panini con merguez nella piazza Jemaa el-Fnaa di Marrakech.",
+          "image": "/images/blog/moroccan-street-food.png",
+          "heading": "Street food imperdibile"
+        },
+        {
+          "body": "Per un'esperienza autentica, cercate i piccoli ristoranti frequentati dai locali. A Marrakech provate Chez Lamine Hadj Mustapha per il migliore tagine della città. A Fes, il ristorante Nur nella medina offre cucina tradizionale in un riad storico. Evitate i ristoranti troppo turistici intorno alle piazze principali.",
+          "heading": "Dove mangiare autentico"
+        }
+      ],
+      "tags": [
+        "Cucina",
+        "Tradizioni",
+        "Ristoranti",
+        "Street Food"
+      ],
+      "author": "Fatima Benali",
+      "readTime": null,
+      "published": true,
+      "featured": false,
+      "publishedAt": null,
+      "createdAt": "2024-01-12T00:00:00.000Z",
+      "updatedAt": "2025-11-20T07:36:20.602Z"
+    },
+    {
+      "id": "shopping-souks-guida-contrattazione",
+      "title": "Shopping nei Souks: Come Contrattare e Cosa Comprare in Marocco",
+      "slug": "shopping-souks-guida-contrattazione",
+      "excerpt": "Guida pratica per fare shopping nei souks marocchini: tecniche di contrattazione, migliori prodotti e come riconoscere la qualità.",
+      "coverImage": null,
+      "sections": [
+        {
+          "body": "La contrattazione nei souks è un rituale sociale, non una battaglia. Iniziate sempre offrendo il 30-40% del prezzo richiesto. Siate pazienti, sorridete e mostrate interesse genuino per l'oggetto. Se il venditore non accetta la vostra offerta, alzatevi e andate via: spesso vi richiamerà con un prezzo migliore. Non abbiate fretta e godetevi il processo.",
+          "image": "/images/blog/souk-negotiation.png",
+          "heading": "L'arte della contrattazione"
+        },
+        {
+          "body": "I migliori acquisti includono: tappeti berberi (verificate l'origine e la lavorazione a mano), ceramiche di Salé e Fes, oggetti in pelle di Marrakech, gioielli berberi in argento, spezie e tè, olio di argan puro, babouches (pantofole tradizionali) e tessuti. Evitate oggetti 'antichi' a prezzi stracciati: sono quasi sempre falsi.",
+          "heading": "Cosa comprare di autentico"
+        },
+        {
+          "body": "Per i tappeti, controllate che i nodi siano regolari e che i colori non stingano. Per la pelle, verificate che sia morbida e ben rifinita. L'argento autentico ha il marchio 925. L'olio di argan puro ha un colore dorato e un odore caratteristico. Diffidate di prezzi troppo bassi: la qualità ha sempre un costo.",
+          "heading": "Come riconoscere la qualità"
+        },
+        {
+          "body": "Portate contanti in piccoli tagli per facilitare la contrattazione. Non mostrate troppo entusiasmo per un oggetto. Confrontate i prezzi in più negozi prima di decidere. Chiedete sempre il certificato di autenticità per oggetti costosi. Ricordate che molti negozi spediscono in tutto il mondo se acquistate oggetti voluminosi.",
+          "heading": "Consigli pratici"
+        }
+      ],
+      "tags": [
+        "Souks",
+        "Shopping",
+        "Artigianato",
+        "Contrattazione"
+      ],
+      "author": "Rachid Tazi",
+      "readTime": null,
+      "published": true,
+      "featured": false,
+      "publishedAt": null,
+      "createdAt": "2024-01-03T00:00:00.000Z",
+      "updatedAt": "2025-11-20T07:36:21.165Z"
+    },
+    {
+      "id": "trekking-sahara-guida-definitiva",
+      "title": "Trekking nel Deserto del Sahara: La Guida Definitiva per l'Avventura Perfetta",
+      "slug": "trekking-sahara-guida-definitiva",
+      "excerpt": "Come prepararsi per un trekking nel Sahara: equipaggiamento essenziale, periodo migliore e cosa aspettarsi dall'esperienza.",
+      "coverImage": null,
+      "sections": [
+        {
+          "body": "Il periodo migliore per il trekking nel Sahara va da ottobre ad aprile, quando le temperature diurne sono sopportabili (20-25°C) e quelle notturne fresche (5-10°C). Evitate assolutamente l'estate quando le temperature possono superare i 50°C. I mesi di dicembre e gennaio possono essere molto freddi di notte, quindi preparatevi adeguatamente.",
+          "image": "/images/blog/sahara-seasons.png",
+          "heading": "Quando andare nel Sahara"
+        },
+        {
+          "body": "Per il trekking nel deserto servono: abbigliamento a strati per gestire gli sbalzi termici, scarponi chiusi per proteggere dalla sabbia, cappello e occhiali da sole, crema solare ad alta protezione, sacco a pelo per temperature sotto zero, torcia frontale e batterie di riserva. Portate sempre più acqua del previsto.",
+          "heading": "Equipaggiamento essenziale"
+        },
+        {
+          "body": "I trekking variano da escursioni giornaliere a spedizioni di una settimana. Il classico tour di 2-3 giorni include trasferimento in 4x4, trekking con cammelli, pernottamento in campo tendato e alba sulle dune. Per i più avventurosi, ci sono trekking di 5-7 giorni che attraversano diverse oasi e formazioni rocciose.",
+          "image": "/images/blog/camel-trekking-types.png",
+          "heading": "Tipi di trekking disponibili"
+        },
+        {
+          "body": "Non avventuratevi mai da soli nel deserto. Affidate sempre a guide locali esperte che conoscono il territorio, i punti d'acqua e le condizioni meteorologiche. Le guide berbere hanno una conoscenza ancestrale del deserto tramandata di generazione in generazione. Verificate sempre che abbiano le licenze necessarie.",
+          "heading": "Sicurezza e guide locali"
+        }
+      ],
+      "tags": [
+        "Sahara",
+        "Trekking",
+        "Deserto",
+        "Avventura"
+      ],
+      "author": "Omar Berrada",
+      "readTime": null,
+      "published": true,
+      "featured": false,
+      "publishedAt": null,
+      "createdAt": "2024-01-08T00:00:00.000Z",
+      "updatedAt": "2025-11-20T07:36:20.895Z"
+    }
+  ]
+}
