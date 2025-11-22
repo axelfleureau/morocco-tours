@@ -255,6 +255,10 @@ model User {
   wishlists       Wishlist[]
   customRequests  CustomTripRequest[]
   bookings        Booking[]
+  friendCode      FriendCode?
+  sentFriendships     Friendship[] @relation("FriendshipSender")
+  receivedFriendships Friendship[] @relation("FriendshipReceiver")
+  notifications       FriendshipNotification[]
   
   @@index([email])
 }
@@ -347,5 +351,57 @@ model Booking {
   @@index([userId])
   @@index([bookingType])
   @@index([status])
+  @@index([createdAt])
+}
+
+model FriendCode {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  code      String   @unique
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@index([code])
+}
+
+model Friendship {
+  id          String   @id @default(cuid())
+  senderId    String
+  receiverId  String
+  
+  status      String   @default("pending") // pending, accepted, rejected, blocked
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  acceptedAt  DateTime?
+  
+  sender      User     @relation("FriendshipSender", fields: [senderId], references: [id], onDelete: Cascade)
+  receiver    User     @relation("FriendshipReceiver", fields: [receiverId], references: [id], onDelete: Cascade)
+  
+  @@unique([senderId, receiverId])
+  @@index([senderId])
+  @@index([receiverId])
+  @@index([status])
+}
+
+model FriendshipNotification {
+  id          String   @id @default(cuid())
+  userId      String
+  
+  type        String   // friend_request, request_accepted, friend_added_item, friend_booked_trip
+  title       String
+  message     String
+  data        Json?    // Additional data (friend name, item details, etc.)
+  
+  read        Boolean  @default(false)
+  
+  createdAt   DateTime @default(now())
+  
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@index([userId, read])
   @@index([createdAt])
 }
