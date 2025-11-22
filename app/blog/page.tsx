@@ -4,10 +4,13 @@ import { Calendar, User, Clock, ArrowRight, Tag, Search, TrendingUp, Eye, Messag
 import Link from "next/link"
 import Image from "next/image"
 import ContactBanner from "@/components/cta/contact-banner"
-import { blogPosts } from "@/content/blog-posts"
 import WishlistButton from "@/components/WishlistButton"
+import { useContent } from "@/hooks/useContent"
+import { LoadingSkeleton } from "@/components/ui/loading-skeleton"
+import { ErrorMessage } from "@/components/ui/error-message"
 
 export default function BlogPage() {
+  const { items: blogPosts, loading, error, refetch } = useContent({ type: 'blog' })
   const featuredPost = {
     id: 1,
     title: "Guida Completa al Viaggio in Marocco: Tutto quello che Devi Sapere nel 2024",
@@ -246,47 +249,69 @@ export default function BlogPage() {
                 </p>
               </div>
 
-              <div className="grid md:grid-cols-2 gap-8">
-                {blogPosts.map((post) => (
-                  <article
-                    key={post.slug}
-                    className="bg-white dark:bg-gray-900 rounded-2xl overflow-hidden border border-gray-200/60 dark:border-gray-800 hover:shadow-lg transition"
-                  >
-                    <Link href={`/blog/${post.slug}`}>
-                      <div className="relative aspect-[16/9] overflow-hidden">
-                        <img src={post.cover || "/placeholder.svg"} alt={post.title} className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
-                        
-                        {/* Wishlist Button - top left */}
-                        <div className="absolute top-2 left-2 z-10" onClick={(e) => e.preventDefault()}>
-                          <WishlistButton
-                            itemId={`blog-${post.slug}`}
-                            itemType="activity"
-                            itemTitle={post.title}
-                            itemImage={post.cover}
-                            itemDescription={post.excerpt}
-                          />
-                        </div>
-                      </div>
-                    </Link>
-                    <div className="p-6">
-                      <div className="text-xs text-gray-500 dark:text-gray-400 mb-2">
-                        {new Date(post.date).toLocaleDateString("it-IT")} • {post.readingMinutes} min
-                      </div>
-                      <h2 className="text-xl font-bold mb-2">
-                        <Link href={`/blog/${post.slug}`}>{post.title}</Link>
-                      </h2>
-                      <p className="text-gray-600 dark:text-gray-300 mb-4">{post.excerpt}</p>
-                      <div className="flex gap-2 flex-wrap">
-                        {(post.tags || []).map((t) => (
-                          <span key={t} className="text-xs px-2 py-1 rounded-full bg-orange-100 text-orange-700 dark:bg-orange-900/20 dark:text-orange-300">
-                            {t}
-                          </span>
-                        ))}
-                      </div>
+              {loading ? (
+                <LoadingSkeleton count={4} />
+              ) : error ? (
+                <ErrorMessage error={error} retry={refetch} />
+              ) : (
+                <>
+                  <div className="grid md:grid-cols-2 gap-8">
+                    {blogPosts.map((post) => {
+                      const metadata = post.metadata || {}
+                      const tags = metadata.tags || []
+                      const readingMinutes = metadata.readingMinutes || '5'
+                      
+                      return (
+                        <article
+                          key={post.slug}
+                          className="bg-white dark:bg-gray-900 rounded-2xl overflow-hidden border border-gray-200/60 dark:border-gray-800 hover:shadow-lg transition"
+                        >
+                          <Link href={`/blog/${post.slug}`}>
+                            <div className="relative aspect-[16/9] overflow-hidden">
+                              <img src={post.image || "/placeholder.svg"} alt={post.title} className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
+                              
+                              {/* Wishlist Button - top left */}
+                              <div className="absolute top-2 left-2 z-10" onClick={(e) => e.preventDefault()}>
+                                <WishlistButton
+                                  itemId={`blog-${post.slug}`}
+                                  itemType="activity"
+                                  itemTitle={post.title}
+                                  itemImage={post.image || undefined}
+                                  itemDescription={post.description || undefined}
+                                />
+                              </div>
+                            </div>
+                          </Link>
+                          <div className="p-6">
+                            <div className="text-xs text-gray-500 dark:text-gray-400 mb-2">
+                              {post.publishedAt ? new Date(post.publishedAt).toLocaleDateString("it-IT") : new Date(post.createdAt).toLocaleDateString("it-IT")} • {readingMinutes} min
+                            </div>
+                            <h2 className="text-xl font-bold mb-2">
+                              <Link href={`/blog/${post.slug}`}>{post.title}</Link>
+                            </h2>
+                            <p className="text-gray-600 dark:text-gray-300 mb-4">{post.description}</p>
+                            <div className="flex gap-2 flex-wrap">
+                              {tags.map((t: string) => (
+                                <span key={t} className="text-xs px-2 py-1 rounded-full bg-orange-100 text-orange-700 dark:bg-orange-900/20 dark:text-orange-300">
+                                  {t}
+                                </span>
+                              ))}
+                            </div>
+                          </div>
+                        </article>
+                      )
+                    })}
+                  </div>
+
+                  {blogPosts.length === 0 && (
+                    <div className="text-center py-12">
+                      <p className="text-gray-600 dark:text-gray-400 text-lg">
+                        Nessun articolo disponibile al momento. Torna presto per nuovi contenuti!
+                      </p>
                     </div>
-                  </article>
-                ))}
-              </div>
+                  )}
+                </>
+              )}
 
               {/* Load More */}
               <div className="text-center mt-12">

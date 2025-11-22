@@ -1,11 +1,12 @@
 "use client";
 
-import { useState, useEffect } from 'react';
 import Link from "next/link"
 import ContactBanner from "@/components/cta/contact-banner"
-import { Mountain, Waves, Hammer, Loader2 } from "lucide-react"
-import { firestoreService } from "@/lib/firestore"
+import { Mountain, Waves, Hammer } from "lucide-react"
 import { ExperienceCard } from "@/components/cards/ExperienceCard"
+import { useContent } from "@/hooks/useContent"
+import { LoadingSkeleton } from "@/components/ui/loading-skeleton"
+import { ErrorMessage } from "@/components/ui/error-message"
 
 const iconMap: Record<string, any> = {
   'trekking': Mountain,
@@ -14,31 +15,45 @@ const iconMap: Record<string, any> = {
 };
 
 export default function EsperienzeIndexPage() {
-  const [experiences, setExperiences] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const loadExperiences = async () => {
-      try {
-        const data = await firestoreService.getPublishedExperiences();
-        setExperiences(data);
-      } catch (error) {
-        console.error('Error loading experiences:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadExperiences();
-  }, []);
+  const { items: experiences, loading, error, refetch } = useContent({ type: 'experience' })
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-white dark:bg-gray-950 flex items-center justify-center">
-        <div className="text-center">
-          <Loader2 className="w-12 h-12 text-orange-500 animate-spin mx-auto mb-4" />
-          <p className="text-gray-600 dark:text-gray-400">Caricamento esperienze...</p>
-        </div>
+      <div className="min-h-screen bg-white dark:bg-gray-950">
+        <ContactBanner
+          title="Vuoi prenotare un'esperienza?"
+          subtitle="Contattaci subito: progettiamo tutto su misura per te."
+        />
+        <section className="relative py-16 lg:py-24 bg-gradient-to-b from-orange-50 to-white dark:from-gray-900 dark:to-gray-950">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <header className="text-center max-w-3xl mx-auto mb-12">
+              <h1 className="text-4xl lg:text-5xl font-bold mb-6 text-gray-900 dark:text-white">
+                Esperienze Autentiche in Marocco
+              </h1>
+              <p className="text-lg lg:text-xl text-gray-600 dark:text-gray-300">
+                Scegli tra attività uniche per vivere il Marocco come un locale. Ogni esperienza è guidata da esperti
+                locali e progettata per offrirti momenti indimenticabili.
+              </p>
+            </header>
+            <LoadingSkeleton count={4} />
+          </div>
+        </section>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-white dark:bg-gray-950">
+        <ContactBanner
+          title="Vuoi prenotare un'esperienza?"
+          subtitle="Contattaci subito: progettiamo tutto su misura per te."
+        />
+        <section className="relative py-16 lg:py-24 bg-gradient-to-b from-orange-50 to-white dark:from-gray-900 dark:to-gray-950">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <ErrorMessage error={error} retry={refetch} />
+          </div>
+        </section>
       </div>
     );
   }
@@ -70,10 +85,10 @@ export default function EsperienzeIndexPage() {
                 <ExperienceCard
                   key={exp.id}
                   id={exp.id || exp.slug}
-                  image={exp.images?.[0] || exp.image || "/placeholder.svg?height=400&width=600"}
+                  image={exp.image || "/placeholder.svg?height=400&width=600"}
                   title={exp.title}
-                  description={exp.description}
-                  price={exp.price}
+                  description={exp.description || undefined}
+                  price={exp.price || undefined}
                   duration={exp.duration || 'Varia'}
                   quickInfo={[
                     {
