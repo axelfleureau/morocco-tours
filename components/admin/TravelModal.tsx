@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { X, Save, Loader2 } from 'lucide-react'
 import { useNotifications } from '../NotificationSystem'
 import { validateUrl } from '@/lib/url-validation'
+import { useAuth } from '@/context/AuthContext'
 
 interface Travel {
   id?: string
@@ -26,6 +27,7 @@ interface TravelModalProps {
 
 export default function TravelModal({ travel, onClose, onSave }: TravelModalProps) {
   const { showSuccess, showError } = useNotifications()
+  const { user } = useAuth()
   const [formData, setFormData] = useState<Travel>({
     title: '',
     category: 'desert',
@@ -56,6 +58,11 @@ export default function TravelModal({ travel, onClose, onSave }: TravelModalProp
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     
+    if (!user) {
+      showError('Non autorizzato', 'Devi effettuare il login')
+      return
+    }
+    
     if (formData.image) {
       const urlValidation = validateUrl(formData.image, false)
       if (!urlValidation.valid) {
@@ -70,8 +77,9 @@ export default function TravelModal({ travel, onClose, onSave }: TravelModalProp
     setUrlError('')
 
     try {
+      const token = await user.getIdToken()
       const headers = {
-        'Authorization': `Bearer ${process.env.NEXT_PUBLIC_ADMIN_TOKEN || process.env.ADMIN_TOKEN}`,
+        'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json'
       }
       

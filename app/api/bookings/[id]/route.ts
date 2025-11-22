@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
 import { verifyFirebaseToken } from '@/lib/user-auth-server'
+import { isAdmin } from '@/lib/auth-helpers'
 
 export const dynamic = 'force-dynamic'
 
@@ -30,13 +31,6 @@ async function verifyAuth(request: NextRequest): Promise<{ uid: string } | null>
   }
 }
 
-// Helper to check if user is admin
-async function isAdmin(request: NextRequest): Promise<boolean> {
-  const auth = request.headers.get("authorization") || ""
-  const token = auth.replace("Bearer ", "").trim()
-  return Boolean(process.env.ADMIN_TOKEN && token === process.env.ADMIN_TOKEN)
-}
-
 // GET - Get single booking details (authenticated, owner only)
 export async function GET(
   request: NextRequest,
@@ -57,7 +51,7 @@ export async function GET(
     }
 
     // Verify user owns this booking (or is admin)
-    const admin = await isAdmin(request)
+    const admin = await isAdmin(request.headers.get('authorization'))
     if (booking.userId !== authUser.uid && !admin) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
     }
@@ -89,7 +83,7 @@ export async function PUT(
     }
 
     // Verify user owns this booking or is admin
-    const admin = await isAdmin(request)
+    const admin = await isAdmin(request.headers.get('authorization'))
     if (booking.userId !== authUser.uid && !admin) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
     }
@@ -148,7 +142,7 @@ export async function DELETE(
     }
 
     // Verify user owns this booking or is admin
-    const admin = await isAdmin(request)
+    const admin = await isAdmin(request.headers.get('authorization'))
     if (booking.userId !== authUser.uid && !admin) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
     }

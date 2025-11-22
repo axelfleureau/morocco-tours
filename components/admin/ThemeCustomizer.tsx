@@ -154,18 +154,18 @@ export default function ThemeCustomizer() {
     try {
       setIsLoading(true)
       
-      const adminToken = process.env.NEXT_PUBLIC_ADMIN_TOKEN || localStorage.getItem('admin_token')
-      
-      if (!adminToken) {
-        alert('Token di autenticazione admin necessario')
+      if (!user) {
+        alert('Devi effettuare il login')
         return
       }
+      
+      const token = await user.getIdToken()
 
       const response = await fetch('/api/site-settings', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${adminToken}`
+          'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify({
           theme: {

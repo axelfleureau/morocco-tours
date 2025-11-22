@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { Search, Edit, Trash2, Plus, Eye, EyeOff, Star, Car } from 'lucide-react'
 import VehicleModal from '@/components/admin/VehicleModal'
 import { useNotifications } from '@/components/NotificationSystem'
+import { useAuth } from '@/context/AuthContext'
 
 interface PricingPeriod {
   name: string
@@ -36,6 +37,7 @@ interface Vehicle {
 
 export default function AdminVehiclesPage() {
   const { showSuccess, showError } = useNotifications()
+  const { user } = useAuth()
   const [vehicles, setVehicles] = useState<Vehicle[]>([])
   const [filteredVehicles, setFilteredVehicles] = useState<Vehicle[]>([])
   const [loading, setLoading] = useState(true)
@@ -45,11 +47,6 @@ export default function AdminVehiclesPage() {
   const [showModal, setShowModal] = useState(false)
 
   const categories = ['economica', 'suv', 'Premium']
-
-  const headers = {
-    'Authorization': `Bearer ${process.env.NEXT_PUBLIC_ADMIN_TOKEN || process.env.ADMIN_TOKEN}`,
-    'Content-Type': 'application/json'
-  }
 
   useEffect(() => {
     fetchVehicles()
@@ -96,9 +93,14 @@ export default function AdminVehiclesPage() {
 
   const togglePublished = async (vehicle: Vehicle) => {
     try {
+      if (!user) return
+      const token = await user.getIdToken()
       const response = await fetch(`/api/vehicles/${vehicle.id}`, {
         method: 'PUT',
-        headers,
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
         body: JSON.stringify({ published: !vehicle.published })
       })
 
@@ -118,9 +120,14 @@ export default function AdminVehiclesPage() {
 
   const toggleFeatured = async (vehicle: Vehicle) => {
     try {
+      if (!user) return
+      const token = await user.getIdToken()
       const response = await fetch(`/api/vehicles/${vehicle.id}`, {
         method: 'PUT',
-        headers,
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
         body: JSON.stringify({ featured: !vehicle.featured })
       })
 

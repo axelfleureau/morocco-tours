@@ -18,7 +18,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Button } from '@/components/ui/button'
-import { getAdminToken } from '@/lib/admin-token'
+import { useAuth } from '@/context/AuthContext'
 import { MoreVertical, CheckCircle, XCircle, Clock, DollarSign } from 'lucide-react'
 import { format } from 'date-fns'
 
@@ -47,6 +47,7 @@ interface Booking {
 }
 
 export default function BookingManagerPage() {
+  const { user } = useAuth()
   const [bookings, setBookings] = useState<Booking[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -60,7 +61,13 @@ export default function BookingManagerPage() {
     setError(null)
 
     try {
-      const token = await getAdminToken()
+      if (!user) {
+        setError('You must be logged in')
+        setLoading(false)
+        return
+      }
+
+      const token = await user.getIdToken()
       
       const response = await fetch('/api/bookings?admin=true', {
         headers: {
@@ -85,7 +92,12 @@ export default function BookingManagerPage() {
 
   const updateStatus = async (bookingId: string, status: string) => {
     try {
-      const token = await getAdminToken()
+      if (!user) {
+        toast.error('You must be logged in to perform this action')
+        return
+      }
+
+      const token = await user.getIdToken()
       
       const response = await fetch(`/api/bookings/${bookingId}`, {
         method: 'PUT',
@@ -111,7 +123,12 @@ export default function BookingManagerPage() {
 
   const updatePaymentStatus = async (bookingId: string, paymentStatus: string) => {
     try {
-      const token = await getAdminToken()
+      if (!user) {
+        toast.error('You must be logged in to perform this action')
+        return
+      }
+
+      const token = await user.getIdToken()
       
       const response = await fetch(`/api/bookings/${bookingId}`, {
         method: 'PUT',

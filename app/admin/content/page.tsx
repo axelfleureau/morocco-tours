@@ -21,10 +21,11 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { ContentModal } from '@/components/admin/ContentModal'
-import { getAdminToken } from '@/lib/admin-token'
+import { useAuth } from '@/context/AuthContext'
 import { Plus, MoreVertical, Edit, Eye, EyeOff, Star, StarOff, Trash2 } from 'lucide-react'
 
 export default function ContentManagerPage() {
+  const { user } = useAuth()
   const [selectedType, setSelectedType] = useState<'experience' | 'travel' | 'service' | 'blog'>('experience')
   const [modalOpen, setModalOpen] = useState(false)
   const [editingItem, setEditingItem] = useState<ContentItem | null>(null)
@@ -40,7 +41,12 @@ export default function ContentManagerPage() {
     }
 
     try {
-      const token = await getAdminToken()
+      if (!user) {
+        toast.error('You must be logged in to perform this action')
+        return
+      }
+
+      const token = await user.getIdToken()
       
       const response = await fetch(`/api/content/${id}`, {
         method: 'DELETE',
@@ -64,7 +70,12 @@ export default function ContentManagerPage() {
 
   const handleTogglePublished = async (item: ContentItem) => {
     try {
-      const token = await getAdminToken()
+      if (!user) {
+        toast.error('You must be logged in to perform this action')
+        return
+      }
+
+      const token = await user.getIdToken()
       
       const response = await fetch(`/api/content/${item.id}`, {
         method: 'PUT',
@@ -92,7 +103,12 @@ export default function ContentManagerPage() {
 
   const handleToggleFeatured = async (item: ContentItem) => {
     try {
-      const token = await getAdminToken()
+      if (!user) {
+        toast.error('You must be logged in to perform this action')
+        return
+      }
+
+      const token = await user.getIdToken()
       
       const response = await fetch(`/api/content/${item.id}`, {
         method: 'PUT',

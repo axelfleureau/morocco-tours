@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { Search, Edit, Trash2, Plus, Eye, EyeOff } from 'lucide-react'
 import { useNotifications } from '@/components/NotificationSystem'
+import { useAuth } from '@/context/AuthContext'
 
 interface Travel {
   id: string
@@ -17,6 +18,7 @@ interface Travel {
 
 export default function AdminTravelsPage() {
   const { showSuccess, showError } = useNotifications()
+  const { user } = useAuth()
   const [travels, setTravels] = useState<Travel[]>([])
   const [filteredTravels, setFilteredTravels] = useState<Travel[]>([])
   const [loading, setLoading] = useState(true)
@@ -26,11 +28,6 @@ export default function AdminTravelsPage() {
   const [formData, setFormData] = useState({ title: '', category: '', price: 0, published: true, featured: false })
 
   const categories = ['desert', 'city', 'coast', 'mountain', 'group']
-
-  const headers = {
-    'Authorization': `Bearer ${process.env.NEXT_PUBLIC_ADMIN_TOKEN || process.env.ADMIN_TOKEN}`,
-    'Content-Type': 'application/json'
-  }
 
   useEffect(() => {
     fetchTravels()
@@ -65,7 +62,16 @@ export default function AdminTravelsPage() {
 
   const togglePublished = async (travel: Travel) => {
     try {
-      const response = await fetch(`/api/travels/${travel.id}`, { method: 'PUT', headers, body: JSON.stringify({ published: !travel.published }) })
+      if (!user) return
+      const token = await user.getIdToken()
+      const response = await fetch(`/api/travels/${travel.id}`, { 
+        method: 'PUT', 
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }, 
+        body: JSON.stringify({ published: !travel.published }) 
+      })
       if (!response.ok) throw new Error('Failed to update')
       showSuccess('Successo', travel.published ? 'Nascosto' : 'Pubblicato')
       fetchTravels()
@@ -76,7 +82,16 @@ export default function AdminTravelsPage() {
 
   const toggleFeatured = async (travel: Travel) => {
     try {
-      const response = await fetch(`/api/travels/${travel.id}`, { method: 'PUT', headers, body: JSON.stringify({ featured: !travel.featured }) })
+      if (!user) return
+      const token = await user.getIdToken()
+      const response = await fetch(`/api/travels/${travel.id}`, { 
+        method: 'PUT', 
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }, 
+        body: JSON.stringify({ featured: !travel.featured }) 
+      })
       if (!response.ok) throw new Error('Failed to update')
       showSuccess('Successo', travel.featured ? 'Rimosso da in evidenza' : 'Aggiunto a in evidenza')
       fetchTravels()
@@ -88,7 +103,15 @@ export default function AdminTravelsPage() {
   const handleDelete = async (id: string) => {
     if (!confirm('Eliminare questo viaggio?')) return
     try {
-      const response = await fetch(`/api/travels/${id}`, { method: 'DELETE', headers })
+      if (!user) return
+      const token = await user.getIdToken()
+      const response = await fetch(`/api/travels/${id}`, { 
+        method: 'DELETE', 
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      })
       if (!response.ok) throw new Error('Failed to delete')
       showSuccess('Successo', 'Viaggio eliminato')
       fetchTravels()

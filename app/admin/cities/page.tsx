@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { Search, Edit, Trash2, Plus } from 'lucide-react'
 import { useNotifications } from '@/components/NotificationSystem'
+import { useAuth } from '@/context/AuthContext'
 
 interface City {
   id: string
@@ -14,6 +15,7 @@ interface City {
 
 export default function AdminCitiesPage() {
   const { showSuccess, showError } = useNotifications()
+  const { user } = useAuth()
   const [cities, setCities] = useState<City[]>([])
   const [filteredCities, setFilteredCities] = useState<City[]>([])
   const [loading, setLoading] = useState(true)
@@ -23,11 +25,6 @@ export default function AdminCitiesPage() {
   const [formData, setFormData] = useState({ name: '', type: 'imperial', published: true })
 
   const categories = ['imperial', 'coastal', 'desert', 'mountain']
-
-  const headers = {
-    'Authorization': `Bearer ${process.env.NEXT_PUBLIC_ADMIN_TOKEN || process.env.ADMIN_TOKEN}`,
-    'Content-Type': 'application/json'
-  }
 
   useEffect(() => {
     fetchCities()
@@ -66,9 +63,18 @@ export default function AdminCitiesPage() {
       return
     }
     try {
+      if (!user) return
+      const token = await user.getIdToken()
       const method = editingId ? 'PUT' : 'POST'
       const url = editingId ? `/api/cities/${editingId}` : '/api/cities'
-      const response = await fetch(url, { method, headers, body: JSON.stringify(formData) })
+      const response = await fetch(url, { 
+        method, 
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }, 
+        body: JSON.stringify(formData) 
+      })
       if (!response.ok) throw new Error('Failed to save')
       showSuccess('Successo', editingId ? 'Città aggiornata' : 'Città creata')
       setFormData({ name: '', type: 'imperial', published: true })
@@ -82,7 +88,15 @@ export default function AdminCitiesPage() {
   const handleDelete = async (id: string) => {
     if (!confirm('Eliminare questa città?')) return
     try {
-      const response = await fetch(`/api/cities/${id}`, { method: 'DELETE', headers })
+      if (!user) return
+      const token = await user.getIdToken()
+      const response = await fetch(`/api/cities/${id}`, { 
+        method: 'DELETE', 
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      })
       if (!response.ok) throw new Error('Failed to delete')
       showSuccess('Successo', 'Città eliminata')
       fetchCities()

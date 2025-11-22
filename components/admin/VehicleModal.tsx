@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { X, Save, Loader2, Plus, Trash2 } from 'lucide-react'
 import { useNotifications } from '../NotificationSystem'
 import { validateUrl } from '@/lib/url-validation'
+import { useAuth } from '@/context/AuthContext'
 
 interface PricingPeriod {
   name: string
@@ -42,6 +43,7 @@ interface VehicleModalProps {
 
 export default function VehicleModal({ vehicle, onClose, onSave }: VehicleModalProps) {
   const { showSuccess, showError } = useNotifications()
+  const { user } = useAuth()
   const [formData, setFormData] = useState<Vehicle>({
     name: '',
     slug: '',
@@ -68,11 +70,6 @@ export default function VehicleModal({ vehicle, onClose, onSave }: VehicleModalP
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
   const [urlError, setUrlError] = useState('')
-
-  const headers = {
-    'Authorization': `Bearer ${process.env.NEXT_PUBLIC_ADMIN_TOKEN || process.env.ADMIN_TOKEN}`,
-    'Content-Type': 'application/json'
-  }
 
   useEffect(() => {
     if (vehicle) {
@@ -177,6 +174,11 @@ export default function VehicleModal({ vehicle, onClose, onSave }: VehicleModalP
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     
+    if (!user) {
+      showError('Non autorizzato', 'Devi effettuare il login')
+      return
+    }
+    
     if (formData.image && formData.image.trim()) {
       const urlValidation = validateUrl(formData.image, false)
       if (!urlValidation.valid) {
@@ -191,6 +193,7 @@ export default function VehicleModal({ vehicle, onClose, onSave }: VehicleModalP
     setUrlError('')
 
     try {
+      const token = await user.getIdToken()
       const dataToSave = {
         name: formData.name,
         slug: formData.slug,
@@ -213,7 +216,10 @@ export default function VehicleModal({ vehicle, onClose, onSave }: VehicleModalP
 
       const response = await fetch(url, {
         method,
-        headers,
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
         body: JSON.stringify(dataToSave)
       })
 

@@ -1,10 +1,41 @@
 "use client"
 
-import { cities } from '@/data/cities'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { MapPin, ArrowRight } from 'lucide-react'
+import { MapPin, ArrowRight, Loader2 } from 'lucide-react'
 
 export default function CitiesIndexPage() {
+  const [cities, setCities] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const fetchCities = async () => {
+      try {
+        setLoading(true)
+        const response = await fetch('/api/cities', { cache: 'no-store' })
+        const data = await response.json()
+        setCities(data.cities || [])
+      } catch (error) {
+        console.error('Error loading cities:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+    
+    fetchCities()
+  }, [])
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <Loader2 className="w-16 h-16 animate-spin text-orange-500 mx-auto mb-4" />
+          <p className="text-muted-foreground">Caricamento città...</p>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="min-h-screen bg-background">
       {/* Hero Section */}

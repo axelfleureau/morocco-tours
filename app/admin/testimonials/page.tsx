@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { useNotifications } from "@/components/NotificationSystem"
+import { useAuth } from "@/context/AuthContext"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -22,6 +23,7 @@ export default function TestimonialsManagement() {
     order: 0,
   })
   const { showSuccess, showError } = useNotifications()
+  const { user } = useAuth()
 
   useEffect(() => {
     loadTestimonials()
@@ -46,6 +48,8 @@ export default function TestimonialsManagement() {
     }
 
     try {
+      if (!user) return
+      const token = await user.getIdToken()
       const method = editingId ? "PUT" : "POST"
       const url = editingId ? `/api/testimonials/${editingId}` : "/api/testimonials"
 
@@ -53,7 +57,7 @@ export default function TestimonialsManagement() {
         method,
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${process.env.NEXT_PUBLIC_ADMIN_TOKEN}`,
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(formData),
       })
@@ -72,10 +76,12 @@ export default function TestimonialsManagement() {
     if (!confirm("Eliminare questa testimonianza?")) return
 
     try {
+      if (!user) return
+      const token = await user.getIdToken()
       const res = await fetch(`/api/testimonials/${id}`, {
         method: "DELETE",
         headers: {
-          Authorization: `Bearer ${process.env.NEXT_PUBLIC_ADMIN_TOKEN}`,
+          Authorization: `Bearer ${token}`,
         },
       })
 

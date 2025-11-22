@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react'
 import { X, Save, Loader2 } from 'lucide-react'
 import VisualEditor from './VisualEditor'
 import { useNotifications } from '../NotificationSystem'
+import { useAuth } from '@/context/AuthContext'
 
 interface ExperienceEditModalProps {
   isOpen: boolean
@@ -21,6 +22,7 @@ export default function ExperienceEditModal({
   onRefreshData 
 }: ExperienceEditModalProps) {
   const { showSuccess, showError } = useNotifications()
+  const { user } = useAuth()
   const [saving, setSaving] = useState(false)
   const [editingBlocks, setEditingBlocks] = useState<any[]>([])
 
@@ -32,12 +34,13 @@ export default function ExperienceEditModal({
   }, [experience, isOpen])
 
   const handleSave = async (blocks: any[]) => {
-    if (!experience) return
+    if (!experience || !user) return
 
     setSaving(true)
     try {
+      const token = await user.getIdToken()
       const headers = {
-        'Authorization': `Bearer ${process.env.NEXT_PUBLIC_ADMIN_TOKEN || process.env.ADMIN_TOKEN}`,
+        'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json'
       }
       

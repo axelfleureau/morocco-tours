@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { Search, Edit, Trash2, Plus, Eye, EyeOff } from 'lucide-react'
 import ExperienceModal from '@/components/admin/ExperienceModal'
 import { useNotifications } from '@/components/NotificationSystem'
+import { useAuth } from '@/context/AuthContext'
 
 interface Experience {
   id: string
@@ -19,6 +20,7 @@ interface Experience {
 
 export default function AdminExperiencesPage() {
   const { showSuccess, showError } = useNotifications()
+  const { user } = useAuth()
   const [experiences, setExperiences] = useState<Experience[]>([])
   const [filteredExperiences, setFilteredExperiences] = useState<Experience[]>([])
   const [loading, setLoading] = useState(true)
@@ -28,11 +30,6 @@ export default function AdminExperiencesPage() {
   const [showModal, setShowModal] = useState(false)
 
   const categories = ['adventure', 'wellness', 'culture', 'food', 'sports']
-
-  const headers = {
-    'Authorization': `Bearer ${process.env.NEXT_PUBLIC_ADMIN_TOKEN || process.env.ADMIN_TOKEN}`,
-    'Content-Type': 'application/json'
-  }
 
   useEffect(() => {
     fetchExperiences()
@@ -75,9 +72,14 @@ export default function AdminExperiencesPage() {
 
   const togglePublished = async (exp: Experience) => {
     try {
+      if (!user) return
+      const token = await user.getIdToken()
       const response = await fetch(`/api/experiences/${exp.id}`, {
         method: 'PUT',
-        headers,
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
         body: JSON.stringify({ published: !exp.published })
       })
 
@@ -92,9 +94,14 @@ export default function AdminExperiencesPage() {
 
   const toggleFeatured = async (exp: Experience) => {
     try {
+      if (!user) return
+      const token = await user.getIdToken()
       const response = await fetch(`/api/experiences/${exp.id}`, {
         method: 'PUT',
-        headers,
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
         body: JSON.stringify({ featured: !exp.featured })
       })
 
@@ -111,9 +118,14 @@ export default function AdminExperiencesPage() {
     if (!confirm('Eliminare questa esperienza?')) return
 
     try {
+      if (!user) return
+      const token = await user.getIdToken()
       const response = await fetch(`/api/experiences/${id}`, {
         method: 'DELETE',
-        headers
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
       })
 
       if (!response.ok) throw new Error('Failed to delete')

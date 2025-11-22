@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { Search, Edit, Trash2, Plus, DollarSign } from 'lucide-react'
 import { useNotifications } from '@/components/NotificationSystem'
+import { useAuth } from '@/context/AuthContext'
 
 interface Service {
   id: string
@@ -15,6 +16,7 @@ interface Service {
 
 export default function AdminServicesPage() {
   const { showSuccess, showError } = useNotifications()
+  const { user } = useAuth()
   const [services, setServices] = useState<Service[]>([])
   const [filteredServices, setFilteredServices] = useState<Service[]>([])
   const [loading, setLoading] = useState(true)
@@ -24,11 +26,6 @@ export default function AdminServicesPage() {
   const [formData, setFormData] = useState({ name: '', category: '', price: 0, description: '', published: true })
 
   const categories = ['transport', 'guide', 'experience', 'accommodation']
-
-  const headers = {
-    'Authorization': `Bearer ${process.env.NEXT_PUBLIC_ADMIN_TOKEN || process.env.ADMIN_TOKEN}`,
-    'Content-Type': 'application/json'
-  }
 
   useEffect(() => {
     fetchServices()
@@ -67,9 +64,18 @@ export default function AdminServicesPage() {
       return
     }
     try {
+      if (!user) return
+      const token = await user.getIdToken()
       const method = editingId ? 'PUT' : 'POST'
       const url = editingId ? `/api/services/${editingId}` : '/api/services'
-      const response = await fetch(url, { method, headers, body: JSON.stringify(formData) })
+      const response = await fetch(url, { 
+        method, 
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }, 
+        body: JSON.stringify(formData) 
+      })
       if (!response.ok) throw new Error('Failed to save')
       showSuccess('Successo', editingId ? 'Servizio aggiornato' : 'Servizio creato')
       setFormData({ name: '', category: '', price: 0, description: '', published: true })
@@ -83,7 +89,15 @@ export default function AdminServicesPage() {
   const handleDelete = async (id: string) => {
     if (!confirm('Eliminare questo servizio?')) return
     try {
-      const response = await fetch(`/api/services/${id}`, { method: 'DELETE', headers })
+      if (!user) return
+      const token = await user.getIdToken()
+      const response = await fetch(`/api/services/${id}`, { 
+        method: 'DELETE', 
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      })
       if (!response.ok) throw new Error('Failed to delete')
       showSuccess('Successo', 'Servizio eliminato')
       fetchServices()

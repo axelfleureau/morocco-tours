@@ -15,7 +15,7 @@ import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { getAdminToken } from '@/lib/admin-token'
+import { useAuth } from '@/context/AuthContext'
 import { ContentItem } from '@/hooks/useContent'
 
 interface ContentModalProps {
@@ -72,6 +72,7 @@ function generateSlug(title: string): string {
 }
 
 export function ContentModal({ open, onClose, type, item, onSuccess }: ContentModalProps) {
+  const { user } = useAuth()
   const [formData, setFormData] = useState<FormData>(
     item ? {
       type: item.type,
@@ -129,7 +130,12 @@ export function ContentModal({ open, onClose, type, item, onSuccess }: ContentMo
     setLoading(true)
     
     try {
-      const token = await getAdminToken()
+      if (!user) {
+        toast.error('You must be logged in to perform this action')
+        return
+      }
+
+      const token = await user.getIdToken()
       
       const url = item ? `/api/content/${item.id}` : '/api/content'
       const method = item ? 'PUT' : 'POST'

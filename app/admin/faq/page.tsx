@@ -9,6 +9,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Plus, Edit, Trash2 } from "lucide-react"
+import { useAuth } from "@/context/AuthContext"
 
 const CATEGORIES = [
   { value: "general", label: "Generale" },
@@ -29,6 +30,7 @@ export default function FAQManagement() {
     order: 0,
   })
   const { showSuccess, showError } = useNotifications()
+  const { user } = useAuth()
 
   useEffect(() => {
     loadFAQs()
@@ -51,8 +53,14 @@ export default function FAQManagement() {
       showError("Campi mancanti", "Riempire i campi obbligatori")
       return
     }
+    
+    if (!user) {
+      showError("Non autorizzato", "Devi effettuare il login")
+      return
+    }
 
     try {
+      const token = await user.getIdToken()
       const method = editingId ? "PUT" : "POST"
       const url = editingId ? `/api/faq/${editingId}` : "/api/faq"
 
@@ -60,7 +68,7 @@ export default function FAQManagement() {
         method,
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${process.env.NEXT_PUBLIC_ADMIN_TOKEN}`,
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(formData),
       })
@@ -77,12 +85,18 @@ export default function FAQManagement() {
 
   const handleDelete = async (id: string) => {
     if (!confirm("Eliminare questa domanda?")) return
+    
+    if (!user) {
+      showError("Non autorizzato", "Devi effettuare il login")
+      return
+    }
 
     try {
+      const token = await user.getIdToken()
       const res = await fetch(`/api/faq/${id}`, {
         method: "DELETE",
         headers: {
-          Authorization: `Bearer ${process.env.NEXT_PUBLIC_ADMIN_TOKEN}`,
+          Authorization: `Bearer ${token}`,
         },
       })
 

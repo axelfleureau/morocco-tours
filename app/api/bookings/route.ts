@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
 import { verifyFirebaseToken } from '@/lib/user-auth-server'
+import { isAdmin } from '@/lib/auth-helpers'
 
 export const dynamic = 'force-dynamic'
 
@@ -30,18 +31,11 @@ async function verifyAuth(request: NextRequest): Promise<{ uid: string } | null>
   }
 }
 
-// Helper to check if user is admin
-function isAdmin(request: NextRequest): boolean {
-  const auth = request.headers.get("authorization") || ""
-  const token = auth.replace("Bearer ", "").trim()
-  return Boolean(process.env.ADMIN_TOKEN && token === process.env.ADMIN_TOKEN)
-}
-
 // GET - Get user's bookings list (authenticated)
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
-    const adminAccess = isAdmin(request)
+    const adminAccess = await isAdmin(request.headers.get('authorization'))
 
     if (!adminAccess) {
       const authUser = await verifyAuth(request)

@@ -1,18 +1,55 @@
 "use client"
 
 import { useParams } from 'next/navigation'
-import { cities } from '@/data/cities'
-import { MapPin, Clock, Euro, Calendar, Plane, ArrowLeft } from 'lucide-react'
+import { useState, useEffect } from 'react'
+import { MapPin, Clock, Euro, Calendar, Plane, ArrowLeft, Loader2 } from 'lucide-react'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 
 export default function CityPage() {
   const params = useParams()
   const slug = params?.slug as string
-  
-  const city = cities.find(c => c.slug === slug)
-  
-  if (!city) {
+  const [city, setCity] = useState<any>(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(false)
+
+  useEffect(() => {
+    const fetchCity = async () => {
+      try {
+        setLoading(true)
+        const response = await fetch(`/api/cities?slug=${slug}`, { cache: 'no-store' })
+        const data = await response.json()
+        
+        if (data.cities && data.cities.length > 0) {
+          setCity(data.cities[0])
+        } else {
+          setError(true)
+        }
+      } catch (err) {
+        console.error('Error loading city:', err)
+        setError(true)
+      } finally {
+        setLoading(false)
+      }
+    }
+    
+    if (slug) {
+      fetchCity()
+    }
+  }, [slug])
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <Loader2 className="w-16 h-16 animate-spin text-orange-500 mx-auto mb-4" />
+          <p className="text-muted-foreground">Caricamento città...</p>
+        </div>
+      </div>
+    )
+  }
+
+  if (error || !city) {
     notFound()
   }
 

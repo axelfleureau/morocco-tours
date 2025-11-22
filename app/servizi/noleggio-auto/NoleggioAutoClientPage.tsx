@@ -19,7 +19,7 @@ import {
   Shield,
   Loader2,
 } from "lucide-react"
-import { includedServices, extraServices, calculateRentalPrice, periodNames } from "@/data/vehicles"
+import { includedServices, extraServices, calculateRentalPrice, periodNames } from "@/lib/utils/vehicle-pricing"
 import { getPublishedVehicles, type Vehicle } from "@/lib/public-data"
 import WishlistButton from "@/components/WishlistButton"
 
@@ -233,7 +233,7 @@ _Grazie!_`
                         itemType="vehicle"
                         itemTitle={vehicle.name}
                         itemImage={vehicle.image}
-                        itemPrice={Math.min(vehicle.pricing.period1.short, vehicle.pricing.period2.short, vehicle.pricing.period3.short, vehicle.pricing.period4.short)}
+                        itemPrice={vehicle.pricing ? Math.min(vehicle.pricing.period1.short, vehicle.pricing.period2.short, vehicle.pricing.period3.short, vehicle.pricing.period4.short) : 0}
                         itemDescription={`${vehicle.category} - ${vehicle.transmission} - ${vehicle.seats} posti`}
                       />
                     </div>
@@ -270,7 +270,7 @@ _Grazie!_`
                         {vehicle.category}
                       </Badge>
                       <Badge className="bg-gradient-to-r from-orange-500 to-red-500 text-white font-bold text-xs">
-                        Da €{Math.min(vehicle.pricing.period1.short, vehicle.pricing.period2.short, vehicle.pricing.period3.short, vehicle.pricing.period4.short)}/gg
+                        Da €{vehicle.pricing ? Math.min(vehicle.pricing.period1.short, vehicle.pricing.period2.short, vehicle.pricing.period3.short, vehicle.pricing.period4.short) : 0}/gg
                       </Badge>
                     </div>
                     

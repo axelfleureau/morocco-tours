@@ -7,7 +7,7 @@ import { formatPrivateKey } from './firebase-admin'
 
 let adminApp: App | null = null
 
-function getFirebaseAdminApp(): App | null {
+export function getFirebaseAdminApp(): App | null {
   if (adminApp) return adminApp
   
   if (getApps().length > 0) {
