@@ -3,10 +3,8 @@
 import { useEffect, useState } from "react"
 import { useRouter, usePathname } from "next/navigation"
 import { useAuth } from "@/context/AuthContext"
-import { doc, getDoc, updateDoc, serverTimestamp } from "firebase/firestore"
 import { signOut } from "firebase/auth"
-import { db, auth } from "@/lib/firebase"
-import { AdminUser } from "@/lib/firestore-schema"
+import { auth } from "@/lib/firebase"
 import {
   LayoutDashboard,
   Compass,
@@ -33,7 +31,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const { user, loading } = useAuth()
   const { theme, setTheme } = useTheme()
   
-  const [adminData, setAdminData] = useState<AdminUser | null>(null)
   const [isAuthorized, setIsAuthorized] = useState(false)
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
   const [mounted, setMounted] = useState(false)
@@ -56,29 +53,25 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     if (!user) return
 
     try {
-      const adminDocRef = doc(db, "adminUsers", user.uid)
-      const adminDoc = await getDoc(adminDocRef)
+      const idToken = await user.getIdToken()
       
-      if (!adminDoc.exists()) {
-        await signOut(auth)
-        router.push("/admin/login")
-        return
-      }
-
-      const data = adminDoc.data() as AdminUser
-      
-      if (!data.active) {
-        await signOut(auth)
-        router.push("/admin/login")
-        return
-      }
-
-      setAdminData(data)
-      setIsAuthorized(true)
-
-      await updateDoc(adminDocRef, {
-        lastLogin: serverTimestamp()
+      const response = await fetch("/api/auth/check-admin", {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${idToken}`,
+          "Content-Type": "application/json",
+        },
       })
+
+      const data = await response.json()
+      
+      if (!response.ok || !data.isAdmin) {
+        await signOut(auth)
+        router.push("/admin/login")
+        return
+      }
+
+      setIsAuthorized(true)
     } catch (error) {
       console.error("Error checking admin access:", error)
       await signOut(auth)

@@ -74,7 +74,9 @@ export default function AdminLoginPage() {
         return
       }
 
-      router.push("/admin")
+      // Don't navigate immediately - let the useEffect handle it after user state updates
+      // The useEffect will trigger when user changes in AuthContext
+      setIsLoading(false)
     } catch (err: any) {
       console.error("Login error:", err)
       
