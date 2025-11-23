@@ -1,14 +1,9 @@
 import { db } from "@/lib/db"
 import { revalidateTag } from "next/cache"
 import { NextRequest } from "next/server"
+import { isAdmin } from "@/lib/auth-helpers"
 
 export const dynamic = "force-dynamic"
-
-function isAuthorized(req: NextRequest) {
-  const auth = req.headers.get("authorization") || ""
-  const token = auth.replace("Bearer ", "").trim()
-  return process.env.ADMIN_TOKEN && token === process.env.ADMIN_TOKEN
-}
 
 export async function GET(
   req: NextRequest,
@@ -36,8 +31,9 @@ export async function PUT(
   req: NextRequest,
   { params }: { params: { id: string } }
 ) {
-  if (!isAuthorized(req)) {
-    return Response.json({ error: "Unauthorized" }, { status: 401 })
+  const isAdminUser = await isAdmin(req.headers.get("authorization"))
+  if (!isAdminUser) {
+    return Response.json({ error: "Missing or insufficient permissions." }, { status: 403 })
   }
 
   try {
@@ -60,8 +56,9 @@ export async function DELETE(
   req: NextRequest,
   { params }: { params: { id: string } }
 ) {
-  if (!isAuthorized(req)) {
-    return Response.json({ error: "Unauthorized" }, { status: 401 })
+  const isAdminUser = await isAdmin(req.headers.get("authorization"))
+  if (!isAdminUser) {
+    return Response.json({ error: "Missing or insufficient permissions." }, { status: 403 })
   }
 
   try {
