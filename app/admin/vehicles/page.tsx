@@ -1,10 +1,20 @@
 "use client"
 
 import { useState, useEffect } from 'react'
-import { Search, Edit, Trash2, Plus, Eye, EyeOff, Star, Car } from 'lucide-react'
+import { Search, Plus, Car } from 'lucide-react'
 import VehicleModal from '@/components/admin/VehicleModal'
 import { useNotifications } from '@/components/NotificationSystem'
 import { useAuth } from '@/context/AuthContext'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { 
+  UnifiedAdminTable, 
+  TableColumn,
+  createPublishedColumn, 
+  createFeaturedColumn,
+  createBooleanBadgeColumn,
+  createStandardActions 
+} from '@/components/admin/UnifiedAdminTable'
 
 interface PricingPeriod {
   name: string
@@ -149,9 +159,13 @@ export default function AdminVehiclesPage() {
     if (!confirm(`Sei sicuro di voler eliminare "${vehicle.name}"?`)) return
 
     try {
+      if (!user) return
+      const token = await user.getIdToken()
       const response = await fetch(`/api/vehicles/${vehicle.id}`, {
         method: 'DELETE',
-        headers
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
       })
 
       if (!response.ok) {
@@ -181,6 +195,65 @@ export default function AdminVehiclesPage() {
     handleCloseModal()
   }
 
+  const columns: TableColumn<Vehicle>[] = [
+    {
+      key: 'name',
+      label: 'Vehicle',
+      render: (vehicle) => (
+        <div className="flex items-center">
+          <div className="flex-shrink-0 h-10 w-10">
+            {vehicle.image ? (
+              <img
+                className="h-10 w-10 rounded-full object-cover"
+                src={vehicle.image}
+                alt={vehicle.name}
+              />
+            ) : (
+              <div className="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center">
+                <Car className="w-5 h-5 text-gray-400" />
+              </div>
+            )}
+          </div>
+          <div className="ml-4">
+            <div className="text-sm font-medium">{vehicle.name}</div>
+            <div className="text-sm text-muted-foreground">{vehicle.slug}</div>
+          </div>
+        </div>
+      )
+    },
+    {
+      key: 'category',
+      label: 'Category',
+      render: (vehicle) => (
+        <Badge variant="outline" className="capitalize">
+          {vehicle.category}
+        </Badge>
+      )
+    },
+    {
+      key: 'transmission',
+      label: 'Details',
+      render: (vehicle) => (
+        <div className="text-sm">
+          <div>{vehicle.transmission} • {vehicle.fuelType}</div>
+          <div className="text-muted-foreground">
+            {vehicle.seats} seats • {vehicle.doors} doors
+          </div>
+        </div>
+      )
+    },
+    createPublishedColumn<Vehicle>(),
+    createFeaturedColumn<Vehicle>(),
+    createBooleanBadgeColumn<Vehicle>('available', 'Available', 'Yes', 'No')
+  ]
+
+  const actions = createStandardActions<Vehicle>({
+    onEdit: handleEdit,
+    onTogglePublished: togglePublished,
+    onToggleFeatured: toggleFeatured,
+    onDelete: deleteVehicle
+  })
+
   if (loading) {
     return (
       <div className="flex items-center justify-center h-96">
@@ -197,20 +270,20 @@ export default function AdminVehiclesPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold">Gestione Veicoli</h1>
-          <p className="text-gray-600 mt-1">
+          <p className="text-muted-foreground mt-1">
             {vehicles.length} veicoli totali
           </p>
         </div>
-        <button
+        <Button
           onClick={() => {
             setSelectedVehicle(null)
             setShowModal(true)
           }}
-          className="flex items-center gap-2 px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors"
+          className="gap-2"
         >
-          <Plus className="w-5 h-5" />
+          <Plus className="w-4 h-4" />
           Nuovo Veicolo
-        </button>
+        </Button>
       </div>
 
       <div className="flex gap-4">
@@ -236,138 +309,23 @@ export default function AdminVehiclesPage() {
         </select>
       </div>
 
-      <div className="bg-white rounded-lg shadow overflow-hidden">
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
-            <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Veicolo
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Categoria
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Dettagli
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Stato
-              </th>
-              <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Azioni
-              </th>
-            </tr>
-          </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
-            {filteredVehicles.map((vehicle) => (
-              <tr key={vehicle.id} className="hover:bg-gray-50">
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="flex items-center">
-                    <div className="flex-shrink-0 h-10 w-10">
-                      {vehicle.image ? (
-                        <img
-                          className="h-10 w-10 rounded-full object-cover"
-                          src={vehicle.image}
-                          alt={vehicle.name}
-                        />
-                      ) : (
-                        <div className="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center">
-                          <Car className="w-5 h-5 text-gray-400" />
-                        </div>
-                      )}
-                    </div>
-                    <div className="ml-4">
-                      <div className="text-sm font-medium text-gray-900">
-                        {vehicle.name}
-                      </div>
-                      <div className="text-sm text-gray-500">
-                        {vehicle.slug}
-                      </div>
-                    </div>
-                  </div>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
-                    {vehicle.category}
-                  </span>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  {vehicle.transmission} • {vehicle.fuelType}
-                  <br />
-                  {vehicle.seats} posti • {vehicle.doors} porte
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="flex flex-col gap-1">
-                    {vehicle.published ? (
-                      <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                        Pubblicato
-                      </span>
-                    ) : (
-                      <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">
-                        Bozza
-                      </span>
-                    )}
-                    {vehicle.featured && (
-                      <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
-                        In evidenza
-                      </span>
-                    )}
-                  </div>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                  <div className="flex items-center justify-end gap-2">
-                    <button
-                      onClick={() => togglePublished(vehicle)}
-                      className="text-blue-600 hover:text-blue-900"
-                      title={vehicle.published ? 'Nascondi' : 'Pubblica'}
-                    >
-                      {vehicle.published ? (
-                        <EyeOff className="w-5 h-5" />
-                      ) : (
-                        <Eye className="w-5 h-5" />
-                      )}
-                    </button>
-                    <button
-                      onClick={() => toggleFeatured(vehicle)}
-                      className={`${
-                        vehicle.featured ? 'text-yellow-500' : 'text-gray-400'
-                      } hover:text-yellow-600`}
-                      title={vehicle.featured ? 'Rimuovi evidenza' : 'Metti in evidenza'}
-                    >
-                      <Star className="w-5 h-5" fill={vehicle.featured ? 'currentColor' : 'none'} />
-                    </button>
-                    <button
-                      onClick={() => handleEdit(vehicle)}
-                      className="text-indigo-600 hover:text-indigo-900"
-                      title="Modifica"
-                    >
-                      <Edit className="w-5 h-5" />
-                    </button>
-                    <button
-                      onClick={() => deleteVehicle(vehicle)}
-                      className="text-red-600 hover:text-red-900"
-                      title="Elimina"
-                    >
-                      <Trash2 className="w-5 h-5" />
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-
-        {filteredVehicles.length === 0 && (
-          <div className="text-center py-12">
+      <UnifiedAdminTable
+        data={filteredVehicles}
+        columns={columns}
+        actions={actions}
+        keyExtractor={(vehicle) => vehicle.id}
+        emptyMessage={
+          <div className="text-center">
             <Car className="mx-auto h-12 w-12 text-gray-400" />
-            <h3 className="mt-2 text-sm font-medium text-gray-900">Nessun veicolo trovato</h3>
-            <p className="mt-1 text-sm text-gray-500">
+            <h3 className="mt-2 text-sm font-medium">Nessun veicolo trovato</h3>
+            <p className="mt-1 text-sm text-muted-foreground">
               {searchTerm || categoryFilter
                 ? 'Prova a modificare i filtri di ricerca'
                 : 'Inizia creando un nuovo veicolo'}
             </p>
           </div>
-        )}
-      </div>
+        }
+      />
 
       {showModal && (
         <VehicleModal

@@ -2,25 +2,16 @@
 
 import { useState, useEffect } from 'react'
 import { toast } from 'sonner'
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table'
 import { Badge } from '@/components/ui/badge'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
 import { Button } from '@/components/ui/button'
 import { useAuth } from '@/context/AuthContext'
-import { MoreVertical, CheckCircle, XCircle, Clock, DollarSign } from 'lucide-react'
+import { CheckCircle, XCircle, Clock, DollarSign } from 'lucide-react'
 import { format } from 'date-fns'
+import { 
+  UnifiedAdminTable, 
+  TableColumn,
+  TableAction
+} from '@/components/admin/UnifiedAdminTable'
 
 interface Booking {
   id: string
@@ -191,6 +182,126 @@ export default function BookingManagerPage() {
     }
   }
 
+  const columns: TableColumn<Booking>[] = [
+    {
+      key: 'id',
+      label: 'Booking ID',
+      render: (booking) => (
+        <span className="font-mono text-xs">{booking.id.slice(0, 8)}...</span>
+      )
+    },
+    {
+      key: 'item',
+      label: 'Item',
+      render: (booking) => (
+        <div>
+          <p className="font-medium">{booking.itemData?.title || 'N/A'}</p>
+          <p className="text-xs text-muted-foreground">
+            User: {booking.userId.slice(0, 8)}...
+          </p>
+        </div>
+      )
+    },
+    {
+      key: 'bookingType',
+      label: 'Type',
+      render: (booking) => (
+        <Badge variant="outline" className="capitalize">
+          {booking.bookingType}
+        </Badge>
+      )
+    },
+    {
+      key: 'date',
+      label: 'Date',
+      render: (booking) => (
+        <div className="text-sm">
+          <p>{formatDate(booking.startDate)}</p>
+          {booking.endDate && (
+            <p className="text-xs text-muted-foreground">
+              to {formatDate(booking.endDate)}
+            </p>
+          )}
+        </div>
+      )
+    },
+    {
+      key: 'travelers',
+      label: 'Travelers',
+      render: (booking) => booking.travelers ? `${booking.travelers} pax` : '-'
+    },
+    {
+      key: 'price',
+      label: 'Price',
+      render: (booking) => booking.totalPrice ? (
+        <span className="font-medium">
+          {booking.currency} {booking.totalPrice}
+        </span>
+      ) : (
+        <span className="text-muted-foreground">-</span>
+      )
+    },
+    {
+      key: 'status',
+      label: 'Status',
+      render: (booking) => (
+        <Badge variant={getStatusVariant(booking.status)} className="capitalize">
+          {booking.status}
+        </Badge>
+      )
+    },
+    {
+      key: 'paymentStatus',
+      label: 'Payment',
+      render: (booking) => (
+        <Badge variant={getPaymentVariant(booking.paymentStatus)} className="capitalize">
+          {booking.paymentStatus}
+        </Badge>
+      )
+    }
+  ]
+
+  const actions: TableAction<Booking>[] = [
+    {
+      label: 'Confirm Booking',
+      icon: <CheckCircle className="w-4 h-4" />,
+      onClick: (booking) => updateStatus(booking.id, 'confirmed'),
+      className: 'cursor-pointer'
+    },
+    {
+      label: 'Set Pending',
+      icon: <Clock className="w-4 h-4" />,
+      onClick: (booking) => updateStatus(booking.id, 'pending'),
+      className: 'cursor-pointer'
+    },
+    {
+      label: 'Mark Completed',
+      icon: <CheckCircle className="w-4 h-4" />,
+      onClick: (booking) => updateStatus(booking.id, 'completed'),
+      className: 'cursor-pointer'
+    },
+    {
+      label: 'Cancel Booking',
+      icon: <XCircle className="w-4 h-4" />,
+      onClick: (booking) => updateStatus(booking.id, 'cancelled'),
+      className: 'text-red-600 focus:text-red-600 cursor-pointer',
+      separator: true
+    },
+    {
+      label: 'Mark Paid',
+      icon: <DollarSign className="w-4 h-4" />,
+      onClick: (booking) => updatePaymentStatus(booking.id, 'paid'),
+      className: 'cursor-pointer',
+      separator: true
+    },
+    {
+      label: 'Mark Refunded',
+      icon: <DollarSign className="w-4 h-4" />,
+      onClick: (booking) => updatePaymentStatus(booking.id, 'refunded'),
+      className: 'cursor-pointer'
+    }
+  ]
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -216,125 +327,22 @@ export default function BookingManagerPage() {
             Try Again
           </Button>
         </div>
-      ) : bookings.length === 0 ? (
-        <div className="text-center py-12 bg-muted/50 rounded-lg border-2 border-dashed">
-          <p className="text-muted-foreground text-lg">No bookings found</p>
-        </div>
       ) : (
-        <div className="bg-card border rounded-lg overflow-hidden">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Booking ID</TableHead>
-                <TableHead>Item</TableHead>
-                <TableHead>Type</TableHead>
-                <TableHead>Date</TableHead>
-                <TableHead>Travelers</TableHead>
-                <TableHead>Price</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Payment</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {bookings.map((booking) => (
-                <TableRow key={booking.id}>
-                  <TableCell className="font-mono text-xs">
-                    {booking.id.slice(0, 8)}...
-                  </TableCell>
-                  <TableCell>
-                    <div>
-                      <p className="font-medium">{booking.itemData?.title || 'N/A'}</p>
-                      <p className="text-xs text-muted-foreground">
-                        User: {booking.userId.slice(0, 8)}...
-                      </p>
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <Badge variant="outline" className="capitalize">
-                      {booking.bookingType}
-                    </Badge>
-                  </TableCell>
-                  <TableCell>
-                    <div className="text-sm">
-                      <p>{formatDate(booking.startDate)}</p>
-                      {booking.endDate && (
-                        <p className="text-xs text-muted-foreground">
-                          to {formatDate(booking.endDate)}
-                        </p>
-                      )}
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    {booking.travelers ? `${booking.travelers} pax` : '-'}
-                  </TableCell>
-                  <TableCell>
-                    {booking.totalPrice ? (
-                      <span className="font-medium">
-                        {booking.currency} {booking.totalPrice}
-                      </span>
-                    ) : (
-                      <span className="text-muted-foreground">-</span>
-                    )}
-                  </TableCell>
-                  <TableCell>
-                    <Badge variant={getStatusVariant(booking.status)} className="capitalize">
-                      {booking.status}
-                    </Badge>
-                  </TableCell>
-                  <TableCell>
-                    <Badge variant={getPaymentVariant(booking.paymentStatus)} className="capitalize">
-                      {booking.paymentStatus}
-                    </Badge>
-                  </TableCell>
-                  <TableCell className="text-right">
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="sm">
-                          <MoreVertical className="w-4 h-4" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuItem onClick={() => updateStatus(booking.id, 'confirmed')}>
-                          <CheckCircle className="w-4 h-4 mr-2" />
-                          Confirm Booking
-                        </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => updateStatus(booking.id, 'pending')}>
-                          <Clock className="w-4 h-4 mr-2" />
-                          Set Pending
-                        </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => updateStatus(booking.id, 'completed')}>
-                          <CheckCircle className="w-4 h-4 mr-2" />
-                          Mark Completed
-                        </DropdownMenuItem>
-                        <DropdownMenuItem 
-                          onClick={() => updateStatus(booking.id, 'cancelled')}
-                          className="text-red-600 focus:text-red-600"
-                        >
-                          <XCircle className="w-4 h-4 mr-2" />
-                          Cancel Booking
-                        </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => updatePaymentStatus(booking.id, 'paid')}>
-                          <DollarSign className="w-4 h-4 mr-2" />
-                          Mark Paid
-                        </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => updatePaymentStatus(booking.id, 'refunded')}>
-                          <DollarSign className="w-4 h-4 mr-2" />
-                          Mark Refunded
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </div>
+        <>
+          <UnifiedAdminTable
+            data={bookings}
+            columns={columns}
+            actions={actions}
+            keyExtractor={(booking) => booking.id}
+            emptyMessage="No bookings found"
+          />
+          {bookings.length > 0 && (
+            <div className="text-sm text-muted-foreground">
+              Showing {bookings.length} booking{bookings.length !== 1 ? 's' : ''}
+            </div>
+          )}
+        </>
       )}
-
-      <div className="text-sm text-muted-foreground">
-        Showing {bookings.length} booking{bookings.length !== 1 ? 's' : ''}
-      </div>
     </div>
   )
 }

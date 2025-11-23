@@ -5,24 +5,18 @@ import { toast } from 'sonner'
 import { useContent, ContentItem } from '@/hooks/useContent'
 import { Button } from '@/components/ui/button'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table'
 import { Badge } from '@/components/ui/badge'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
 import { ContentModal } from '@/components/admin/ContentModal'
 import { useAuth } from '@/context/AuthContext'
-import { Plus, MoreVertical, Edit, Eye, EyeOff, Star, StarOff, Trash2 } from 'lucide-react'
+import { Plus } from 'lucide-react'
+import { 
+  UnifiedAdminTable, 
+  TableColumn,
+  createPublishedColumn, 
+  createFeaturedColumn,
+  createBooleanBadgeColumn,
+  createStandardActions 
+} from '@/components/admin/UnifiedAdminTable'
 
 export default function ContentManagerPage() {
   const { user } = useAuth()
@@ -164,6 +158,47 @@ export default function ContentManagerPage() {
     return labels[type as keyof typeof labels] || type
   }
 
+  const columns: TableColumn<ContentItem>[] = [
+    {
+      key: 'title',
+      label: 'Title',
+      render: (item) => (
+        <div>
+          <p className="font-semibold">{item.title}</p>
+          <p className="text-xs text-muted-foreground">/{item.slug}</p>
+        </div>
+      )
+    },
+    {
+      key: 'category',
+      label: 'Category',
+      render: (item) => (
+        <Badge variant="outline" className="capitalize">
+          {item.category || 'N/A'}
+        </Badge>
+      )
+    },
+    {
+      key: 'price',
+      label: 'Price',
+      render: (item) => item.price ? (
+        <span className="font-medium">€{item.price}</span>
+      ) : (
+        <span className="text-muted-foreground">-</span>
+      )
+    },
+    createPublishedColumn<ContentItem>(),
+    createFeaturedColumn<ContentItem>(),
+    createBooleanBadgeColumn<ContentItem>('bookable', 'Bookable', 'Yes', 'No')
+  ]
+
+  const actions = createStandardActions<ContentItem>({
+    onEdit: handleEdit,
+    onTogglePublished: handleTogglePublished,
+    onToggleFeatured: handleToggleFeatured,
+    onDelete: (item) => handleDelete(item.id)
+  })
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -219,128 +254,32 @@ export default function ContentManagerPage() {
             <div className="text-center py-12">
               <p className="text-red-500">Error loading content: {error.message}</p>
             </div>
-          ) : items.length === 0 ? (
-            <div className="text-center py-12 bg-muted/50 rounded-lg border-2 border-dashed">
-              <p className="text-muted-foreground text-lg">No {getTypeLabel(selectedType).toLowerCase()} found</p>
-              <Button onClick={handleAddNew} className="mt-4 gap-2">
-                <Plus className="w-4 h-4" />
-                Create your first {getTypeLabel(selectedType).slice(0, -1).toLowerCase()}
-              </Button>
-            </div>
           ) : (
-            <div className="bg-card border rounded-lg overflow-hidden">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Title</TableHead>
-                    <TableHead>Category</TableHead>
-                    <TableHead>Price</TableHead>
-                    <TableHead className="text-center">Published</TableHead>
-                    <TableHead className="text-center">Featured</TableHead>
-                    <TableHead className="text-center">Bookable</TableHead>
-                    <TableHead className="text-right">Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {items.map((item) => (
-                    <TableRow key={item.id}>
-                      <TableCell className="font-medium">
-                        <div>
-                          <p className="font-semibold">{item.title}</p>
-                          <p className="text-xs text-muted-foreground">/{item.slug}</p>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant="outline" className="capitalize">
-                          {item.category || 'N/A'}
-                        </Badge>
-                      </TableCell>
-                      <TableCell>
-                        {item.price ? (
-                          <span className="font-medium">€{item.price}</span>
-                        ) : (
-                          <span className="text-muted-foreground">-</span>
-                        )}
-                      </TableCell>
-                      <TableCell className="text-center">
-                        {item.published ? (
-                          <Badge variant="default" className="bg-green-500">Published</Badge>
-                        ) : (
-                          <Badge variant="secondary">Draft</Badge>
-                        )}
-                      </TableCell>
-                      <TableCell className="text-center">
-                        {item.featured ? (
-                          <Star className="w-4 h-4 fill-orange-500 text-orange-500 mx-auto" />
-                        ) : (
-                          <StarOff className="w-4 h-4 text-muted-foreground mx-auto" />
-                        )}
-                      </TableCell>
-                      <TableCell className="text-center">
-                        {item.bookable ? (
-                          <Badge variant="default" className="bg-blue-500">Yes</Badge>
-                        ) : (
-                          <Badge variant="secondary">No</Badge>
-                        )}
-                      </TableCell>
-                      <TableCell className="text-right">
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" size="sm">
-                              <MoreVertical className="w-4 h-4" />
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuItem onClick={() => handleEdit(item)}>
-                              <Edit className="w-4 h-4 mr-2" />
-                              Edit
-                            </DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => handleTogglePublished(item)}>
-                              {item.published ? (
-                                <>
-                                  <EyeOff className="w-4 h-4 mr-2" />
-                                  Unpublish
-                                </>
-                              ) : (
-                                <>
-                                  <Eye className="w-4 h-4 mr-2" />
-                                  Publish
-                                </>
-                              )}
-                            </DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => handleToggleFeatured(item)}>
-                              {item.featured ? (
-                                <>
-                                  <StarOff className="w-4 h-4 mr-2" />
-                                  Remove Featured
-                                </>
-                              ) : (
-                                <>
-                                  <Star className="w-4 h-4 mr-2" />
-                                  Add Featured
-                                </>
-                              )}
-                            </DropdownMenuItem>
-                            <DropdownMenuItem 
-                              onClick={() => handleDelete(item.id)}
-                              className="text-red-600 focus:text-red-600"
-                            >
-                              <Trash2 className="w-4 h-4 mr-2" />
-                              Delete
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
+            <>
+              <UnifiedAdminTable
+                data={items}
+                columns={columns}
+                actions={actions}
+                keyExtractor={(item) => item.id}
+                emptyMessage={
+                  <div className="text-center">
+                    <p className="text-muted-foreground text-lg mb-4">
+                      No {getTypeLabel(selectedType).toLowerCase()} found
+                    </p>
+                    <Button onClick={handleAddNew} className="gap-2">
+                      <Plus className="w-4 h-4" />
+                      Create your first {getTypeLabel(selectedType).slice(0, -1).toLowerCase()}
+                    </Button>
+                  </div>
+                }
+              />
+              {items.length > 0 && (
+                <div className="mt-4 text-sm text-muted-foreground">
+                  Showing {items.length} {getTypeLabel(selectedType).toLowerCase()}
+                </div>
+              )}
+            </>
           )}
-
-          <div className="mt-4 text-sm text-muted-foreground">
-            Showing {items.length} {getTypeLabel(selectedType).toLowerCase()}
-          </div>
         </TabsContent>
       </Tabs>
 
