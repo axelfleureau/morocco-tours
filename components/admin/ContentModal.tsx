@@ -176,7 +176,7 @@ export function ContentModal({ open, onClose, type, item, onSuccess }: ContentMo
     }))
   }
 
-  const categories = {
+  const categories: Record<string, string[]> = {
     experience: ['adventure', 'culture', 'food', 'wellness', 'photography'],
     travel: ['tour', 'desert', 'city', 'mountains', 'coast'],
     service: ['transfer', 'car-rental', 'guide', 'insurance'],

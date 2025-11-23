@@ -1,20 +1,53 @@
 "use client"
 
 import { useState } from 'react'
-import { CheckCircle, Rocket, X } from 'lucide-react'
+import { CheckCircle, Rocket, X, Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { useAuth } from '@/context/AuthContext'
+import { toast } from 'sonner'
 
 export default function PublishBanner() {
+  const { user } = useAuth()
   const [isPublished, setIsPublished] = useState(false)
   const [isDismissed, setIsDismissed] = useState(false)
+  const [isPublishing, setIsPublishing] = useState(false)
 
-  const handlePublish = () => {
-    setIsPublished(true)
-    // Simulate publish with a toast notification
-    const event = new CustomEvent('publish', { detail: { timestamp: new Date() } })
-    window.dispatchEvent(event)
-    // Auto-dismiss after 5 seconds
-    setTimeout(() => setIsDismissed(true), 5000)
+  const handlePublish = async () => {
+    if (!user) {
+      toast.error('You must be logged in to publish')
+      return
+    }
+
+    setIsPublishing(true)
+    
+    try {
+      const token = await user.getIdToken()
+      
+      const response = await fetch('/api/revalidate', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to publish changes')
+      }
+
+      const data = await response.json()
+      
+      setIsPublished(true)
+      toast.success('Contenuti pubblicati con successo!')
+      
+      // Auto-dismiss after 5 seconds
+      setTimeout(() => setIsDismissed(true), 5000)
+    } catch (error: any) {
+      console.error('Error publishing:', error)
+      toast.error(error.message || 'Errore durante la pubblicazione')
+    } finally {
+      setIsPublishing(false)
+    }
   }
 
   if (isDismissed) return null
@@ -59,10 +92,20 @@ export default function PublishBanner() {
           <Button
             onClick={handlePublish}
             size="sm"
+            disabled={isPublishing}
             className="bg-blue-600 hover:bg-blue-700 text-white gap-2 whitespace-nowrap"
           >
-            <Rocket className="w-4 h-4" />
-            Pubblica Ora
+            {isPublishing ? (
+              <>
+                <Loader2 className="w-4 h-4 animate-spin" />
+                Pubblicazione...
+              </>
+            ) : (
+              <>
+                <Rocket className="w-4 h-4" />
+                Pubblica Ora
+              </>
+            )}
           </Button>
           <button
             onClick={() => setIsDismissed(true)}
