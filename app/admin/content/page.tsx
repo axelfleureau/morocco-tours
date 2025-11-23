@@ -26,12 +26,12 @@ import { Plus, MoreVertical, Edit, Eye, EyeOff, Star, StarOff, Trash2 } from 'lu
 
 export default function ContentManagerPage() {
   const { user } = useAuth()
-  const [selectedType, setSelectedType] = useState<'experience' | 'travel' | 'service' | 'blog'>('experience')
+  const [selectedType, setSelectedType] = useState<'experience' | 'travel' | 'service' | 'blog' | 'vehicles' | 'bookings'>('experience')
   const [modalOpen, setModalOpen] = useState(false)
   const [editingItem, setEditingItem] = useState<ContentItem | null>(null)
   
   const { items, loading, error, refetch } = useContent({ 
-    type: selectedType,
+    type: selectedType !== 'vehicles' && selectedType !== 'bookings' ? selectedType : 'experience',
     limit: 100 
   })
 
@@ -177,14 +177,16 @@ export default function ContentManagerPage() {
 
       <Tabs value={selectedType} onValueChange={(val) => setSelectedType(val as any)}>
         <div className="flex items-center justify-between">
-          <TabsList className="grid grid-cols-4 w-auto">
+          <TabsList className="grid grid-cols-6 w-auto">
             <TabsTrigger value="experience">Experiences</TabsTrigger>
             <TabsTrigger value="travel">Travels</TabsTrigger>
             <TabsTrigger value="service">Services</TabsTrigger>
             <TabsTrigger value="blog">Blog</TabsTrigger>
+            <TabsTrigger value="vehicles">Vehicles</TabsTrigger>
+            <TabsTrigger value="bookings">Bookings</TabsTrigger>
           </TabsList>
 
-          <Button onClick={handleAddNew} className="gap-2">
+          <Button onClick={handleAddNew} className="gap-2" disabled={selectedType === 'vehicles' || selectedType === 'bookings'}>
             <Plus className="w-4 h-4" />
             Add New {getTypeLabel(selectedType).slice(0, -1)}
           </Button>

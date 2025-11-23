@@ -112,45 +112,45 @@ export default function AdminDashboard() {
 
   const quickActions = [
     {
-      icon: MapPin,
-      title: "Nuova Esperienza",
-      description: "Aggiungi hammam, cucina, trekking...",
-      link: "/admin/experiences",
+      icon: FileText,
+      title: "Gestisci Contenuti",
+      description: "Esperienze, Viaggi, Servizi, Blog & Veicoli",
+      link: "/admin/content?tab=experience",
       color: "bg-blue-500"
     },
     {
-      icon: TrendingUp,
-      title: "Nuovo Viaggio",
-      description: "Crea tour deserto, città imperiali...",
-      link: "/admin/travels",
+      icon: Calendar,
+      title: "Gestisci Prenotazioni",
+      description: "Visualizza e gestisci tutte le prenotazioni",
+      link: "/admin/content?tab=bookings",
       color: "bg-orange-500"
     },
     {
-      icon: Car,
-      title: "Nuovo Veicolo",
-      description: "Aggiungi auto per il noleggio",
-      link: "/admin/vehicles",
+      icon: Users,
+      title: "Gestisci Utenti",
+      description: "Admin, permessi e ruoli utente",
+      link: "/admin/users",
       color: "bg-green-500"
     },
     {
-      icon: FileText,
-      title: "Nuovo Articolo",
-      description: "Scrivi un post per il blog",
-      link: "/admin/blog",
+      icon: Map,
+      title: "Gestisci Città",
+      description: "Destinazioni marocchine",
+      link: "/admin/cities",
       color: "bg-indigo-500"
     },
     {
-      icon: Map,
-      title: "Nuova Città",
-      description: "Aggiungi destinazione marocchina",
-      link: "/admin/cities",
+      icon: Settings,
+      title: "Gestisci Servizi",
+      description: "Guide, trasferimenti, assicurazioni",
+      link: "/admin/services",
       color: "bg-purple-500"
     },
     {
-      icon: Settings,
-      title: "Nuovo Servizio",
-      description: "Guide, trasferimenti, assicurazioni",
-      link: "/admin/services",
+      icon: Instagram,
+      title: "Gestisci Instagram",
+      description: "Video feed homepage",
+      link: "/admin/instagram",
       color: "bg-teal-500"
     }
   ]

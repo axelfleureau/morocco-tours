@@ -23,7 +23,7 @@ import {
 } from "lucide-react"
 import Link from "next/link"
 import { useTheme } from "next-themes"
-import FirestoreRulesBanner from "@/components/admin/FirestoreRulesBanner"
+import PublishBanner from "@/components/admin/PublishBanner"
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter()
@@ -107,10 +107,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     { href: "/admin", icon: LayoutDashboard, label: "Dashboard" },
     { href: "/admin/content", icon: FileText, label: "Content Manager" },
     { href: "/admin/bookings", icon: Calendar, label: "Bookings" },
-    { href: "/admin/experiences", icon: Compass, label: "Esperienze" },
-    { href: "/admin/travels", icon: MapPin, label: "Viaggi" },
-    { href: "/admin/vehicles", icon: Car, label: "Veicoli" },
-    { href: "/admin/blog", icon: FileText, label: "Blog" },
     { href: "/admin/cities", icon: MapPin, label: "Città" },
     { href: "/admin/services", icon: Settings, label: "Servizi" },
     { href: "/admin/instagram", icon: Instagram, label: "Instagram" },
@@ -243,7 +239,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         </header>
 
         <main className="p-4 lg:p-8">
-          <FirestoreRulesBanner />
+          <PublishBanner />
           <div className="mt-6">
             {children}
           </div>
