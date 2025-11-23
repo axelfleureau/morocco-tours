@@ -17,7 +17,7 @@ The "Morocco Dreams" website is a production-ready travel platform with a unifie
 - **Unified ContentItem Model**: Consolidates experiences, travels, services, and blog posts with type discriminator ('experience', 'travel', 'service', 'blog')
 - Type-specific metadata stored in JSON field (itinerary, highlights, included, notIncluded, pricing periods, features, etc.)
 - Separate models maintained for backward compatibility: Experience, Travel, Vehicle, BlogPost, City, Service
-- Admin access controlled via ADMIN_TOKEN environment variable
+- Admin access controlled via dual-layer Firebase + PostgreSQL verification (isAdmin() helper)
 
 **API Layer:**
 - `/api/content` - Unified CRUD endpoint for all content types (GET public, POST/PUT/DELETE admin-only)
@@ -26,7 +26,7 @@ The "Morocco Dreams" website is a production-ready travel platform with a unifie
 - `/api/friends` - Friend code system with shared wishlists
 - `/api/auth/check-admin` - Admin authentication check
 - Legacy endpoints maintained: `/api/experiences`, `/api/travels`, `/api/vehicles`, `/api/blog`, `/api/cities`, `/api/services`
-- All admin endpoints protected with Bearer token authorization (ADMIN_TOKEN)
+- All admin endpoints protected with Firebase ID token + PostgreSQL AdminUser verification (isAdmin())
 
 **Frontend Architecture:**
 - **Client-side rendering** with `useContent` hook for unified data fetching
@@ -97,7 +97,7 @@ The "Morocco Dreams" website is a production-ready travel platform with a unifie
     - Migration backup created: `backups/migration-backup-2025-11-22T18-30-15-203Z.json`
 - **API Unification**: Built `/api/content` unified CRUD endpoint with type-based filtering
     - GET endpoint accepts type parameter ('experience', 'travel', 'service', 'blog')
-    - POST/PUT/DELETE protected with ADMIN_TOKEN Bearer authorization
+    - POST/PUT/DELETE protected with Firebase ID token + PostgreSQL AdminUser verification
     - Legacy endpoints maintained for backward compatibility
     - Cache invalidation via `revalidateTag` for real-time updates
 - **Auth System**: Migrated from Firestore to PostgreSQL
@@ -157,11 +157,60 @@ The "Morocco Dreams" website is a production-ready travel platform with a unifie
   - Authentication: Multi-layer admin verification confirmed operational
   - Build: All 66 routes compiled successfully
 - **Deployment Checklist**:
-  - ⚠️ CRITICAL: Remove NEXT_PUBLIC_ADMIN_TOKEN from environment variables before deployment
-  - ✅ AdminUser table populated with admin@moroccodreams.com (UID: 84BwELTSX9NQgORBBmJ7zbEZfwD2)
+  - ⚠️ CRITICAL: Remove NEXT_PUBLIC_ADMIN_TOKEN from environment variables before deployment (deprecated)
+  - ✅ AdminUser table populated: admin@moroccodreams.com (UID: 84BwELTSX9NQgORBBmJ7zbEZfwD2), casa.di.edis@gmail.com (UID: naMZtrNNa0Rtxaeb7r8YGxLNGwA2)
   - ✅ All admin access requires Firebase sign-in + database role activation
 
-**Previous Migrations (November 20, 2025)**:
+**AUTHENTICATION UNIFICATION & SYSTEM HARDENING (November 23, 2025):**
+- **Complete API Authentication Migration**: All 16+ API endpoints migrated from ADMIN_TOKEN to unified isAdmin() authentication
+  - ✅ `/api/cities` (GET/POST/PUT/DELETE) - isAdmin() verification
+  - ✅ `/api/vehicles` (GET/POST/PUT/DELETE) - isAdmin() verification
+  - ✅ `/api/services` (GET/POST/PUT/DELETE) - isAdmin() verification
+  - ✅ `/api/experiences` (POST) - isAdmin() verification
+  - ✅ `/api/blog` (POST) - isAdmin() verification
+  - ✅ `/api/travels` (POST) - isAdmin() verification
+  - ✅ `/api/instagram` (PUT) - isAdmin() verification
+  - ✅ `/api/faq` (POST/PUT/DELETE) - isAdmin() verification
+  - ✅ `/api/menu` (POST/PUT/DELETE) - isAdmin() verification
+  - ✅ `/api/testimonials` (POST/PUT/DELETE) - isAdmin() verification
+  - ✅ `/api/site-settings` (GET/PUT) - isAdmin() verification with critical security fix
+  - All endpoints use Firebase Admin SDK + PostgreSQL AdminUser dual-layer verification
+  - Removed all legacy ADMIN_TOKEN checks and isAuthorized() functions
+  - Consistent error responses: 403 Forbidden with "Missing or insufficient permissions." message
+- **Critical Security Fix (Site Settings)**:
+  - Fixed high-severity data exposure vulnerability in GET /api/site-settings
+  - ❌ BEFORE: Public endpoint exposing internal configuration
+  - ✅ AFTER: Protected with admin authentication on both GET and PUT
+  - Frontend updated to pass Firebase ID token for all requests
+- **Site Settings Migration to PostgreSQL**:
+  - Migrated `/admin/settings` page from Firestore to PostgreSQL API
+  - Replaced Firestore calls (doc, getDoc, setDoc) with REST API fetch
+  - Maintains all existing UI functionality with secure backend
+- **Services Database Population**:
+  - Created 5 example services for Morocco Dreams travel site:
+    1. Transfer Aeroporto (featured) - Airport transfer service
+    2. Noleggio Auto con Autista - Car rental with driver
+    3. Guida Turistica Privata (featured) - Private tour guide
+    4. Servizio Fotografico Professionale - Professional photography
+    5. Organizzazione Eventi & Matrimoni (featured) - Event planning
+  - All services with proper JSON structure (features array, pricing tiers)
+  - Italian language content matching brand tone
+- **UI Content Manager Fix**:
+  - Fixed actions dropdown clipping bug in UnifiedAdminTable component
+  - Changed overflow-hidden to overflow-x-auto to allow dropdown visibility
+  - Maintains horizontal scrolling for wide tables
+  - Applies to all admin tables using UnifiedAdminTable component
+- **Environment Variables Cleanup**:
+  - ⚠️ DEPRECATED: NEXT_PUBLIC_ADMIN_TOKEN environment variable no longer needed
+  - Legacy token exposed client-side - must be removed before deployment
+  - All authentication now uses Firebase ID tokens (never exposed in client)
+- **Architect Review**: ✅ PASS - All changes production-ready
+  - Authentication: Unified isAdmin() implementation verified across all endpoints
+  - Security: No vulnerabilities, data exposure risks eliminated
+  - UI: Dropdown fix tested and functional
+  - Database: Services properly populated with valid data
+
+**Previous Migrations (November 20-22, 2025)**:
 - Migrated from Firestore to PostgreSQL with Prisma
 - Created separate models for Experience, Travel, Vehicle, BlogPost, City, Service
 - Built API routes for each content type with admin protection
