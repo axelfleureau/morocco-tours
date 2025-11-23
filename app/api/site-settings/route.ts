@@ -1,10 +1,16 @@
 import { db } from "@/lib/db"
 import { revalidateTag } from "next/cache"
 import { NextRequest } from "next/server"
+import { isAdmin } from "@/lib/auth-helpers"
 
 export const dynamic = "force-dynamic"
 
-export async function GET() {
+export async function GET(req: NextRequest) {
+  const isAdminUser = await isAdmin(req.headers.get("authorization"))
+  if (!isAdminUser) {
+    return Response.json({ error: "Missing or insufficient permissions." }, { status: 403 })
+  }
+
   try {
     let settings = await db.siteSettings.findUnique({
       where: { id: "site_settings" }
@@ -33,15 +39,10 @@ export async function GET() {
   }
 }
 
-function isAuthorized(req: NextRequest) {
-  const auth = req.headers.get("authorization") || ""
-  const token = auth.replace("Bearer ", "").trim()
-  return process.env.ADMIN_TOKEN && token === process.env.ADMIN_TOKEN
-}
-
 export async function PUT(req: NextRequest) {
-  if (!isAuthorized(req)) {
-    return Response.json({ error: "Unauthorized" }, { status: 401 })
+  const isAdminUser = await isAdmin(req.headers.get("authorization"))
+  if (!isAdminUser) {
+    return Response.json({ error: "Missing or insufficient permissions." }, { status: 403 })
   }
 
   try {

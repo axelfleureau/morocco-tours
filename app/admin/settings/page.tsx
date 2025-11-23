@@ -1,8 +1,7 @@
 "use client"
 
 import { useState, useEffect } from 'react'
-import { doc, getDoc, setDoc } from 'firebase/firestore'
-import { db, auth } from '@/lib/firebase'
+import { auth } from '@/lib/firebase'
 import { Save, Loader2, Globe, Mail, Palette, FileText } from 'lucide-react'
 import { useNotifications } from '@/components/NotificationSystem'
 import { SiteSettings, DEFAULT_SITE_SETTINGS } from '@/lib/site-settings-schema'
@@ -20,15 +19,23 @@ export default function AdminSettingsPage() {
 
   const loadSettings = async () => {
     try {
-      const docRef = doc(db, 'site_settings', 'site_settings')
-      const docSnap = await getDoc(docRef)
-      
-      if (docSnap.exists()) {
-        setSettings(docSnap.data() as SiteSettings)
-      } else {
-        await setDoc(docRef, DEFAULT_SITE_SETTINGS)
-        setSettings(DEFAULT_SITE_SETTINGS)
+      const currentUser = auth.currentUser
+      if (!currentUser) {
+        showError('Errore', 'Devi essere autenticato')
+        setLoading(false)
+        return
       }
+
+      const token = await currentUser.getIdToken()
+      const res = await fetch('/api/site-settings', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      })
+      
+      if (!res.ok) throw new Error('Failed to fetch settings')
+      const data = await res.json()
+      setSettings(data)
     } catch (error) {
       console.error('Error loading settings:', error)
       showError('Errore Caricamento', 'Impossibile caricare le impostazioni del sito')
@@ -46,13 +53,24 @@ export default function AdminSettingsPage() {
 
     setSaving(true)
     try {
+      const token = await currentUser.getIdToken()
       const dataToSave = {
         ...settings,
         updatedAt: new Date().toISOString(),
         updatedBy: currentUser.uid
       }
 
-      await setDoc(doc(db, 'site_settings', 'site_settings'), dataToSave)
+      const res = await fetch('/api/site-settings', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(dataToSave)
+      })
+
+      if (!res.ok) throw new Error('Failed to save settings')
+      
       showSuccess('Salvato', 'Impostazioni del sito aggiornate con successo')
       setSettings(dataToSave)
     } catch (error) {
