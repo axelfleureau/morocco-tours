@@ -26,7 +26,7 @@ import PublishBanner from "@/components/admin/PublishBanner"
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter()
   const pathname = usePathname()
-  const { user, loading, isAdmin } = useAuth()
+  const { user, loading, isAdmin, signOut } = useAuth()
   const { theme, setTheme } = useTheme()
   
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
@@ -52,7 +52,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   const handleLogout = async () => {
     try {
-      await signOut(auth)
+      await signOut()
       router.push("/admin/login")
     } catch (error) {
       console.error("Logout error:", error)
