@@ -18,7 +18,7 @@ import SharedCollections from '@/components/dashboard/SharedCollections';
 import FriendNotifications from '@/components/dashboard/FriendNotifications';
 
 function UserDashboardContent() {
-  const { user, userProfile, signOut, isAdmin } = useAuth();
+  const { user, userProfile, signOut, isAdmin, loading } = useAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
   const [activeTab, setActiveTab] = useState("overview");
@@ -26,10 +26,23 @@ function UserDashboardContent() {
 
   // Redirect admin users to the unified /admin dashboard
   useEffect(() => {
-    if (isAdmin) {
+    // Only redirect after auth loading is complete
+    if (!loading && isAdmin) {
       router.replace('/admin');
     }
-  }, [isAdmin, router]);
+  }, [isAdmin, loading, router]);
+
+  // Show loading state while checking admin status
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <div className="text-center">
+          <div className="w-8 h-8 border-4 border-orange-500 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+          <p className="text-muted-foreground">Caricamento dashboard...</p>
+        </div>
+      </div>
+    );
+  }
 
   // Read tab from URL query params on mount
   useEffect(() => {

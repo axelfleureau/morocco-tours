@@ -65,12 +65,13 @@ export function BookingForm({ contentItem, open, onClose }: BookingFormProps) {
         body: JSON.stringify({
           bookingType: contentItem.type,
           itemId: contentItem.id,
-          startDate: dateRange.from,
-          endDate: dateRange.to || dateRange.from,
+          startDate: dateRange.from ? dateRange.from.toISOString() : null,
+          endDate: dateRange.to ? dateRange.to.toISOString() : (dateRange.from ? dateRange.from.toISOString() : null),
           travelers: formData.travelers,
           customerInfo: formData.customerInfo,
           notes: formData.notes,
-          totalPrice: contentItem.price ? contentItem.price * formData.travelers : 0
+          totalPrice: contentItem.price ? contentItem.price * formData.travelers : 0,
+          currency: 'EUR'
         })
       })
       
