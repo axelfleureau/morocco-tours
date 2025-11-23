@@ -146,3 +146,139 @@ export async function POST(req: NextRequest) {
     )
   }
 }
+
+export async function PUT(req: NextRequest) {
+  const isAdminUser = await isAdmin(req.headers.get("authorization"))
+  if (!isAdminUser) {
+    return Response.json({ error: "Missing or insufficient permissions." }, { status: 403 })
+  }
+
+  try {
+    const url = new URL(req.url)
+    const id = url.pathname.split("/").pop()
+
+    if (!id) {
+      return Response.json(
+        { error: "Content ID is required" },
+        { status: 400 }
+      )
+    }
+
+    const body = await req.json()
+    const { type, title, slug, ...rest } = body
+
+    if (!type) {
+      return Response.json(
+        { error: "type is required" },
+        { status: 400 }
+      )
+    }
+
+    if (!isValidContentType(type)) {
+      return Response.json(
+        { error: `Invalid type. Must be one of: ${VALID_CONTENT_TYPES.join(", ")}` },
+        { status: 400 }
+      )
+    }
+
+    if (!title || !slug) {
+      return Response.json(
+        { error: "title and slug are required" },
+        { status: 400 }
+      )
+    }
+
+    // Check if slug is being changed to an existing one
+    const existingItem = await db.contentItem.findUnique({
+      where: { slug }
+    })
+
+    if (existingItem && existingItem.id !== id) {
+      return Response.json(
+        { error: "A content item with this slug already exists" },
+        { status: 400 }
+      )
+    }
+
+    const item = await db.contentItem.update({
+      where: { id },
+      data: {
+        type,
+        title,
+        slug,
+        ...rest
+      }
+    })
+
+    revalidateTag("content")
+    revalidateTag(`content-${type}`)
+
+    return Response.json(item, { status: 200 })
+  } catch (error: any) {
+    console.error("Error updating content:", error)
+    if (error.code === "P2025") {
+      return Response.json(
+        { error: "Content not found" },
+        { status: 404 }
+      )
+    }
+    return Response.json(
+      { error: "Failed to update content" },
+      { status: 500 }
+    )
+  }
+}
+
+export async function DELETE(req: NextRequest) {
+  const isAdminUser = await isAdmin(req.headers.get("authorization"))
+  if (!isAdminUser) {
+    return Response.json({ error: "Missing or insufficient permissions." }, { status: 403 })
+  }
+
+  try {
+    const url = new URL(req.url)
+    const id = url.pathname.split("/").pop()
+
+    if (!id) {
+      return Response.json(
+        { error: "Content ID is required" },
+        { status: 400 }
+      )
+    }
+
+    const item = await db.contentItem.findUnique({
+      where: { id }
+    })
+
+    if (!item) {
+      return Response.json(
+        { error: "Content not found" },
+        { status: 404 }
+      )
+    }
+
+    await db.contentItem.delete({
+      where: { id }
+    })
+
+    revalidateTag("content")
+    revalidateTag(`content-${item.type}`)
+
+    return Response.json(
+      { message: "Content deleted successfully" },
+      { status: 200 }
+    )
+  } catch (error: any) {
+    console.error("Error deleting content:", error)
+    if (error.code === "P2025") {
+      return Response.json(
+        { error: "Content not found" },
+        { status: 404 }
+      )
+    }
+    return Response.json(
+      { error: "Failed to delete content" },
+      { status: 500 }
+    )
+  }
+}
