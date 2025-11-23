@@ -3,8 +3,7 @@
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { signInWithEmailAndPassword } from "firebase/auth"
-import { doc, getDoc } from "firebase/firestore"
-import { auth, db } from "@/lib/firebase"
+import { auth } from "@/lib/firebase"
 import { useAuth } from "@/context/AuthContext"
 import { Lock, Mail, AlertCircle, LogIn } from "lucide-react"
 
@@ -25,9 +24,20 @@ export default function AdminLoginPage() {
 
   const checkAdminAccess = async (uid: string) => {
     try {
-      const adminDoc = await getDoc(doc(db, "adminUsers", uid))
+      // Get the user's ID token to verify admin access via API
+      const idToken = await user?.getIdToken()
       
-      if (adminDoc.exists() && adminDoc.data()?.active) {
+      const response = await fetch("/api/auth/check-admin", {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${idToken}`,
+          "Content-Type": "application/json",
+        },
+      })
+
+      const data = await response.json()
+
+      if (response.ok && data.isAdmin) {
         router.push("/admin")
       } else {
         setError("Accesso negato: non sei un amministratore autorizzato")
@@ -44,20 +54,21 @@ export default function AdminLoginPage() {
 
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password)
+      const idToken = await userCredential.user.getIdToken()
       
-      const adminDoc = await getDoc(doc(db, "adminUsers", userCredential.user.uid))
-      
-      if (!adminDoc.exists()) {
-        setError("Accesso negato: account non autorizzato come amministratore")
-        await auth.signOut()
-        setIsLoading(false)
-        return
-      }
+      // Verify admin access via PostgreSQL
+      const response = await fetch("/api/auth/check-admin", {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${idToken}`,
+          "Content-Type": "application/json",
+        },
+      })
 
-      const adminData = adminDoc.data()
+      const data = await response.json()
       
-      if (!adminData.active) {
-        setError("Accesso negato: account amministratore disattivato")
+      if (!response.ok || !data.isAdmin) {
+        setError("Accesso negato: account non autorizzato come amministratore")
         await auth.signOut()
         setIsLoading(false)
         return
