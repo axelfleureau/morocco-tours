@@ -131,14 +131,28 @@ export function ContentModal({ open, onClose, type, item, onSuccess }: ContentMo
     
     try {
       if (!user) {
+        console.error('[CONTENT-MODAL] No user found')
         toast.error('You must be logged in to perform this action')
+        setLoading(false)
         return
       }
 
-      const token = await user.getIdToken()
+      console.log('[CONTENT-MODAL] Getting ID token for user:', user.uid)
+      const token = await user.getIdToken(true) // Force refresh
+      
+      if (!token) {
+        console.error('[CONTENT-MODAL] No token received')
+        toast.error('Failed to get authentication token')
+        setLoading(false)
+        return
+      }
+      
+      console.log('[CONTENT-MODAL] Token received (first 20 chars):', token.substring(0, 20) + '...')
       
       const url = item ? `/api/content/${item.id}` : '/api/content'
       const method = item ? 'PUT' : 'POST'
+      
+      console.log('[CONTENT-MODAL] Sending request:', { method, url, title: formData.title })
       
       const response = await fetch(url, {
         method,
@@ -152,16 +166,21 @@ export function ContentModal({ open, onClose, type, item, onSuccess }: ContentMo
         })
       })
       
+      console.log('[CONTENT-MODAL] Response status:', response.status)
+      
       const data = await response.json()
       
+      console.log('[CONTENT-MODAL] Response data:', data)
+      
       if (!response.ok) {
-        throw new Error(data.error || 'Failed to save content')
+        console.error('[CONTENT-MODAL] Request failed:', data)
+        throw new Error(data.error || `Request failed with status ${response.status}`)
       }
       
       toast.success(item ? 'Content updated successfully' : 'Content created successfully')
       onSuccess()
     } catch (error: any) {
-      console.error('Error saving content:', error)
+      console.error('[CONTENT-MODAL] Error saving content:', error)
       toast.error(error.message || 'Failed to save content')
     } finally {
       setLoading(false)

@@ -10,9 +10,16 @@ export async function PUT(
   req: NextRequest,
   { params }: { params: { id: string } }
 ) {
+  console.log('[PUT-CONTENT-ID] Request received for ID:', params.id)
+  console.log('[PUT-CONTENT-ID] Auth header:', req.headers.get("authorization") ? "Present" : "Missing")
+  
   const isAdminUser = await isAdmin(req.headers.get("authorization"))
+  
+  console.log('[PUT-CONTENT-ID] isAdmin result:', isAdminUser)
+  
   if (!isAdminUser) {
-    return Response.json({ error: "Unauthorized" }, { status: 401 })
+    console.error('[PUT-CONTENT-ID] Admin check failed, returning 403')
+    return Response.json({ error: "Missing or insufficient permissions." }, { status: 403 })
   }
 
   try {
@@ -78,9 +85,15 @@ export async function DELETE(
   req: NextRequest,
   { params }: { params: { id: string } }
 ) {
+  console.log('[DELETE-CONTENT-ID] Request received for ID:', params.id)
+  
   const isAdminUser = await isAdmin(req.headers.get("authorization"))
+  
+  console.log('[DELETE-CONTENT-ID] isAdmin result:', isAdminUser)
+  
   if (!isAdminUser) {
-    return Response.json({ error: "Unauthorized" }, { status: 401 })
+    console.error('[DELETE-CONTENT-ID] Admin check failed, returning 403')
+    return Response.json({ error: "Missing or insufficient permissions." }, { status: 403 })
   }
 
   try {
