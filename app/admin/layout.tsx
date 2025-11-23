@@ -3,8 +3,6 @@
 import { useEffect, useState } from "react"
 import { useRouter, usePathname } from "next/navigation"
 import { useAuth } from "@/context/AuthContext"
-import { signOut } from "firebase/auth"
-import { auth } from "@/lib/firebase"
 import {
   LayoutDashboard,
   Compass,
@@ -28,10 +26,9 @@ import PublishBanner from "@/components/admin/PublishBanner"
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter()
   const pathname = usePathname()
-  const { user, loading } = useAuth()
+  const { user, loading, isAdmin } = useAuth()
   const { theme, setTheme } = useTheme()
   
-  const [isAuthorized, setIsAuthorized] = useState(false)
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
   const [mounted, setMounted] = useState(false)
 
@@ -42,42 +39,16 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   useEffect(() => {
     if (pathname === "/admin/login") return
     
-    if (!loading && !user) {
-      router.push("/admin/login")
-    } else if (user) {
-      checkAdminAccess()
-    }
-  }, [user, loading, pathname])
-
-  const checkAdminAccess = async () => {
-    if (!user) return
-
-    try {
-      const idToken = await user.getIdToken()
-      
-      const response = await fetch("/api/auth/check-admin", {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${idToken}`,
-          "Content-Type": "application/json",
-        },
-      })
-
-      const data = await response.json()
-      
-      if (!response.ok || !data.isAdmin) {
-        await signOut(auth)
+    // Check auth/admin status after loading completes
+    if (!loading) {
+      if (!user) {
         router.push("/admin/login")
-        return
+      } else if (!isAdmin) {
+        // User is not admin, redirect to home
+        router.push("/")
       }
-
-      setIsAuthorized(true)
-    } catch (error) {
-      console.error("Error checking admin access:", error)
-      await signOut(auth)
-      router.push("/admin/login")
     }
-  }
+  }, [user, isAdmin, loading, pathname, router])
 
   const handleLogout = async () => {
     try {
@@ -92,7 +63,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     return children
   }
 
-  if (loading || !isAuthorized) {
+  // Show loading while checking authentication
+  if (loading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
@@ -101,6 +73,11 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         </div>
       </div>
     )
+  }
+
+  // Don't render if user is not admin (will redirect via useEffect)
+  if (!user || !isAdmin) {
+    return null
   }
 
   const navItems = [
