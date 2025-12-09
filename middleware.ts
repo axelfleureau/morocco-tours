@@ -5,7 +5,7 @@ import type { NextRequest } from 'next/request';
 // In a production environment, implement proper Firebase session cookie validation.
 // See: https://firebase.google.com/docs/auth/admin/manage-cookies
 
-export function middleware(request: NextRequest) {
+export function middleware(request: NextRequest) { 
   const { pathname } = request.nextUrl;
   
   // For now, just pass through all requests
