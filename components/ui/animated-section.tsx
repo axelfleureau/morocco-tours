@@ -1,7 +1,7 @@
 "use client"
 
 import { useRef, useEffect, ReactNode } from 'react'
-import { motion, useInView, useAnimation, Variants } from 'framer-motion'
+import { motion, useInView, useAnimation, Variants, useReducedMotion as useFramerReducedMotion } from 'framer-motion'
 import { cn } from '@/lib/utils'
 
 interface AnimatedSectionProps {
@@ -53,6 +53,7 @@ export function AnimatedSection({
   const ref = useRef(null)
   const isInView = useInView(ref, { once, amount: threshold })
   const controls = useAnimation()
+  const prefersReducedMotion = useFramerReducedMotion()
 
   useEffect(() => {
     if (isInView) {
@@ -61,6 +62,10 @@ export function AnimatedSection({
       controls.start('hidden')
     }
   }, [isInView, controls, once])
+
+  if (prefersReducedMotion) {
+    return <div className={cn(className)}>{children}</div>
+  }
 
   return (
     <motion.div
@@ -95,6 +100,11 @@ export function StaggerContainer({
 }: StaggerContainerProps) {
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true, amount: 0.2 })
+  const prefersReducedMotion = useFramerReducedMotion()
+
+  if (prefersReducedMotion) {
+    return <div className={cn(className)}>{children}</div>
+  }
 
   return (
     <motion.div
@@ -124,6 +134,12 @@ export function StaggerItem({
   children: ReactNode
   className?: string
 }) {
+  const prefersReducedMotion = useFramerReducedMotion()
+
+  if (prefersReducedMotion) {
+    return <div className={cn(className)}>{children}</div>
+  }
+
   return (
     <motion.div
       variants={{

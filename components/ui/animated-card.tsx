@@ -1,7 +1,7 @@
 "use client"
 
 import { ReactNode, useState } from 'react'
-import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion'
+import { motion, useMotionValue, useSpring, useTransform, useReducedMotion } from 'framer-motion'
 import { cn } from '@/lib/utils'
 
 interface AnimatedCardProps {
@@ -24,6 +24,7 @@ export function AnimatedCard({
   glowColor = 'rgba(249, 115, 22, 0.3)'
 }: AnimatedCardProps) {
   const [isHovered, setIsHovered] = useState(false)
+  const prefersReducedMotion = useReducedMotion()
 
   const x = useMotionValue(0)
   const y = useMotionValue(0)
@@ -35,7 +36,7 @@ export function AnimatedCard({
   const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], ['-7.5deg', '7.5deg'])
 
   const handleMouseMove = (event: React.MouseEvent<HTMLDivElement>) => {
-    if (!tiltEnabled) return
+    if (!tiltEnabled || prefersReducedMotion) return
 
     const rect = event.currentTarget.getBoundingClientRect()
     const width = rect.width
@@ -53,6 +54,14 @@ export function AnimatedCard({
     setIsHovered(false)
     x.set(0)
     y.set(0)
+  }
+
+  if (prefersReducedMotion) {
+    return (
+      <div className={cn('relative rounded-xl', className)}>
+        {children}
+      </div>
+    )
   }
 
   return (
@@ -97,13 +106,19 @@ export function SpotlightCard({
 }: SpotlightCardProps) {
   const [position, setPosition] = useState({ x: 0, y: 0 })
   const [isHovered, setIsHovered] = useState(false)
+  const prefersReducedMotion = useReducedMotion()
 
   const handleMouseMove = (event: React.MouseEvent<HTMLDivElement>) => {
+    if (prefersReducedMotion) return
     const rect = event.currentTarget.getBoundingClientRect()
     setPosition({
       x: event.clientX - rect.left,
       y: event.clientY - rect.top
     })
+  }
+
+  if (prefersReducedMotion) {
+    return <div className={cn('relative overflow-hidden rounded-xl', className)}>{children}</div>
   }
 
   return (
@@ -140,6 +155,12 @@ export function FloatingCard({
   className,
   floatIntensity = 10
 }: FloatingCardProps) {
+  const prefersReducedMotion = useReducedMotion()
+
+  if (prefersReducedMotion) {
+    return <div className={cn(className)}>{children}</div>
+  }
+
   return (
     <motion.div
       animate={{
@@ -170,6 +191,22 @@ export function GlassCard({
   blur = 10,
   opacity = 0.1
 }: GlassCardProps) {
+  const prefersReducedMotion = useReducedMotion()
+
+  if (prefersReducedMotion) {
+    return (
+      <div
+        className={cn('rounded-xl border border-white/20', className)}
+        style={{
+          backdropFilter: `blur(${blur}px)`,
+          backgroundColor: `rgba(255, 255, 255, ${opacity})`
+        }}
+      >
+        {children}
+      </div>
+    )
+  }
+
   return (
     <motion.div
       whileHover={{ scale: 1.02, y: -4 }}

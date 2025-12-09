@@ -1,7 +1,7 @@
 "use client"
 
 import { useRef, useEffect, useState } from 'react'
-import { motion, useInView, Variants } from 'framer-motion'
+import { motion, useInView, Variants, useReducedMotion } from 'framer-motion'
 import { cn } from '@/lib/utils'
 
 interface AnimatedTextProps {
@@ -23,6 +23,7 @@ export function AnimatedText({
 }: AnimatedTextProps) {
   const ref = useRef(null)
   const isInView = useInView(ref, { once, amount: 0.5 })
+  const prefersReducedMotion = useReducedMotion()
   const words = text.split(' ')
 
   const containerVariants: Variants = {
@@ -45,6 +46,10 @@ export function AnimatedText({
         ease: [0.25, 0.46, 0.45, 0.94]
       }
     }
+  }
+
+  if (prefersReducedMotion) {
+    return <Tag className={cn(className)}>{text}</Tag>
   }
 
   if (animation === 'gradient') {
@@ -129,9 +134,16 @@ export function TypewriterText({
   const [showCursor, setShowCursor] = useState(cursor)
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true, amount: 0.5 })
+  const prefersReducedMotion = useReducedMotion()
 
   useEffect(() => {
-    if (!isInView) return
+    if (!isInView || prefersReducedMotion) {
+      if (prefersReducedMotion) {
+        setDisplayedText(text)
+        setShowCursor(false)
+      }
+      return
+    }
 
     let currentIndex = 0
     const timer = setTimeout(() => {
@@ -149,12 +161,12 @@ export function TypewriterText({
     }, delay * 1000)
 
     return () => clearTimeout(timer)
-  }, [isInView, text, delay, speed])
+  }, [isInView, text, delay, speed, prefersReducedMotion])
 
   return (
     <Tag ref={ref} className={cn(className)}>
       {displayedText}
-      {showCursor && (
+      {showCursor && !prefersReducedMotion && (
         <span className="animate-pulse ml-0.5 inline-block w-0.5 h-[1em] bg-current align-middle" />
       )}
     </Tag>
@@ -181,12 +193,17 @@ export function CountUp({
   const [count, setCount] = useState(0)
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true, amount: 0.5 })
+  const prefersReducedMotion = useReducedMotion()
 
   useEffect(() => {
     if (!isInView) return
 
+    if (prefersReducedMotion) {
+      setCount(end)
+      return
+    }
+
     const startTime = Date.now()
-    const endTime = startTime + duration * 1000
 
     const updateCount = () => {
       const now = Date.now()
@@ -202,7 +219,7 @@ export function CountUp({
     }
 
     requestAnimationFrame(updateCount)
-  }, [isInView, end, duration])
+  }, [isInView, end, duration, prefersReducedMotion])
 
   return (
     <span ref={ref} className={cn(className)}>

@@ -1,7 +1,7 @@
 "use client"
 
-import { useRef, useEffect, ReactNode } from 'react'
-import { motion, useScroll, useTransform, useSpring, useInView } from 'framer-motion'
+import { useRef, ReactNode } from 'react'
+import { motion, useScroll, useTransform, useSpring, useInView, useReducedMotion } from 'framer-motion'
 import { cn } from '@/lib/utils'
 
 interface ParallaxSectionProps {
@@ -18,6 +18,7 @@ export function ParallaxSection({
   direction = 'up'
 }: ParallaxSectionProps) {
   const ref = useRef(null)
+  const prefersReducedMotion = useReducedMotion()
   const { scrollYProgress } = useScroll({
     target: ref,
     offset: ['start end', 'end start']
@@ -26,6 +27,10 @@ export function ParallaxSection({
   const factor = direction === 'up' ? -1 : 1
   const y = useTransform(scrollYProgress, [0, 1], [0, 100 * speed * factor])
   const smoothY = useSpring(y, { stiffness: 100, damping: 30 })
+
+  if (prefersReducedMotion) {
+    return <div ref={ref} className={cn(className)}>{children}</div>
+  }
 
   return (
     <motion.div ref={ref} style={{ y: smoothY }} className={cn(className)}>
@@ -42,6 +47,9 @@ interface ScrollProgressProps {
 export function ScrollProgress({ className, color = 'var(--primary)' }: ScrollProgressProps) {
   const { scrollYProgress } = useScroll()
   const scaleX = useSpring(scrollYProgress, { stiffness: 100, damping: 30 })
+  const prefersReducedMotion = useReducedMotion()
+
+  if (prefersReducedMotion) return null
 
   return (
     <motion.div
@@ -66,6 +74,11 @@ export function RevealOnScroll({
 }: RevealOnScrollProps) {
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true, amount: 0.3 })
+  const prefersReducedMotion = useReducedMotion()
+
+  if (prefersReducedMotion) {
+    return <div style={{ width }} className={cn(className)}>{children}</div>
+  }
 
   return (
     <div ref={ref} style={{ width }} className={cn('relative overflow-hidden', className)}>
@@ -94,6 +107,7 @@ interface ScaleOnScrollProps {
 
 export function ScaleOnScroll({ children, className }: ScaleOnScrollProps) {
   const ref = useRef(null)
+  const prefersReducedMotion = useReducedMotion()
   const { scrollYProgress } = useScroll({
     target: ref,
     offset: ['start end', 'end start']
@@ -101,6 +115,10 @@ export function ScaleOnScroll({ children, className }: ScaleOnScrollProps) {
 
   const scale = useTransform(scrollYProgress, [0, 0.5, 1], [0.8, 1, 0.8])
   const opacity = useTransform(scrollYProgress, [0, 0.3, 0.7, 1], [0, 1, 1, 0])
+
+  if (prefersReducedMotion) {
+    return <div ref={ref} className={cn(className)}>{children}</div>
+  }
 
   return (
     <motion.div
@@ -147,6 +165,11 @@ interface FadeInWhenVisibleProps {
 export function FadeInWhenVisible({ children, className, delay = 0 }: FadeInWhenVisibleProps) {
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true, amount: 0.3 })
+  const prefersReducedMotion = useReducedMotion()
+
+  if (prefersReducedMotion) {
+    return <div className={cn(className)}>{children}</div>
+  }
 
   return (
     <motion.div
@@ -170,6 +193,11 @@ interface BlurInProps {
 export function BlurIn({ children, className, delay = 0 }: BlurInProps) {
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true, amount: 0.3 })
+  const prefersReducedMotion = useReducedMotion()
+
+  if (prefersReducedMotion) {
+    return <div className={cn(className)}>{children}</div>
+  }
 
   return (
     <motion.div
