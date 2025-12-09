@@ -7,6 +7,9 @@ import { useContent } from "@/hooks/useContent"
 import { LoadingSkeleton } from "@/components/ui/loading-skeleton"
 import { ErrorMessage } from "@/components/ui/error-message"
 import { MapPin, Calendar, Users } from "lucide-react"
+import { AnimatedSection, StaggerContainer, StaggerItem } from "@/components/ui/animated-section"
+import { AnimatedCard } from "@/components/ui/animated-card"
+import { FadeInWhenVisible } from "@/components/ui/scroll-reveal"
 
 export default function ViaggiPage() {
   const { items: travels, loading, error, refetch } = useContent({ type: 'travel' })
@@ -61,42 +64,47 @@ export default function ViaggiPage() {
       {/* Hero Section */}
       <section className="relative py-16 lg:py-24 bg-gradient-to-b from-orange-50 to-white dark:from-gray-900 dark:to-gray-950">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <header className="text-center max-w-3xl mx-auto mb-12">
-            <h1 className="text-4xl lg:text-5xl font-bold mb-6 text-gray-900 dark:text-white">
-              I Nostri Viaggi in Marocco
-            </h1>
-            <p className="text-lg lg:text-xl text-gray-600 dark:text-gray-300">
-              Esplora le città imperiali, il deserto del Sahara e le meraviglie del Marocco con i nostri tour guidati
-            </p>
-          </header>
+          <FadeInWhenVisible>
+            <header className="text-center max-w-3xl mx-auto mb-12">
+              <h1 className="text-4xl lg:text-5xl font-bold mb-6 text-gray-900 dark:text-white">
+                I Nostri Viaggi in Marocco
+              </h1>
+              <p className="text-lg lg:text-xl text-gray-600 dark:text-gray-300">
+                Esplora le città imperiali, il deserto del Sahara e le meraviglie del Marocco con i nostri tour guidati
+              </p>
+            </header>
+          </FadeInWhenVisible>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {travels.map((travel) => (
-              <TravelCard
-                key={travel.id}
-                id={travel.id}
-                image={travel.image || "/placeholder.svg"}
-                title={travel.title}
-                description={travel.description || ""}
-                price={travel.price || undefined}
-                duration={travel.duration || undefined}
-                location={travel.category || undefined}
-                badges={travel.featured ? [{ label: "In Evidenza", variant: "featured" as const }] : []}
-                ctas={[
-                  {
-                    label: "Scopri i dettagli",
-                    href: `/viaggi/${travel.slug}`,
-                    variant: "secondary" as const
-                  },
-                  {
-                    label: "Prenota ora",
-                    href: "/contatti",
-                    variant: "primary" as const
-                  }
-                ]}
-              />
+              <StaggerItem key={travel.id}>
+                <AnimatedCard hoverScale={1.02} hoverY={-8}>
+                  <TravelCard
+                    id={travel.id}
+                    image={travel.image || "/placeholder.svg"}
+                    title={travel.title}
+                    description={travel.description || ""}
+                    price={travel.price || undefined}
+                    duration={travel.duration || undefined}
+                    location={travel.category || undefined}
+                    badges={travel.featured ? [{ label: "In Evidenza", variant: "featured" as const }] : []}
+                    ctas={[
+                      {
+                        label: "Scopri i dettagli",
+                        href: `/viaggi/${travel.slug}`,
+                        variant: "secondary" as const
+                      },
+                      {
+                        label: "Prenota ora",
+                        href: "/contatti",
+                        variant: "primary" as const
+                      }
+                    ]}
+                  />
+                </AnimatedCard>
+              </StaggerItem>
             ))}
-          </div>
+          </StaggerContainer>
 
           {travels.length === 0 && (
             <div className="text-center py-12">
@@ -111,16 +119,18 @@ export default function ViaggiPage() {
       {/* Categories Section */}
       <section className="py-16 lg:py-24 bg-white dark:bg-gray-950">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-4">
-              Viaggi per Categoria
-            </h2>
-            <p className="text-lg text-gray-600 dark:text-gray-300">
-              Scegli il tipo di avventura che fa per te
-            </p>
-          </div>
+          <FadeInWhenVisible>
+            <div className="text-center mb-12">
+              <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+                Viaggi per Categoria
+              </h2>
+              <p className="text-lg text-gray-600 dark:text-gray-300">
+                Scegli il tipo di avventura che fa per te
+              </p>
+            </div>
+          </FadeInWhenVisible>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <StaggerContainer className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             {[
               {
                 title: "Città Imperiali",
@@ -147,35 +157,40 @@ export default function ViaggiPage() {
                 icon: "⛰️"
               }
             ].map((category, idx) => (
-              <Link
-                key={idx}
-                href={category.href}
-                className="group p-6 bg-gradient-to-br from-orange-50 to-orange-100 dark:from-gray-800 dark:to-gray-700 rounded-2xl hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
-              >
-                <div className="text-5xl mb-4">{category.icon}</div>
-                <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2 group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors">
-                  {category.title}
-                </h3>
-                <p className="text-gray-600 dark:text-gray-300">{category.description}</p>
-              </Link>
+              <StaggerItem key={idx}>
+                <AnimatedCard hoverScale={1.03} hoverY={-6}>
+                  <Link
+                    href={category.href}
+                    className="block p-6 bg-gradient-to-br from-orange-50 to-orange-100 dark:from-gray-800 dark:to-gray-700 rounded-2xl h-full"
+                  >
+                    <div className="text-5xl mb-4">{category.icon}</div>
+                    <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2 group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors">
+                      {category.title}
+                    </h3>
+                    <p className="text-gray-600 dark:text-gray-300">{category.description}</p>
+                  </Link>
+                </AnimatedCard>
+              </StaggerItem>
             ))}
-          </div>
+          </StaggerContainer>
         </div>
       </section>
 
       {/* Why Choose Us */}
       <section className="py-16 lg:py-24 bg-gray-50 dark:bg-gray-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-4">
-              Perché Scegliere i Nostri Tour
-            </h2>
-            <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-              Ogni viaggio è curato nei minimi dettagli per garantirti un'esperienza autentica e indimenticabile
-            </p>
-          </div>
+          <FadeInWhenVisible>
+            <div className="text-center mb-12">
+              <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+                Perché Scegliere i Nostri Tour
+              </h2>
+              <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+                Ogni viaggio è curato nei minimi dettagli per garantirti un'esperienza autentica e indimenticabile
+              </p>
+            </div>
+          </FadeInWhenVisible>
 
-          <div className="grid md:grid-cols-3 gap-8">
+          <StaggerContainer className="grid md:grid-cols-3 gap-8">
             {[
               {
                 icon: MapPin,
@@ -193,15 +208,19 @@ export default function ViaggiPage() {
                 description: "Massimo 8 persone per garantire un'esperienza intima e personalizzata"
               }
             ].map((feature, idx) => (
-              <div key={idx} className="text-center p-6 bg-white dark:bg-gray-800 rounded-2xl shadow-lg">
-                <div className="inline-flex items-center justify-center w-16 h-16 bg-orange-100 dark:bg-orange-900/30 rounded-full mb-4">
-                  <feature.icon className="w-8 h-8 text-orange-600 dark:text-orange-400" />
-                </div>
-                <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3">{feature.title}</h3>
-                <p className="text-gray-600 dark:text-gray-300">{feature.description}</p>
-              </div>
+              <StaggerItem key={idx}>
+                <AnimatedCard hoverScale={1.03} hoverY={-6}>
+                  <div className="text-center p-6 bg-white dark:bg-gray-800 rounded-2xl shadow-lg h-full">
+                    <div className="inline-flex items-center justify-center w-16 h-16 bg-orange-100 dark:bg-orange-900/30 rounded-full mb-4">
+                      <feature.icon className="w-8 h-8 text-orange-600 dark:text-orange-400" />
+                    </div>
+                    <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3">{feature.title}</h3>
+                    <p className="text-gray-600 dark:text-gray-300">{feature.description}</p>
+                  </div>
+                </AnimatedCard>
+              </StaggerItem>
             ))}
-          </div>
+          </StaggerContainer>
         </div>
       </section>
 

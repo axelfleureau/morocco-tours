@@ -7,6 +7,9 @@ import { ExperienceCard } from "@/components/cards/ExperienceCard"
 import { useContent } from "@/hooks/useContent"
 import { LoadingSkeleton } from "@/components/ui/loading-skeleton"
 import { ErrorMessage } from "@/components/ui/error-message"
+import { AnimatedSection, StaggerContainer, StaggerItem } from "@/components/ui/animated-section"
+import { AnimatedCard } from "@/components/ui/animated-card"
+import { FadeInWhenVisible } from "@/components/ui/scroll-reveal"
 
 const iconMap: Record<string, any> = {
   'trekking': Mountain,
@@ -67,68 +70,75 @@ export default function EsperienzeIndexPage() {
       {/* Hero Section */}
       <section className="relative py-16 lg:py-24 bg-gradient-to-b from-orange-50 to-white dark:from-gray-900 dark:to-gray-950">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <header className="text-center max-w-3xl mx-auto mb-12">
-            <h1 className="text-4xl lg:text-5xl font-bold mb-6 text-gray-900 dark:text-white">
-              Esperienze Autentiche in Marocco
-            </h1>
-            <p className="text-lg lg:text-xl text-gray-600 dark:text-gray-300">
-              Scegli tra attività uniche per vivere il Marocco come un locale. Ogni esperienza è guidata da esperti
-              locali e progettata per offrirti momenti indimenticabili.
-            </p>
-          </header>
+          <FadeInWhenVisible>
+            <header className="text-center max-w-3xl mx-auto mb-12">
+              <h1 className="text-4xl lg:text-5xl font-bold mb-6 text-gray-900 dark:text-white">
+                Esperienze Autentiche in Marocco
+              </h1>
+              <p className="text-lg lg:text-xl text-gray-600 dark:text-gray-300">
+                Scegli tra attività uniche per vivere il Marocco come un locale. Ogni esperienza è guidata da esperti
+                locali e progettata per offrirti momenti indimenticabili.
+              </p>
+            </header>
+          </FadeInWhenVisible>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-10">
+          <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-10">
             {experiences.map((exp) => {
               const IconComponent = iconMap[exp.slug] || Mountain;
               
               return (
-                <ExperienceCard
-                  key={exp.id}
-                  id={exp.id || exp.slug}
-                  image={exp.image || "/placeholder.svg?height=400&width=600"}
-                  title={exp.title}
-                  description={exp.description || undefined}
-                  price={exp.price || undefined}
-                  duration={exp.duration || 'Varia'}
-                  quickInfo={[
-                    {
-                      icon: IconComponent,
-                      label: exp.category || 'Esperienza',
-                      value: exp.category || ''
-                    }
-                  ]}
-                  ctas={[
-                    { 
-                      label: 'Scopri i dettagli', 
-                      href: `/esperienze/${exp.slug}`, 
-                      variant: 'secondary' 
-                    },
-                    { 
-                      label: 'Prenota ora', 
-                      href: '/contatti', 
-                      variant: 'primary' 
-                    }
-                  ]}
-                />
+                <StaggerItem key={exp.id}>
+                  <AnimatedCard hoverScale={1.02} hoverY={-8}>
+                    <ExperienceCard
+                      id={exp.id || exp.slug}
+                      image={exp.image || "/placeholder.svg?height=400&width=600"}
+                      title={exp.title}
+                      description={exp.description || undefined}
+                      price={exp.price || undefined}
+                      duration={exp.duration || 'Varia'}
+                      quickInfo={[
+                        {
+                          icon: IconComponent,
+                          label: exp.category || 'Esperienza',
+                          value: exp.category || ''
+                        }
+                      ]}
+                      ctas={[
+                        { 
+                          label: 'Scopri i dettagli', 
+                          href: `/esperienze/${exp.slug}`, 
+                          variant: 'secondary' 
+                        },
+                        { 
+                          label: 'Prenota ora', 
+                          href: '/contatti', 
+                          variant: 'primary' 
+                        }
+                      ]}
+                    />
+                  </AnimatedCard>
+                </StaggerItem>
               );
             })}
-          </div>
+          </StaggerContainer>
         </div>
       </section>
 
       {/* Why Choose Our Experiences */}
       <section className="py-16 lg:py-24 bg-gray-50 dark:bg-gray-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-4">
-              Perché Scegliere le Nostre Esperienze
-            </h2>
-            <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-              Ogni esperienza è curata nei minimi dettagli per garantirti autenticità e sicurezza
-            </p>
-          </div>
+          <FadeInWhenVisible>
+            <div className="text-center mb-12">
+              <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+                Perché Scegliere le Nostre Esperienze
+              </h2>
+              <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+                Ogni esperienza è curata nei minimi dettagli per garantirti autenticità e sicurezza
+              </p>
+            </div>
+          </FadeInWhenVisible>
 
-          <div className="grid md:grid-cols-3 gap-8">
+          <StaggerContainer className="grid md:grid-cols-3 gap-8">
             {[
               {
                 title: "Guide Locali Esperte",
@@ -146,13 +156,17 @@ export default function EsperienzeIndexPage() {
                 icon: "📞",
               },
             ].map((feature, idx) => (
-              <div key={idx} className="text-center p-6 bg-white dark:bg-gray-800 rounded-2xl shadow-lg">
-                <div className="text-4xl mb-4">{feature.icon}</div>
-                <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3">{feature.title}</h3>
-                <p className="text-gray-600 dark:text-gray-300">{feature.description}</p>
-              </div>
+              <StaggerItem key={idx}>
+                <AnimatedCard hoverScale={1.03} hoverY={-6}>
+                  <div className="text-center p-6 bg-white dark:bg-gray-800 rounded-2xl shadow-lg h-full">
+                    <div className="text-4xl mb-4">{feature.icon}</div>
+                    <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3">{feature.title}</h3>
+                    <p className="text-gray-600 dark:text-gray-300">{feature.description}</p>
+                  </div>
+                </AnimatedCard>
+              </StaggerItem>
             ))}
-          </div>
+          </StaggerContainer>
         </div>
       </section>
 

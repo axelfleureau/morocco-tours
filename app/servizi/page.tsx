@@ -8,6 +8,9 @@ import { Car, Users, Shield, MapPin, Phone, Star, CheckCircle, Clock, UserCheck 
 import { getPublishedServices } from "@/lib/public-data"
 import { Service } from "@/lib/firestore-schema"
 import { ServiceCard } from "@/components/cards/ServiceCard"
+import { AnimatedSection, StaggerContainer, StaggerItem } from "@/components/ui/animated-section"
+import { AnimatedCard } from "@/components/ui/animated-card"
+import { FadeInWhenVisible } from "@/components/ui/scroll-reveal"
 
 const testimonials = [
   {
@@ -125,15 +128,17 @@ export default function ServiziPage() {
             </p>
           </div>
           
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+          <StaggerContainer className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
             {[...Array(8)].map((_, i) => (
-              <div key={i} className="bg-card rounded-2xl p-6 shadow-lg animate-pulse">
-                <div className="h-48 bg-gray-200 dark:bg-gray-700 rounded-xl mb-4"></div>
-                <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4 mb-2"></div>
-                <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/2"></div>
-              </div>
+              <StaggerItem key={i}>
+                <div className="bg-card rounded-2xl p-6 shadow-lg animate-pulse">
+                  <div className="h-48 bg-gray-200 dark:bg-gray-700 rounded-xl mb-4"></div>
+                  <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4 mb-2"></div>
+                  <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/2"></div>
+                </div>
+              </StaggerItem>
             ))}
-          </div>
+          </StaggerContainer>
         </div>
       </div>
     )
@@ -156,76 +161,84 @@ export default function ServiziPage() {
       {/* Hero Section */}
       <section className="relative py-20 overflow-hidden bg-gradient-to-b from-muted/50 to-background">
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <div className="flex justify-center mb-6">
-              <div className="p-4 bg-orange-100 dark:bg-orange-900/30 rounded-full">
-                <Users className="h-12 w-12 text-orange-600 dark:text-orange-400" />
+          <FadeInWhenVisible>
+            <div className="text-center">
+              <div className="flex justify-center mb-6">
+                <div className="p-4 bg-orange-100 dark:bg-orange-900/30 rounded-full">
+                  <Users className="h-12 w-12 text-orange-600 dark:text-orange-400" />
+                </div>
+              </div>
+              <h1 className="text-4xl md:text-6xl font-bold text-foreground mb-6">
+                I Nostri <span className="text-orange-600 dark:text-orange-400">Servizi</span>
+              </h1>
+              <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-8">
+                Servizi professionali per rendere il tuo viaggio in Marocco indimenticabile. Dalla pianificazione al
+                ritorno a casa, ci occupiamo di ogni dettaglio.
+              </p>
+              <div className="flex flex-wrap justify-center gap-4 text-sm text-muted-foreground">
+                <div className="flex items-center gap-2">
+                  <CheckCircle className="h-5 w-5 text-green-500" />
+                  <span>Servizi certificati</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <CheckCircle className="h-5 w-5 text-green-500" />
+                  <span>Assistenza 24/7</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <CheckCircle className="h-5 w-5 text-green-500" />
+                  <span>Prezzi trasparenti</span>
+                </div>
               </div>
             </div>
-            <h1 className="text-4xl md:text-6xl font-bold text-foreground mb-6">
-              I Nostri <span className="text-orange-600 dark:text-orange-400">Servizi</span>
-            </h1>
-            <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-8">
-              Servizi professionali per rendere il tuo viaggio in Marocco indimenticabile. Dalla pianificazione al
-              ritorno a casa, ci occupiamo di ogni dettaglio.
-            </p>
-            <div className="flex flex-wrap justify-center gap-4 text-sm text-muted-foreground">
-              <div className="flex items-center gap-2">
-                <CheckCircle className="h-5 w-5 text-green-500" />
-                <span>Servizi certificati</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <CheckCircle className="h-5 w-5 text-green-500" />
-                <span>Assistenza 24/7</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <CheckCircle className="h-5 w-5 text-green-500" />
-                <span>Prezzi trasparenti</span>
-              </div>
-            </div>
-          </div>
+          </FadeInWhenVisible>
         </div>
       </section>
 
       {/* Services Grid */}
       <section className="py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">Scegli il Servizio Perfetto</h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Ogni servizio è progettato per offrirti la massima comodità e sicurezza durante il tuo viaggio
-            </p>
-          </div>
+          <FadeInWhenVisible>
+            <div className="text-center mb-16">
+              <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">Scegli il Servizio Perfetto</h2>
+              <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+                Ogni servizio è progettato per offrirti la massima comodità e sicurezza durante il tuo viaggio
+              </p>
+            </div>
+          </FadeInWhenVisible>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+          <StaggerContainer className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
             {services.map((service) => {
               const Icon = getServiceIcon(service.category)
               
               return (
-                <ServiceCard
-                  key={service.id}
-                  id={service.id || service.slug || ''}
-                  title={service.name}
-                  description={service.description}
-                  icon={Icon}
-                  price={service.price}
-                  priceType={service.priceType as 'per_person' | 'per_day' | 'per_trip' | 'fixed'}
-                  locations={service.locations || []}
-                  badges={[
-                    { label: service.category, variant: 'default' },
-                    { label: service.type, variant: 'default' }
-                  ]}
-                  ctas={[
-                    { 
-                      label: 'Scopri di più', 
-                      href: `/servizi/${service.slug || service.id}`, 
-                      variant: 'primary' 
-                    }
-                  ]}
-                />
+                <StaggerItem key={service.id}>
+                  <AnimatedCard hoverScale={1.02} hoverY={-8}>
+                    <ServiceCard
+                      id={service.id || service.slug || ''}
+                      image={service.image || '/placeholder.svg'}
+                      title={service.name}
+                      description={service.description}
+                      icon={Icon}
+                      price={service.price}
+                      priceType={service.priceType as 'per_person' | 'per_day' | 'per_trip' | 'fixed'}
+                      locations={service.locations || []}
+                      badges={[
+                        { label: service.category, variant: 'default' },
+                        { label: service.type, variant: 'default' }
+                      ]}
+                      ctas={[
+                        { 
+                          label: 'Scopri di più', 
+                          href: `/servizi/${service.slug || service.id}`, 
+                          variant: 'primary' 
+                        }
+                      ]}
+                    />
+                  </AnimatedCard>
+                </StaggerItem>
               )
             })}
-          </div>
+          </StaggerContainer>
 
           {services.length === 0 && !loading && (
             <div className="text-center py-12">
@@ -240,57 +253,69 @@ export default function ServiziPage() {
       {/* Advantages */}
       <section className="py-20 bg-muted/50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">Perché Scegliere Morocco Dreams</h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              La nostra esperienza e dedizione fanno la differenza
-            </p>
-          </div>
+          <FadeInWhenVisible>
+            <div className="text-center mb-16">
+              <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">Perché Scegliere Morocco Dreams</h2>
+              <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+                La nostra esperienza e dedizione fanno la differenza
+              </p>
+            </div>
+          </FadeInWhenVisible>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <StaggerContainer className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             {advantages.map((advantage, index) => (
-              <div key={index} className="text-center group">
-                <div className="w-16 h-16 mx-auto mb-4 bg-orange-100 dark:bg-orange-900/30 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-200">
-                  <advantage.icon className="h-8 w-8 text-orange-600 dark:text-orange-400" />
-                </div>
-                <h3 className="text-lg font-semibold text-foreground mb-2">{advantage.title}</h3>
-                <p className="text-muted-foreground text-sm">{advantage.description}</p>
-              </div>
+              <StaggerItem key={index}>
+                <AnimatedCard hoverScale={1.05} hoverY={-6}>
+                  <div className="text-center group h-full">
+                    <div className="w-16 h-16 mx-auto mb-4 bg-orange-100 dark:bg-orange-900/30 rounded-full flex items-center justify-center">
+                      <advantage.icon className="h-8 w-8 text-orange-600 dark:text-orange-400" />
+                    </div>
+                    <h3 className="text-lg font-semibold text-foreground mb-2">{advantage.title}</h3>
+                    <p className="text-muted-foreground text-sm">{advantage.description}</p>
+                  </div>
+                </AnimatedCard>
+              </StaggerItem>
             ))}
-          </div>
+          </StaggerContainer>
         </div>
       </section>
 
       {/* Testimonials */}
       <section className="py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">Cosa Dicono i Nostri Clienti</h2>
-            <p className="text-lg text-muted-foreground">Recensioni autentiche sui nostri servizi</p>
-          </div>
+          <FadeInWhenVisible>
+            <div className="text-center mb-16">
+              <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">Cosa Dicono i Nostri Clienti</h2>
+              <p className="text-lg text-muted-foreground">Recensioni autentiche sui nostri servizi</p>
+            </div>
+          </FadeInWhenVisible>
 
-          <div className="grid md:grid-cols-3 gap-8">
+          <StaggerContainer className="grid md:grid-cols-3 gap-8">
             {testimonials.map((testimonial, index) => (
-              <Card key={index} className="hover:shadow-lg transition-shadow">
-                <CardContent className="p-6">
-                  <div className="flex items-center gap-1 mb-4">
-                    {[...Array(testimonial.rating)].map((_, i) => (
-                      <Star key={i} className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                    ))}
-                  </div>
+              <StaggerItem key={index}>
+                <AnimatedCard hoverScale={1.02} hoverY={-6}>
+                  <Card className="h-full">
+                    <CardContent className="p-6">
+                      <div className="flex items-center gap-1 mb-4">
+                        {[...Array(testimonial.rating)].map((_, i) => (
+                          <Star key={i} className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                        ))}
+                      </div>
 
-                  <p className="text-muted-foreground mb-4 italic">"{testimonial.comment}"</p>
+                      <p className="text-muted-foreground mb-4 italic">"{testimonial.comment}"</p>
 
-                  <div className="border-t pt-4">
-                    <p className="font-medium text-foreground">{testimonial.name}</p>
-                    <p className="text-sm text-muted-foreground">{testimonial.location}</p>
-                    <p className="text-sm text-orange-600 dark:text-orange-400">Servizio: {testimonial.service}</p>
-                    <p className="text-xs text-muted-foreground mt-1">{testimonial.date}</p>
-                  </div>
-                </CardContent>
-              </Card>
+                      <div className="border-t pt-4">
+                        <p className="font-medium text-foreground">{testimonial.name}</p>
+                        <p className="text-sm text-muted-foreground">{testimonial.location}</p>
+                        <p className="text-sm text-orange-600 dark:text-orange-400">Servizio: {testimonial.service}</p>
+                        <p className="text-xs text-muted-foreground mt-1">{testimonial.date}</p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </AnimatedCard>
+              </StaggerItem>
             ))}
-          </div>
+          </StaggerContainer>
         </div>
       </section>
 

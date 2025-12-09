@@ -8,6 +8,9 @@ import WishlistButton from "@/components/WishlistButton"
 import { useContent } from "@/hooks/useContent"
 import { LoadingSkeleton } from "@/components/ui/loading-skeleton"
 import { ErrorMessage } from "@/components/ui/error-message"
+import { AnimatedSection, StaggerContainer, StaggerItem } from "@/components/ui/animated-section"
+import { AnimatedCard } from "@/components/ui/animated-card"
+import { FadeInWhenVisible } from "@/components/ui/scroll-reveal"
 
 export default function BlogPage() {
   const { items: blogPosts, loading, error, refetch } = useContent({ type: 'blog' })
@@ -77,27 +80,29 @@ export default function BlogPage() {
         </div>
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-white">
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
-            Blog
-            <span className="block text-3xl md:text-4xl lg:text-5xl mt-2 bg-gradient-to-r from-indigo-300 to-purple-200 bg-clip-text text-transparent">
-              Morocco Dreams
-            </span>
-          </h1>
-          <p className="text-lg md:text-xl lg:text-2xl max-w-3xl mx-auto mb-8">
-            Storie, consigli e guide per scoprire il Marocco autentico attraverso gli occhi di chi lo vive ogni giorno
-          </p>
+          <FadeInWhenVisible>
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
+              Blog
+              <span className="block text-3xl md:text-4xl lg:text-5xl mt-2 bg-gradient-to-r from-indigo-300 to-purple-200 bg-clip-text text-transparent">
+                Morocco Dreams
+              </span>
+            </h1>
+            <p className="text-lg md:text-xl lg:text-2xl max-w-3xl mx-auto mb-8">
+              Storie, consigli e guide per scoprire il Marocco autentico attraverso gli occhi di chi lo vive ogni giorno
+            </p>
 
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <div className="bg-white/20 backdrop-blur-sm px-6 py-3 rounded-full">
-              <span className="font-semibold">✓ Guide Esperte</span>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <div className="bg-white/20 backdrop-blur-sm px-6 py-3 rounded-full">
+                <span className="font-semibold">✓ Guide Esperte</span>
+              </div>
+              <div className="bg-white/20 backdrop-blur-sm px-6 py-3 rounded-full">
+                <span className="font-semibold">✓ Consigli Pratici</span>
+              </div>
+              <div className="bg-white/20 backdrop-blur-sm px-6 py-3 rounded-full">
+                <span className="font-semibold">✓ Storie Autentiche</span>
+              </div>
             </div>
-            <div className="bg-white/20 backdrop-blur-sm px-6 py-3 rounded-full">
-              <span className="font-semibold">✓ Consigli Pratici</span>
-            </div>
-            <div className="bg-white/20 backdrop-blur-sm px-6 py-3 rounded-full">
-              <span className="font-semibold">✓ Storie Autentiche</span>
-            </div>
-          </div>
+          </FadeInWhenVisible>
         </div>
       </div>
 
@@ -139,17 +144,20 @@ export default function BlogPage() {
       {/* Featured Post */}
       <div className="py-16 lg:py-24 bg-white dark:bg-gray-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-4">
-              Articolo in Evidenza
-            </h2>
-            <p className="text-lg text-gray-600 dark:text-gray-300">
-              Il nostro articolo più letto e apprezzato dai viaggiatori
-            </p>
-          </div>
+          <FadeInWhenVisible>
+            <div className="text-center mb-12">
+              <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+                Articolo in Evidenza
+              </h2>
+              <p className="text-lg text-gray-600 dark:text-gray-300">
+                Il nostro articolo più letto e apprezzato dai viaggiatori
+              </p>
+            </div>
+          </FadeInWhenVisible>
 
-          <div className="bg-white dark:bg-gray-800 rounded-3xl overflow-hidden shadow-2xl hover:shadow-3xl transition-all duration-500">
-            <div className="grid lg:grid-cols-2 gap-0">
+          <AnimatedCard hoverScale={1.01} hoverY={-4}>
+            <div className="bg-white dark:bg-gray-800 rounded-3xl overflow-hidden shadow-2xl">
+              <div className="grid lg:grid-cols-2 gap-0">
               <div className="relative h-64 lg:h-full overflow-hidden">
                 <Image
                   src={featuredPost.image || "/placeholder.svg"}
@@ -229,8 +237,9 @@ export default function BlogPage() {
                   <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" />
                 </Link>
               </div>
+              </div>
             </div>
-          </div>
+          </AnimatedCard>
         </div>
       </div>
 
@@ -240,68 +249,88 @@ export default function BlogPage() {
           <div className="grid lg:grid-cols-4 gap-8">
             {/* Main Content */}
             <div className="lg:col-span-3">
-              <div className="mb-8">
-                <h2 className="text-2xl lg:text-3xl font-bold text-gray-900 dark:text-white mb-4">
-                  Ultimi Articoli
-                </h2>
-                <p className="text-gray-600 dark:text-gray-300">
-                  Scopri le nostre guide più recenti e i consigli aggiornati per il tuo viaggio in Marocco
-                </p>
-              </div>
+              <FadeInWhenVisible>
+                <div className="mb-8">
+                  <h2 className="text-2xl lg:text-3xl font-bold text-gray-900 dark:text-white mb-4">
+                    Ultimi Articoli
+                  </h2>
+                  <p className="text-gray-600 dark:text-gray-300">
+                    Scopri le nostre guide più recenti e i consigli aggiornati per il tuo viaggio in Marocco
+                  </p>
+                </div>
+              </FadeInWhenVisible>
 
               {loading ? (
-                <LoadingSkeleton count={4} />
+                <StaggerContainer className="grid md:grid-cols-2 gap-8">
+                  {[...Array(4)].map((_, i) => (
+                    <StaggerItem key={i}>
+                      <div className="bg-white dark:bg-gray-900 rounded-2xl overflow-hidden border border-gray-200/60 dark:border-gray-800 animate-pulse">
+                        <div className="aspect-[16/9] bg-gray-200 dark:bg-gray-700"></div>
+                        <div className="p-6">
+                          <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/4 mb-3"></div>
+                          <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-3/4 mb-2"></div>
+                          <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-full mb-4"></div>
+                          <div className="flex gap-2">
+                            <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded-full w-16"></div>
+                            <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded-full w-16"></div>
+                          </div>
+                        </div>
+                      </div>
+                    </StaggerItem>
+                  ))}
+                </StaggerContainer>
               ) : error ? (
                 <ErrorMessage error={error} retry={refetch} />
               ) : (
                 <>
-                  <div className="grid md:grid-cols-2 gap-8">
+                  <StaggerContainer className="grid md:grid-cols-2 gap-8">
                     {blogPosts.map((post) => {
                       const metadata = post.metadata || {}
                       const tags = metadata.tags || []
                       const readingMinutes = metadata.readingMinutes || '5'
                       
                       return (
-                        <article
-                          key={post.slug}
-                          className="bg-white dark:bg-gray-900 rounded-2xl overflow-hidden border border-gray-200/60 dark:border-gray-800 hover:shadow-lg transition"
-                        >
-                          <Link href={`/blog/${post.slug}`}>
-                            <div className="relative aspect-[16/9] overflow-hidden">
-                              <img src={post.image || "/placeholder.svg"} alt={post.title} className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
-                              
-                              {/* Wishlist Button - top left */}
-                              <div className="absolute top-2 left-2 z-10" onClick={(e) => e.preventDefault()}>
-                                <WishlistButton
-                                  itemId={`blog-${post.slug}`}
-                                  itemType="activity"
-                                  itemTitle={post.title}
-                                  itemImage={post.image || undefined}
-                                  itemDescription={post.description || undefined}
-                                />
+                        <StaggerItem key={post.slug}>
+                          <AnimatedCard hoverScale={1.02} hoverY={-8}>
+                            <article className="bg-white dark:bg-gray-900 rounded-2xl overflow-hidden border border-gray-200/60 dark:border-gray-800 h-full">
+                              <Link href={`/blog/${post.slug}`}>
+                                <div className="relative aspect-[16/9] overflow-hidden">
+                                  <img src={post.image || "/placeholder.svg"} alt={post.title} className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
+                                  
+                                  {/* Wishlist Button - top left */}
+                                  <div className="absolute top-2 left-2 z-10" onClick={(e) => e.preventDefault()}>
+                                    <WishlistButton
+                                      itemId={`blog-${post.slug}`}
+                                      itemType="activity"
+                                      itemTitle={post.title}
+                                      itemImage={post.image || undefined}
+                                      itemDescription={post.description || undefined}
+                                    />
+                                  </div>
+                                </div>
+                              </Link>
+                              <div className="p-6">
+                                <div className="text-xs text-gray-500 dark:text-gray-400 mb-2">
+                                  {post.publishedAt ? new Date(post.publishedAt).toLocaleDateString("it-IT") : new Date(post.createdAt).toLocaleDateString("it-IT")} • {readingMinutes} min
+                                </div>
+                                <h2 className="text-xl font-bold mb-2">
+                                  <Link href={`/blog/${post.slug}`}>{post.title}</Link>
+                                </h2>
+                                <p className="text-gray-600 dark:text-gray-300 mb-4">{post.description}</p>
+                                <div className="flex gap-2 flex-wrap">
+                                  {tags.map((t: string) => (
+                                    <span key={t} className="text-xs px-2 py-1 rounded-full bg-orange-100 text-orange-700 dark:bg-orange-900/20 dark:text-orange-300">
+                                      {t}
+                                    </span>
+                                  ))}
+                                </div>
                               </div>
-                            </div>
-                          </Link>
-                          <div className="p-6">
-                            <div className="text-xs text-gray-500 dark:text-gray-400 mb-2">
-                              {post.publishedAt ? new Date(post.publishedAt).toLocaleDateString("it-IT") : new Date(post.createdAt).toLocaleDateString("it-IT")} • {readingMinutes} min
-                            </div>
-                            <h2 className="text-xl font-bold mb-2">
-                              <Link href={`/blog/${post.slug}`}>{post.title}</Link>
-                            </h2>
-                            <p className="text-gray-600 dark:text-gray-300 mb-4">{post.description}</p>
-                            <div className="flex gap-2 flex-wrap">
-                              {tags.map((t: string) => (
-                                <span key={t} className="text-xs px-2 py-1 rounded-full bg-orange-100 text-orange-700 dark:bg-orange-900/20 dark:text-orange-300">
-                                  {t}
-                                </span>
-                              ))}
-                            </div>
-                          </div>
-                        </article>
+                            </article>
+                          </AnimatedCard>
+                        </StaggerItem>
                       )
                     })}
-                  </div>
+                  </StaggerContainer>
 
                   {blogPosts.length === 0 && (
                     <div className="text-center py-12">
