@@ -53,6 +53,14 @@ The "Morocco Dreams" website is a production-ready travel platform with a unifie
 - Toast notifications for user feedback (sonner)
 - Loading states and error handling throughout
 
+**Animation System (GSAP + Framer Motion):**
+- **GSAP**: ScrollTrigger-based animations, text animations, parallax effects
+- **Framer Motion**: Component animations, hover effects, staggered entrances
+- **Accessibility**: All animations respect `prefers-reduced-motion` user preference
+- **Mobile Optimized**: Touch-friendly interactions with 44px minimum touch targets
+- Reusable components: AnimatedSection, AnimatedCard, ScrollReveal, FadeInWhenVisible, BlurIn
+- Client-side rendering ensures real-time updates from database
+
 ### External Dependencies
 - **PostgreSQL**: Primary database (Neon hosted via Replit)
 - **Prisma**: ORM for type-safe database access
@@ -73,6 +81,11 @@ The "Morocco Dreams" website is a production-ready travel platform with a unifie
 - `lib/validators/content.ts` - Content type validation
 - `lib/auth-helpers.ts` - Server-side admin authentication helper
 - `lib/user-auth-server.ts` - Firebase Admin SDK initialization
+- `lib/animations.ts` - GSAP animation utilities and configuration
+- `components/ui/animated-section.tsx` - Reusable animated section components
+- `components/ui/animated-card.tsx` - Card with hover and entrance animations
+- `components/ui/scroll-reveal.tsx` - Scroll-triggered reveal animations
+- `hooks/useReducedMotion.ts` - Accessibility hook for reduced motion preference
 
 ### Scripts
 - `npm run build` - Production build (Prisma generate + Next.js build)
