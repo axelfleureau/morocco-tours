@@ -1,0 +1,100 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    
+    // Helper function to check if user is authenticated
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    // Helper function to check file size (max 10MB)
+    function isValidSize() {
+      return request.resource.size < 10 * 1024 * 1024;
+    }
+    
+    // Helper function to check if file is an image
+    function isImage() {
+      return request.resource.contentType.matches('image/.*');
+    }
+    
+    // === PUBLIC CONTENT FOLDERS (Read-only for everyone) ===
+    
+    // Experiences images
+    match /experiences/{allPaths=**} {
+      allow read: if true;
+      allow write: if false; // Managed via Admin SDK
+    }
+    
+    // Travels images
+    match /travels/{allPaths=**} {
+      allow read: if true;
+      allow write: if false; // Managed via Admin SDK
+    }
+    
+    // Services images
+    match /services/{allPaths=**} {
+      allow read: if true;
+      allow write: if false; // Managed via Admin SDK
+    }
+    
+    // Vehicles images
+    match /vehicles/{allPaths=**} {
+      allow read: if true;
+      allow write: if false; // Managed via Admin SDK
+    }
+    
+    // Blog images
+    match /blog/{allPaths=**} {
+      allow read: if true;
+      allow write: if false; // Managed via Admin SDK
+    }
+    
+    // Cities images
+    match /cities/{allPaths=**} {
+      allow read: if true;
+      allow write: if false; // Managed via Admin SDK
+    }
+    
+    // Testimonials images
+    match /testimonials/{allPaths=**} {
+      allow read: if true;
+      allow write: if false; // Managed via Admin SDK
+    }
+    
+    // Instagram images
+    match /instagram/{allPaths=**} {
+      allow read: if true;
+      allow write: if false; // Managed via Admin SDK
+    }
+    
+    // General uploads folder
+    match /uploads/{allPaths=**} {
+      allow read: if true;
+      allow write: if false; // Managed via Admin SDK
+    }
+    
+    // === USER UPLOADS ===
+    
+    // User profile pictures
+    match /users/{userId}/profile/{fileName} {
+      allow read: if true;
+      allow write: if isAuthenticated() 
+                   && request.auth.uid == userId 
+                   && isImage() 
+                   && isValidSize();
+    }
+    
+    // User uploaded files (e.g., trip request attachments)
+    match /users/{userId}/uploads/{fileName} {
+      allow read: if isAuthenticated() && request.auth.uid == userId;
+      allow write: if isAuthenticated() 
+                   && request.auth.uid == userId 
+                   && isValidSize();
+    }
+    
+    // Deny all other access by default
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}
