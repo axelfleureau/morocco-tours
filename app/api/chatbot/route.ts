@@ -1,10 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server'
 import OpenAI from 'openai'
 
-// the newest OpenAI model is "gpt-5" which was released August 7, 2025. do not change this unless explicitly requested by the user
-const openai = new OpenAI({ 
-  apiKey: process.env.OPENAI_API_KEY
-})
+function getOpenAIClient() {
+  const apiKey = process.env.OPENAI_API_KEY
+  if (!apiKey) {
+    return null
+  }
+  return new OpenAI({ apiKey })
+}
 
 const SYSTEM_PROMPT = `Sei l'assistente virtuale di "Morocco Dreams", un'agenzia di viaggi specializzata in viaggi autentici in Marocco.
 
@@ -44,6 +47,15 @@ Rispondi sempre con passione e conoscenza del Marocco!`
 
 export async function POST(request: NextRequest) {
   try {
+    const openai = getOpenAIClient()
+    
+    if (!openai) {
+      return NextResponse.json({ 
+        response: "🔑 L'assistente AI non è attualmente configurato. " +
+                 "Contatta il nostro team per assistenza immediata - siamo qui per aiutarti! 🇲🇦"
+      })
+    }
+
     const { message, conversation } = await request.json()
 
     if (!message) {

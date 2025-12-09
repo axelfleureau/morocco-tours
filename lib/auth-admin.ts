@@ -45,8 +45,10 @@ let adminDb: any = null
 
 try {
   adminApp = initializeFirebaseAdmin()
-  adminAuth = getAuth(adminApp)
-  adminDb = getFirestore(adminApp)
+  if (adminApp) {
+    adminAuth = getAuth(adminApp)
+    adminDb = getFirestore(adminApp)
+  }
 } catch (error) {
   console.error('Firebase Admin initialization error:', error)
 }
